@@ -1,0 +1,21 @@
+$paddingLayout: 5px;
+$nav-main-height: 60px;
+$border-bottom: 1px solid #e0e0e0;
+
+.header {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  .header__main {
+    justify-content: center;
+    align-items: center;
+    padding-inline: $paddingLayout;
+  }
+}
+
+.main-content {
+  margin-left: 0px;
+  margin-right: 0px;
+  width: 100%;
+  margin-top: 10px;
+}

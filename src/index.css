@@ -1,0 +1,68 @@
+@import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Sans&family=Inter&family=Lato:wght@100&family=Montserrat:wght@500&family=Open+Sans:wght@400;500&family=Poppins&family=Raleway&family=Roboto&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Merriweather:wght@300&family=Noto+Serif:wght@300&family=PT+Serif&family=Source+Serif+4:opsz@8..60&display=swap");
+body,
+html {
+  font-family: var(--font-family-open-sans);
+}
+
+body ql-container {
+  font-size: 20px;
+}
+
+body input:focus {
+  outline: none;
+}
+
+body h2 {
+  font-family: var(--font-family-open-sans);
+}
+
+body h1 {
+  font-family: var(--font-family-open-sans);
+}
+
+body a {
+  margin: 0px;
+}
+
+button {
+  font-family: var(--font-family-open-sans);
+  font-size: 14px;
+}
+
+[contenteditable] {
+  outline: 0px solid transparent;
+}
+
+::placeholder {
+  font-family: var(--font-family-open-sans);
+}
+
+:root {
+  --font-family-ibm: "IBM Plex Sans", sans-serif;
+  --font-family-inter: "Inter", sans-serif;
+  --font-family-lato: "Lato", sans-serif;
+  --font-family-montserrat: "Montserrat", sans-serif;
+  --font-family-open-sans: "Open Sans", sans-serif;
+  --font-family-poppins: "Poppins", sans-serif;
+  --font-family-raleway: "Raleway", sans-serif;
+  --font-family-roboto: "Roboto", sans-serif;
+  --font-family-PT-serif: "PT Serif", serif;
+  --font-family-Merriweather: "Merriweather", serif;
+  --font-family-Noto-Serif: "Noto Serif", serif;
+  --font-family-DM-Serif: "DM Serif Display", serif;
+  --font-family-Source-Serif: "Source Serif 4", serif;
+}
+
+p a {
+  font-family: var(--font-family-poppins);
+}
+
+h1 h2 h3 h4 h5 {
+  font-family: var(--font-family-poppins);
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
+    monospace;
+}
