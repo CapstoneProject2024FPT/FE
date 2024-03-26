@@ -1,28 +1,42 @@
 import React, { useState } from "react";
 import UserData from "../../models/UserData";
-import apiLogin from "../../api/services/apiLogin";
+import { apiLogin } from "../../api/services/apiAuth";
 
 const Login: React.FC = () => {
   interface LoginProps {
     username: string;
     password: string;
   }
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
 
-  const [loginData, setLoginData] = useState<UserData | null>(null);
+  const handleUsernameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setUsername(e.target.value);
+  };
 
-  const handleLogin = async (loginData: LoginProps): Promise<void> => {
+  const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setPassword(e.target.value);
+  };
+
+  const handleLogin = async (
+    e: React.FormEvent<HTMLFormElement>
+  ): Promise<void> => {
+    e.preventDefault();
+    const loginData: LoginProps = { username, password };
     try {
-      const userData: UserData = await apiLogin.login(loginData);
-      setLoginData(userData);
-      console.log("Login successful:", userData);
+      const response: UserData = await apiLogin(loginData);
+      console.log(response);
     } catch (error) {
-      throw new Error("Login failed");
+      console.log(error);
     }
   };
 
-  console.log(loginData, handleLogin);
+  console.log(handleLogin, handleUsernameChange, handlePasswordChange);
 
-  return <div>Login</div>;
+  return (
+    <>
+      <div>Login</div>
+    </>
+  );
 };
-
 export default Login;
