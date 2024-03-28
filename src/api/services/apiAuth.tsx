@@ -2,7 +2,6 @@ import { AxiosResponse } from "axios";
 import { axiosPublic } from "../axiosInstance";
 import { LOGIN } from "../pathApiName";
 import UserData from "../../models/UserData";
-
 interface LoginProps {
   username: string;
   password: string;

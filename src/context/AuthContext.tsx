@@ -41,7 +41,8 @@ export const AuthContextProvider: React.FC<AuthContextProviderProps> = ({
   const [authUser, setAuthUser] = useState<string | null>(null);
 
   useEffect(() => {
-    const auth = JSON.parse(localStorage.getItem("LoginInfo") || "null");
+    const loginInfoString = localStorage.getItem("LoginInfo");
+    const auth = loginInfoString ? JSON.parse(loginInfoString) : null;
     if (auth) {
       const authen = jwtDecode<tokenApi>(auth.token);
 
