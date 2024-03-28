@@ -18,3 +18,13 @@ export const fortmatDateFunc = {
     return await moment(date).format("HH:mm A");
   },
 };
+
+export function truncate(text: string | undefined) {
+  const textString = text?.toString();
+
+  if (typeof textString === "string" && textString.length > 20) {
+    const truncateText = textString.substring(0, 20);
+    return truncateText;
+  }
+  return textString;
+}
