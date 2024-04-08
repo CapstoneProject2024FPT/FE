@@ -28,3 +28,15 @@ export function truncate(text: string | undefined) {
   }
   return textString;
 }
+
+export function navigateId(
+  route: string,
+  suffix: string,
+  suffixChange: string | undefined
+) {
+  const id = suffixChange?.toString();
+  if (typeof id === "string") {
+    return route.replace(suffix, id);
+  }
+  return route.replace(suffix, "");
+}

@@ -5,6 +5,7 @@ import Login from "../pages/Login/Login";
 import Home from "../pages/Home/Home";
 import Register from "../pages/Register/Register";
 import Layout from "../layouts/Layout";
+import Detail from "../pages/Detail/Detail";
 
 const AppRoute: React.FC = () => {
   return (
@@ -17,6 +18,7 @@ const AppRoute: React.FC = () => {
       ></Route>
       <Route path={config.routes.home} element={<Layout />}>
         <Route key="home" path={config.routes.home} element={<Home />} />
+        <Route key="detail" path={config.routes.detail} element={<Detail />} />
       </Route>
     </Routes>
   );
