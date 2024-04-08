@@ -29,6 +29,7 @@ export function truncate(text: string | undefined) {
   return textString;
 }
 
+//change the router link
 export function navigateId(
   route: string,
   suffix: string,
