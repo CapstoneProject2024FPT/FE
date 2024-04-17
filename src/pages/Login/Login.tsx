@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import UserData from "../../models/UserData";
-import { apiLogin } from "../../api/services/apiAuth";
+import { AuthApi } from "../../api/services/apiAuth";
+import Button from "@mui/material/Button";
 
 const Login: React.FC = () => {
   interface LoginProps {
@@ -9,6 +10,7 @@ const Login: React.FC = () => {
   }
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const { apiLogin, loading } = AuthApi();
 
   const handleUsernameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setUsername(e.target.value);
@@ -36,6 +38,9 @@ const Login: React.FC = () => {
   return (
     <>
       <div>Login</div>
+      <Button onClick={() => handleLogin} disabled={loading}>
+        {loading ? "Logging in..." : "Login"}
+      </Button>
     </>
   );
 };
