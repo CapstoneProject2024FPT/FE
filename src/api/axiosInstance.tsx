@@ -1,7 +1,7 @@
 import axios from "axios";
 import { jwtDecode } from "jwt-decode";
 
-const BASE_URL = import.meta.env.VITE_VITE_BASE_URL_LOCAL;
+const BASE_URL = import.meta.env.VITE_BASE_URL_LOCAL;
 
 const axiosPublic = axios.create({
   baseURL: BASE_URL,
