@@ -1,7 +1,7 @@
 import React from "react";
 // import menuList from "../../Config/navMenuList";
 import "./NavMenu.scss";
-import "../../../index.css";
+import "../../../../index.css";
 // import { Link } from "react-router-dom";
 const NavMenu: React.FC = () => {
   return (

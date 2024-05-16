@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import Logo from "../../../components/Logo/Logo";
+import Logo from "../../../../components/Logo/Logo";
 import "./TopBar.scss";
 import NavMenu from "../NavMenu/NavMenu";
 import RightMenu from "../RightMenu/RightMenu";

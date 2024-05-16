@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { FiSearch } from "react-icons/fi";
-import { colors } from "../../../styles/Color/color";
+import { colors } from "../../../../styles/Color/color";
 import "../../index.css";
 import "./SearchBar.scss";
 

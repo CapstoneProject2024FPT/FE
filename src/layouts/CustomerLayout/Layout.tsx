@@ -2,7 +2,7 @@ import React from "react";
 import { Outlet } from "react-router-dom";
 import TopBar from "./Header/TopBar/TopBar";
 import "./Layout.scss";
-import "./../styles/main.scss";
+import "../../styles/main.scss";
 import Footer from "./Footer/Footer";
 
 const Layout: React.FC = () => {

@@ -1,10 +1,14 @@
 import suffix from "./suffixRoute";
 
-const routes = {
+export const routes = {
   home: "/",
   login: "/login",
   register: "/register",
   detail: `detail/${suffix.detailId}`,
+  notFound: "notFound",
 };
 
-export default routes;
+export const adminRoutes = {
+  dashboard: "/dashboard",
+  user: "user",
+};
