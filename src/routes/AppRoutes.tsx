@@ -8,7 +8,7 @@ import Register from "../pages/Register/Register";
 import Detail from "../pages/Detail/Detail";
 import Dashboard from "../pages/Dashboard/Dashboard";
 import LayoutAdmin from "../layouts/AdminLayout/LayoutAdmin";
-import Account from "../pages/User/Account";
+import Account from "../pages/Admin/User/Account";
 import NotFoundPage from "../pages/404/NotFoundPage";
 import Layout from "../layouts/CustomerLayout/Layout";
 

@@ -1,6 +1,6 @@
 import * as React from "react";
 import { Tabs } from "antd";
-import TabValue from "./AccountType";
+import TabValue from "../User/AccountType";
 
 interface TabItem {
   key: string;
