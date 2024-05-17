@@ -6,6 +6,7 @@ import Home from "../pages/Home/Home";
 import Register from "../pages/Register/Register";
 import Layout from "../layouts/Layout";
 import Detail from "../pages/Detail/Detail";
+import Cart from "../pages/Cart/Cart";
 
 const AppRoute: React.FC = () => {
   return (
@@ -20,6 +21,7 @@ const AppRoute: React.FC = () => {
         <Route key="home" path={config.routes.home} element={<Home />} />
         <Route key="detail" path={config.routes.detail} element={<Detail />} />
       </Route>
+      <Route key="cart" path={config.routes.cart} element={<Cart />} />
     </Routes>
   );
 };
