@@ -1,10 +1,10 @@
 import React from "react";
 import "./RightMenu.scss";
-import Button from "../../../components/Button/Button";
+import Button from "../../../../components/Button/Button";
 import { Link } from "react-router-dom";
 import AccountSection from "../AccountSection";
-import config from "../../../configs";
-import { useAuthContext } from "../../../context/AuthContext";
+import config from "../../../../configs";
+import { useAuthContext } from "../../../../context/AuthContext";
 
 const RightMenu: React.FC = () => {
   const { authUser } = useAuthContext();
