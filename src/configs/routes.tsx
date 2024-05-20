@@ -5,6 +5,7 @@ export const routes = {
   login: "/login",
   register: "/register",
   detail: `detail/${suffix.detailId}`,
+  cart: "/cart",
   notFound: "notFound",
 };
 
