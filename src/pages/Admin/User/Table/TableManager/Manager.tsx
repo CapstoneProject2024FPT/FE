@@ -21,7 +21,7 @@ interface TableParams {
 const pageSize = 20;
 const columns: ColumnsType<DataType> = [
   {
-    title: "Name",
+    title: "Nameaaaaa",
     dataIndex: "name",
     sorter: (a, b) => a.name.length - b.name.length,
     width: "20%",
