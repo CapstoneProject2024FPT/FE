@@ -1,44 +1,123 @@
-import React from "react";
-import { Space, Table, Tag } from "antd";
+import React, { useEffect, useState } from "react";
+import { Table, Input } from "antd";
+import type { GetProp, TableProps } from "antd";
 
-const { Column, ColumnGroup } = Table;
+type ColumnsType<T> = TableProps<T>["columns"];
+const { Search } = Input;
 
 interface DataType {
-  key: React.Key;
-  firstName: string;
-  lastName: string;
-  age: number;
-  address: string;
-  tags: string[];
+  name: string;
+  username: string;
+  email: string;
+  id: string;
 }
 
-const data: DataType[] = [
+interface TableParams {
+  sortField?: string;
+  sortOrder?: string;
+  filters?: Parameters<GetProp<TableProps, "onChange">>[1];
+}
+
+const pageSize = 20;
+const columns: ColumnsType<DataType> = [
   {
-    key: "1",
-    firstName: "John",
-    lastName: "Brown",
-    age: 32,
-    address: "New York No. 1 Lake Park",
-    tags: ["nice", "developer"],
+    title: "Name",
+    dataIndex: "name",
+    sorter: (a, b) => a.name.length - b.name.length,
+    width: "20%",
   },
   {
-    key: "2",
-    firstName: "Jim",
-    lastName: "Green",
-    age: 42,
-    address: "London No. 1 Lake Park",
-    tags: ["loser"],
+    title: "username",
+    dataIndex: "username",
+    filters: [
+      { text: "Male", value: "male" },
+      { text: "Female", value: "female" },
+    ],
+    width: "20%",
   },
   {
-    key: "3",
-    firstName: "Joe",
-    lastName: "Black",
-    age: 32,
-    address: "Sydney No. 1 Lake Park",
-    tags: ["cool", "teacher"],
+    title: "Email",
+    dataIndex: "email",
   },
 ];
 
-const StaffData: React.FC = () => <>staff</>;
+const StaffData: React.FC = () => {
+  const [data, setData] = useState<DataType[]>();
+  const [loading, setLoading] = useState(false);
+  const [tableParams, setTableParams] = useState<TableParams>({});
+  const [pagination, setPagination] = useState({
+    current: 1,
+    pageSize: pageSize,
+  });
+  const [query, setQuery] = useState<string>("");
+
+  useEffect(() => {
+    const fetchData = () => {
+      setLoading(true);
+      fetch(`https://jsonplaceholder.typicode.com/users`)
+        .then((res) => res.json())
+        .then((res) => {
+          console.log(res);
+
+          setData(res);
+          setLoading(false);
+          setTableParams({
+            ...tableParams,
+          });
+        });
+    };
+    fetchData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const handleTableChange = (newPagination: any) => {
+    setPagination({
+      ...pagination,
+      ...newPagination,
+    });
+
+    if (pagination.pageSize !== pagination?.pageSize) {
+      setData([]);
+    }
+  };
+
+  const customPagination = {
+    ...pagination,
+    onChange: handleTableChange,
+    pageSizeOptions: ["20", "25", "50"], // Custom page size options
+    showSizeChanger: false, // Show page size changer
+    showQuickJumper: false, // Show quick jumper
+  };
+
+  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setQuery(e.target.value);
+  };
+
+  const keys = ["name", "email", "username"];
+  const filteredRows = data?.filter((item) =>
+    keys.some((key) =>
+      item[key as keyof DataType].toLowerCase().includes(query)
+    )
+  );
+
+  return (
+    <>
+      <Search
+        placeholder="Search"
+        onChange={handleSearch} // Update search value on change
+        style={{ width: 200, marginBottom: 16 }}
+      />
+      <Table
+        columns={columns}
+        rowKey={(record) => record.id}
+        dataSource={filteredRows}
+        pagination={customPagination}
+        loading={loading}
+        onChange={handleTableChange}
+      />
+    </>
+  );
+};
 
 export default StaffData;
