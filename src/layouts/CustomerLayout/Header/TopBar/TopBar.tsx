@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import Logo from "../../../../components/Logo/Logo";
 import "./TopBar.scss";
 import NavMenu from "../NavMenu/NavMenu";
@@ -23,19 +23,19 @@ const LogoContainer = () => {
 };
 
 const TopBar: React.FC = () => {
-  const [screenWidth, setScreenWidth] = useState(window.innerWidth);
+  // const [screenWidth, setScreenWidth] = useState(window.innerWidth);
 
-  useEffect(() => {
-    const changeWidth = () => {
-      setScreenWidth(window.innerWidth);
-    };
+  // useEffect(() => {
+  //   const changeWidth = () => {
+  //     setScreenWidth(window.innerWidth);
+  //   };
 
-    window.addEventListener("resize", changeWidth);
+  //   window.addEventListener("resize", changeWidth);
 
-    return () => {
-      window.removeEventListener("resize", changeWidth);
-    };
-  }, []);
+  //   return () => {
+  //     window.removeEventListener("resize", changeWidth);
+  //   };
+  // }, []);
 
   return (
     <>
