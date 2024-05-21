@@ -14,6 +14,7 @@ import { AuthApi } from "../../api/services/apiAuth";
 import { toast } from "react-toastify";
 import { localStorageFunc } from "../../utils/localStoragefn";
 import config from "../../configs";
+import "./Login.scss";
 
 interface LoginProps {
   username: string;
