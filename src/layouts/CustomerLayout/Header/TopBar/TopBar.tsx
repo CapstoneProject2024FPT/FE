@@ -1,5 +1,5 @@
 import React from "react";
-import Logo from "../../../../components/Logo/Logo";
+import Logo from "../../../../components/logo/Logo";
 import "./TopBar.scss";
 import RightMenu from "../RightMenu/RightMenu";
 import { Link } from "react-router-dom";

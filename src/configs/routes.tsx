@@ -12,4 +12,7 @@ export const routes = {
 export const adminRoutes = {
   dashboard: "/dashboard",
   user: "user",
+  blogs: "blog",
+  blog: `blog/${suffix.detailId}`,
+  create: "create",
 };

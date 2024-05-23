@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 // import PaginationUser from "../../components/Pagination/pagination";
 // import { navigateId } from "../../utils/fn";
 import "./Home.scss";
-import Fancybox from "../../components/FancyBoxSlide/FancyBox";
+import Fancybox from "../../components/fancy-box-slide/FancyBox";
 import uploadImageToFirebase from "../../firebase/uploadImageToFirebase";
 
 interface Post {

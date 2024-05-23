@@ -12,6 +12,7 @@ import LayoutAdmin from "../layouts/AdminLayout/LayoutAdmin";
 import Account from "../pages/Admin/User/Account";
 import NotFoundPage from "../pages/404/NotFoundPage";
 import Layout from "../layouts/CustomerLayout/Layout";
+import BlogNewPost from "../pages/Admin/Blog/BlogNewPost";
 
 const AppRoute: React.FC = () => {
   return (
@@ -46,6 +47,11 @@ const AppRoute: React.FC = () => {
           key="user"
           path={config.adminRoutes.user}
           element={<Account />}
+        />
+        <Route
+          key="blog"
+          path={config.adminRoutes.create}
+          element={<BlogNewPost />}
         />
       </Route>
 

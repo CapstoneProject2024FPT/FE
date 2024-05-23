@@ -33,6 +33,21 @@ const MenuSideBars: MenuSideBar[] = [
       },
     ],
   },
+  {
+    label: "Blogs",
+    key: "blogs",
+    icon: <ShoppingOutlined />,
+    children: [
+      {
+        label: "All Blogs",
+        key: "all_blogs",
+      },
+      {
+        label: <Link to={config.adminRoutes.create}>Create</Link>,
+        key: "create_blog",
+      },
+    ],
+  },
 ];
 
 export default MenuSideBars;

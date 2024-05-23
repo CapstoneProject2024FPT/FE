@@ -3,7 +3,7 @@ import { Layout, Menu, theme } from "antd";
 import { Outlet } from "react-router-dom";
 import { menuItems } from "./Header/SideBarAdmin/sidebarMenu";
 import HeaderAdmin from "./Header/Header";
-import Logo from "../../components/Logo/Logo";
+import Logo from "../../components/logo/Logo";
 import "./LayoutAdmin.scss";
 
 const { Content, Footer, Sider } = Layout;
