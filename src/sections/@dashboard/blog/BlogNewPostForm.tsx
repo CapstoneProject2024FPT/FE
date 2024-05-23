@@ -59,12 +59,6 @@ export default function BlogNewPostForm() {
     description: "",
     content: "",
     cover: null,
-    tags: ["Logan"],
-    publish: true,
-    comments: true,
-    metaTitle: "",
-    metaDescription: "",
-    metaKeywords: ["Logan"],
   };
 
   const methods = useForm<NewPostFormValues>({

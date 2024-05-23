@@ -4,12 +4,6 @@ export interface NewPostFormValues {
   content: string;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   cover: File | any;
-  tags: string[];
-  publish: boolean;
-  comments: boolean;
-  metaTitle: string;
-  metaDescription: string;
-  metaKeywords: string[];
 }
 
 export type PostComment = {
