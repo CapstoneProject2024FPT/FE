@@ -1,7 +1,7 @@
 // form
-import { useFormContext, Controller } from 'react-hook-form';
+import { useFormContext, Controller } from "react-hook-form";
 // @mui
-import { FormHelperText } from '@mui/material';
+import { FormHelperText } from "@mui/material";
 // type
 import {
   UploadAvatar,
@@ -9,11 +9,11 @@ import {
   UploadSingleFile,
   UploadProps,
   UploadMultiFileProps,
-} from '../upload';
+} from "../upload";
 
 // ----------------------------------------------------------------------
 
-interface Props extends Omit<UploadProps, 'file'> {
+interface Props extends Omit<UploadProps, "file"> {
   name: string;
 }
 
@@ -31,7 +31,7 @@ export function RHFUploadAvatar({ name, ...other }: Props) {
           <div>
             <UploadAvatar error={checkError} {...other} file={field.value} />
             {checkError && (
-              <FormHelperText error sx={{ px: 2, textAlign: 'center' }}>
+              <FormHelperText error sx={{ px: 2, textAlign: "center" }}>
                 {error.message}
               </FormHelperText>
             )}
@@ -56,7 +56,6 @@ export function RHFUploadSingleFile({ name, ...other }: Props) {
 
         return (
           <UploadSingleFile
-            accept="image/*"
             file={field.value}
             error={checkError}
             helperText={
@@ -76,11 +75,14 @@ export function RHFUploadSingleFile({ name, ...other }: Props) {
 
 // ----------------------------------------------------------------------
 
-interface RHFUploadMultiFileProps extends Omit<UploadMultiFileProps, 'files'> {
+interface RHFUploadMultiFileProps extends Omit<UploadMultiFileProps, "files"> {
   name: string;
 }
 
-export function RHFUploadMultiFile({ name, ...other }: RHFUploadMultiFileProps) {
+export function RHFUploadMultiFile({
+  name,
+  ...other
+}: RHFUploadMultiFileProps) {
   const { control } = useFormContext();
 
   return (
@@ -92,7 +94,6 @@ export function RHFUploadMultiFile({ name, ...other }: RHFUploadMultiFileProps) 
 
         return (
           <UploadMultiFile
-            accept="image/*"
             files={field.value}
             error={checkError}
             helperText={

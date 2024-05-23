@@ -1,9 +1,9 @@
-import { memo } from 'react';
+import { memo } from "react";
 // @mui
-import { useTheme } from '@mui/material/styles';
-import { Box, BoxProps } from '@mui/material';
+import { useTheme } from "@mui/material/styles";
+import { Box, BoxProps } from "@mui/material";
 //
-import BackgroundIllustration from './illustration_background';
+import BackgroundIllustration from "./illustration_background";
 
 // ----------------------------------------------------------------------
 
@@ -14,15 +14,26 @@ function UploadIllustration({ ...other }: BoxProps) {
 
   const PRIMARY_DARK = theme.palette.primary.dark;
 
-  const PRIMARY_DARKER = theme.palette.primary.darker;
+  const PRIMARY_DARKER = "#7A0C2E";
 
   return (
     <Box {...other}>
-      <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 480 360">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="100%"
+        height="100%"
+        viewBox="0 0 480 360"
+      >
         <BackgroundIllustration />
 
         <defs>
-          <linearGradient id="linearGradient-2" x1="30.113%" x2="30.113%" y1="0%" y2="100%">
+          <linearGradient
+            id="linearGradient-2"
+            x1="30.113%"
+            x2="30.113%"
+            y1="0%"
+            y2="100%"
+          >
             <stop offset="0%" stopOpacity="0" />
             <stop offset="100%" />
           </linearGradient>

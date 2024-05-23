@@ -1,22 +1,22 @@
-import { memo } from 'react';
+import { memo } from "react";
 // @mui
-import { useTheme } from '@mui/material/styles';
-import { Box, BoxProps } from '@mui/material';
+import { useTheme } from "@mui/material/styles";
+import { Box, BoxProps } from "@mui/material";
 //
-import BackgroundIllustration from './illustration_background';
+import BackgroundIllustration from "./illustration_background";
 
 // ----------------------------------------------------------------------
 
 function MotivationIllustration({ ...other }: BoxProps) {
   const theme = useTheme();
 
-  const PRIMARY_LIGHTER = theme.palette.primary.lighter;
+  const PRIMARY_LIGHTER = "#FFE7D9";
 
   const PRIMARY_MAIN = theme.palette.primary.main;
 
   const PRIMARY_DARK = theme.palette.primary.dark;
 
-  const PRIMARY_DARKER = theme.palette.primary.darker;
+  const PRIMARY_DARKER = "#7A0C2E";
 
   return (
     <Box {...other}>

@@ -14,7 +14,7 @@ import EditorToolbar, {
 
 const RootStyle = styled(Box)(({ theme }) => ({
   borderRadius: theme.shape.borderRadius,
-  border: `solid 1px ${theme.palette.grey[500_32]}`,
+  border: `solid 1px rgba(145, 158, 171, 0.32)`,
   "& .ql-container.ql-snow": {
     borderColor: "transparent",
     ...theme.typography.body1,
@@ -48,11 +48,13 @@ export interface Props extends ReactQuillProps {
 
 export default function Editor({
   id = "minimal-quill",
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   error,
   value,
   onChange,
   simple = false,
   helperText,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   sx,
   ...other
 }: Props) {
