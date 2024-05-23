@@ -4,6 +4,8 @@ export interface NewPostFormValues {
   content: string;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   cover: File | any;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  image: File | any;
 }
 
 export type PostComment = {

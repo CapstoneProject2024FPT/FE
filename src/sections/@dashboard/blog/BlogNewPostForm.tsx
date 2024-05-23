@@ -52,6 +52,7 @@ export default function BlogNewPostForm() {
     description: Yup.string().required("Description is required"),
     content: Yup.string().min(1000).required("Content is required"),
     cover: Yup.mixed().required("Cover is required"),
+    image: Yup.mixed().required("Image is required"),
   });
 
   const defaultValues: NewPostFormValues = {
@@ -59,6 +60,7 @@ export default function BlogNewPostForm() {
     description: "",
     content: "",
     cover: null,
+    image: null,
   };
 
   const methods = useForm<NewPostFormValues>({
@@ -108,6 +110,23 @@ export default function BlogNewPostForm() {
     [setValue]
   );
 
+  const handleDropImage = useCallback(
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (acceptedFiles: any[]) => {
+      const file = acceptedFiles[0];
+
+      if (file) {
+        setValue(
+          "image",
+          Object.assign(file, {
+            preview: URL.createObjectURL(file),
+          })
+        );
+      }
+    },
+    [setValue]
+  );
+
   return (
     <>
       <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
@@ -132,7 +151,7 @@ export default function BlogNewPostForm() {
                 <RHFUploadSingleFile
                   name="image"
                   maxSize={3145728}
-                  onDrop={handleDrop}
+                  onDrop={handleDropImage}
                 />
               </div>
               <div>
