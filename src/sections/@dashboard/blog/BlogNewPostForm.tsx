@@ -127,7 +127,14 @@ export default function BlogNewPostForm() {
                 <LabelStyle>Content</LabelStyle>
                 <RHFEditor simple name="content" />
               </div>
-
+              <div>
+                <LabelStyle>Image</LabelStyle>
+                <RHFUploadSingleFile
+                  name="image"
+                  maxSize={3145728}
+                  onDrop={handleDrop}
+                />
+              </div>
               <div>
                 <LabelStyle>Cover</LabelStyle>
                 <RHFUploadSingleFile
