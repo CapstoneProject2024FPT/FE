@@ -7,6 +7,7 @@ export const routes = {
   detail: `detail/${suffix.detailId}`,
   cart: "/cart",
   notFound: "notFound",
+  paymentSuccessfull: "/payment-successfull",
 };
 
 export const adminRoutes = {
