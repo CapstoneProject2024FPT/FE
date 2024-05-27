@@ -1,18 +1,19 @@
 // @mui
-import { styled } from '@mui/material/styles';
-import { Typography, Box, BoxProps } from '@mui/material';
+import { styled } from "@mui/material/styles";
+import { Typography, Box, BoxProps } from "@mui/material";
 //
-import Image from './Image';
+import Image from "./Image";
+import images from "../constants/images";
 
 // ----------------------------------------------------------------------
 
 const RootStyle = styled(Box)(({ theme }) => ({
-  height: '100%',
-  display: 'flex',
-  textAlign: 'center',
-  alignItems: 'center',
-  flexDirection: 'column',
-  justifyContent: 'center',
+  height: "100%",
+  display: "flex",
+  textAlign: "center",
+  alignItems: "center",
+  flexDirection: "column",
+  justifyContent: "center",
   padding: theme.spacing(8, 2),
 }));
 
@@ -24,14 +25,19 @@ interface Props extends BoxProps {
   description?: string;
 }
 
-export default function EmptyContent({ title, description, img, ...other }: Props) {
+export default function EmptyContent({
+  title,
+  description,
+  img,
+  ...other
+}: Props) {
   return (
     <RootStyle {...other}>
       <Image
         disabledEffect
         visibleByDefault
         alt="empty content"
-        src={img || '/assets/illustrations/illustration_empty_content.svg'}
+        src={img || images.emptyContent}
         sx={{ height: 240, mb: 3 }}
       />
 
@@ -40,7 +46,7 @@ export default function EmptyContent({ title, description, img, ...other }: Prop
       </Typography>
 
       {description && (
-        <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+        <Typography variant="body2" sx={{ color: "text.secondary" }}>
           {description}
         </Typography>
       )}

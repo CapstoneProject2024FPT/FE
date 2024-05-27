@@ -90,7 +90,7 @@ export default function Editor({
           onChange={onChange}
           modules={modules}
           formats={formats}
-          placeholder="Write something awesome..."
+          placeholder="Điền mô tả ..."
           {...other}
         />
       </RootStyle>

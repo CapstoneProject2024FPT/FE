@@ -30,8 +30,13 @@ const AppRoute: React.FC = () => {
       <Route key="customer" path={config.routes.home} element={<Layout />}>
         <Route key="home" path={config.routes.home} element={<Home />} />
         <Route key="detail" path={config.routes.detail} element={<Detail />} />
+        <Route
+          key="payment-successfull"
+          path={config.routes.paymentSuccessfull}
+          element={<PaymentSuccessfull />}
+        ></Route>
+        <Route key="cart" path={config.routes.cart} element={<Cart />} />
       </Route>
-      <Route key="cart" path={config.routes.cart} element={<Cart />} />
 
       {/* admin */}
       <Route
@@ -60,12 +65,6 @@ const AppRoute: React.FC = () => {
         key="notfound"
         path={config.routes.notFound}
         element={<NotFoundPage />}
-      ></Route>
-
-      <Route
-        key="payment-successfull"
-        path={config.routes.paymentSuccessfull}
-        element={<PaymentSuccessfull />}
       ></Route>
     </Routes>
   );
