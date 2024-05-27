@@ -4,6 +4,8 @@ import App from "./App.tsx";
 import { AuthContextProvider } from "./context/AuthContext.tsx";
 import "react-toastify/dist/ReactToastify.css";
 import { ToastContainer } from "react-toastify";
+// editor
+import "react-quill/dist/quill.snow.css";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>

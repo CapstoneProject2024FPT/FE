@@ -13,6 +13,9 @@ import Account from "../pages/Admin/User/Account";
 import NotFoundPage from "../pages/404/NotFoundPage";
 import Layout from "../layouts/CustomerLayout/Layout";
 import UserProfile from "../pages/UserProfile/UserProfile";
+import BlogNewPost from "../pages/Admin/Blog/BlogNewPost";
+import PaymentSuccessfull from "../pages/PaymentSuccessfull";
+
 
 const AppRoute: React.FC = () => {
   return (
@@ -49,12 +52,23 @@ const AppRoute: React.FC = () => {
           path={config.adminRoutes.user}
           element={<Account />}
         />
+        <Route
+          key="blog"
+          path={config.adminRoutes.create}
+          element={<BlogNewPost />}
+        />
       </Route>
 
       <Route
         key="notfound"
         path={config.routes.notFound}
         element={<NotFoundPage />}
+      ></Route>
+
+      <Route
+        key="payment-successfull"
+        path={config.routes.paymentSuccessfull}
+        element={<PaymentSuccessfull />}
       ></Route>
     </Routes>
   );

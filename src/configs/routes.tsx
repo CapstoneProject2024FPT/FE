@@ -9,9 +9,13 @@ export const routes = {
   cart: "/cart",
   userProfile: "/user",
   notFound: "notFound",
+  paymentSuccessfull: "/payment-successfull",
 };
 
 export const adminRoutes = {
   dashboard: "/dashboard",
   user: "user",
+  blogs: "blog",
+  blog: `blog/${suffix.detailId}`,
+  create: "create",
 };
