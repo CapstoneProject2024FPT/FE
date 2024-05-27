@@ -1,3 +1,4 @@
+
 import suffix from "./suffixRoute";
 
 export const routes = {
@@ -6,6 +7,7 @@ export const routes = {
   register: "/register",
   detail: `detail/${suffix.detailId}`,
   cart: "/cart",
+  userProfile: "/user",
   notFound: "notFound",
 };
 
