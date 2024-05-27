@@ -12,8 +12,10 @@ import LayoutAdmin from "../layouts/AdminLayout/LayoutAdmin";
 import Account from "../pages/Admin/User/Account";
 import NotFoundPage from "../pages/404/NotFoundPage";
 import Layout from "../layouts/CustomerLayout/Layout";
+import UserProfile from "../pages/UserProfile/UserProfile";
 import BlogNewPost from "../pages/Admin/Blog/BlogNewPost";
 import PaymentSuccessfull from "../pages/PaymentSuccessfull";
+
 
 const AppRoute: React.FC = () => {
   return (
@@ -32,6 +34,7 @@ const AppRoute: React.FC = () => {
         <Route key="detail" path={config.routes.detail} element={<Detail />} />
       </Route>
       <Route key="cart" path={config.routes.cart} element={<Cart />} />
+      <Route key="user" path={config.routes.userProfile} element={<UserProfile />} />
 
       {/* admin */}
       <Route
