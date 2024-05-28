@@ -82,7 +82,7 @@ export default function PreviewDialog({
               </Container>
             </>
           ) : (
-            <EmptyContent title="Nội dung rỗng" />
+            <EmptyContent title="Chưa có nội dung " />
           )}
         </DialogContent>
         <DialogActions sx={{ marginRight: "5px" }}>
