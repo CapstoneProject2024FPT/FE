@@ -35,44 +35,54 @@ const Cart: React.FC = () => {
                 <div style={{ fontSize: "30px", fontWeight: "bold", margin: "10px" }}>Cart</div>
                 <Grid container spacing={2}>
                     <Grid xs={8}>
-                        {cartList.map((item, index) => {
-                            return (
-                                <Card key={index} sx={{ display: "flex", padding: "20px", marginBottom: "10px" }}>
-                                    <CardMedia component="img" sx={{ width: 200, height: 150 }} image={item.image}  >
-                                    </CardMedia>
-                                    <Box sx={{ display: 'flex', flexDirection: 'row' }} >
 
-                                        <Typography component="div" variant="h6">
-                                            <div>{item.name}</div>
+                        {cartList.map((item) => (
+
+                            <Card style={{ marginBottom: "10px", display: "flex", justifyContent: "space-between" }}>
+                                <Card style={{ display: "flex", width: "90%" }}>
+
+                                    <CardMedia
+                                        component="img"
+                                        sx={{ width: 200, height: 150, objectFit: 'cover' }}
+                                        image={item.image}
+                                        alt={item.name}
+                                    />
+                                    <div>
+                                        <Typography variant="h6" style={{ margin: "10px" }}>
+                                            {item.name}
                                         </Typography>
-
-                                    </Box>
-                                    <Typography style={{ marginLeft: "50%" }} component="div" variant="h6">
-                                        <div>{item.price}$</div>
-                                    </Typography>
-                                    <Stack>
-                                        <Button variant="outlined" startIcon={<DeleteIcon />} style={{ marginLeft: "10px", marginBottom: "10px", fontSize: "20px", cursor: "pointer" }}>Delete</Button>
-                                        <Button variant="outlined" startIcon={<FavoriteIcon />} style={{ marginLeft: "10px", fontSize: "20px", cursor: "pointer" }}>Favorite</Button>
-                                    </Stack>
+                                        <Typography variant="h6" style={{ margin: "10px" }}>
+                                            ${item.price}
+                                        </Typography>
+                                    </div>
 
                                 </Card>
-                            )
-                        })}
+                                <Stack direction="column" spacing={2} style={{ display: "flow", width: "10%" }}>
+
+                                    <Button variant="contained" style={{ backgroundColor: "#3498DB", color: "white", fontSize: "20px", cursor: "pointer", width: "60px", margin: "10px" }}>
+                                        <FavoriteIcon />
+                                    </Button>
+                                    <Button variant="contained" style={{ backgroundColor: "#3498DB", color: "white", fontSize: "20px", cursor: "pointer", width: "60px", margin: "10px" }}>
+                                        <DeleteIcon />
+                                    </Button>
+
+
+                                </Stack>
+                            </Card>
+
+                        ))}
                     </Grid>
                     <Grid xs={4}>
-                        <Stack>
-                            <Item>
-                                <TextField label="Voucher Code" variant="outlined" style={{ margin: "10px" }} />
-                                <Button variant="contained" style={{ backgroundColor: "#3498DB", color: "white", fontSize: "20px", cursor: "pointer", margin: "10px" }}>Apply</Button>
-                                <Divider />
-                                <Typography component="div" variant="h6" style={{ margin: "10px" }}>
-                                    Total Price: ${calculateTotalPrice()}
-                                </Typography>
-                                <Divider />
-                                <Button variant="contained" style={{ backgroundColor: "#3498DB", color: "white", fontSize: "20px", cursor: "pointer", margin: "10px" }}>Checkout</Button>
-                            </Item>
-                        </Stack>
-
+                        <Item>
+                            <TextField label="Voucher Code" variant="outlined" style={{ margin: "10px" }} />
+                            <Button variant="contained" style={{ backgroundColor: "#3498DB", color: "white", fontSize: "20px", margin: "10px", cursor: "pointer", width: "auto", height: "54px" }}>Apply</Button>
+                            <Divider />
+                            <Typography component="div" variant="h6" style={{ margin: "10px" }}>
+                                Total Price: ${calculateTotalPrice()}
+                            </Typography>
+                            <Divider />
+                            <Button variant="contained" style={{ backgroundColor: "#3498DB", color: "white", fontSize: "20px", cursor: "pointer", width: "auto", margin: "10px" }}>Checkout</Button>
+                        </Item>
                     </Grid>
                 </Grid>
             </Box >
