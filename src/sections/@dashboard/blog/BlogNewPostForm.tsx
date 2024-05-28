@@ -19,6 +19,7 @@ import {
   RHFTextField,
   RHFUploadSingleFile,
 } from "../../../components/hook-form";
+import PreviewDialog from "./BlogNewPostPreview";
 //
 
 // ----------------------------------------------------------------------
@@ -35,7 +36,6 @@ export default function BlogNewPostForm() {
   // const navigate = useNavigate();
 
   const [open, setOpen] = useState(false);
-  console.log(open);
 
   const { enqueueSnackbar } = useSnackbar();
 
@@ -50,8 +50,9 @@ export default function BlogNewPostForm() {
   const NewBlogSchema = Yup.object().shape({
     title: Yup.string().required("Title is required"),
     description: Yup.string().required("Description is required"),
-    content: Yup.string().min(1000).required("Content is required"),
+    content: Yup.string().min(15).required("Content is required"),
     cover: Yup.mixed().required("Cover is required"),
+    image: Yup.mixed().required("Image is required"),
   });
 
   const defaultValues: NewPostFormValues = {
@@ -59,6 +60,7 @@ export default function BlogNewPostForm() {
     description: "",
     content: "",
     cover: null,
+    image: null,
   };
 
   const methods = useForm<NewPostFormValues>({
@@ -69,15 +71,12 @@ export default function BlogNewPostForm() {
   const {
     reset,
     watch,
-    control,
     setValue,
     handleSubmit,
-    formState: { isSubmitting, isValid },
+    formState: { isSubmitting },
   } = methods;
 
   const values = watch();
-
-  console.log(control, isValid, values);
 
   const onSubmit = async (data: NewPostFormValues) => {
     try {
@@ -108,28 +107,52 @@ export default function BlogNewPostForm() {
     [setValue]
   );
 
+  const handleDropImage = useCallback(
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (acceptedFiles: any[]) => {
+      const file = acceptedFiles[0];
+
+      if (file) {
+        setValue(
+          "image",
+          Object.assign(file, {
+            preview: URL.createObjectURL(file),
+          })
+        );
+      }
+    },
+    [setValue]
+  );
+
   return (
     <>
       <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
         <Grid item xs={12} md={8}>
           <Card sx={{ p: 3 }}>
             <Stack spacing={3}>
-              <RHFTextField name="title" label="Post Title" />
+              <RHFTextField name="title" label="Chủ đề" />
 
               <RHFTextField
                 name="description"
-                label="Description"
+                label="Mô tả"
                 multiline
                 rows={3}
               />
 
               <div>
-                <LabelStyle>Content</LabelStyle>
+                <LabelStyle>Nội dung</LabelStyle>
                 <RHFEditor simple name="content" />
               </div>
-
               <div>
-                <LabelStyle>Cover</LabelStyle>
+                <LabelStyle>Ảnh</LabelStyle>
+                <RHFUploadSingleFile
+                  name="image"
+                  maxSize={3145728}
+                  onDrop={handleDropImage}
+                />
+              </div>
+              <div>
+                <LabelStyle>Hình nền</LabelStyle>
                 <RHFUploadSingleFile
                   name="cover"
                   maxSize={3145728}
@@ -169,6 +192,11 @@ export default function BlogNewPostForm() {
           </Stack>
         </Grid>
       </FormProvider>
+      <PreviewDialog
+        open={open}
+        values={values}
+        handleClose={handleClosePreview}
+      />
     </>
   );
 }

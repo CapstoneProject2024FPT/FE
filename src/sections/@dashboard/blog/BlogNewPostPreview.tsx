@@ -1,89 +1,101 @@
-// @mui
-import { LoadingButton } from "@mui/lab";
-import { alpha } from "@mui/material/styles";
-import {
-  Box,
-  Button,
-  Container,
-  Typography,
-  DialogActions,
-} from "@mui/material";
-// @types
+import Button from "@mui/material/Button";
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogTitle from "@mui/material/DialogTitle";
 import { NewPostFormValues } from "../../../models/blog";
-// components
+import { Box, Container, Typography } from "@mui/material";
 import Image from "../../../components/Image";
-import Markdown from "../../../components/Markdown";
-import Scrollbar from "../../../components/Scrollbar";
 import EmptyContent from "../../../components/EmptyContent";
-import { DialogAnimate } from "../../../components/animate";
 
-// ----------------------------------------------------------------------
-
-type Props = {
+interface PreviewDialog {
   values: NewPostFormValues;
-  isOpen: boolean;
-  isSubmitting: boolean;
-  isValid: boolean;
-  onClose: VoidFunction;
-  onSubmit: VoidFunction;
-};
-
-export default function BlogNewPostPreview({
+  open: boolean;
+  handleClose: () => void;
+}
+export default function PreviewDialog({
   values,
-  isValid,
-  isSubmitting,
-  isOpen,
-  onClose,
-  onSubmit,
-}: Props) {
+  handleClose,
+  open,
+}: PreviewDialog) {
   const { title, content, description } = values;
 
   const cover =
     typeof values.cover === "string" ? values.cover : values.cover?.preview;
 
-  const hasContent = title || description || content || cover;
+  const image =
+    typeof values.image === "string" ? values.image : values.image?.preview;
+
+  const hasContent = title || description || content || cover || image;
 
   const hasHero = title || cover;
 
   return (
-    <DialogAnimate fullScreen open={isOpen} onClose={onClose}>
-      <DialogActions sx={{ py: 2, px: 3 }}>
-        <Typography variant="subtitle1" sx={{ flexGrow: 1 }}>
-          Preview Post
-        </Typography>
-        <Button onClick={onClose}>Cancel</Button>
-        <LoadingButton
-          type="submit"
-          variant="contained"
-          disabled={!isValid}
-          loading={isSubmitting}
-          onClick={onSubmit}
-        >
-          Post
-        </LoadingButton>
-      </DialogActions>
-
-      {hasContent ? (
-        <Scrollbar>
-          {hasHero && <PreviewHero title={title || ""} cover={cover} />}
-          <Container>
-            <Box sx={{ mt: 5, mb: 10 }}>
-              <Typography variant="h6" sx={{ mb: 5 }}>
-                {description}
-              </Typography>
-              <Markdown children={content || ""} />
-            </Box>
-          </Container>
-        </Scrollbar>
-      ) : (
-        <EmptyContent title="Empty content" />
-      )}
-    </DialogAnimate>
+    <div>
+      <Dialog
+        open={open}
+        onClose={handleClose}
+        fullScreen
+        scroll="paper"
+        maxWidth="md"
+        sx={{
+          "& .MuiDialog-paper": {
+            width: "80%",
+            height: "90%",
+            borderRadius: "20px",
+            overflow: "hidden",
+          },
+        }}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">Xem Bài Viết</DialogTitle>
+        <DialogContent>
+          {hasContent ? (
+            <>
+              {hasHero && <PreviewHero title={title || ""} cover={cover} />}
+              <Container>
+                <Box
+                  sx={{
+                    mt: 5,
+                    mb: 10,
+                  }}
+                >
+                  <Typography variant="h6" sx={{ mb: 5 }}>
+                    {description}
+                  </Typography>
+                  <Box
+                    component="img"
+                    display="flex"
+                    alignItems="center"
+                    sx={{
+                      objectFit: "cover",
+                      width: "80%",
+                      height: "400px",
+                      margin: "0 auto",
+                    }}
+                    alt="The house from the offer."
+                    src={image}
+                  />
+                </Box>
+                <div dangerouslySetInnerHTML={{ __html: content }} />
+              </Container>
+            </>
+          ) : (
+            <EmptyContent title="Chưa có nội dung " />
+          )}
+        </DialogContent>
+        <DialogActions sx={{ marginRight: "5px" }}>
+          <Button variant="outlined" onClick={handleClose}>
+            Đóng
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </div>
   );
 }
 
-// ----------------------------------------------------------------------
-
+// ----------------------
 type PreviewHeroProps = {
   title: string;
   cover?: string;
@@ -91,34 +103,20 @@ type PreviewHeroProps = {
 
 function PreviewHero({ title, cover }: PreviewHeroProps) {
   return (
-    <Box sx={{ position: "relative" }}>
-      <Container
+    <Box>
+      <Typography
+        variant="h3"
+        component="h3"
         sx={{
-          top: 0,
-          left: 0,
-          right: 0,
-          zIndex: 9,
-          position: "absolute",
-          color: "common.white",
-          pt: { xs: 3, lg: 10 },
+          color: "black",
+          fontSize: "30px",
+          maxWidth: "80%",
+          overflow: "hidden",
+          wordBreak: "break-word",
         }}
       >
-        <Typography variant="h2" component="h1">
-          {title}
-        </Typography>
-      </Container>
-
-      <Box
-        sx={{
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
-          zIndex: 8,
-          position: "absolute",
-          bgcolor: (theme) => alpha(theme.palette.grey[900], 0.8),
-        }}
-      />
+        {title}
+      </Typography>
       <Image alt="cover" src={cover} ratio="16/9" />
     </Box>
   );

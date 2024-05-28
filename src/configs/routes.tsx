@@ -6,8 +6,9 @@ export const routes = {
   register: "/register",
   detail: `detail/${suffix.detailId}`,
   cart: "/cart",
+  userProfile: "/user",
   notFound: "notFound",
-  paymentSuccessfull: "/payment-successfull",
+  paymentSuccessfull: "/payment-successful",
 };
 
 export const adminRoutes = {

@@ -25,7 +25,7 @@ interface Props extends BoxProps {
   description?: string;
 }
 
-export default function EmptyContent({
+export default function EmptyCart({
   title,
   description,
   img,
@@ -37,7 +37,7 @@ export default function EmptyContent({
         disabledEffect
         visibleByDefault
         alt="empty content"
-        src={img || images.emptyContent}
+        src={img || images.emptyCart}
         sx={{ height: 240, mb: 3 }}
       />
 

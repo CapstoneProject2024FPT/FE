@@ -1,83 +1,179 @@
 import React from "react";
-import Box from '@mui/material/Box';
-import Paper from '@mui/material/Paper';
-import Grid from '@mui/material/Unstable_Grid2';
-import { styled } from '@mui/material/styles';
-import cart from "../Cart/cart.json"
-import { Button, Card, CardMedia, Divider, Stack, TextField, Typography } from "@mui/material";
-import DeleteIcon from '@mui/icons-material/Delete';
-import FavoriteIcon from '@mui/icons-material/Favorite';
+import Box from "@mui/material/Box";
+import Paper from "@mui/material/Paper";
+import Grid from "@mui/material/Unstable_Grid2";
+import { styled } from "@mui/material/styles";
+import cart from "../Cart/cart.json";
+import {
+  Button,
+  Card,
+  CardMedia,
+  Divider,
+  Stack,
+  TextField,
+  Typography,
+} from "@mui/material";
+import DeleteIcon from "@mui/icons-material/Delete";
+import FavoriteIcon from "@mui/icons-material/Favorite";
+import { cartProps } from "../../models/cart";
+import EmptyCart from "../../components/EmptyCart";
 
 const Item = styled(Paper)(({ theme }) => ({
-    backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
-    ...theme.typography.body2,
-    padding: theme.spacing(1),
-    textAlign: 'center',
-    color: theme.palette.text.secondary,
+  backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
+  ...theme.typography.body2,
+  padding: theme.spacing(1),
+  textAlign: "center",
+  color: theme.palette.text.secondary,
 }));
 
-let cartList = cart;
-
-const calculateTotalPrice = () => {
-    let totalPrice = 0;
-    cartList.forEach((item) => {
-        totalPrice += item.price;
-    });
-    return totalPrice;
+const calculateTotalPrice = (cartList: cartProps) => {
+  let totalPrice = 0;
+  cartList.forEach((item) => {
+    totalPrice += item.price;
+  });
+  return totalPrice;
 };
 
-
 const Cart: React.FC = () => {
+  const cartList: cartProps = cart as cartProps;
 
-    return (
-        <div style={{ backgroundColor: "#ECF0F1" }}>
-            <Box sx={{ flexGrow: 1, margin: "5%", padding: "20px" }}>
-                <div style={{ fontSize: "30px", fontWeight: "bold", margin: "10px" }}>Cart</div>
-                <Grid container spacing={2}>
-                    <Grid xs={8}>
-                        {cartList.map((item, index) => {
-                            return (
-                                <Card key={index} sx={{ display: "flex", padding: "20px", marginBottom: "10px" }}>
-                                    <CardMedia component="img" sx={{ width: 200, height: 150 }} image={item.image}  >
-                                    </CardMedia>
-                                    <Box sx={{ display: 'flex', flexDirection: 'row' }} >
+  return (
+    <>
+      <Typography variant="h3" component="h2">
+        Giỏ hàng
+      </Typography>
 
-                                        <Typography component="div" variant="h6">
-                                            <div>{item.name}</div>
-                                        </Typography>
-
-                                    </Box>
-                                    <Typography style={{ marginLeft: "50%" }} component="div" variant="h6">
-                                        <div>{item.price}$</div>
-                                    </Typography>
-                                    <Stack>
-                                        <Button variant="outlined" startIcon={<DeleteIcon />} style={{ marginLeft: "10px", marginBottom: "10px", fontSize: "20px", cursor: "pointer" }}>Delete</Button>
-                                        <Button variant="outlined" startIcon={<FavoriteIcon />} style={{ marginLeft: "10px", fontSize: "20px", cursor: "pointer" }}>Favorite</Button>
-                                    </Stack>
-
-                                </Card>
-                            )
-                        })}
-                    </Grid>
-                    <Grid xs={4}>
-                        <Stack>
-                            <Item>
-                                <TextField label="Voucher Code" variant="outlined" style={{ margin: "10px" }} />
-                                <Button variant="contained" style={{ backgroundColor: "#3498DB", color: "white", fontSize: "20px", cursor: "pointer", margin: "10px" }}>Apply</Button>
-                                <Divider />
-                                <Typography component="div" variant="h6" style={{ margin: "10px" }}>
-                                    Total Price: ${calculateTotalPrice()}
-                                </Typography>
-                                <Divider />
-                                <Button variant="contained" style={{ backgroundColor: "#3498DB", color: "white", fontSize: "20px", cursor: "pointer", margin: "10px" }}>Checkout</Button>
-                            </Item>
-                        </Stack>
-
-                    </Grid>
-                </Grid>
-            </Box >
-        </div >
-    );
+      {cartList.length > 0 ? (
+        <div style={{ backgroundColor: "#ECF0F1", borderRadius: "20px" }}>
+          <Box sx={{ flexGrow: 1, margin: "2%", padding: "20px" }}>
+            <Typography variant="h4" component="div" gutterBottom>
+              Cart
+            </Typography>
+            <Grid container spacing={2}>
+              <Grid xs={12} md={8}>
+                {cartList.map((item) => (
+                  <Card
+                    key={item.id}
+                    style={{
+                      marginBottom: "10px",
+                      display: "flex",
+                      justifyContent: "space-between",
+                    }}
+                  >
+                    <Card style={{ display: "flex", width: "85%" }}>
+                      <CardMedia
+                        component="img"
+                        sx={{ width: 200, height: 150, objectFit: "cover" }}
+                        image={item.image}
+                        alt={item.name}
+                      />
+                      <div>
+                        <Typography variant="h6" style={{ margin: "10px" }}>
+                          {item.name}
+                        </Typography>
+                        <Typography variant="h6" style={{ margin: "10px" }}>
+                          ${item.price}
+                        </Typography>
+                      </div>
+                    </Card>
+                    <Stack
+                      direction="column"
+                      spacing={2}
+                      style={{ display: "flow", width: "15%" }}
+                    >
+                      <Button
+                        variant="contained"
+                        style={{
+                          backgroundColor: "#3498DB",
+                          color: "white",
+                          fontSize: "20px",
+                          cursor: "pointer",
+                          width: "60px",
+                          margin: "10px",
+                        }}
+                      >
+                        <FavoriteIcon />
+                      </Button>
+                      <Button
+                        variant="contained"
+                        style={{
+                          backgroundColor: "#3498DB",
+                          color: "white",
+                          fontSize: "20px",
+                          cursor: "pointer",
+                          width: "60px",
+                          margin: "10px",
+                        }}
+                      >
+                        <DeleteIcon />
+                      </Button>
+                    </Stack>
+                  </Card>
+                ))}
+              </Grid>
+              <Grid xs={12} md={4}>
+                <Item>
+                  <TextField
+                    label="Voucher Code"
+                    variant="outlined"
+                    style={{ margin: "10px" }}
+                  />
+                  <Button
+                    variant="contained"
+                    style={{
+                      backgroundColor: "#3498DB",
+                      color: "white",
+                      fontSize: "20px",
+                      margin: "10px",
+                      cursor: "pointer",
+                      width: "auto",
+                      height: "54px",
+                    }}
+                  >
+                    Apply
+                  </Button>
+                  <Divider />
+                  <Typography
+                    component="div"
+                    variant="h6"
+                    style={{ margin: "10px" }}
+                  >
+                    Total Price: ${calculateTotalPrice(cartList)}
+                  </Typography>
+                  <Divider />
+                  <Button
+                    variant="contained"
+                    style={{
+                      backgroundColor: "#3498DB",
+                      color: "white",
+                      fontSize: "20px",
+                      cursor: "pointer",
+                      width: "auto",
+                      margin: "10px",
+                    }}
+                  >
+                    Checkout
+                  </Button>
+                </Item>
+              </Grid>
+            </Grid>
+          </Box>
+        </div>
+      ) : (
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <Card sx={{ width: "80%" }}>
+            <EmptyCart title="Hiện tại chưa có sản phẩm" />
+          </Card>
+        </Box>
+      )}
+    </>
+  );
 };
 
 export default Cart;
