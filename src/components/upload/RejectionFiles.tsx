@@ -12,7 +12,7 @@ type Props = {
   fileRejections: FileRejection[];
 };
 
-export default function RejectionFiles({ fileRejections }: Props) {
+function RejectionFiles({ fileRejections }: Props) {
   return (
     <Paper
       variant="outlined"
@@ -48,3 +48,5 @@ export default function RejectionFiles({ fileRejections }: Props) {
     </Paper>
   );
 }
+
+export default RejectionFiles;

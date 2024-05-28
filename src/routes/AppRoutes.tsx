@@ -16,7 +16,6 @@ import UserProfile from "../pages/UserProfile/UserProfile";
 import BlogNewPost from "../pages/Admin/Blog/BlogNewPost";
 import PaymentSuccessfull from "../pages/PaymentSuccessfull";
 
-
 const AppRoute: React.FC = () => {
   return (
     <Routes>
@@ -32,9 +31,18 @@ const AppRoute: React.FC = () => {
       <Route key="customer" path={config.routes.home} element={<Layout />}>
         <Route key="home" path={config.routes.home} element={<Home />} />
         <Route key="detail" path={config.routes.detail} element={<Detail />} />
+        <Route
+          key="payment-successfull"
+          path={config.routes.paymentSuccessfull}
+          element={<PaymentSuccessfull />}
+        ></Route>
+        <Route key="cart" path={config.routes.cart} element={<Cart />} />
+        <Route
+          key="user"
+          path={config.routes.userProfile}
+          element={<UserProfile />}
+        />
       </Route>
-      <Route key="cart" path={config.routes.cart} element={<Cart />} />
-      <Route key="user" path={config.routes.userProfile} element={<UserProfile />} />
 
       {/* admin */}
       <Route
@@ -63,12 +71,6 @@ const AppRoute: React.FC = () => {
         key="notfound"
         path={config.routes.notFound}
         element={<NotFoundPage />}
-      ></Route>
-
-      <Route
-        key="payment-successfull"
-        path={config.routes.paymentSuccessfull}
-        element={<PaymentSuccessfull />}
       ></Route>
     </Routes>
   );

@@ -5,7 +5,7 @@ import config from "../../configs";
 
 const NotFoundPage: React.FC = () => {
   return (
-    <div className="wrapper">
+    <div className="wrappers">
       <div>
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 355">
           <g id="ocean">
