@@ -15,6 +15,7 @@ import {
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import FavoriteIcon from "@mui/icons-material/Favorite";
+import { cartProps } from "../../models/cart";
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
@@ -24,7 +25,7 @@ const Item = styled(Paper)(({ theme }) => ({
   color: theme.palette.text.secondary,
 }));
 
-const calculateTotalPrice = (cartList) => {
+const calculateTotalPrice = (cartList: cartProps) => {
   let totalPrice = 0;
   cartList.forEach((item) => {
     totalPrice += item.price;
@@ -32,8 +33,8 @@ const calculateTotalPrice = (cartList) => {
   return totalPrice;
 };
 
-const Cart = () => {
-  const cartList = cart;
+const Cart: React.FC = () => {
+  const cartList: cartProps = cart as cartProps;
 
   return cartList.length > 0 ? (
     <div style={{ backgroundColor: "#ECF0F1" }}>

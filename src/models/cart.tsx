@@ -1,11 +1,11 @@
-interface cartProps {
+interface CartItem {
   id: string;
   name: string;
   price: number;
   description: string;
   brandName: string;
   automatic: boolean;
-  image: File;
+  image: string;
 }
 
-export default cartProps;
+export type cartProps = CartItem[];
