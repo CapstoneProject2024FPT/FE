@@ -22,13 +22,13 @@ const RightMenu: React.FC = () => {
                 to={config.routes.login}
                 style={{ textDecoration: "none", color: "inherit" }}
               >
-                <Button>Đăng nhập</Button>
+                <Button variant="outlined">Đăng nhập</Button>
               </Link>
               <Link
                 to={config.routes.register}
                 style={{ textDecoration: "none", color: "inherit" }}
               >
-                <Button>Đăng kí</Button>
+                <Button variant="outlined">Đăng kí</Button>
               </Link>
             </>
           )}

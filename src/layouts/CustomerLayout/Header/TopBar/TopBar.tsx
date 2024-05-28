@@ -1,21 +1,16 @@
 import React from "react";
 import Logo from "../../../../components/Logo/Logo";
-import "./TopBar.scss";
+
 import RightMenu from "../RightMenu/RightMenu";
 import { Link } from "react-router-dom";
+import classNames from "classnames/bind";
+import styles from "./TopBar.module.scss";
+
+const cx = classNames.bind(styles);
 
 const LogoContainer = () => {
   return (
-    <Link
-      to="/"
-      style={{
-        display: "flex",
-        flexDirection: "row",
-        justifyContent: "flex-start",
-        alignItems: "center",
-        marginLeft: "20px",
-      }}
-    >
+    <Link to="/">
       <Logo />
     </Link>
   );
@@ -24,18 +19,14 @@ const LogoContainer = () => {
 const TopBar: React.FC = () => {
   return (
     <>
-      <table className="nav-main-tbl">
-        <tbody>
-          <tr>
-            <th className="logo_container" style={{ width: "40%" }}>
-              <LogoContainer />
-            </th>
-            <th className="menu_container" style={{ width: "40%" }}>
-              <RightMenu />
-            </th>
-          </tr>
-        </tbody>
-      </table>
+      <header className={cx("wrapper")}>
+        <div className={cx("inner")}>
+          <div className={cx("logo")}>
+            <LogoContainer />
+          </div>
+          <RightMenu />
+        </div>
+      </header>
     </>
   );
 };
