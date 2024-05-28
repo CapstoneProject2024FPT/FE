@@ -1,5 +1,6 @@
 import React from "react";
 import SimpleSlider from "../../components/carousel/Carousel";
+import { Box, Typography } from "@mui/material";
 
 const Home: React.FC = () => {
   return (
@@ -13,7 +14,73 @@ const Home: React.FC = () => {
       }}
     >
       <SimpleSlider />
-      fnhinsdvonvonsio
+
+      <Box sx={{ width: "100%", mt: 4 }}>
+        <Typography
+          variant="h2"
+          component="h2"
+          sx={{
+            textTransform: "uppercase",
+            letterSpacing: "2px",
+            fontWeight: "500",
+            position: "relative",
+            fontSize: "22px",
+            "&::before": {
+              content: '""',
+              display: "block",
+              position: "absolute",
+              width: "100%",
+              height: "2px",
+              marginBottom: "10px",
+              background: "rgba(0, 0, 0, .1)",
+              top: "calc(50% - 2px)",
+            },
+          }}
+        >
+          <span
+            style={{
+              position: "relative",
+              paddingRight: "1.071429rem",
+              background: "#fff",
+            }}
+          >
+            Danh mục máy
+          </span>
+        </Typography>
+      </Box>
+      <Box sx={{ width: "100%", mt: 4 }}>
+        <Typography
+          variant="h2"
+          component="h2"
+          sx={{
+            textTransform: "uppercase",
+            letterSpacing: "2px",
+            fontWeight: "500",
+            position: "relative",
+            fontSize: "22px",
+            "&::before": {
+              content: '""',
+              display: "block",
+              position: "absolute",
+              width: "100%",
+              height: "2px",
+              marginBottom: "10px",
+              background: "rgba(0, 0, 0, .1)",
+              top: "calc(50% - 2px)",
+            },
+          }}
+        >
+          <span
+            style={{
+              position: "relative",
+              paddingRight: "1.071429rem",
+              background: "#fff",
+            }}
+          >
+            Tin Tức
+          </span>
+        </Typography>
+      </Box>
     </div>
   );
 };
