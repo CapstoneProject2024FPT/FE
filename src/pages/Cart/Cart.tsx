@@ -42,10 +42,10 @@ const Cart: React.FC = () => {
       <Typography variant="h3" component="h2">
         Giỏ hàng
       </Typography>
-      <Stack />
+
       {cartList.length > 0 ? (
-        <div style={{ backgroundColor: "#ECF0F1" }}>
-          <Box sx={{ flexGrow: 1, margin: "5%", padding: "20px" }}>
+        <div style={{ backgroundColor: "#ECF0F1", borderRadius: "20px" }}>
+          <Box sx={{ flexGrow: 1, margin: "2%", padding: "20px" }}>
             <Typography variant="h4" component="div" gutterBottom>
               Cart
             </Typography>
@@ -60,7 +60,7 @@ const Cart: React.FC = () => {
                       justifyContent: "space-between",
                     }}
                   >
-                    <Card style={{ display: "flex", width: "90%" }}>
+                    <Card style={{ display: "flex", width: "85%" }}>
                       <CardMedia
                         component="img"
                         sx={{ width: 200, height: 150, objectFit: "cover" }}
@@ -79,7 +79,7 @@ const Cart: React.FC = () => {
                     <Stack
                       direction="column"
                       spacing={2}
-                      style={{ display: "flow", width: "10%" }}
+                      style={{ display: "flow", width: "15%" }}
                     >
                       <Button
                         variant="contained"
