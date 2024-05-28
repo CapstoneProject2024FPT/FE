@@ -1,4 +1,3 @@
-
 import suffix from "./suffixRoute";
 
 export const routes = {
@@ -9,7 +8,7 @@ export const routes = {
   cart: "/cart",
   userProfile: "/user",
   notFound: "notFound",
-  paymentSuccessfull: "/payment-successfull",
+  paymentSuccessfull: "/payment-successful",
 };
 
 export const adminRoutes = {

@@ -7,6 +7,7 @@ const Footer: React.FC = () => {
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
+        marginTop: "30px",
       }}
     >
       Footer
