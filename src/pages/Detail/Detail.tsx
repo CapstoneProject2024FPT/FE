@@ -17,10 +17,12 @@ import {
   FavoriteBorder,
   ShoppingCart,
   Unarchive,
+  FmdGood,
+  LocalAtm,
+  Refresh,
 } from "@mui/icons-material";
 import Zoom from "../../components/zoomImageHover";
 import "./detail.scss";
-
 const mockProduct = {
   id: 1,
   title: "Essence Mascara Lash Princess",
@@ -469,7 +471,7 @@ const Detail: React.FC = () => {
 
   return (
     <Box sx={{ display: "flex", justifyContent: "space-between" }}>
-      <Box sx={{ width: "30%" }}>
+      <Box sx={{ width: "30%", height: "100%" }}>
         <Box sx={{ position: "relative" }}>
           <ArrowBackIos
             sx={{
@@ -538,7 +540,7 @@ const Detail: React.FC = () => {
         </ImageList>
       </Box>
 
-      <Box sx={{ width: "68%", height: "100%" }}>
+      <Box sx={{ width: "68%", display: "flex", flexDirection: "column" }}>
         <Box sx={{ display: "flex", justifyContent: "space-between" }}>
           <Box>
             <Typography variant="h4">{mockProduct.title}</Typography>
@@ -590,7 +592,14 @@ const Detail: React.FC = () => {
         <Divider sx={{ borderBottomWidth: "5px", margin: "20px 0" }} />
 
         <Box sx={{ display: "flex", height: "100%" }}>
-          <Box sx={{ width: "65%" }}>
+          <Box
+            sx={{
+              width: "60%",
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "space-around",
+            }}
+          >
             {/* Discounted price */}
             <Typography
               sx={{
@@ -686,6 +695,7 @@ const Detail: React.FC = () => {
               className={`cart-button ${isActive && "clicked"}`}
               onClick={toggleClass}
               sx={{
+                marginTop: "20px",
                 position: "relative",
                 width: "200px",
                 height: "60px",
@@ -713,8 +723,56 @@ const Detail: React.FC = () => {
               <Unarchive className="fas fa-box" />
             </Button>
           </Box>
-          <Box sx={{ width: "35%" }}>
-            <Typography>Dia chi</Typography>
+          <Divider sx={{ borderRightWidth: "3px", margin: "0 20px" }} />
+          <Box sx={{ width: "40%" }}>
+            <Box>
+              <Typography sx={{ fontWeight: 600 }}>
+                Địa chỉ giao hàng
+              </Typography>
+              <Box sx={{ display: "flex", alignItems: "center" }}>
+                <FmdGood
+                  sx={{
+                    padding: "4px",
+                    fontSize: "18px",
+                    color: "rgba(0, 0, 0, 0.54)",
+                  }}
+                />
+                <Typography>Chưa chọn địa chỉ giao hàng</Typography>
+              </Box>
+              <Box sx={{ display: "flex", alignItems: "center" }}>
+                <LocalAtm
+                  sx={{
+                    padding: "4px",
+                    fontSize: "18px",
+                    color: "rgba(0, 0, 0, 0.54)",
+                  }}
+                />
+                <Typography>Thanh toán tiền mặt/Online</Typography>
+              </Box>
+            </Box>
+            <Box>
+              <Typography sx={{ fontWeight: 600 }}>
+                Đổi trả & bảo hành
+              </Typography>
+              <Box sx={{ display: "flex", alignItems: "center" }}>
+                <Refresh
+                  sx={{
+                    padding: "4px",
+                    fontSize: "18px",
+                    color: "rgba(0, 0, 0, 0.54)",
+                    alignSelf: "flex-start",
+                    transform: "scaleX(-1)",
+                  }}
+                />
+                <Typography>
+                  7 ngày hoàn tiền miễn phí
+                  <Typography sx={{ fontSize: "13px", color: "grey", lineHeight: "13px" }}>
+                    Hoàn tiền sau 7-14 ngày
+                  </Typography>
+                </Typography>
+              </Box>
+            </Box>
+            <Typography sx={{ fontWeight: 600 }}>Được bán bởi</Typography>
           </Box>
         </Box>
       </Box>
