@@ -13,7 +13,7 @@ export type Post = {
   cover: string;
   title: string;
   description: string;
-  createAt: Date;
+  createAt: Date | string;
   view: number;
 };
 

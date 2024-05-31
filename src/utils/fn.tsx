@@ -8,13 +8,13 @@ export function formatMoney(number: number) {
 }
 
 export const formatDateFunc = {
-  formatDateTime: (date: Date): string => {
+  formatDateTime: (date: Date | string): string => {
     return moment(date, moment.ISO_8601).format("DD/MM/YYYY HH:mm a");
   },
-  formatDate: (date: Date): string => {
+  formatDate: (date: Date | string): string => {
     return moment(date, moment.ISO_8601).format("DD/MM/YYYY");
   },
-  formatTime: (date: Date): string => {
+  formatTime: (date: Date | string): string => {
     return moment(date, moment.ISO_8601).format("HH:mm A");
   },
 };

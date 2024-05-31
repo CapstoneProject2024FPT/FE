@@ -35,7 +35,7 @@ export default function BlogPostCard({ post }: Props) {
 type PostContentProps = {
   title: string;
   view: number;
-  createdAt: Date;
+  createdAt: Date | string;
   index?: number;
 };
 
