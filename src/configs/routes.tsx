@@ -8,7 +8,7 @@ export const routes = {
   cart: "/cart",
   userProfile: "/user",
   notFound: "notFound",
-  paymentSuccessfull: "/payment-successful",
+  paymentSuccessfull: "/payment-successfull",
 };
 
 export const adminRoutes = {
