@@ -12,7 +12,7 @@ import { Post } from "../../../models/blog";
 import { SkeletonPostItem } from "../../../components/skeleton";
 import HeaderBreadcrumbs from "../../../components/HeaderBreadcrumbs";
 // sections
-import { BlogPostCard, BlogPostsSort } from "../../../sections/@dashboard/blog";
+import { BlogPostCard, BlogPostsSort } from "../../../sections/Blog";
 
 // ----------------------------------------------------------------------
 

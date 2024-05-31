@@ -1,0 +1,34 @@
+[
+  {
+    "id": "1",
+    "cover": "https://www.tatmachinery.com/upload/news/202010/nha-may-thong-minh-thoi-ky-4-0-325526.png",
+    "title": "Máy mới",
+    "description": "fghjkjhgfdsafghjgf",
+    "createAt": "2/05/2024",
+    "view": 7
+  },
+  {
+    "id": "2",
+    "cover": "https://www.tatmachinery.com/upload/news/202010/nha-may-thong-minh-thoi-ky-4-0-325526.png",
+    "title": "Máy mới",
+    "description": "fghjkjhgfdsafghjgf",
+    "createAt": "2/05/2024",
+    "view": 7
+  },
+  {
+    "id": "3",
+    "cover": "https://www.tatmachinery.com/upload/news/202010/nha-may-thong-minh-thoi-ky-4-0-325526.png",
+    "title": "Máy mới",
+    "description": "fghjkjhgfdsafghjgf",
+    "createAt": "2/05/2024",
+    "view": 7
+  },
+  {
+    "id": "4",
+    "cover": "https://www.tatmachinery.com/upload/news/202010/nha-may-thong-minh-thoi-ky-4-0-325526.png",
+    "title": "Máy mới thông minh quá ta",
+    "description": "fghjkjhgfdsafghjgf",
+    "createAt": "2/05/2024",
+    "view": 7
+  }
+]

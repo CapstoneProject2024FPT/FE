@@ -11,14 +11,14 @@ import { styled } from "@mui/material/styles";
 import { Grid, Card, Stack, Button, Typography } from "@mui/material";
 // routes
 // @types
-import { NewPostFormValues } from "../../../models/blog";
+import { NewPostFormValues } from "../../models/blog";
 // components
 import {
   RHFEditor,
   FormProvider,
   RHFTextField,
   RHFUploadSingleFile,
-} from "../../../components/hook-form";
+} from "../../components/hook-form";
 import PreviewDialog from "./BlogNewPostPreview";
 //
 
