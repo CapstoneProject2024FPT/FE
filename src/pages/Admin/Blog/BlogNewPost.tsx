@@ -6,7 +6,7 @@ import { Container } from "@mui/material";
 
 import HeaderBreadcrumbs from "../../../components/Breadcrumbs";
 // sections
-import { BlogNewPostForm } from "../../../sections/@dashboard/blog";
+import { BlogNewPostForm } from "../../../sections/Blog";
 
 // ----------------------------------------------------------------------
 

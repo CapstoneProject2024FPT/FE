@@ -10,9 +10,9 @@ import {
 // utils
 // import { fShortenNumber } from '../../../utils/formatNumber';
 // @types
-import { Post } from "../../../models/blog";
+import { Post } from "../../models/blog";
 // components
-import Iconify from "../../../components/Iconify";
+import Iconify from "../../components/Iconify";
 
 // ----------------------------------------------------------------------
 

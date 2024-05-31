@@ -3,19 +3,19 @@ import moment from "moment";
 export function formatMoney(number: number) {
   return number?.toLocaleString("it-IT", {
     style: "currency",
-    currency: "VNĐ",
+    currency: "VND",
   });
 }
 
-export const fortmatDateFunc = {
-  formatDateTime: async (date: Date) => {
-    return await moment(date).format("DD/MM/YYYY HH:mm a");
+export const formatDateFunc = {
+  formatDateTime: (date: Date): string => {
+    return moment(date, moment.ISO_8601).format("DD/MM/YYYY HH:mm a");
   },
-  formatDate: async (date: Date) => {
-    return await moment(date).format("DD/MM/YYYY");
+  formatDate: (date: Date): string => {
+    return moment(date, moment.ISO_8601).format("DD/MM/YYYY");
   },
-  formatTime: async (date: Date) => {
-    return await moment(date).format("HH:mm A");
+  formatTime: (date: Date): string => {
+    return moment(date, moment.ISO_8601).format("HH:mm A");
   },
 };
 
@@ -24,7 +24,7 @@ export function truncate(text: string | undefined) {
 
   if (typeof textString === "string" && textString.length > 20) {
     const truncateText = textString.substring(0, 20);
-    return truncateText;
+    return truncateText + "...";
   }
   return textString;
 }
