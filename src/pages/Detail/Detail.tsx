@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   Box,
   Button,
@@ -24,6 +23,7 @@ import {
 } from "@mui/icons-material";
 import Zoom from "../../components/zoomImageHover";
 import "./detail.scss";
+
 const mockProduct = {
   id: 1,
   title: "Essence Mascara Lash Princess",
@@ -104,7 +104,7 @@ const Detail: React.FC = () => {
     outline: "none",
     color: isRed ? "red" : "gray",
   };
-  const onChangeQuantities = (e: any) => {
+  const onChangeQuantities = (e: React.ChangeEvent<HTMLInputElement>) => {
     const re = /^[0-9\b]+$/;
 
     // if value is not blank, then test the regex
@@ -204,14 +204,14 @@ const Detail: React.FC = () => {
           <Box>
             <Typography variant="h4">{mockProduct.title}</Typography>
           </Box>
-          <IconButton>
-            <FavoriteSharp style={buttonStyle} onClick={handleClickButton} />
+          <IconButton onClick={handleClickButton} aria-label="delete">
+            <FavoriteSharp style={buttonStyle} />
           </IconButton>
         </Box>
 
         <Box sx={{ display: "flex", margin: "10px 0" }}>
           <Typography sx={{ paddingRight: "30px" }}>
-            Thương hiệu:{" "}
+            Thương hiệu:
             <Typography
               component={"span"}
               sx={{ cursor: "pointer", color: "blue" }}
@@ -359,7 +359,7 @@ const Detail: React.FC = () => {
               <Unarchive className="fas fa-box" />
             </Button>
           </Box>
-          <Divider orientation="vertical" flexItem  sx={{margin: "0 8px"}}/>
+          <Divider orientation="vertical" flexItem sx={{ margin: "0 8px" }} />
           <Box
             sx={{
               width: "40%",
