@@ -135,17 +135,18 @@ const Detail: React.FC = () => {
           <ArrowBackIos
             sx={{
               position: "absolute",
-              backgroundColor: "lightgray",
               borderRadius: "5px",
               display: "flex",
               justifyContent: "center",
               alignItems: "center",
-              fontSize: "14px",
+              fontSize: "36px",
               padding: "10px",
               paddingLeft: "13px",
               cursor: "pointer",
               top: "43%",
               left: "5px",
+
+              "&:hover": { backgroundColor: "lightgrey" },
             }}
             onClick={() =>
               setSelectedImage(
@@ -163,17 +164,18 @@ const Detail: React.FC = () => {
           <ArrowForwardIos
             sx={{
               position: "absolute",
-              backgroundColor: "lightgray",
               borderRadius: "5px",
               display: "flex",
               justifyContent: "center",
               alignItems: "center",
-              fontSize: "14px",
+              fontSize: "36px",
               padding: "10px",
               paddingLeft: "13px",
               cursor: "pointer",
               top: "43%",
               right: "5px",
+
+              "&:hover": { backgroundColor: "lightgrey" },
             }}
             onClick={() =>
               setSelectedImage(
@@ -204,8 +206,8 @@ const Detail: React.FC = () => {
           <Box>
             <Typography variant="h4">{mockProduct.title}</Typography>
           </Box>
-          <IconButton>
-            <FavoriteSharp style={buttonStyle} onClick={handleClickButton} />
+          <IconButton onClick={handleClickButton}>
+            <FavoriteSharp style={buttonStyle}/>
           </IconButton>
         </Box>
 
