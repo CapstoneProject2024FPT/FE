@@ -1,13 +1,14 @@
 // form
-import { useFormContext, Controller } from 'react-hook-form';
+import { useFormContext, Controller } from "react-hook-form";
 // @mui
-import { TextField, TextFieldProps } from '@mui/material';
+import { TextField, TextFieldProps } from "@mui/material";
+import React from "react";
 
 // ----------------------------------------------------------------------
 
 type IProps = {
   name: string;
-  children: any;
+  children: React.ReactNode;
 };
 
 type Props = IProps & TextFieldProps;

@@ -4,7 +4,7 @@ import { Container } from "@mui/material";
 // hooks
 // components
 
-import HeaderBreadcrumbs from "../../../components/Breadcrumbs";
+import HeaderBreadcrumbs from "../../../components/HeaderBreadcrumbs";
 // sections
 import { BlogNewPostForm } from "../../../sections/Blog";
 
@@ -14,7 +14,12 @@ export default function BlogNewPost() {
   return (
     <Container>
       <HeaderBreadcrumbs
-        links={[{ name: "Dashboard" }, { name: "Blog" }, { name: "New Post" }]}
+        heading="Thêm mới tin tức"
+        links={[
+          { name: "Thống kê" },
+          { name: "Tin tức" },
+          { name: "Thêm mới tin tức" },
+        ]}
       />
 
       <BlogNewPostForm />
