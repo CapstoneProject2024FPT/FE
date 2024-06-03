@@ -4,47 +4,48 @@ import {
   PieChartOutlined,
   UserOutlined,
   ShoppingOutlined,
+  ContainerOutlined,
 } from "@ant-design/icons";
 import config from "../../../../configs";
 
 const MenuSideBars: MenuSideBar[] = [
   {
-    label: <Link to={config.adminRoutes.dashboard}>Dashboard</Link>,
+    label: <Link to={config.adminRoutes.dashboard}>Thống Kê</Link>,
     key: config.adminRoutes.dashboard,
     icon: <PieChartOutlined />,
   },
   {
-    label: <Link to={config.adminRoutes.user}>User</Link>,
+    label: <Link to={config.adminRoutes.user}>Người dùng</Link>,
     key: config.adminRoutes.user,
     icon: <UserOutlined />,
   },
   {
-    label: "Products",
+    label: "Sản Phẩm",
     key: "products",
     icon: <ShoppingOutlined />,
     children: [
       {
-        label: "All Products",
-        key: "all_products",
+        label: <Link to={config.adminRoutes.product}>Tất cả sản phẩm</Link>,
+        key: config.adminRoutes.product,
       },
       {
-        label: "Add Product",
-        key: "add_product",
+        label: <Link to={config.adminRoutes.createProduct}>Thêm sản phẩm</Link>,
+        key: config.adminRoutes.createProduct,
       },
     ],
   },
   {
-    label: "Blogs",
+    label: "Tin tức",
     key: "blogs",
-    icon: <ShoppingOutlined />,
+    icon: <ContainerOutlined />,
     children: [
       {
-        label: "All Blogs",
-        key: "all_blogs",
+        label: <Link to={config.adminRoutes.blogs}>Tất cả tin tức</Link>,
+        key: config.adminRoutes.blogs,
       },
       {
-        label: <Link to={config.adminRoutes.create}>Create</Link>,
-        key: "create_blog",
+        label: <Link to={config.adminRoutes.createNew}>Thêm mới tin tức</Link>,
+        key: config.adminRoutes.createNew,
       },
     ],
   },

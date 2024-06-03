@@ -15,6 +15,9 @@ import Layout from "../layouts/CustomerLayout/Layout";
 import UserProfile from "../pages/UserProfile/UserProfile";
 import BlogNewPost from "../pages/Admin/Blog/BlogNewPost";
 import PaymentSuccessfull from "../pages/PaymentSuccessfull";
+import CreateProduct from "../pages/Admin/Product/CreateProduct";
+import Product from "../pages/Admin/Product/Product";
+import BlogPosts from "../pages/Admin/Blog/BlogPosts";
 
 const AppRoute: React.FC = () => {
   return (
@@ -60,10 +63,28 @@ const AppRoute: React.FC = () => {
           path={config.adminRoutes.user}
           element={<Account />}
         />
+        {/* news */}
         <Route
-          key="blog"
-          path={config.adminRoutes.create}
+          key="new"
+          path={config.adminRoutes.blogs}
+          element={<BlogPosts />}
+        />
+        <Route
+          key="createNew"
+          path={config.adminRoutes.createNew}
           element={<BlogNewPost />}
+        />
+
+        {/* product */}
+        <Route
+          key="product"
+          path={config.adminRoutes.product}
+          element={<Product />}
+        />
+        <Route
+          key="createProduct"
+          path={config.adminRoutes.createProduct}
+          element={<CreateProduct />}
         />
       </Route>
 

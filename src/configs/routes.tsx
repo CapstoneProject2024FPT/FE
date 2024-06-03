@@ -8,13 +8,17 @@ export const routes = {
   cart: "/cart",
   userProfile: "/user",
   notFound: "notFound",
-  paymentSuccessfull: "/payment-successful",
+  paymentSuccessfull: "/payment-successfull",
+  news: "news",
 };
 
 export const adminRoutes = {
   dashboard: "/dashboard",
   user: "user",
-  blogs: "blog",
-  blog: `blog/${suffix.detailId}`,
-  create: "create",
+  blogs: "news",
+  blog: `new/${suffix.detailId}`,
+  createNew: "create/new",
+  editNew: `edit/new/${suffix.detailId}`,
+  product: "product",
+  createProduct: "create/product",
 };
