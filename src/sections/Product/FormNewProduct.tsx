@@ -1,6 +1,6 @@
 import { useSnackbar } from "notistack";
 import { useState } from "react";
-import { Formik, FieldArray } from "formik";
+import { Formik, FieldArray, getIn } from "formik";
 import {
   Button,
   Card,
@@ -12,7 +12,6 @@ import {
   MenuItem,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
-// import { UploadImage } from "../../components/upload/UploadMutiple";
 import { CreateProductFormSchema } from "../../models/products";
 import IconButton from "@mui/material/IconButton";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -69,7 +68,7 @@ export default function ProductNewEditForm() {
     unit: "",
   };
 
-  const initialValues = {
+  const initialValues: CreateProductFormSchema = {
     productName: "",
     origin: "",
     brand: "",
@@ -173,8 +172,8 @@ export default function ProductNewEditForm() {
                     label="Tên sản phẩm"
                     value={values.productName}
                     onChange={handleChange}
-                    error={touched.description && Boolean(errors.description)}
-                    helperText={touched.description && errors.description}
+                    error={touched.productName && Boolean(errors.productName)}
+                    helperText={touched.productName && errors.productName}
                     onBlur={handleBlur}
                   />
 
@@ -246,77 +245,117 @@ export default function ProductNewEditForm() {
                       {({ remove, push }) => (
                         <div>
                           {values.specification.length > 0 &&
-                            values.specification.map((specification, index) => (
-                              <Stack
-                                direction="row"
-                                key={index}
-                                spacing={2}
-                                sx={{ mt: 2 }}
-                              >
-                                <TextField
-                                  required
-                                  label="Tên thông số"
-                                  sx={{ width: 200 }}
-                                  name={`specification.${index}.nameSpecification`}
-                                  value={specification.nameSpecification}
-                                  onChange={handleChange}
-                                  error={
-                                    touched.specification?.[index]
-                                      ?.nameSpecification &&
-                                    Boolean(
-                                      errors.specification?.[index]
-                                        ?.nameSpecification
-                                    )
-                                  }
-                                  helperText={
-                                    touched.specification?.[index]
-                                      ?.nameSpecification &&
-                                    errors.specification?.[index]
-                                      ?.nameSpecification
-                                  }
-                                />
-                                <TextField
-                                  required
-                                  name={`specification.${index}.valueOfEach`}
-                                  label="Giá trị"
-                                  value={specification.valueOfEach}
-                                  onChange={handleChange}
-                                  error={
-                                    touched.specification?.[index]
-                                      ?.valueOfEach &&
-                                    Boolean(
-                                      errors.specification?.[index]?.valueOfEach
-                                    )
-                                  }
-                                  helperText={
-                                    touched.specification?.[index]
-                                      ?.valueOfEach &&
-                                    errors.specification?.[index]?.valueOfEach
-                                  }
-                                  sx={{ width: 100 }}
-                                />
-                                <TextField
-                                  required
-                                  name={`specification.${index}.unit`}
-                                  label="Đơn vị"
-                                  value={specification.unit}
-                                  onChange={handleChange}
-                                  error={
-                                    touched.specification?.[index]?.unit &&
-                                    Boolean(errors.specification?.[index]?.unit)
-                                  }
-                                  helperText={
-                                    touched.specification?.[index]?.unit &&
-                                    errors.specification?.[index]?.unit
-                                  }
-                                  sx={{ width: 100 }}
-                                />
+                            values.specification.map(
+                              (specification: specification, index) => (
+                                <Stack
+                                  direction="row"
+                                  key={index}
+                                  spacing={2}
+                                  sx={{ mt: 2 }}
+                                >
+                                  <TextField
+                                    required
+                                    label="Tên thông số"
+                                    sx={{ width: 200 }}
+                                    name={`specification.${index}.nameSpecification`}
+                                    value={specification.nameSpecification}
+                                    onChange={handleChange}
+                                    error={
+                                      Boolean(
+                                        getIn(
+                                          errors,
+                                          `specification.${index}.nameSpecification`
+                                        )
+                                      ) &&
+                                      getIn(
+                                        touched,
+                                        `specification.${index}.nameSpecification`
+                                      )
+                                    }
+                                    helperText={
+                                      getIn(
+                                        touched,
+                                        `specification.${index}.nameSpecification`
+                                      ) &&
+                                      Boolean(
+                                        getIn(
+                                          errors,
+                                          `specification.${index}.nameSpecification`
+                                        )
+                                      )
+                                    }
+                                  />
+                                  <TextField
+                                    required
+                                    name={`specification.${index}.valueOfEach`}
+                                    label="Giá trị"
+                                    value={specification.valueOfEach}
+                                    onChange={handleChange}
+                                    error={
+                                      Boolean(
+                                        getIn(
+                                          errors,
+                                          `specification.${index}.valueOfEach`
+                                        )
+                                      ) &&
+                                      getIn(
+                                        touched,
+                                        `specification.${index}.valueOfEach`
+                                      )
+                                    }
+                                    helperText={
+                                      getIn(
+                                        touched,
+                                        `specification.${index}.valueOfEach`
+                                      ) &&
+                                      Boolean(
+                                        getIn(
+                                          errors,
+                                          `specification.${index}.valueOfEach`
+                                        )
+                                      )
+                                    }
+                                    sx={{ width: 100 }}
+                                  />
+                                  <TextField
+                                    required
+                                    name={`specification.${index}.unit`}
+                                    label="Đơn vị"
+                                    value={specification.unit}
+                                    onChange={handleChange}
+                                    error={
+                                      Boolean(
+                                        getIn(
+                                          errors,
+                                          `specification.${index}.unit`
+                                        )
+                                      ) &&
+                                      getIn(
+                                        touched,
+                                        `specification.${index}.unit`
+                                      )
+                                    }
+                                    helperText={
+                                      getIn(
+                                        touched,
+                                        `specification.${index}.unit`
+                                      ) &&
+                                      Boolean(
+                                        getIn(
+                                          errors,
+                                          `specification.${index}.unit`
+                                        )
+                                      )
+                                    }
+                                    sx={{ width: 100 }}
+                                  />
 
-                                <IconButton onClick={() => remove(index)}>
-                                  <DeleteIcon />
-                                </IconButton>
-                              </Stack>
-                            ))}
+                                  <IconButton onClick={() => remove(index)}>
+                                    <DeleteIcon />
+                                  </IconButton>
+                                </Stack>
+                              )
+                            )}
                           <Button
                             sx={{ mt: 4 }}
                             variant="outlined"
