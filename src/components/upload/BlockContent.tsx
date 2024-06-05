@@ -1,7 +1,7 @@
 // @mui
-import { Box, Typography, Stack } from '@mui/material';
+import { Box, Typography, Stack } from "@mui/material";
 // assets
-import { UploadIllustration } from '../../assets';
+import { UploadIllustration } from "../../assets";
 
 // ----------------------------------------------------------------------
 
@@ -11,26 +11,26 @@ export default function BlockContent() {
       spacing={2}
       alignItems="center"
       justifyContent="center"
-      direction={{ xs: 'column', md: 'row' }}
-      sx={{ width: 1, textAlign: { xs: 'center', md: 'left' } }}
+      direction={{ xs: "column", md: "row" }}
+      sx={{ width: 1, textAlign: { xs: "center", md: "left" } }}
     >
       <UploadIllustration sx={{ width: 220 }} />
 
       <Box sx={{ p: 3 }}>
         <Typography gutterBottom variant="h5">
-          Drop or Select file
+          Kéo Thả Hoặc Chọn Ảnh
         </Typography>
 
-        <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-          Drop files here or click&nbsp;
+        <Typography variant="body2" sx={{ color: "text.secondary" }}>
+          Thả tệp ở đây hoặc nhấn&nbsp;
           <Typography
             variant="body2"
             component="span"
-            sx={{ color: 'primary.main', textDecoration: 'underline' }}
+            sx={{ color: "primary.main", textDecoration: "underline" }}
           >
-            browse
+            chọn
           </Typography>
-          &nbsp;thorough your machine
+          &nbsp;từ máy của bạn
         </Typography>
       </Box>
     </Stack>

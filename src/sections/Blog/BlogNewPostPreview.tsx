@@ -20,11 +20,9 @@ export default function PreviewDialog({
 }: PreviewDialog) {
   const { title, content, description } = values;
 
-  const cover =
-    typeof values.cover === "string" ? values.cover : values.cover?.preview;
+  const cover = typeof values.cover === "string" ? values.cover : values.cover;
 
-  const image =
-    typeof values.image === "string" ? values.image : values.image?.preview;
+  const image = typeof values.image === "string" ? values.image : values.image;
 
   const hasContent = title || description || content || cover || image;
 
