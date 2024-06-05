@@ -18,6 +18,7 @@ import PaymentSuccessfull from "../pages/PaymentSuccessfull";
 import CreateProduct from "../pages/Admin/Product/CreateProduct";
 import Product from "../pages/Admin/Product/Product";
 import BlogPosts from "../pages/Admin/Blog/BlogPosts";
+import ProfileAccount from "../pages/Admin/Profile/Profile";
 
 const AppRoute: React.FC = () => {
   return (
@@ -85,6 +86,13 @@ const AppRoute: React.FC = () => {
           key="createProduct"
           path={config.adminRoutes.createProduct}
           element={<CreateProduct />}
+        />
+
+        {/* profile */}
+        <Route
+          key="profile"
+          path={config.adminRoutes.profile}
+          element={<ProfileAccount />}
         />
       </Route>
 
