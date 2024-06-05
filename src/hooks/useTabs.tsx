@@ -8,7 +8,7 @@ export default function useTabs(defaultValues?: string) {
   return {
     currentTab,
     onChangeTab: (
-      event: React.SyntheticEvent<Element, Event>,
+      _event: React.SyntheticEvent<Element, Event>,
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       newValue: any
     ) => {
