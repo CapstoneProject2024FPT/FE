@@ -1,1 +1,2 @@
-export const LOGIN = "";
+export const LOGIN = "/auth/login";
+export const GET_MACHINERY = "/Machinery";

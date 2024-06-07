@@ -1,107 +1,47 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import React, { useState } from "react";
-import { FiSearch } from "react-icons/fi";
-import { colors } from "../../../../styles/Color/color";
-import "./SearchBar.scss";
-import {
-  Autocomplete,
-  Box,
-  InputAdornment,
-  InputBase,
-  TextField,
-} from "@mui/material";
-import top100Films from "../../../../constants/top100Films.json";
+import React, { KeyboardEvent, useState } from "react";
+import { InputAdornment, InputBase } from "@mui/material";
 import { Search } from "@mui/icons-material";
+import { MachineryApi } from "../../../../api/services/apiMachinery";
+import { LoadingButton } from "@mui/lab";
 
 const SearchBar: React.FC = () => {
   const [search, setSearch] = useState("");
+  const { apiGetList, loading } = MachineryApi();
 
-  const handleSearch = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    console.log(e);
-    if (e.key === "Enter") {
-      console.log("Search for:", search);
+  const handleSearch = async (
+    event: KeyboardEvent<HTMLInputElement | HTMLTextAreaElement>
+  ): Promise<void> => {
+    if (event.keyCode === 13) {
+      await apiGetList({ name: search });
     }
   };
 
   return (
-    // <div className="search">
-    //   <div className="search__input">
-    //     <div className="search__icon-left">
-    //       <FiSearch stroke={colors.gray_500} />
-    //     </div>
-
-    <Autocomplete
-      id="country-select-demo"
+    <InputBase
+      placeholder="Search..."
+      startAdornment={
+        <InputAdornment position="start">
+          <Search />
+        </InputAdornment>
+      }
+      endAdornment={
+        <LoadingButton
+          variant="outlined"
+          startIcon={<Search />}
+          sx={{ textTransform: "capitalize" }}
+          loading={loading}
+        >
+          Search
+        </LoadingButton>
+      }
       sx={{
-        width: 300,
-        ".MuiInputBase-root": {
-          marginTop: "4px",
-        },
+        border: "1px solid",
+        padding: "5px",
+        borderRadius: "7px",
       }}
-      options={top100Films}
-      autoHighlight
-      value={search}
-      onChange={(event: any, item: any) => {
-        setSearch(item.label);
-      }}
-      renderInput={(params) => {
-        const { ...rest } = params;
-        return (
-          <InputBase
-            {...params.InputProps}
-            {...rest}
-            placeholder="Search..."
-            startAdornment={
-              <InputAdornment position="start">
-                <Search />
-              </InputAdornment>
-            }
-            sx={{
-              border: "1px solid",
-              padding: "5px",
-              borderRadius: "7px",
-            }}
-          />
-        );
-      }}
-
-      // renderInput={(params) => <InputBase {...params} />}
-      // renderInput={(params) => (
-      //   <TextField
-      //     {...params}
-      //     label="Movie"
-      //     variant="outlined"
-      //     InputProps={{
-      //       ...params.InputProps,
-      //       startAdornment: (
-      //         <InputAdornment position="start">
-      //           <Search />
-      //         </InputAdornment>
-      //       ),
-      //     }}
-      //     sx={{
-      //       "& legend": { display: "none" },
-      //       "& .MuiInputLabel-shrink": {
-      //         opacity: 0,
-      //         transition: "all 0.2s ease-in",
-      //       },
-      //     }}
-      //   />
-      // )}
-      // getOptionLabel={(option) => option}
-      // renderOption={(props, item) => item}
+      onChange={(e) => setSearch(e.target.value)}
+      onKeyDown={handleSearch}
     />
-
-    // <input
-    //   type="text"
-    //   className="search__field"
-    //   placeholder="Tìm kiếm"
-    //   value={search}
-    //   onChange={(e) => setSearch(e.target.value)}
-    //   onKeyDown={handleSearch}
-    // />
-    //   </div>
-    // </div>
   );
 };
 

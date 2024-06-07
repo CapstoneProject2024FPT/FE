@@ -1,5 +1,6 @@
 import axios from "axios";
 import { jwtDecode } from "jwt-decode";
+import { LoginInfo } from "../utils/interface";
 
 const BASE_URL = import.meta.env.VITE_BASE_URL_LOCAL;
 
@@ -7,11 +8,11 @@ const axiosPublic = axios.create({
   baseURL: BASE_URL,
 });
 
-const loginInfo = localStorage.getItem("loginInfo");
+let loginInfoString = localStorage.getItem("loginInfo");
+let loginInfo: LoginInfo = loginInfoString ? JSON.parse(loginInfoString) : null;
 
-const loginInfoString = loginInfo ? JSON.parse(loginInfo) : null;
-
-const accessToken = loginInfoString?.accessToken || "";
+let accessToken = loginInfo?.tokenModel?.accessToken || "";
+let refreshToken = loginInfo?.tokenModel?.refreshToken || "";
 
 const axiosPrivate = axios.create({
   baseURL: BASE_URL,
@@ -23,18 +24,14 @@ const axiosPrivate = axios.create({
 axiosPrivate.interceptors.request.use(async (req) => {
   //check loginInfo existed
   if (!loginInfo) {
-    const loginInfo = localStorage.getItem("loginInfo");
-
-    const loginInfoString = loginInfo ? JSON.parse(loginInfo) : null;
-
-    const accessToken = loginInfoString?.accessToken || "";
-
-    req.headers.Authorization = `Bearer ${accessToken}`;
-  } else {
-    req.headers.Authorization = `Bearer ${accessToken}`;
+    loginInfoString = localStorage.getItem("loginInfo");
+    loginInfo = JSON.parse(loginInfoString || "null");
+    accessToken = loginInfo?.tokenModel?.accessToken || "";
+    refreshToken = loginInfo?.tokenModel?.refreshToken || "";
   }
+  req.headers.Authorization = `Bearer ${accessToken}`;
 
-  const user = jwtDecode(loginInfoString.accessToken);
+  const user = jwtDecode(accessToken);
 
   const date = new Date();
 
@@ -42,18 +39,16 @@ axiosPrivate.interceptors.request.use(async (req) => {
   if (user.exp) {
     const isExpired = user?.exp < date.getTime() / 1000;
     const params = {
-      accessToken: loginInfoString?.accessToken,
-      refreshToken: loginInfoString?.refreshToken,
-      expires: loginInfoString?.expires,
+      accessToken: accessToken,
+      refreshToken: refreshToken,
+      // TODO: Recheck
+      expires: user?.exp,
     };
 
     if (!isExpired) {
       return req;
     } else {
-      const response = await axios.post(
-        `${BASE_URL}/api/v1/auths/refresh`,
-        params
-      );
+      const response = await axiosPublic.post(`/auths/refresh`, params);
 
       localStorage.setItem("loginInfo", JSON.stringify(response.data));
 
