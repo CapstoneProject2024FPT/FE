@@ -6,6 +6,8 @@ import { Table, Input, Space, Dropdown } from "antd";
 import { GetCategoryProps } from "../../models/category";
 import { CategoryApi } from "../../api/services/apiCategories";
 import ModalCategoryPopup from "./PopupCategory/popupDetailCategory";
+import ModalCategoryPopupDelete from "./PopupCategory/popupDeleteCategory";
+import { toast } from "react-toastify";
 
 type ColumnsType<T> = TableProps<T>["columns"];
 const { Search } = Input;
@@ -14,7 +16,6 @@ const pageSize = 20;
 
 const TableCategory: React.FC = () => {
   const [categories, setCategories] = useState<GetCategoryProps[]>();
-  //   const [tableParams, setTableParams] = useState<TableParams>({});
   const [pagination, setPagination] = useState({
     current: 1,
     pageSize: pageSize,
@@ -24,16 +25,23 @@ const TableCategory: React.FC = () => {
     null
   );
   const [open, setOpen] = useState<boolean>(false);
+  const [openDeletePopup, setOpenDeletePopup] = useState<boolean>(false);
 
   const { getCategory, loading } = CategoryApi();
-  // Function to handle action click
-  const handleActionClick = (record: GetCategoryProps) => {
+
+  const handleActionDetail = (record: GetCategoryProps) => {
     setOpen(!open);
     setSelectedData(record);
   };
-
+  const handleActionDelete = (record: GetCategoryProps) => {
+    setOpenDeletePopup(!openDeletePopup);
+    setSelectedData(record);
+  };
   const handleCLose = () => {
     setOpen(!open);
+  };
+  const handleCLoseDelete = () => {
+    setOpenDeletePopup(!openDeletePopup);
   };
 
   useEffect(() => {
@@ -42,7 +50,7 @@ const TableCategory: React.FC = () => {
         const data = await getCategory();
         setCategories(data);
       } catch (error) {
-        console.log("111");
+        toast.error("lỗi");
       }
     };
 
@@ -81,11 +89,11 @@ const TableCategory: React.FC = () => {
   const items: MenuProps["items"] = [
     {
       key: "1",
-      label: "Delete",
+      label: "Detail",
     },
     {
       key: "2",
-      label: "Detail",
+      label: "Delete",
     },
   ];
   const columns: ColumnsType<GetCategoryProps> = [
@@ -108,7 +116,23 @@ const TableCategory: React.FC = () => {
       key: "operation",
       render: (record) => (
         <Space size="middle">
-          <Dropdown menu={{ items, onClick: () => handleActionClick(record) }}>
+          <Dropdown
+            menu={{
+              items,
+              onClick: ({ key }) => {
+                switch (key) {
+                  case "1":
+                    handleActionDetail(record);
+                    break;
+                  case "2":
+                    handleActionDelete(record);
+                    break;
+                  default:
+                    break;
+                }
+              },
+            }}
+          >
             <a>
               More <DownOutlined />
             </a>
@@ -138,6 +162,14 @@ const TableCategory: React.FC = () => {
           CategoryData={selectedData}
           open={open}
           handleClose={handleCLose}
+        />
+      )}
+
+      {openDeletePopup && (
+        <ModalCategoryPopupDelete
+          CategoryData={selectedData}
+          openDeletePopup={openDeletePopup}
+          handleCLoseDelete={handleCLoseDelete}
         />
       )}
     </>

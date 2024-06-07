@@ -1,6 +1,6 @@
 import { AxiosResponse } from "axios";
 import { axiosPublic } from "../axiosInstance";
-import { GET_CATEGORY } from "../pathApiName";
+import { DELETE_CATEGORY, GET_CATEGORY } from "../pathApiName";
 import { CategoryReponse } from "../../models/category";
 import { useState } from "react";
 
@@ -17,9 +17,27 @@ export const CategoryApi = () => {
       setLoading(false);
       return response.data.items;
     } catch (error) {
+      setLoading(false);
       throw new Error("Login failed");
     }
   };
 
-  return { getCategory, loading };
+  const deleteCategory = async (id: string) => {
+    try {
+      console.log(id);
+
+      setLoading(true);
+      const response = await axiosPublic.delete(
+        DELETE_CATEGORY.replace(":id", id)
+      );
+
+      setLoading(false);
+      return response.data;
+    } catch (error) {
+      setLoading(false);
+      throw new Error("Login failed");
+    }
+  };
+
+  return { getCategory, loading, deleteCategory };
 };

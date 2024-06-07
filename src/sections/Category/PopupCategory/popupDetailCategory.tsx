@@ -21,7 +21,7 @@ const ModalCategoryPopup: React.FC<ModalUser> = ({
   open,
   handleClose,
 }) => {
-  const NewBlogSchema = Yup.object().shape({
+  const CategorySchema = Yup.object().shape({
     name: Yup.string().required("bắt buộc").min(5, "Tối thiểu 5 kí tự"),
     description: Yup.string()
       .required("bắt buộc")
@@ -34,7 +34,7 @@ const ModalCategoryPopup: React.FC<ModalUser> = ({
   };
 
   const methods = useForm<CategoryProps>({
-    resolver: yupResolver(NewBlogSchema),
+    resolver: yupResolver(CategorySchema),
     defaultValues,
   });
 
@@ -46,6 +46,8 @@ const ModalCategoryPopup: React.FC<ModalUser> = ({
 
   const onSubmit = async (data: CategoryProps) => {
     try {
+      console.log(data);
+
       toast.success("postSuccess");
       await new Promise((resolve) => setTimeout(resolve, 500));
       console.table(data);
@@ -58,18 +60,13 @@ const ModalCategoryPopup: React.FC<ModalUser> = ({
     <Modal
       title="Chi Tiết Loại Máy"
       open={open}
-      onOk={handleClose}
       onCancel={handleClose}
-      footer={[
-        <LoadingButton loading={isSubmitting} variant="outlined">
-          Save Change
-        </LoadingButton>,
-      ]}
+      footer={[]}
     >
       <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
         <Card sx={{ p: 3 }}>
           <Stack spacing={3}>
-            <RHFTextField name="name" label="Tên Loại Máy" />
+            <RHFTextField name="name" label="Tên Loại Máy" autoFocus />
             <RHFTextField
               name="description"
               label="Mô Tả Loại Máy"
@@ -77,6 +74,16 @@ const ModalCategoryPopup: React.FC<ModalUser> = ({
               rows={3}
             />
           </Stack>
+          <LoadingButton
+            loading={isSubmitting}
+            variant="outlined"
+            type="submit"
+            sx={{
+              marginTop: "5px",
+            }}
+          >
+            Save Change
+          </LoadingButton>
         </Card>
       </FormProvider>
     </Modal>
