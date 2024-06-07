@@ -35,9 +35,9 @@ export const varFade = (props?: VariantsType) => {
       exit: { x: -distance, opacity: 0, transition: varTranExit({ durationOut, easeOut }) },
     },
     inRight: {
-      initial: { x: distance, opacity: 0 },
+      initial: {  opacity: 1 },
       animate: { x: 0, opacity: 1, transition: varTranEnter({ durationIn, easeIn }) },
-      exit: { x: distance, opacity: 0, transition: varTranExit({ durationOut, easeOut }) },
+      exit: { opacity: 0, transition: varTranExit({ durationOut, easeOut }) },
     },
 
     // OUT

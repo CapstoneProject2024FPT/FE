@@ -9,22 +9,22 @@ export interface Product {
 export type ProductProps = Product[];
 
 export interface CreateProductFormSchema {
-  specification: Specification[];
+  specification: Specification[] | undefined;
   productName: string;
   origin: string;
   model: string;
   brand: string;
   description: string;
-  images: string[];
-  timeWarranty: number | null;
+  images: (string | undefined)[] | undefined;
+  timeWarranty: number;
   serialNumber: string;
-  regularPrice: number | null;
-  salePrice: number | null;
+  regularPrice: number;
+  salePrice: number;
   category: string;
 }
 
 export type Specification = {
   nameSpecification: string;
-  valueOfEach: number | null;
+  valueOfEach: number;
   unit: string;
 };

@@ -7,6 +7,7 @@ import { Container } from "@mui/material";
 import HeaderBreadcrumbs from "../../../components/HeaderBreadcrumbs";
 // sections
 import FormNewProduct from "../../../sections/Product/FormNewProduct";
+
 import config from "../../../configs";
 
 // ----------------------------------------------------------------------
