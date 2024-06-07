@@ -1,34 +1,48 @@
-import React, { useState } from "react";
-import { FiSearch } from "react-icons/fi";
-import { colors } from "../../../../styles/Color/color";
-import "./SearchBar.scss";
+import React, { KeyboardEvent, useState } from "react";
+import { InputAdornment, InputBase } from "@mui/material";
+import { Search } from "@mui/icons-material";
+import { MachineryApi } from "../../../../api/services/apiMachinery";
+import { LoadingButton } from "@mui/lab";
 
 const SearchBar: React.FC = () => {
   const [search, setSearch] = useState("");
+  const { apiGetList, loading } = MachineryApi();
 
-  const handleSearch = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter") {
-      console.log("Search for:", search);
+  const handleSearch = async (
+    event: KeyboardEvent<HTMLInputElement | HTMLTextAreaElement>
+  ): Promise<void> => {
+    if (event.key === "Enter") {
+      await apiGetList({ name: search });
     }
   };
 
   return (
-    <div className="search">
-      <div className="search__input">
-        <div className="search__icon-left">
-          <FiSearch stroke={colors.gray_500} />
-        </div>
-
-        <input
-          type="text"
-          className="search__field"
-          placeholder="Tìm kiếm"
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          onKeyDown={handleSearch}
-        />
-      </div>
-    </div>
+    <InputBase
+      placeholder="Nhập nội dung tìm kiếm..."
+      startAdornment={
+        <InputAdornment position="start">
+          <Search />
+        </InputAdornment>
+      }
+      endAdornment={
+        <LoadingButton
+          variant="outlined"
+          startIcon={<Search />}
+          sx={{ textTransform: "capitalize", width: "200px" }}
+          loading={loading}
+        >
+          Tìm Kiếm
+        </LoadingButton>
+      }
+      sx={{
+        border: "1px solid",
+        padding: "5px",
+        borderRadius: "7px",
+        width: "500px",
+      }}
+      onChange={(e) => setSearch(e.target.value)}
+      onKeyDown={handleSearch}
+    />
   );
 };
 
