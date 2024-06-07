@@ -1,6 +1,6 @@
 import axios from "axios";
 import { jwtDecode } from "jwt-decode";
-import { LoginInfo } from "../utils/interface";
+import { LoginInfo } from "../models/loginInterface";
 
 const BASE_URL = import.meta.env.VITE_BASE_URL_LOCAL;
 

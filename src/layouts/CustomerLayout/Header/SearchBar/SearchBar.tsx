@@ -11,14 +11,14 @@ const SearchBar: React.FC = () => {
   const handleSearch = async (
     event: KeyboardEvent<HTMLInputElement | HTMLTextAreaElement>
   ): Promise<void> => {
-    if (event.keyCode === 13) {
+    if (event.key === "Enter") {
       await apiGetList({ name: search });
     }
   };
 
   return (
     <InputBase
-      placeholder="Search..."
+      placeholder="Nhập nội dung tìm kiếm..."
       startAdornment={
         <InputAdornment position="start">
           <Search />
@@ -28,16 +28,17 @@ const SearchBar: React.FC = () => {
         <LoadingButton
           variant="outlined"
           startIcon={<Search />}
-          sx={{ textTransform: "capitalize" }}
+          sx={{ textTransform: "capitalize", width: "200px" }}
           loading={loading}
         >
-          Search
+          Tìm Kiếm
         </LoadingButton>
       }
       sx={{
         border: "1px solid",
         padding: "5px",
         borderRadius: "7px",
+        width: "500px",
       }}
       onChange={(e) => setSearch(e.target.value)}
       onKeyDown={handleSearch}
