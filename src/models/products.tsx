@@ -16,15 +16,15 @@ export interface CreateProductFormSchema {
   brand: string;
   description: string;
   images: string[];
-  timeWarranty: number;
+  timeWarranty: number | null;
   serialNumber: string;
-  regularPrice: number;
-  salePrice: number;
+  regularPrice: number | null;
+  salePrice: number | null;
   category: string;
 }
 
 export type Specification = {
   nameSpecification: string;
-  valueOfEach: string;
+  valueOfEach: number | null;
   unit: string;
 };

@@ -21,4 +21,5 @@ export const adminRoutes = {
   editNew: `edit/new/${suffix.detailId}`,
   product: "product",
   createProduct: "create/product",
+  profile: "user/account",
 };

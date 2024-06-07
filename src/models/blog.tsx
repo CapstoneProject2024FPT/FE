@@ -2,10 +2,8 @@ export interface NewPostFormValues {
   title: string;
   description: string;
   content: string;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  cover: File | any;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  image: File | any;
+  cover: string;
+  image: string;
 }
 
 export type Post = {

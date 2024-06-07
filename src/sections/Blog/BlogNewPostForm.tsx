@@ -1,6 +1,5 @@
 import * as Yup from "yup";
 import { useCallback, useState } from "react";
-import { useSnackbar } from "notistack";
 // import { useNavigate } from 'react-router-dom';
 // form
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -20,6 +19,8 @@ import {
   RHFUploadSingleFile,
 } from "../../components/hook-form";
 import PreviewDialog from "./BlogNewPostPreview";
+import uploadImageToFirebase from "../../firebase/uploadImageToFirebase";
+import { toast } from "react-toastify";
 //
 
 // ----------------------------------------------------------------------
@@ -37,8 +38,6 @@ export default function BlogNewPostForm() {
 
   const [open, setOpen] = useState(false);
 
-  const { enqueueSnackbar } = useSnackbar();
-
   const handleOpenPreview = () => {
     setOpen(true);
   };
@@ -48,19 +47,23 @@ export default function BlogNewPostForm() {
   };
 
   const NewBlogSchema = Yup.object().shape({
-    title: Yup.string().required("Title is required"),
-    description: Yup.string().required("Description is required"),
-    content: Yup.string().min(15).required("Content is required"),
-    cover: Yup.mixed().required("Cover is required"),
-    image: Yup.mixed().required("Image is required"),
+    title: Yup.string().required("Phải có chủ đề").min(10, "Tối thiểu 10 từ"),
+    description: Yup.string()
+      .required("phải có mô tả")
+      .min(10, "Tối thiểu 10 từ"),
+    content: Yup.string()
+      .min(200, "Tổi thiểu 200 từ")
+      .required("Content is required"),
+    cover: Yup.string().required("Bắt Buộc có hình"),
+    image: Yup.string().required("Bắt Buộc có hình"),
   });
 
   const defaultValues: NewPostFormValues = {
     title: "",
     description: "",
     content: "",
-    cover: null,
-    image: null,
+    cover: "",
+    image: "",
   };
 
   const methods = useForm<NewPostFormValues>({
@@ -80,11 +83,11 @@ export default function BlogNewPostForm() {
 
   const onSubmit = async (data: NewPostFormValues) => {
     try {
+      toast.success("postSuccess");
       await new Promise((resolve) => setTimeout(resolve, 500));
       console.table(data);
       reset();
       handleClosePreview();
-      enqueueSnackbar("Post success!");
     } catch (error) {
       console.error(error);
     }
@@ -92,16 +95,12 @@ export default function BlogNewPostForm() {
 
   const handleDrop = useCallback(
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (acceptedFiles: any[]) => {
+    async (acceptedFiles: any[]) => {
       const file = acceptedFiles[0];
 
-      if (file) {
-        setValue(
-          "cover",
-          Object.assign(file, {
-            preview: URL.createObjectURL(file),
-          })
-        );
+      const coverImage = await uploadImageToFirebase(file);
+      if (typeof coverImage === "string") {
+        setValue("cover", coverImage);
       }
     },
     [setValue]
@@ -109,16 +108,12 @@ export default function BlogNewPostForm() {
 
   const handleDropImage = useCallback(
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (acceptedFiles: any[]) => {
+    async (acceptedFiles: any[]) => {
       const file = acceptedFiles[0];
 
-      if (file) {
-        setValue(
-          "image",
-          Object.assign(file, {
-            preview: URL.createObjectURL(file),
-          })
-        );
+      const ImageProduct = await uploadImageToFirebase(file);
+      if (typeof ImageProduct === "string") {
+        setValue("image", ImageProduct);
       }
     },
     [setValue]
@@ -175,7 +170,7 @@ export default function BlogNewPostForm() {
               size="large"
               onClick={handleOpenPreview}
             >
-              Preview
+              Xem Trước
             </Button>
             <LoadingButton
               type="submit"
@@ -187,7 +182,7 @@ export default function BlogNewPostForm() {
               }}
               loading={isSubmitting}
             >
-              Post
+              Đăng
             </LoadingButton>
           </Stack>
         </Grid>
