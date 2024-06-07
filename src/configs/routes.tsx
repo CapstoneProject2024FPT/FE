@@ -22,4 +22,5 @@ export const adminRoutes = {
   product: "product",
   createProduct: "create/product",
   profile: "user/account",
+  category: "categories",
 };

@@ -19,6 +19,7 @@ import CreateProduct from "../pages/Admin/Product/CreateProduct";
 import Product from "../pages/Admin/Product/Product";
 import BlogPosts from "../pages/Admin/Blog/BlogPosts";
 import ProfileAccount from "../pages/Admin/Profile/Profile";
+import Category from "../pages/Admin/Categories/Category";
 
 const AppRoute: React.FC = () => {
   return (
@@ -88,6 +89,12 @@ const AppRoute: React.FC = () => {
           element={<CreateProduct />}
         />
 
+        {/* category */}
+        <Route
+          key="category"
+          path={config.adminRoutes.category}
+          element={<Category />}
+        />
         {/* profile */}
         <Route
           key="profile"
