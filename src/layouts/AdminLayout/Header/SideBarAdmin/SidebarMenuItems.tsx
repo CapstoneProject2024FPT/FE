@@ -6,6 +6,7 @@ import {
   ShoppingOutlined,
   ContainerOutlined,
 } from "@ant-design/icons";
+import ReceiptLongIcon from "@mui/icons-material/ReceiptLong";
 import config from "../../../../configs";
 
 const MenuSideBars: MenuSideBar[] = [
@@ -38,9 +39,10 @@ const MenuSideBars: MenuSideBar[] = [
       },
     ],
   },
+
   {
     label: "Tin tức",
-    key: "blogs",
+    key: "news",
     icon: <ContainerOutlined />,
     children: [
       {
@@ -50,6 +52,17 @@ const MenuSideBars: MenuSideBar[] = [
       {
         label: <Link to={config.adminRoutes.createNew}>Thêm mới tin tức</Link>,
         key: config.adminRoutes.createNew,
+      },
+    ],
+  },
+  {
+    label: "Đơn hàng",
+    key: "orders",
+    icon: <ReceiptLongIcon />,
+    children: [
+      {
+        label: <Link to={config.adminRoutes.order}>Tất cả đơn hàng</Link>,
+        key: config.adminRoutes.order,
       },
     ],
   },

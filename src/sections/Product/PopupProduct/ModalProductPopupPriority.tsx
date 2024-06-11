@@ -17,6 +17,7 @@ interface ModalProduct {
 
 interface priorityProps {
   priority: number;
+  categoryId: string;
 }
 const ModalProductPopupPriority: React.FC<ModalProduct> = ({
   ProductData,
@@ -35,11 +36,12 @@ const ModalProductPopupPriority: React.FC<ModalProduct> = ({
       priority = 1;
     }
 
-    const param: priorityProps = {
-      priority: priority,
-    };
     try {
       if (ProductData) {
+        const param: priorityProps = {
+          priority: priority,
+          categoryId: ProductData?.category?.id,
+        };
         const response = await apiUpdatePriorityProduct(ProductData?.id, param);
         if (onUpdatePrioritySuccess) {
           onUpdatePrioritySuccess(response);
