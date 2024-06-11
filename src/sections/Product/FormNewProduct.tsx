@@ -44,8 +44,7 @@ export default function ProductNewEditForm() {
 
   const initialSpecifications: Specification = {
     name: "",
-    value: 0,
-    unit: "",
+    value: "",
   };
 
   const [categories, setCategories] = useState<GetCategoryProps[]>();
@@ -63,7 +62,6 @@ export default function ProductNewEditForm() {
     specificationList: [initialSpecifications],
     brand: "",
     timeWarranty: 0,
-    controlSystem: "",
   };
 
   const validationSchema = Yup.object().shape({
@@ -84,10 +82,7 @@ export default function ProductNewEditForm() {
       .of(
         Yup.object({
           name: Yup.string().required("bắt buộc"),
-          value: Yup.number()
-            .required("bắt buộc")
-            .moreThan(1, "Phải lớn hơn 1"),
-          unit: Yup.string().required("bắt buộc"),
+          value: Yup.string().required("bắt buộc"),
         })
       )
       .min(1, "Ít nhất một thông số kỹ thuật là bắt buộc"),
@@ -95,7 +90,6 @@ export default function ProductNewEditForm() {
       .min(minTimeWarranty, `Thời gian bảo trì lớn hơn ${minTimeWarranty}`)
       .max(maxTimeWarranty, `Thời gian bảo trì nhỏ hơn ${maxTimeWarranty}`)
       .required("Thời gian bảo trì là bắt buộc"),
-    controlSystem: Yup.string().required("Bắt buộc"),
   });
 
   const methods = useForm<CreateProductFormSchema>({
@@ -235,25 +229,15 @@ export default function ProductNewEditForm() {
                     >
                       <RHFTextField
                         required
-                        sx={{ width: 200 }}
+                        sx={{ width: 250 }}
                         name={`specificationList[${index}].name`}
                         label="Tên thông số"
                       />
                       <RHFTextField
                         required
-                        InputProps={{
-                          type: "number",
-                          inputProps: { min: 0, step: "0.01" },
-                        }}
-                        sx={{ width: 100 }}
+                        sx={{ width: 250 }}
                         name={`specificationList[${index}].value`}
                         label="Giá trị"
-                      />
-                      <RHFTextField
-                        required
-                        name={`specificationList[${index}].unit`}
-                        label="Đơn vị"
-                        sx={{ width: 100 }}
                       />
 
                       <IconButton
@@ -286,12 +270,6 @@ export default function ProductNewEditForm() {
                 <RHFTextField required name="origin" label="Xuất xứ" />
 
                 <RHFTextField required name="model" label="Mẫu sản phẩm" />
-
-                <RHFTextField
-                  required
-                  name="controlSystem"
-                  label="Hệ điều khiển"
-                />
 
                 <RHFTextField
                   select

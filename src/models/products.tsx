@@ -9,7 +9,11 @@ export interface Product {
 export type ProductProps = Product[];
 
 export interface ProductAdmin {
-  categoryId: string;
+  category: {
+    id: string;
+    name: string;
+    type: string;
+  };
   description: string;
   id: string;
   model: string;
@@ -34,7 +38,6 @@ export interface CreateProductFormSchema {
   categoryId: string;
   brand: string;
   timeWarranty: number;
-  controlSystem: string;
 }
 
 export interface CreateProductFormADDSchema {
@@ -49,11 +52,9 @@ export interface CreateProductFormADDSchema {
   categoryId: string;
   brand: string;
   timeWarranty: number;
-  controlSystem: string;
 }
 
 export type Specification = {
   name: string;
-  value: number;
-  unit: string;
+  value: string;
 };

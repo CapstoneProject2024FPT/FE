@@ -20,6 +20,7 @@ import Product from "../pages/Admin/Product/Product";
 import BlogPosts from "../pages/Admin/Blog/BlogPosts";
 import ProfileAccount from "../pages/Admin/Profile/Profile";
 import Category from "../pages/Admin/Categories/Category";
+import Order from "../pages/Admin/Order/Order";
 
 const AppRoute: React.FC = () => {
   return (
@@ -100,6 +101,13 @@ const AppRoute: React.FC = () => {
           key="profile"
           path={config.adminRoutes.profile}
           element={<ProfileAccount />}
+        />
+
+        {/* order */}
+        <Route
+          key="orders"
+          path={config.adminRoutes.order}
+          element={<Order />}
         />
       </Route>
 

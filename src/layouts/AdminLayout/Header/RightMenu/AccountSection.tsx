@@ -9,6 +9,7 @@ import Divider from "@mui/material/Divider";
 import IconButton from "@mui/material/IconButton";
 import Logout from "@mui/icons-material/Logout";
 import config from "../../../../configs";
+import { Typography } from "@mui/material";
 
 const AccountSection = () => {
   const jsonString = localStorage.getItem("userInfo");
@@ -46,6 +47,7 @@ const AccountSection = () => {
   return (
     <>
       <Box sx={{ display: "flex", alignItems: "center", textAlign: "center" }}>
+        <Typography>{user.name ? user.name : "Hồ Minh Dũng"}</Typography>
         <IconButton
           onClick={handleClick}
           size="small"
