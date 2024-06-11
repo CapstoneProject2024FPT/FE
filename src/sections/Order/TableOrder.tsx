@@ -27,6 +27,8 @@ const TableOrder: React.FC = () => {
     null
   );
 
+  console.log(selectedData);
+
   //api
   const { loading } = CategoryApi();
 
