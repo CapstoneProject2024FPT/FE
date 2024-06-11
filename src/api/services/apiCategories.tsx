@@ -1,7 +1,7 @@
 import { AxiosResponse } from "axios";
 import { axiosPublic } from "../axiosInstance";
-import { DELETE_CATEGORY, GET_CATEGORY } from "../pathApiName";
-import { CategoryReponse } from "../../models/category";
+import { CATEGORY, CATEGORY_ID, GET_CATEGORY } from "../pathApiName";
+import { CategoryProps, CategoryReponse } from "../../models/category";
 import { useState } from "react";
 
 export const CategoryApi = () => {
@@ -24,12 +24,8 @@ export const CategoryApi = () => {
 
   const deleteCategory = async (id: string) => {
     try {
-      console.log(id);
-
       setLoading(true);
-      const response = await axiosPublic.delete(
-        DELETE_CATEGORY.replace(":id", id)
-      );
+      const response = await axiosPublic.delete(CATEGORY_ID.replace(":id", id));
 
       setLoading(false);
       return response.data;
@@ -39,5 +35,31 @@ export const CategoryApi = () => {
     }
   };
 
-  return { getCategory, loading, deleteCategory };
+  const addCategory = async (params: CategoryProps) => {
+    try {
+      setLoading(true);
+      const response = await axiosPublic.post(CATEGORY, params);
+      setLoading(false);
+      return response.data;
+    } catch (error) {
+      setLoading(false);
+      throw new Error("Login failed");
+    }
+  };
+
+  const updateCategory = async (id: string, params: CategoryProps) => {
+    try {
+      setLoading(true);
+      const response = await axiosPublic.put(
+        CATEGORY_ID.replace(":id", id),
+        params
+      );
+      setLoading(false);
+      return response.data;
+    } catch (error) {
+      setLoading(false);
+      throw new Error("Login failed");
+    }
+  };
+  return { getCategory, loading, deleteCategory, addCategory, updateCategory };
 };

@@ -84,6 +84,8 @@ export default function BlogNewPostForm() {
   const onSubmit = async (data: NewPostFormValues) => {
     try {
       toast.success("postSuccess");
+      console.log(data);
+
       await new Promise((resolve) => setTimeout(resolve, 500));
       console.table(data);
       reset();

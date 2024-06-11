@@ -2,12 +2,13 @@ import React, { useEffect, useState } from "react";
 import type { MenuProps } from "antd";
 import type { TableProps } from "antd";
 import { DownOutlined } from "@ant-design/icons";
-import { Table, Input, Space, Dropdown } from "antd";
+import { Table, Input, Space, Dropdown, Button } from "antd";
 import { GetCategoryProps } from "../../models/category";
 import { CategoryApi } from "../../api/services/apiCategories";
 import ModalCategoryPopup from "./PopupCategory/popupDetailCategory";
 import ModalCategoryPopupDelete from "./PopupCategory/popupDeleteCategory";
 import { toast } from "react-toastify";
+import ModalCategoryPopupAdd from "./PopupCategory/popupAddCategory";
 
 type ColumnsType<T> = TableProps<T>["columns"];
 const { Search } = Input;
@@ -20,15 +21,21 @@ const TableCategory: React.FC = () => {
     current: 1,
     pageSize: pageSize,
   });
+  //search
   const [query, setQuery] = useState<string>("");
+
+  //popup
+  const [open, setOpen] = useState<boolean>(false);
+  const [openDeletePopup, setOpenDeletePopup] = useState<boolean>(false);
+  const [openAddPopup, setOpenAddPopup] = useState<boolean>(false);
   const [selectedData, setSelectedData] = useState<GetCategoryProps | null>(
     null
   );
-  const [open, setOpen] = useState<boolean>(false);
-  const [openDeletePopup, setOpenDeletePopup] = useState<boolean>(false);
 
+  //api
   const { getCategory, loading } = CategoryApi();
 
+  //modal popup
   const handleActionDetail = (record: GetCategoryProps) => {
     setOpen(!open);
     setSelectedData(record);
@@ -43,21 +50,41 @@ const TableCategory: React.FC = () => {
   const handleCLoseDelete = () => {
     setOpenDeletePopup(!openDeletePopup);
   };
+  const handleCloseAdd = () => {
+    setOpenAddPopup(!openAddPopup);
+  };
+
+  //----------------------------------------------------------------------------
+  const fetchCategories = async () => {
+    try {
+      const data = await getCategory();
+      setCategories(data);
+    } catch (error) {
+      toast.error("lỗi");
+    }
+  };
 
   useEffect(() => {
-    const fetchCategories = async () => {
-      try {
-        const data = await getCategory();
-        setCategories(data);
-      } catch (error) {
-        toast.error("lỗi");
-      }
-    };
-
     fetchCategories();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const handleAddCategorySuccess = () => {
+    handleCloseAdd();
+    fetchCategories();
+    toast.success("Thêm loại máy thành công");
+  };
+
+  const handleDeleteCategorySuccess = (response: string) => {
+    handleCLoseDelete();
+    fetchCategories();
+    toast.success(response);
+  };
+  const handleUpdateCategorySuccess = (response: string) => {
+    handleCLose();
+    fetchCategories();
+    toast.success(response);
+  };
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleTableChange = (newPagination: any) => {
     setPagination({
@@ -89,16 +116,16 @@ const TableCategory: React.FC = () => {
   const items: MenuProps["items"] = [
     {
       key: "1",
-      label: "Detail",
+      label: "Chi tiết",
     },
     {
       key: "2",
-      label: "Delete",
+      label: "Xoá",
     },
   ];
   const columns: ColumnsType<GetCategoryProps> = [
     {
-      title: "Name",
+      title: "Loại máy",
       dataIndex: "name",
       sorter: (a, b) => a.name.length - b.name.length,
       width: "20%",
@@ -108,11 +135,7 @@ const TableCategory: React.FC = () => {
       dataIndex: "type",
     },
     {
-      title: "Status",
-      dataIndex: "email",
-    },
-    {
-      title: "Action",
+      title: "Hành Động",
       key: "operation",
       render: (record) => (
         <Space size="middle">
@@ -134,7 +157,7 @@ const TableCategory: React.FC = () => {
             }}
           >
             <a>
-              More <DownOutlined />
+              Thêm <DownOutlined />
             </a>
           </Dropdown>
         </Space>
@@ -144,11 +167,17 @@ const TableCategory: React.FC = () => {
 
   return (
     <>
-      <Search
-        placeholder="Search"
-        onChange={handleSearch}
-        style={{ width: 200, marginBottom: 16 }}
-      />
+      <div style={{ display: "flex", justifyContent: "space-between" }}>
+        <Search
+          placeholder="Search"
+          onChange={handleSearch}
+          style={{ width: 200, marginBottom: 16 }}
+        />
+        <Button onClick={() => setOpenAddPopup(!openAddPopup)}>
+          Thêm loại máy
+        </Button>
+      </div>
+
       <Table
         columns={columns}
         rowKey={(record) => record.id}
@@ -162,6 +191,7 @@ const TableCategory: React.FC = () => {
           CategoryData={selectedData}
           open={open}
           handleClose={handleCLose}
+          onUpdateSuccess={handleUpdateCategorySuccess}
         />
       )}
 
@@ -170,6 +200,15 @@ const TableCategory: React.FC = () => {
           CategoryData={selectedData}
           openDeletePopup={openDeletePopup}
           handleCLoseDelete={handleCLoseDelete}
+          onDeleteSuccess={handleDeleteCategorySuccess}
+        />
+      )}
+
+      {openAddPopup && (
+        <ModalCategoryPopupAdd
+          open={openAddPopup}
+          handleClose={handleCloseAdd}
+          onAddSuccess={handleAddCategorySuccess}
         />
       )}
     </>

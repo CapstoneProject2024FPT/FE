@@ -14,13 +14,13 @@ export const routes = {
 
 export const adminRoutes = {
   dashboard: "/dashboard",
-  user: "user",
-  blogs: "news",
-  blog: `new/${suffix.detailId}`,
-  createNew: "create/new",
-  editNew: `edit/new/${suffix.detailId}`,
-  product: "product",
-  createProduct: "create/product",
-  profile: "user/account",
-  category: "categories",
+  user: "/dashboard/user",
+  blogs: "/dashboard/news",
+  blog: `/dashboard/new/${suffix.detailId}`,
+  createNew: "/dashboard/create/new",
+  editNew: `/dashboard/edit/new/${suffix.detailId}`,
+  product: "/dashboard/product",
+  createProduct: "/dashboard/create/product",
+  profile: "/dashboard/user/account",
+  category: "/dashboard/categories",
 };
