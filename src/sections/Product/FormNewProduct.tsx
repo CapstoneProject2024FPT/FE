@@ -1,4 +1,4 @@
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 //mui
 import {
   Card,
@@ -6,7 +6,6 @@ import {
   Stack,
   Typography,
   InputAdornment,
-  MenuItem,
   IconButton,
   Button,
 } from "@mui/material";
@@ -24,17 +23,11 @@ import {
 } from "../../components/hook-form";
 import * as Yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { useForm } from "react-hook-form";
+import { useFieldArray, useForm } from "react-hook-form";
 import uploadImageToFirebase from "../../firebase/uploadImageToFirebase";
-
-const CATEGORY_OPTION = [
-  { id: 1, category: "Máy khoan" },
-  { id: 2, category: "Máy Xung Điện" },
-  { id: 3, category: "Máy " },
-  { id: 4, category: "Máy khoan" },
-  { id: 5, category: "Máy khoan" },
-  { id: 6, category: "Máy khoan" },
-];
+import { MachineryApi } from "../../api/services/apiMachinery";
+import { CategoryApi } from "../../api/services/apiCategories";
+import { GetCategoryProps } from "../../models/category";
 
 const LabelStyle = styled(Typography)(({ theme }) => ({
   ...theme.typography.subtitle2,
@@ -43,54 +36,55 @@ const LabelStyle = styled(Typography)(({ theme }) => ({
 }));
 
 export default function ProductNewEditForm() {
+  const { apiAddMachinery } = MachineryApi();
+  const { getCategory } = CategoryApi();
+
   const minTimeWarranty = 1;
   const maxTimeWarranty = 2;
 
   const initialSpecifications: Specification = {
-    nameSpecification: "",
-    valueOfEach: 0,
+    name: "",
+    value: 0,
     unit: "",
   };
 
-  const [specifications, setSpecifications] = useState<Specification[]>([
-    initialSpecifications,
-  ]);
+  const [categories, setCategories] = useState<GetCategoryProps[]>();
 
   const defaultValues = {
-    productName: "",
+    name: "",
     origin: "",
-    brand: "",
     description: "",
-    images: [],
-    serialNumber: "",
+    imageURL: [],
     model: "",
-    regularPrice: 0,
-    salePrice: 0,
-    category: "",
-    specification: [initialSpecifications],
+    quantity: 0,
+    stockPrice: 0,
+    sellingPrice: 0,
+    categoryId: "",
+    specificationList: [initialSpecifications],
+    brand: "",
     timeWarranty: 0,
+    controlSystem: "",
   };
 
   const validationSchema = Yup.object().shape({
-    productName: Yup.string().required("Bắt buộc có tên sản phẩm"),
+    name: Yup.string().required("Bắt buộc có tên sản phẩm"),
     origin: Yup.string().required("Bắt buộc có xuất xứ"),
-    brand: Yup.string().required("Bắt buộc có thương hiệu"),
+    brand: Yup.string().required("Bắt buộc có hãng"),
     description: Yup.string().required("Bắt buộc có mô tả"),
-    images: Yup.array().of(Yup.string()).min(1, "Bắt buộc có hình"),
-    serialNumber: Yup.string().required("Bắt buộc có mã sản phẩm"),
+    imageURL: Yup.array().of(Yup.string()).min(1, "Bắt buộc có hình"),
     model: Yup.string().required("Bắt buộc có mẫu sản phẩm"),
-    regularPrice: Yup.number()
+    stockPrice: Yup.number()
       .moreThan(0, "Giá tiền lớn hơn 0")
       .required("Không để trống"),
-    salePrice: Yup.number()
+    sellingPrice: Yup.number()
       .moreThan(0, "Giá tiền lớn hơn 0")
       .required("Không để trống"),
-    category: Yup.string().required("Phải có loại máy"),
-    specification: Yup.array()
+    categoryId: Yup.string().required("Phải có loại máy"),
+    specificationList: Yup.array()
       .of(
         Yup.object({
-          nameSpecification: Yup.string().required("bắt buộc"),
-          valueOfEach: Yup.number()
+          name: Yup.string().required("bắt buộc"),
+          value: Yup.number()
             .required("bắt buộc")
             .moreThan(1, "Phải lớn hơn 1"),
           unit: Yup.string().required("bắt buộc"),
@@ -101,6 +95,7 @@ export default function ProductNewEditForm() {
       .min(minTimeWarranty, `Thời gian bảo trì lớn hơn ${minTimeWarranty}`)
       .max(maxTimeWarranty, `Thời gian bảo trì nhỏ hơn ${maxTimeWarranty}`)
       .required("Thời gian bảo trì là bắt buộc"),
+    controlSystem: Yup.string().required("Bắt buộc"),
   });
 
   const methods = useForm<CreateProductFormSchema>({
@@ -113,13 +108,44 @@ export default function ProductNewEditForm() {
     setValue,
     watch,
     handleSubmit,
+    control,
     formState: { isSubmitting },
   } = methods;
 
   const values = watch();
+
+  const { fields, append, remove } = useFieldArray({
+    control,
+    name: "specificationList",
+  });
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const data = await getCategory();
+        setCategories(data);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchCategories();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  //add machinery
   const onSubmit = async (values: CreateProductFormSchema) => {
     try {
-      console.log(values);
+      const transformedData = {
+        ...values,
+        image: values.imageURL?.map((image) => ({
+          imageURL: image,
+        })),
+      };
+      delete transformedData.imageURL;
+
+      const response = await apiAddMachinery(transformedData);
+      console.log(response);
       reset();
     } catch (error) {
       console.error(error);
@@ -129,7 +155,7 @@ export default function ProductNewEditForm() {
   const handleDrop = useCallback(
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     async (acceptedFiles: any) => {
-      const images = values.images || [];
+      const images = values.imageURL || [];
 
       const uploadedImages = await Promise.all(
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -140,30 +166,26 @@ export default function ProductNewEditForm() {
       );
 
       // Update the form with the new image URLs
-      setValue("images", [...images, ...uploadedImages]);
+      setValue("imageURL", [...images, ...uploadedImages]);
     },
-    [setValue, values.images]
+    [setValue, values.imageURL]
   );
 
   const handleRemoveAll = () => {
-    setValue("images", []);
+    setValue("imageURL", []);
   };
 
   const handleRemove = (file: File | string) => {
-    const filteredItems = values.images?.filter((_file) => _file !== file);
-    setValue("images", filteredItems);
+    const filteredItems = values.imageURL?.filter((_file) => _file !== file);
+    setValue("imageURL", filteredItems);
   };
 
   const handleAddSpecification = () => {
-    setSpecifications([...specifications, initialSpecifications]);
+    append(initialSpecifications);
   };
 
   const handleRemoveSpecification = (index: number) => {
-    setSpecifications(
-      specifications.filter((_, i) => {
-        return i !== index;
-      })
-    );
+    remove(index);
   };
   return (
     <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
@@ -171,7 +193,7 @@ export default function ProductNewEditForm() {
         <Grid item xs={12} md={8}>
           <Card sx={{ p: 3 }}>
             <Stack spacing={3}>
-              <RHFTextField required name="productName" label="Tên sản phẩm" />
+              <RHFTextField required name="name" label="Tên sản phẩm" />
 
               <div>
                 <LabelStyle>Mô tả</LabelStyle>
@@ -188,7 +210,7 @@ export default function ProductNewEditForm() {
                 <LabelStyle>Hình ảnh</LabelStyle>
                 <RHFUploadMultiFile
                   showPreview
-                  name="images"
+                  name="imageURL"
                   maxSize={3145728}
                   onDrop={handleDrop}
                   onRemove={handleRemove}
@@ -204,32 +226,32 @@ export default function ProductNewEditForm() {
                     overflow: "auto",
                   }}
                 >
-                  {specifications.map((_specification, index) => (
+                  {fields.map((field, index) => (
                     <Stack
                       direction="row"
-                      key={index}
+                      key={field.id}
                       spacing={2}
                       sx={{ mt: 2 }}
                     >
                       <RHFTextField
                         required
                         sx={{ width: 200 }}
-                        name={`specification[${index}].nameSpecification`}
+                        name={`specificationList[${index}].name`}
                         label="Tên thông số"
                       />
                       <RHFTextField
                         required
                         InputProps={{
                           type: "number",
-                          inputProps: { min: 0 },
+                          inputProps: { min: 0, step: "0.01" },
                         }}
                         sx={{ width: 100 }}
-                        name={`specification[${index}].valueOfEach`}
+                        name={`specificationList[${index}].value`}
                         label="Giá trị"
                       />
                       <RHFTextField
                         required
-                        name={`specification[${index}].unit`}
+                        name={`specificationList[${index}].unit`}
                         label="Đơn vị"
                         sx={{ width: 100 }}
                       />
@@ -263,25 +285,31 @@ export default function ProductNewEditForm() {
 
                 <RHFTextField required name="origin" label="Xuất xứ" />
 
-                <RHFTextField
-                  required
-                  name="serialNumber"
-                  label="Mã sản phẩm"
-                />
-
                 <RHFTextField required name="model" label="Mẫu sản phẩm" />
 
                 <RHFTextField
-                  select
                   required
-                  name="category"
+                  name="controlSystem"
+                  label="Hệ điều khiển"
+                />
+
+                <RHFTextField
+                  select
+                  name="categoryId"
                   label="Chọn Loại máy"
+                  SelectProps={{ native: true }}
                 >
-                  {CATEGORY_OPTION.map((category) => (
-                    <MenuItem key={category.id} value={category.category}>
-                      {category.category}
-                    </MenuItem>
-                  ))}
+                  {categories && categories?.length > 0 ? (
+                    categories?.map((category) => (
+                      <option key={category.id} value={category.id}>
+                        {category.name}
+                      </option>
+                    ))
+                  ) : (
+                    <option value="" disabled>
+                      No categories available
+                    </option>
+                  )}
                 </RHFTextField>
 
                 <RHFTextField
@@ -305,7 +333,7 @@ export default function ProductNewEditForm() {
               <Stack spacing={3} mb={2}>
                 <RHFTextField
                   required
-                  name="regularPrice"
+                  name="stockPrice"
                   label="Giá máy"
                   placeholder="0.00"
                   InputLabelProps={{ shrink: true }}
@@ -320,7 +348,7 @@ export default function ProductNewEditForm() {
 
                 <RHFTextField
                   required
-                  name="salePrice"
+                  name="sellingPrice"
                   label="Giá bán"
                   placeholder="0.00"
                   InputLabelProps={{ shrink: true }}

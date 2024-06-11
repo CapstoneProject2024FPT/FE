@@ -1,31 +1,27 @@
 import React from "react";
-import { CategoryProps, GetCategoryProps } from "../../../models/category";
+import { CategoryProps } from "../../../models/category";
 import { Modal } from "antd";
 import { FormProvider, RHFTextField } from "../../../components/hook-form";
 // form
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm } from "react-hook-form";
 import * as Yup from "yup";
-
 import { LoadingButton } from "@mui/lab";
 import { Card, Stack } from "@mui/material";
 import { CategoryApi } from "../../../api/services/apiCategories";
 
-interface ModalUser {
-  CategoryData: GetCategoryProps | null;
+interface ModalCategory {
   open: boolean;
   handleClose: () => void;
-  onUpdateSuccess: (response: string) => void;
+  onAddSuccess?: () => void;
 }
 
-const ModalCategoryPopup: React.FC<ModalUser> = ({
-  CategoryData,
+const ModalCategoryPopupAdd: React.FC<ModalCategory> = ({
   open,
   handleClose,
-  onUpdateSuccess,
+  onAddSuccess,
 }) => {
-  const { updateCategory } = CategoryApi();
-
+  const { addCategory } = CategoryApi();
   const CategorySchema = Yup.object().shape({
     name: Yup.string().required("bắt buộc").min(5, "Tối thiểu 5 kí tự"),
     description: Yup.string()
@@ -34,8 +30,8 @@ const ModalCategoryPopup: React.FC<ModalUser> = ({
   });
 
   const defaultValues: CategoryProps = {
-    name: CategoryData?.name || "",
-    description: CategoryData?.description || "",
+    name: "",
+    description: "",
   };
 
   const methods = useForm<CategoryProps>({
@@ -51,15 +47,14 @@ const ModalCategoryPopup: React.FC<ModalUser> = ({
 
   const onSubmit = async (data: CategoryProps) => {
     try {
-      const param = { ...data, status: "Active" };
-      if (CategoryData) {
-        const response = await updateCategory(CategoryData?.id, param);
-        if (onUpdateSuccess) {
-          onUpdateSuccess(response);
-        }
+      await addCategory(data);
+      if (onAddSuccess) {
+        onAddSuccess();
       }
+
       reset();
     } catch (error) {
+      handleClose();
       console.error(error);
     }
   };
@@ -78,19 +73,22 @@ const ModalCategoryPopup: React.FC<ModalUser> = ({
               name="description"
               label="Mô Tả Loại Máy"
               multiline
-              rows={3}
+              rows={5}
             />
           </Stack>
-          <div style={{ display: "flex", justifyContent: "flex-end" }}>
+          <div
+            style={{
+              display: " flex",
+              justifyContent: "flex-end",
+              marginTop: "5px",
+            }}
+          >
             <LoadingButton
               loading={isSubmitting}
               variant="outlined"
               type="submit"
-              sx={{
-                marginTop: "5px",
-              }}
             >
-              Lưu Thay đổi
+              Lưu
             </LoadingButton>
           </div>
         </Card>
@@ -99,4 +97,4 @@ const ModalCategoryPopup: React.FC<ModalUser> = ({
   );
 };
 
-export default ModalCategoryPopup;
+export default ModalCategoryPopupAdd;

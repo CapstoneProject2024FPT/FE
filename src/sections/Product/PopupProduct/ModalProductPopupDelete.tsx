@@ -1,31 +1,32 @@
 import React from "react";
 //model
-import { GetCategoryProps } from "../../../models/category";
+
 // form
 import { Button, Modal, Typography } from "antd";
 import { toast } from "react-toastify";
 //api
-import { CategoryApi } from "../../../api/services/apiCategories";
+import { ProductAdmin } from "../../../models/products";
+import { MachineryApi } from "../../../api/services/apiMachinery";
 
 interface ModalCategory {
-  CategoryData: GetCategoryProps | null;
+  ProductData: ProductAdmin | null;
   openDeletePopup: boolean;
   handleCLoseDelete: () => void;
   onDeleteSuccess: (response: string) => void;
 }
 
-const ModalCategoryPopupDelete: React.FC<ModalCategory> = ({
-  CategoryData,
+const ModalProductPopupDelete: React.FC<ModalCategory> = ({
+  ProductData,
   openDeletePopup,
   handleCLoseDelete,
   onDeleteSuccess,
 }) => {
-  const { loading, deleteCategory } = CategoryApi();
+  const { loading, apiDeleteProduct } = MachineryApi();
 
   const onSubmit = async () => {
     try {
-      if (CategoryData) {
-        const response = await deleteCategory(CategoryData?.id);
+      if (ProductData) {
+        const response = await apiDeleteProduct(ProductData?.id);
         if (onDeleteSuccess) {
           onDeleteSuccess(response);
         }
@@ -56,10 +57,10 @@ const ModalCategoryPopupDelete: React.FC<ModalCategory> = ({
       ]}
     >
       <Typography.Text>
-        Bạn có muốn xoá loại máy tên: {CategoryData?.name}
+        Bạn có muốn xoá loại máy tên: {ProductData?.name}
       </Typography.Text>
     </Modal>
   );
 };
 
-export default ModalCategoryPopupDelete;
+export default ModalProductPopupDelete;

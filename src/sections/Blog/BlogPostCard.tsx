@@ -119,7 +119,11 @@ export function PostContent({
               />
             }
             value={info.number}
-            sx={{ typography: "caption", ml: index === 0 ? 0 : 1.5 }}
+            sx={{
+              typography: "caption",
+              ml: index === 0 ? 0 : 1.5,
+              color: "black",
+            }}
           />
         ))}
       </Stack>
