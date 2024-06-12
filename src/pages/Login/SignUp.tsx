@@ -70,14 +70,18 @@ const SignUpForm: React.FC = () => {
         fullname: data.fullname,
       };
 
-      await apiRegister(params);
+      const response = await apiRegister(params);
 
-      toast.success("Đăng kí thành công");
+      if (response.StatusCode === 400) {
+        toast.error(response.Error);
+      } else {
+        toast.success("Đăng kí thành công");
+        reset();
+      }
 
-      reset();
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
-      toast("Tài khoản đã tồn tại");
+      console.log(error);
     }
   };
 
@@ -128,7 +132,7 @@ const SignUpForm: React.FC = () => {
             <Grid container>
               <Grid item xs={6}>
                 <RHFTextField
-                  type="password"
+                  type="text"
                   name="password"
                   label="Mật khẩu"
                   sx={{
