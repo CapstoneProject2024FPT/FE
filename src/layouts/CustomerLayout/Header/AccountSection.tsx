@@ -10,7 +10,9 @@ import IconButton from "@mui/material/IconButton";
 import Logout from "@mui/icons-material/Logout";
 
 const AccountSection = () => {
-  const jsonString = localStorage.getItem("userInfo");
+  const jsonString = localStorage.getItem("loginInfo");
+  console.log(jsonString);
+
   const user = JSON.parse(jsonString || "{}");
   const [name, setName] = React.useState(user?.fullName ? user.fullName : "U");
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
