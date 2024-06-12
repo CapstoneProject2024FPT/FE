@@ -1,8 +1,11 @@
-interface UserData {
-  id: string;
+export interface UserData {
   username: string;
+  password: string;
 }
-
+export interface RegisterData extends UserData {
+  email: string;
+  fullname: string;
+}
 interface userProps {
   fullName: string;
   email: string;
@@ -15,5 +18,3 @@ export interface staffModel extends userProps {
 }
 
 export interface userModel extends userProps {}
-
-export default UserData;

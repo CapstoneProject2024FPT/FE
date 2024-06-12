@@ -1,28 +1,15 @@
-import { AxiosResponse } from "axios";
+import { RegisterData, UserData } from "../../models/UserData";
 import { axiosPublic } from "../axiosInstance";
-import { LOGIN } from "../pathApiName";
-import UserData from "../../models/UserData";
+import { LOGIN, REGISTER } from "../pathApiName";
 import { useState } from "react";
-interface LoginProps {
-  username: string;
-  password: string;
-}
-
-interface RegisterProps {
-  username: string;
-  password: string;
-}
 
 export const AuthApi = () => {
   const [loading, setLoading] = useState(false);
 
-  const apiLogin = async (loginData: LoginProps): Promise<UserData> => {
+  const apiLogin = async (loginData: UserData) => {
     setLoading(true);
     try {
-      const response: AxiosResponse<UserData> = await axiosPublic.post(
-        LOGIN,
-        loginData
-      );
+      const response = await axiosPublic.post(LOGIN, loginData);
 
       return response.data;
     } catch (error) {
@@ -32,15 +19,10 @@ export const AuthApi = () => {
     }
   };
 
-  const apiRegister = async (
-    registerData: RegisterProps
-  ): Promise<UserData> => {
+  const apiRegister = async (registerData: RegisterData) => {
     try {
-      const response: AxiosResponse<UserData> = await axiosPublic.post(
-        LOGIN,
-        registerData
-      );
-      return response.data;
+      const response = await axiosPublic.post(REGISTER, registerData);
+      return response;
     } catch (error) {
       throw new Error("Login failed");
     }

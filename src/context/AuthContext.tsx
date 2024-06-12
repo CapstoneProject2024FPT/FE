@@ -5,7 +5,6 @@ import React, {
   useState,
   ReactNode,
 } from "react";
-import { jwtDecode } from "jwt-decode";
 
 interface AuthContextProps {
   authUser: string | null;
@@ -14,11 +13,6 @@ interface AuthContextProps {
 
 interface AuthContextProviderProps {
   children: ReactNode;
-}
-interface tokenApi {
-  id: string;
-  exp: Date;
-  iat: Date;
 }
 export const AuthContext = createContext<AuthContextProps | undefined>(
   undefined
@@ -41,12 +35,10 @@ export const AuthContextProvider: React.FC<AuthContextProviderProps> = ({
   const [authUser, setAuthUser] = useState<string | null>(null);
 
   useEffect(() => {
-    const loginInfoString = localStorage.getItem("LoginInfo");
+    const loginInfoString = localStorage.getItem("loginInfo");
     const auth = loginInfoString ? JSON.parse(loginInfoString) : null;
     if (auth) {
-      const authen = jwtDecode<tokenApi>(auth.token);
-
-      setAuthUser(authen.id);
+      setAuthUser(auth.id);
     }
   }, [authUser]); // Empty depen
 
