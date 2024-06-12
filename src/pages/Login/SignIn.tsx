@@ -47,14 +47,20 @@ const SignInForm: React.FC = () => {
     try {
       const response = await apiLogin(data);
 
-      localStorageFunc.setLocalStorage("loginInfo", JSON.stringify(response));
+      console.log(response);
 
-      if (response.role === "User") {
-        navigate(config.routes.home);
+      if (response.status === 200) {
+        localStorageFunc.setLocalStorage("loginInfo", JSON.stringify(response));
+        setAuthUser(response.data);
+        toast.success("Đăng nhập thành công");
+        if (response?.data.role === "User") {
+          navigate(config.routes.home);
+        }
       }
-      setAuthUser(response);
+      if (response.statusCode === 401) {
+        toast.error(response.error || "Đăng nhập thất bại");
+      }
 
-      toast.success("Đăng nhập thành công");
       reset();
     } catch (error) {
       console.error(error);

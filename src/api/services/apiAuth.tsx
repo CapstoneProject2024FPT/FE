@@ -2,6 +2,7 @@ import { RegisterData, UserData } from "../../models/UserData";
 import { axiosPublic } from "../axiosInstance";
 import { LOGIN, REGISTER } from "../pathApiName";
 import { useState } from "react";
+import axios from "axios";
 
 export const AuthApi = () => {
   const [loading, setLoading] = useState(false);
@@ -11,9 +12,14 @@ export const AuthApi = () => {
     try {
       const response = await axiosPublic.post(LOGIN, loginData);
 
-      return response.data;
-    } catch (error) {
-      throw new Error("Login failed");
+      return response;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+      if (axios.isAxiosError(error) && error.response) {
+        return error.response.data;
+      } else {
+        return { statusCode: 500, message: "Internal Server Error" };
+      }
     } finally {
       setLoading(false);
     }
@@ -23,8 +29,13 @@ export const AuthApi = () => {
     try {
       const response = await axiosPublic.post(REGISTER, registerData);
       return response;
-    } catch (error) {
-      throw new Error("Login failed");
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+      if (axios.isAxiosError(error) && error.response) {
+        return error.response.data;
+      } else {
+        return { statusCode: 500, message: "Internal Server Error" };
+      }
     }
   };
 
