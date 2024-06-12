@@ -8,11 +8,10 @@ import ListItemIcon from "@mui/material/ListItemIcon";
 import Divider from "@mui/material/Divider";
 import IconButton from "@mui/material/IconButton";
 import Logout from "@mui/icons-material/Logout";
+import config from "../../../configs";
 
 const AccountSection = () => {
   const jsonString = localStorage.getItem("loginInfo");
-  console.log(jsonString);
-
   const user = JSON.parse(jsonString || "{}");
   const [name, setName] = React.useState(user?.fullName ? user.fullName : "U");
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
@@ -38,9 +37,9 @@ const AccountSection = () => {
   };
 
   const handleLogout = () => {
-    localStorage.removeItem("userInfo");
+    localStorage.removeItem("loginInfo");
     setTimeout(() => {
-      navigate("/");
+      navigate(config.routes.home);
     }, 500);
   };
 

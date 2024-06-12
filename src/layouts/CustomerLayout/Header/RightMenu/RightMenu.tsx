@@ -8,6 +8,7 @@ import { Button } from "@mui/material";
 
 const RightMenu: React.FC = () => {
   const { authUser } = useAuthContext();
+
   return (
     <>
       <div className="right_menu">

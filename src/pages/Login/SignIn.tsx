@@ -13,12 +13,14 @@ import { AuthApi } from "../../api/services/apiAuth";
 import { toast } from "react-toastify";
 import { localStorageFunc } from "../../utils/localStoragefn";
 import { useNavigate } from "react-router-dom";
+import { useAuthContext } from "../../context/AuthContext";
 import config from "../../configs";
 
 const cx = classNames.bind(styles);
 
 const SignInForm: React.FC = () => {
   const navigate = useNavigate();
+  const { setAuthUser } = useAuthContext();
   const { apiLogin } = AuthApi();
   const LoginSchema = Yup.object().shape({
     username: Yup.string().required("bắt buộc").min(5, "Tối thiểu 5 kí tự"),
@@ -50,6 +52,7 @@ const SignInForm: React.FC = () => {
       if (response.role === "User") {
         navigate(config.routes.home);
       }
+      setAuthUser(response);
 
       toast.success("Đăng nhập thành công");
       reset();
