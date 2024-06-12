@@ -1,4 +1,5 @@
 export const LOGIN = "/auth/login";
+export const REGISTER = "/users";
 
 //Machinery
 export const GET_MACHINERY = "/Machinery";

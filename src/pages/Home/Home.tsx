@@ -11,6 +11,7 @@ import BlogHomePage from "../../sections/Blog/BLogHomePage";
 const Home: React.FC = () => {
   const productNow: ProductProps = product as ProductProps;
   const New: PostProps = post as PostProps;
+
   return (
     <div
       style={{

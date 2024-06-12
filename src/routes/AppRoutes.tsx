@@ -3,8 +3,6 @@ import { Route, Routes } from "react-router-dom";
 import config from "../configs";
 import Login from "../pages/Login/Login";
 import Home from "../pages/Home/Home";
-import Register from "../pages/Register/Register";
-
 import Detail from "../pages/Detail/Detail";
 import Cart from "../pages/Cart/Cart";
 import Dashboard from "../pages/Dashboard/Dashboard";
@@ -29,12 +27,7 @@ const AppRoute: React.FC = () => {
   return (
     <Routes>
       {/* authen */}
-      <Route key="login" path={config.routes.login} element={<Login />}></Route>
-      <Route
-        key="register"
-        path={config.routes.register}
-        element={<Register />}
-      ></Route>
+      <Route key="login" path={config.routes.login} element={<Login />} />
 
       {/* customer */}
       <Route key="customer" path={config.routes.home} element={<Layout />}>
