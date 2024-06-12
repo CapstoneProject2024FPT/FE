@@ -21,6 +21,9 @@ import BlogPosts from "../pages/Admin/Blog/BlogPosts";
 import ProfileAccount from "../pages/Admin/Profile/Profile";
 import Category from "../pages/Admin/Categories/Category";
 import Order from "../pages/Admin/Order/Order";
+import Maintenance from "../pages/UserProfile/Maintenance";
+import OrderManagement from "../pages/UserProfile/OrderManagement";
+import FavoriteProduct from "../pages/UserProfile/FavoriteProduct";
 
 const AppRoute: React.FC = () => {
   return (
@@ -48,6 +51,22 @@ const AppRoute: React.FC = () => {
           path={config.routes.userProfile}
           element={<UserProfile />}
         />
+        <Route
+          key="favoriteProduct"
+          path={config.routes.favoriteProduct}
+          element={<FavoriteProduct />}
+        />
+        <Route
+          key="maintenance"
+          path={config.routes.maintenance}
+          element={<Maintenance />}
+        />
+        <Route
+          key="orderManagement"
+          path={config.routes.orderManagement}
+          element={<OrderManagement />}
+        />
+
       </Route>
 
       {/* admin */}

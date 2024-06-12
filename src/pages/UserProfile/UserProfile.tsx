@@ -22,6 +22,7 @@ import {
   OutlinedInput,
   Typography,
 } from "@mui/material";
+import { Link } from "react-router-dom";
 
 const FormGrid = styled(Grid)(() => ({
   display: "flex",
@@ -80,25 +81,25 @@ const UserProfile: React.FC = () => {
                 }
               >
                 <div style={{ width: "auto" }}>
-                  <ListItemButton>
+                  <ListItemButton component={Link} to="/user">
                     <ListItemIcon>
                       <PersonIcon />
                     </ListItemIcon>
                     <ListItemText primary="Thông tin tài khoản" />
                   </ListItemButton>
-                  <ListItemButton>
+                  <ListItemButton component={Link} to="/order-management">
                     <ListItemIcon>
                       <CachedIcon />
                     </ListItemIcon>
                     <ListItemText primary="Quản lý đơn hàng" />
                   </ListItemButton>
-                  <ListItemButton>
+                  <ListItemButton component={Link} to="/favorite-product">
                     <ListItemIcon>
                       <FavoriteBorderIcon />
                     </ListItemIcon>
                     <ListItemText primary="Sản phẩm yêu thích" />
                   </ListItemButton>
-                  <ListItemButton>
+                  <ListItemButton component={Link} to="/maintenance">
                     <ListItemIcon>
                       <EngineeringIcon />
                     </ListItemIcon>
