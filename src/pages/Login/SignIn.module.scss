@@ -1,16 +1,12 @@
 .App {
-  font-family: sans-serif;
   text-align: center;
   background: #f6f5f7;
   display: flex;
   justify-content: center;
   align-items: center;
   flex-direction: column;
-  font-family: "Montserrat", sans-serif;
   height: 100vh;
 }
-
-@import url("https://fonts.googleapis.com/css?family=Montserrat:400,800");
 
 * {
   box-sizing: border-box;
@@ -33,11 +29,11 @@ p {
   margin: 20px 0 30px;
 }
 
-span {
-  font-size: 12px;
-}
+// span {
+//   font-size: 12px;
+// }
 
-a {
+.link {
   color: #333;
   font-size: 14px;
   text-decoration: none;
@@ -80,7 +76,7 @@ a {
   text-align: center;
 }
 
-input {
+.input-field {
   background-color: #eee;
   border: none;
   border-radius: 10px;

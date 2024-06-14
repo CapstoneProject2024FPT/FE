@@ -1,3 +1,5 @@
+import { CategoryMachineDetail } from "./category";
+
 export interface Product {
   id: string;
   image: string;
@@ -8,6 +10,7 @@ export interface Product {
 
 export type ProductProps = Product[];
 
+//productTable
 export interface ProductAdmin {
   category: {
     id: string;
@@ -23,9 +26,11 @@ export interface ProductAdmin {
   quantity: number;
   sellingPrice: number;
   serialNumber: number;
+  createDate: Date;
   image: [{ imageURL: string; createDate: string }];
 }
 
+//add product
 export interface CreateProductFormSchema {
   specificationList: Specification[] | undefined;
   name: string;
@@ -58,3 +63,38 @@ export type Specification = {
   name: string;
   value: string;
 };
+
+//ProductDetail
+interface specificationDetail {
+  specificationId: string;
+  machineryId: string;
+  name: string;
+  value: string;
+}
+
+export type ProductDetailProps = {
+  specifications: [specificationDetail];
+  image: [{ imageURL: string; createDate: string }];
+  category: CategoryMachineDetail;
+  quantity?: number;
+  sellingPrice: number;
+  id: string;
+  name: string;
+  origin: string;
+  model: string;
+  description: string;
+  brand: string;
+  timeWarranty: number;
+};
+
+//update product
+export interface UpdateProduct {
+  name: string;
+  origin: string;
+  model: string;
+  description: string;
+  sellingPrice: number;
+  brand: string;
+  timeWarranty: number;
+  categoryId: string | undefined;
+}

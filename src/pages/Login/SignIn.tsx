@@ -74,24 +74,25 @@ const SignInForm: React.FC = () => {
         <div className={cx("form")}>
           <h1>Đăng nhập</h1>
           <div className={cx("social-container")}>
-            <a href="#" className={cx("social")}>
+            <a href="#" className={cx("social", "link")}>
               <FaFacebookF />
             </a>
-            <a href="#" className={cx("social")}>
+            <a href="#" className={cx("social", "link")}>
               <FaGooglePlusG />
             </a>
-            <a href="#" className={cx("social")}>
+            <a href="#" className={cx("social", "link")}>
               <FaLinkedinIn />
             </a>
           </div>
           <span>hoặc sử dụng tài khoản</span>
-          <Stack display="flex" direction="column" spacing={2} sx={{ mt: 2 }}>
+          <Stack display="flex" direction="column" spacing={2} sx={{ mt: 3 }}>
             <RHFTextField
               name="username"
               label="Tài khoản"
               sx={{
                 width: "300px",
                 "& .MuiInputBase-input": {
+                  height: "45px",
                   boxSizing: "border-box !important",
                 },
               }}
@@ -104,7 +105,9 @@ const SignInForm: React.FC = () => {
               label="Mật khẩu"
               sx={{
                 width: "300px",
+
                 "& .MuiInputBase-input": {
+                  height: "45px",
                   boxSizing: "border-box !important",
                 },
               }}
@@ -112,7 +115,9 @@ const SignInForm: React.FC = () => {
               placeholder="Nhập mật khẩu"
             />
           </Stack>
-          <a href="#">Quên Mật Khẩu</a>
+          <a href="#" className={cx("link")}>
+            Quên Mật Khẩu
+          </a>
           <LoadingButton
             type="submit"
             loading={isSubmitting}

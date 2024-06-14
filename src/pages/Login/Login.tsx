@@ -47,7 +47,7 @@ const Login: React.FC = () => {
               </button>
             </div>
             <div className={cx("overlay-panel", "overlay-right")}>
-              <Link to={config.routes.home}>
+              <Link to={config.routes.home} style={{ marginBottom: "15px" }}>
                 <Logo />
               </Link>
               <h1>Chào, Bạn!</h1>
