@@ -13,3 +13,9 @@ export interface GetCategoryProps extends CategoryProps {
 export type CategoryReponse = {
   items: GetCategoryProps[];
 };
+
+//Omit to remove description
+export type CategoryMachineDetail = Omit<CategoryProps, "description"> & {
+  id: string;
+  type: string;
+};

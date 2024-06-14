@@ -21,12 +21,14 @@ const ModalProductPopupDelete: React.FC<ModalCategory> = ({
   handleCLoseDelete,
   onDeleteSuccess,
 }) => {
-  const { loading, apiDeleteProduct } = MachineryApi();
+  const { loading, apiDeleteMachine } = MachineryApi();
 
   const onSubmit = async () => {
     try {
       if (ProductData) {
-        const response = await apiDeleteProduct(ProductData?.id);
+        const response = await apiDeleteMachine(ProductData?.id);
+        console.log(response);
+
         if (onDeleteSuccess) {
           onDeleteSuccess(response);
         }

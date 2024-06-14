@@ -12,7 +12,8 @@ type IProps = {
 type Props = IProps & TextFieldProps;
 
 export default function RHFTextField({ name, ...other }: Props) {
-  const { control } = useFormContext();
+  const { control, getValues } = useFormContext();
+  const fieldType = other.type || "text"; // Default type is "text"
 
   return (
     <Controller
@@ -25,6 +26,11 @@ export default function RHFTextField({ name, ...other }: Props) {
           error={!!error}
           helperText={error?.message}
           {...other}
+          value={
+            fieldType === "number"
+              ? getValues(name)?.toLocaleString() || ""
+              : field.value || "" // Ensure non-number fields have default empty value
+          }
         />
       )}
     />

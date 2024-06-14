@@ -147,6 +147,7 @@ const CustomerData: React.FC = () => {
         style={{ width: 200, marginBottom: 16 }}
       />
       <Table
+        bordered
         columns={columns}
         rowKey={(record) => record.id}
         dataSource={filteredRows}

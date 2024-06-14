@@ -2,11 +2,16 @@ import { axiosPrivate, axiosPublic } from "../axiosInstance";
 import {
   ADD_MACHINERY,
   GET_MACHINERY,
+  MACHINERY_DETAIL_ID,
   MACHINERY_ID,
   MACHINERY_LIST,
 } from "../pathApiName";
 import { useState } from "react";
-import { CreateProductFormADDSchema } from "../../models/products";
+import {
+  CreateProductFormADDSchema,
+  UpdateProduct,
+} from "../../models/products";
+import axios from "axios";
 
 interface GetListProps {
   name?: string;
@@ -30,8 +35,11 @@ export const MachineryApi = () => {
       });
       return response.data;
     } catch (error) {
-      console.error(error);
-      throw new Error("Login failed");
+      if (axios.isAxiosError(error) && error.response) {
+        return error.response.data;
+      } else {
+        return { statusCode: 500, message: "Gặp vấn đề quá trình lấy dư liệu" };
+      }
     } finally {
       setLoading(false);
     }
@@ -40,21 +48,21 @@ export const MachineryApi = () => {
   const apiAddMachinery = async (params: CreateProductFormADDSchema) => {
     setLoading(true);
     try {
-      console.log(params);
-
       const response = await axiosPublic.post(ADD_MACHINERY, params);
-      return response.data;
+      return response;
     } catch (error) {
-      console.error(error);
-      throw new Error("Login failed");
+      if (axios.isAxiosError(error) && error.response) {
+        return error.response.data;
+      } else {
+        return { statusCode: 500, message: "Gặp vấn đề quá trình lấy dư liệu" };
+      }
     } finally {
       setLoading(false);
     }
   };
 
-  const apiDeleteProduct = async (id: string) => {
+  const apiDeleteMachine = async (id: string) => {
     setLoading(true);
-    console.log(id);
 
     try {
       const response = await axiosPublic.delete(
@@ -62,22 +70,28 @@ export const MachineryApi = () => {
       );
       return response.data;
     } catch (error) {
-      console.error(error);
-      throw new Error("Login failed");
+      if (axios.isAxiosError(error) && error.response) {
+        return error.response.data;
+      } else {
+        return { statusCode: 500, message: "Gặp vấn đề quá trình lấy dư liệu" };
+      }
     } finally {
       setLoading(false);
     }
   };
-  const apiGetProduct = async (query: string) => {
+  const apiGetMachine = async (query: string) => {
     setLoading(true);
     try {
       const response = await axiosPublic.get(
         `${MACHINERY_LIST}?Status=${query}`
       );
-      return response.data;
+      return response;
     } catch (error) {
-      console.error(error);
-      throw new Error("Login failed");
+      if (axios.isAxiosError(error) && error.response) {
+        return error.response.data;
+      } else {
+        return { statusCode: 500, message: "Gặp vấn đề quá trình lấy dư liệu" };
+      }
     } finally {
       setLoading(false);
     }
@@ -87,31 +101,71 @@ export const MachineryApi = () => {
     priority: number;
   }
 
-  const apiUpdatePriorityProduct = async (id: string, param: priorityProps) => {
+  const apiUpdatePriorityMachine = async (id: string, param: priorityProps) => {
     setLoading(true);
-    console.log(id);
-    console.log(param);
-
     try {
       const response = await axiosPublic.put(
         MACHINERY_ID.replace(":id", id),
         param
       );
-      return response.data;
+      return response;
     } catch (error) {
-      console.error(error);
-      throw new Error("Login failed");
+      if (axios.isAxiosError(error) && error.response) {
+        return error.response.data;
+      } else {
+        return { statusCode: 500, message: "Gặp vấn đề quá trình lấy dư liệu" };
+      }
     } finally {
       setLoading(false);
     }
   };
 
+  const apiGetDetailMachine = async (id: string) => {
+    setLoading(true);
+    try {
+      const response = await axiosPublic.get(
+        MACHINERY_DETAIL_ID.replace(":id", id)
+      );
+      return response;
+    } catch (error) {
+      if (axios.isAxiosError(error) && error.response) {
+        return error.response.data;
+      } else {
+        return { statusCode: 500, message: "Gặp vấn đề quá trình lấy dư liệu" };
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+  const apiUpdateMachineryDetail = async (
+    id: string,
+    params: UpdateProduct
+  ) => {
+    setLoading(true);
+    try {
+      const response = await axiosPublic.put(
+        MACHINERY_ID.replace(":id", id),
+        params
+      );
+      return response;
+    } catch (error) {
+      if (axios.isAxiosError(error) && error.response) {
+        return error.response.data;
+      } else {
+        return { statusCode: 500, message: "Gặp vấn đề quá trình lấy dư liệu" };
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
   return {
-    apiGetList,
     loading,
+    apiGetList,
     apiAddMachinery,
-    apiGetProduct,
-    apiDeleteProduct,
-    apiUpdatePriorityProduct,
+    apiGetMachine,
+    apiDeleteMachine,
+    apiUpdatePriorityMachine,
+    apiGetDetailMachine,
+    apiUpdateMachineryDetail,
   };
 };
