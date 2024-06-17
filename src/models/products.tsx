@@ -9,21 +9,40 @@ export interface Product {
 export type ProductProps = Product[];
 
 export interface ProductAdmin {
-  category: {
-    id: string;
-    name: string;
-    type: string;
-  };
-  description: string;
   id: string;
-  model: string;
   name: string;
   origin: string;
-  priority: number;
-  quantity: number;
+  model: string;
+  description: string;
+  status: string;
+  image: ProductAdminImage[];
+  specifications: Specification[];
+  quantity: null;
+  serialNumber: string;
   sellingPrice: number;
-  serialNumber: number;
-  image: [{ imageURL: string; createDate: string }];
+  priority: null;
+  brand: string;
+  timeWarranty: number;
+  category: ProductAdminCategory;
+  createDate: null;
+}
+
+export interface ProductAdminCategory {
+  id: string;
+  name: string;
+  type: string;
+}
+
+export interface ProductAdminImage {
+  imageURL: string;
+  createDate: Date;
+}
+
+export interface ProductAdminSpecification {
+  specificationId: string;
+  machineryId: string;
+  name: string;
+  value: string;
 }
 
 export interface CreateProductFormSchema {

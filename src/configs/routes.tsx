@@ -10,6 +10,8 @@ export const routes = {
   notFound: "notFound",
   paymentSuccessfull: "/payment-successfull",
   news: "news",
+  productList: "/product-list",
+  productDetail: `/product-list/product-detail/${suffix.detailId}`
 };
 
 export const adminRoutes = {

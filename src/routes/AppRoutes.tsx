@@ -3,7 +3,6 @@ import { Route, Routes } from "react-router-dom";
 import config from "../configs";
 import Login from "../pages/Login/Login";
 import Home from "../pages/Home/Home";
-import Detail from "../pages/Detail/Detail";
 import Cart from "../pages/Cart/Cart";
 import Dashboard from "../pages/Dashboard/Dashboard";
 import LayoutAdmin from "../layouts/AdminLayout/LayoutAdmin";
@@ -19,17 +18,19 @@ import BlogPosts from "../pages/Admin/Blog/BlogPosts";
 import ProfileAccount from "../pages/Admin/Profile/Profile";
 import Category from "../pages/Admin/Categories/Category";
 import Order from "../pages/Admin/Order/Order";
+import Products from "../pages/Products/Products";
+import Detail from "../pages/Products/ProductDetail/ProductDetail";
 
 const AppRoute: React.FC = () => {
   return (
     <Routes>
       {/* authen */}
       <Route key="login" path={config.routes.login} element={<Login />} />
-
+      <Route key="productList" path={config.routes.productList} element={<Products />}></Route>
       {/* customer */}
       <Route key="customer" path={config.routes.home} element={<Layout />}>
         <Route key="home" path={config.routes.home} element={<Home />} />
-        <Route key="detail" path={config.routes.detail} element={<Detail />} />
+        <Route key="productDetail" path={config.routes.productDetail} element={<Detail />} />
         <Route
           key="payment-successfull"
           path={config.routes.paymentSuccessfull}
