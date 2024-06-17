@@ -25,7 +25,7 @@ const ModalProductPopupPriority: React.FC<ModalProduct> = ({
   handleCLosePriority,
   onUpdatePrioritySuccess,
 }) => {
-  const { loading, apiUpdatePriorityProduct } = MachineryApi();
+  const { loading, apiUpdatePriorityMachine } = MachineryApi();
 
   const onSubmit = async () => {
     let priority = 0;
@@ -42,7 +42,7 @@ const ModalProductPopupPriority: React.FC<ModalProduct> = ({
           priority: priority,
           categoryId: ProductData?.category?.id,
         };
-        const response = await apiUpdatePriorityProduct(ProductData?.id, param);
+        const response = await apiUpdatePriorityMachine(ProductData?.id, param);
         if (onUpdatePrioritySuccess) {
           onUpdatePrioritySuccess(response);
         }

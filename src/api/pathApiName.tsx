@@ -7,6 +7,7 @@ export const ADD_MACHINERY = "/Machinery";
 export const MACHINERY_LIST = "Machinery";
 export const MACHINERY_ID = "/Machinery/:id";
 export const MACHINERY_DETAIL = "Machinery/Detail";
+export const MACHINERY_DETAIL_ID = "/Machinery/Detail/:id";
 
 //Category
 export const GET_CATEGORY = "categories?status=Active";

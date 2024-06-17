@@ -10,8 +10,6 @@ import "./ProductList.scss";
 import suffix from "../../../configs/suffixRoute";
 import { Box, Typography } from "@mui/material";
 
-const { Search } = Input;
-
 const pageSize = 20;
 
 const ProductList: React.FC = () => {
@@ -25,15 +23,13 @@ const ProductList: React.FC = () => {
   const [query, setQuery] = useState<string>("");
 
   //api
-  const { apiGetProduct, loading } = MachineryApi();
+  const { apiGetMachine } = MachineryApi();
 
   //----------------------------------------------------------------------------
   const fetchProducts = async () => {
     try {
-      const data = await apiGetProduct("Active");
-      console.log(data);
-
-      setProducts(data);
+      const apiResponse = await apiGetMachine("Active");
+      setProducts(apiResponse.data);
     } catch (error) {
       toast.error("lỗi");
     }
@@ -68,10 +64,7 @@ const ProductList: React.FC = () => {
     setQuery(e.target.value);
   };
 
-  const filteredRows = products?.filter((item) =>
-    item.name?.toLowerCase().includes(query)
-  );
-
+  const filteredRows = products?.filter((item) => item.name?.toLowerCase().includes(query))
   interface ProductCardProps {
     product: ProductAdmin;
   }
@@ -87,14 +80,15 @@ const ProductList: React.FC = () => {
           alignItems: "center",
           marginTop: "20px",
           padding: "20px",
-          borderRadius: "5px",  
+          borderRadius: "5px",
           width: "100%",
           height: "100%",
           transition: "transform 0.2s ease-in-out",
           "&:hover": {
             transform: "scale(1.05)",
           },
-          boxShadow: "rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px",
+          boxShadow:
+            "rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px",
           cursor: "pointer",
         }}
       >
@@ -107,7 +101,7 @@ const ProductList: React.FC = () => {
 
         <Box sx={{ width: "100%" }}>
           <Box>
-            <Typography variant="h6" sx={{textWrap: "wrap"}}>
+            <Typography variant="h6" sx={{ textWrap: "wrap" }}>
               Tên: {product.name}
             </Typography>
             <Typography variant="subtitle1">Loại: {product.model}</Typography>
@@ -135,7 +129,7 @@ const ProductList: React.FC = () => {
   };
 
   return (
-    <Box sx={{ width: "100%"}}>
+    <Box sx={{ width: "100%" }}>
       {/* <Search
         placeholder="Tìm kiếm"
         onChange={handleSearch}
@@ -151,7 +145,7 @@ const ProductList: React.FC = () => {
           margin: "auto",
         }}
       >
-        {filteredRows?.map((product) => (
+        {filteredRows?.map((product: any) => (
           <ProductCard key={product.id} product={product} />
         ))}
       </Box>

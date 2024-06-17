@@ -10,6 +10,7 @@ import { ProductAdmin } from "../../models/products";
 import { useNavigate } from "react-router-dom";
 import config from "../../configs";
 import ModalProductPopupPriority from "./PopupProduct/ModalProductPopupPriority";
+import { formatDateFunc } from "../../utils/fn";
 
 type ColumnsType<T> = TableProps<T>["columns"];
 const { Search } = Input;
@@ -32,11 +33,11 @@ const TableProduct: React.FC = () => {
   const [selectedData, setSelectedData] = useState<ProductAdmin | null>(null);
 
   //api
-  const { apiGetProduct, loading } = MachineryApi();
+  const { apiGetMachine, loading } = MachineryApi();
 
   //modal popup
   const handleActionDetail = (record: ProductAdmin) => {
-    setSelectedData(record);
+    navigate(config.adminRoutes.viewDetailProduct.replace(":id", record.id));
   };
 
   //delete
@@ -62,10 +63,14 @@ const TableProduct: React.FC = () => {
   //----------------------------------------------------------------------------
   const fetchProducts = async () => {
     try {
-      const data = await apiGetProduct("Active");
-      console.log(data);
+      const response = await apiGetMachine("Active");
 
-      setProducts(data);
+      if (response && response.status === 200) {
+        setProducts(response.data);
+      } else {
+        //lỗi show thông báo lỗi
+        toast.error(response.Error);
+      }
     } catch (error) {
       toast.error("lỗi");
     }
@@ -168,7 +173,8 @@ const TableProduct: React.FC = () => {
     },
     {
       title: "Ngày tạo",
-      dataIndex: "",
+      dataIndex: "createDate",
+      render: (createDate) => formatDateFunc.formatDate(createDate),
     },
     {
       title: "Hành Động",
@@ -226,6 +232,7 @@ const TableProduct: React.FC = () => {
         rowKey={(record) => record.id}
         dataSource={filteredRows}
         pagination={customPagination}
+        bordered
         loading={loading}
         onChange={handleTableChange}
       />

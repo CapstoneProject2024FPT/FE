@@ -26,7 +26,7 @@ import { toast } from "react-toastify";
 import { useParams } from "react-router-dom";
 import { MachineryApi } from "../../../api/services/apiMachinery";
 import Zoom from "../../../components/zoomImageHover";
-import { ProductAdmin } from "../../../models/products";
+import { ProductAdmin, ProductDetailProps } from "../../../models/products";
 
 const Detail: React.FC = () => {
   const params = useParams();
@@ -34,7 +34,7 @@ const Detail: React.FC = () => {
   const [currentQuantities, setCurrentQuantities] = useState<number>(1);
   const [isActive, setActive] = useState(false);
   const [isRed, setIsRed] = useState(false);
-  const [product, setProduct] = useState<ProductAdmin>();
+  const [product, setProduct] = useState<ProductDetailProps>();
   const { apiGetMachineryID } = MachineryApi();
 
   const fetchProducts = async () => {
@@ -510,7 +510,7 @@ const Detail: React.FC = () => {
         </Box>
       </Box>
       <Box>
-        {product?.specifications.map((item) => (
+        {product?.specifications.map((item: any) => (
           <Box
             sx={{
               display: "flex",

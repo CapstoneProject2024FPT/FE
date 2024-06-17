@@ -110,6 +110,7 @@ const StaffData: React.FC = () => {
       />
       <Table
         columns={columns}
+        bordered
         rowKey={(record) => record.id}
         dataSource={filteredRows}
         pagination={customPagination}

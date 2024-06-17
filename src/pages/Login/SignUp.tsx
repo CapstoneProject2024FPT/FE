@@ -35,7 +35,7 @@ const SignUpForm: React.FC = () => {
       ),
     confirmPassword: Yup.string()
       .required("Bắt buộc")
-      .oneOf([Yup.ref("password")], "Password must match"),
+      .oneOf([Yup.ref("password")], "Phải giống mật khẩu"),
     email: Yup.string()
       .required("Bắt buộc")
       .matches(patternValidate.email, "Phải đúng định dạng"),
@@ -93,24 +93,25 @@ const SignUpForm: React.FC = () => {
             Tạo Tài Khoản
           </Typography>
           <div className={cx("social-container")}>
-            <a href="#" className={cx("social")}>
+            <a href="#" className={cx("social", "link")}>
               <FaFacebookF />
             </a>
-            <a href="#" className={cx("social")}>
+            <a href="#" className={cx("social", "link")}>
               <FaGooglePlusG />
             </a>
-            <a href="#" className={cx("social")}>
+            <a href="#" className={cx("social", "link")}>
               <FaLinkedinIn />
             </a>
           </div>
           <span>hoặc tạo tài khoản mới</span>
-          <Stack display="flex" direction="column" spacing={2} sx={{ mt: 2 }}>
+          <Stack display="flex" direction="column" spacing={2} sx={{ mt: 3 }}>
             <RHFTextField
               name="fullname"
               label="Tên đầy đủ"
               sx={{
                 width: "350px",
                 "& .MuiInputBase-input": {
+                  height: "45px",
                   boxSizing: "border-box !important",
                 },
               }}
@@ -123,6 +124,7 @@ const SignUpForm: React.FC = () => {
               sx={{
                 width: "350px",
                 "& .MuiInputBase-input": {
+                  height: "45px",
                   boxSizing: "border-box !important",
                 },
               }}
@@ -138,6 +140,7 @@ const SignUpForm: React.FC = () => {
                   sx={{
                     width: "170px",
                     "& .MuiInputBase-input": {
+                      height: "45px",
                       boxSizing: "border-box !important",
                     },
                   }}
@@ -153,6 +156,7 @@ const SignUpForm: React.FC = () => {
                   sx={{
                     width: "170px",
                     "& .MuiInputBase-input": {
+                      height: "45px",
                       boxSizing: "border-box !important",
                     },
                   }}
@@ -168,6 +172,7 @@ const SignUpForm: React.FC = () => {
               sx={{
                 width: "350px",
                 "& .MuiInputBase-input": {
+                  height: "45px",
                   boxSizing: "border-box !important",
                 },
               }}

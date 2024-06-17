@@ -23,6 +23,7 @@ export const adminRoutes = {
   editNew: `/dashboard/edit/new/${suffix.detailId}`,
   product: "/dashboard/product",
   createProduct: "/dashboard/create/product",
+  viewDetailProduct: "/dashboard/product/:id",
   profile: "/dashboard/user/account",
   category: "/dashboard/categories",
   order: "/dashboard/orders",
