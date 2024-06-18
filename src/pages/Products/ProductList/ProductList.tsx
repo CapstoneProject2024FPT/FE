@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useState } from "react";
-import { Input, Button } from "antd";
+import { Button } from "antd";
 import { toast } from "react-toastify";
 import { MachineryApi } from "../../../api/services/apiMachinery";
 import { ProductAdmin } from "../../../models/products";
@@ -64,7 +64,9 @@ const ProductList: React.FC = () => {
     setQuery(e.target.value);
   };
 
-  const filteredRows = products?.filter((item) => item.name?.toLowerCase().includes(query))
+  const filteredRows = products?.filter((item) =>
+    item.name?.toLowerCase().includes(query)
+  );
   interface ProductCardProps {
     product: ProductAdmin;
   }

@@ -26,7 +26,7 @@ import { toast } from "react-toastify";
 import { useParams } from "react-router-dom";
 import { MachineryApi } from "../../../api/services/apiMachinery";
 import Zoom from "../../../components/zoomImageHover";
-import { ProductAdmin, ProductDetailProps } from "../../../models/products";
+import { ProductDetailProps } from "../../../models/products";
 
 const Detail: React.FC = () => {
   const params = useParams();
@@ -57,6 +57,7 @@ const Detail: React.FC = () => {
     return () => {
       fetchProducts();
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleClickButton = () => {
@@ -215,12 +216,12 @@ const Detail: React.FC = () => {
                 sx={{ cursor: "pointer", color: "blue" }}
               >
                 {/* TODO: sau có brand thì change từ model về brand */}
-                {product?.model}
+                {product?.brand}
               </Typography>
             </Typography>
 
             <Typography sx={{ color: "lightgrey" }}>
-              SKU: {product?.serialNumber}
+              Mẫu mã: {product?.model}
             </Typography>
           </Box>
 
@@ -509,9 +510,10 @@ const Detail: React.FC = () => {
           </Box>
         </Box>
       </Box>
-      <Box>
-        {product?.specifications.map((item: any) => (
+      <Box sx={{ mt: 2 }}>
+        {product?.specifications.map((item, index) => (
           <Box
+            key={index}
             sx={{
               display: "flex",
               border: "1px solid #dee2e6",

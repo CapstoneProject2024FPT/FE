@@ -28,7 +28,6 @@ export interface ProductAdmin {
   serialNumber: number;
   createDate: Date;
   image: [{ imageURL: string; createDate: string }];
-  data: any
 }
 
 export interface ProductAdminCategory {

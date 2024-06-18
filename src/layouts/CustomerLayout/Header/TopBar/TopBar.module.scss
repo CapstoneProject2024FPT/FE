@@ -22,10 +22,11 @@
 .main-nav {
   background-color: #333;
   text-align: center;
+  display: flex;
+  justify-content: space-around;
 }
 
 .main-nav a {
-  display: inline-block;
   padding: 15px 20px;
   color: white;
   text-decoration: none;
