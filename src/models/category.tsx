@@ -1,13 +1,13 @@
 export interface CategoryProps {
   name: string;
   description: string;
+  masterCategoryId?: string | null | undefined;
 }
 
 export interface GetCategoryProps extends CategoryProps {
   id: string;
   status: string;
   type: string;
-  masterCategoryId?: string;
 }
 
 export type CategoryReponse = {

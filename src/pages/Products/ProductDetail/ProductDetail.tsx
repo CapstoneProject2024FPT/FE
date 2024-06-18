@@ -27,6 +27,7 @@ import { useParams } from "react-router-dom";
 import { MachineryApi } from "../../../api/services/apiMachinery";
 import Zoom from "../../../components/zoomImageHover";
 import { ProductDetailProps } from "../../../models/products";
+import { formatMoney } from "../../../utils/fn";
 
 const Detail: React.FC = () => {
   const params = useParams();
@@ -42,8 +43,6 @@ const Detail: React.FC = () => {
       const id = params.id;
       if (id) {
         const data = await apiGetMachineryID(id);
-        console.log(data);
-
         setProduct(data);
       } else {
         throw new Error("Loi");
@@ -62,6 +61,22 @@ const Detail: React.FC = () => {
 
   const handleClickButton = () => {
     setIsRed(!isRed);
+  };
+
+  const addToCart = () => {
+    if (isActive) return;
+    setActive(!isActive);
+    const existCart = localStorage.getItem("cart");
+    const productQuantity = { ...product, currentQuantities };
+    if (existCart) {
+      const parseProduct = JSON.parse(existCart);
+      parseProduct.push(productQuantity);
+      localStorage.setItem("cart", JSON.stringify(parseProduct));
+      toast.success("Thêm sản phẩm thành công");
+    } else {
+      localStorage.setItem("cart", JSON.stringify([productQuantity]));
+      toast.success("Thêm sản phẩm thành công");
+    }
   };
 
   const buttonStyle = {
@@ -90,11 +105,6 @@ const Detail: React.FC = () => {
   const decreaseQuantity = () => {
     if (currentQuantities === 1) return;
     setCurrentQuantities(currentQuantities - 1);
-  };
-
-  const toggleClass = () => {
-    if (isActive) return;
-    setActive(!isActive);
   };
 
   return (
@@ -240,12 +250,12 @@ const Detail: React.FC = () => {
               <Typography
                 sx={{
                   color: "orange",
-                  "&:after": { content: "' VNĐ'" },
                 }}
                 variant="h4"
               >
                 {/* TODO: Selling price when have promotion */}
                 {/* {(product?.sellingPrice * (100 - product.discountPercentage)) / 100} */}
+                {formatMoney(product?.sellingPrice)}
               </Typography>
               {/* Original Price */}
               <Typography
@@ -331,7 +341,7 @@ const Detail: React.FC = () => {
 
               <Button
                 className={`cart-button ${isActive && "clicked"}`}
-                onClick={toggleClass}
+                onClick={addToCart}
                 sx={{
                   marginTop: "20px",
                   position: "relative",

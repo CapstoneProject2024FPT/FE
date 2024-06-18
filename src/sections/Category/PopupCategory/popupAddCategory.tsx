@@ -1,5 +1,4 @@
-import React from "react";
-import { CategoryProps } from "../../../models/category";
+import React, { useEffect, useState } from "react";
 import { Modal } from "antd";
 import { FormProvider, RHFTextField } from "../../../components/hook-form";
 // form
@@ -7,21 +6,30 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm } from "react-hook-form";
 import * as Yup from "yup";
 import { LoadingButton } from "@mui/lab";
-import { Card, Stack } from "@mui/material";
+import { Card, Stack, TextField } from "@mui/material";
 import { CategoryApi } from "../../../api/services/apiCategories";
+import { GetCategoryProps } from "../../../models/category";
+import { toast } from "react-toastify";
 
 interface ModalCategory {
   open: boolean;
   handleClose: () => void;
   onAddSuccess?: () => void;
 }
-
+interface CategoryProps {
+  name: string;
+  description: string;
+}
 const ModalCategoryPopupAdd: React.FC<ModalCategory> = ({
   open,
   handleClose,
   onAddSuccess,
 }) => {
-  const { addCategory } = CategoryApi();
+  const { addCategory, getCategoryParent } = CategoryApi();
+
+  const [categories, setCategories] = useState<GetCategoryProps[]>([]);
+  const [selectCategory, setSelectCategory] = useState<string>();
+
   const CategorySchema = Yup.object().shape({
     name: Yup.string().required("bắt buộc").min(5, "Tối thiểu 5 kí tự"),
     description: Yup.string()
@@ -45,9 +53,30 @@ const ModalCategoryPopupAdd: React.FC<ModalCategory> = ({
     formState: { isSubmitting },
   } = methods;
 
+  //api
+  const fetchCategories = async () => {
+    try {
+      const data = await getCategoryParent();
+      setCategories(data);
+    } catch (error) {
+      toast.error("lỗi");
+    }
+  };
+
+  useEffect(() => {
+    fetchCategories();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   const onSubmit = async (data: CategoryProps) => {
     try {
-      await addCategory(data);
+      const dataSend = {
+        ...data,
+        masterCategoryId: selectCategory,
+      };
+      console.log(dataSend);
+
+      await addCategory(dataSend);
       if (onAddSuccess) {
         onAddSuccess();
       }
@@ -75,6 +104,30 @@ const ModalCategoryPopupAdd: React.FC<ModalCategory> = ({
               multiline
               rows={5}
             />
+            <TextField
+              select
+              label="Chọn Loại máy"
+              SelectProps={{ native: true }}
+              InputLabelProps={{
+                shrink: true,
+              }}
+              onChange={(e) => {
+                setSelectCategory(e.target.value);
+              }}
+            >
+              <option value="">Chọn loại máy</option>
+              {categories && categories?.length > 0 ? (
+                categories?.map((category) => (
+                  <option key={category.id} value={category.id}>
+                    {category.name}
+                  </option>
+                ))
+              ) : (
+                <option value="" disabled>
+                  Không có loại máy
+                </option>
+              )}
+            </TextField>
           </Stack>
           <div
             style={{
