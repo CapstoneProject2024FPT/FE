@@ -30,6 +30,24 @@ export interface ProductAdmin {
   image: [{ imageURL: string; createDate: string }];
 }
 
+export interface ProductAdminCategory {
+  id: string;
+  name: string;
+  type: string;
+}
+
+export interface ProductAdminImage {
+  imageURL: string;
+  createDate: Date;
+}
+
+export interface ProductAdminSpecification {
+  specificationId: string;
+  machineryId: string;
+  name: string;
+  value: string;
+}
+
 //add product
 export interface CreateProductFormSchema {
   specificationList: Specification[] | undefined;
@@ -85,6 +103,7 @@ export type ProductDetailProps = {
   description: string;
   brand: string;
   timeWarranty: number;
+  serialNumber: number;
 };
 
 //update product

@@ -2,6 +2,7 @@ import { axiosPrivate, axiosPublic } from "../axiosInstance";
 import {
   ADD_MACHINERY,
   GET_MACHINERY,
+  MACHINERY_DETAIL,
   MACHINERY_DETAIL_ID,
   MACHINERY_ID,
   MACHINERY_LIST,
@@ -103,6 +104,8 @@ export const MachineryApi = () => {
 
   const apiUpdatePriorityMachine = async (id: string, param: priorityProps) => {
     setLoading(true);
+    console.log(id);
+    console.log(param);
     try {
       const response = await axiosPublic.put(
         MACHINERY_ID.replace(":id", id),
@@ -115,6 +118,19 @@ export const MachineryApi = () => {
       } else {
         return { statusCode: 500, message: "Gặp vấn đề quá trình lấy dư liệu" };
       }
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const apiGetMachineryID = async (id: string) => {
+    setLoading(true);
+    try {
+      const response = await axiosPublic.get(`${MACHINERY_DETAIL}/${id}`);
+      return response.data;
+    } catch (error) {
+      console.error(error);
+      throw new Error("Login failed");
     } finally {
       setLoading(false);
     }
@@ -158,6 +174,8 @@ export const MachineryApi = () => {
       setLoading(false);
     }
   };
+
+
   return {
     loading,
     apiGetList,
@@ -167,5 +185,6 @@ export const MachineryApi = () => {
     apiUpdatePriorityMachine,
     apiGetDetailMachine,
     apiUpdateMachineryDetail,
+    apiGetMachineryID,
   };
 };
