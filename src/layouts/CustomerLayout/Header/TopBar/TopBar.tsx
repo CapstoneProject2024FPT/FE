@@ -29,11 +29,8 @@ const TopBar: React.FC = () => {
           <RightMenu />
         </div>
         <nav className={cx("main-nav")}>
-          <a href="#">MÁY MỚI</a>
-          <a href="#">MÁY QUA SỬ DỤNG</a>
-          <a href="#">DỤNG CỤ & PHỤ TÙNG</a>
-          <a href="#">DẦU CẮT GỌT</a>
-          <a href="#">DỊCH VỤ</a>
+          <a href="#">LOẠI MÁY </a>
+          <a href="#">TIN TỨC</a>
         </nav>
       </header>
     </>
