@@ -83,7 +83,7 @@ const ProductList: React.FC = () => {
           flexDirection: "column",
           justifyContent: "space-between",
           alignItems: "center",
-          marginTop: "20px",
+          marginTop: "50px",
           padding: "20px",
           borderRadius: "5px",
           width: "100%",
@@ -143,7 +143,7 @@ const ProductList: React.FC = () => {
       <Box
         sx={{
           display: "grid",
-          gridTemplateColumns: "repeat(auto-fill, minmax(350px, 1fr))",
+          gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))",
           width: "90%",
           gap: "50px",
           justifyContent: "space-between",

@@ -511,6 +511,10 @@ const Detail: React.FC = () => {
         </Box>
       </Box>
       <Box sx={{ mt: 2 }}>
+        <Divider sx={{ borderBottomWidth: "5px", margin: "20px 0" }} />
+        <Box>
+          <Typography variant="h5" sx={{margin: "10px 0", fontWeight: "bold"}}>Thông số: {product?.name}</Typography>
+        </Box>
         {product?.specifications.map((item, index) => (
           <Box
             key={index}
