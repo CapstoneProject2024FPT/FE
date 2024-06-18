@@ -20,7 +20,7 @@ import ProfileAccount from "../pages/Admin/Profile/Profile";
 import Category from "../pages/Admin/Categories/Category";
 import Order from "../pages/Admin/Order/Order";
 import Maintenance from "../pages/UserProfile/Maintenance";
-import OrderManagement from "../pages/UserProfile/OrderManagement";
+import OrderManagement from "../pages/UserProfile/OrderManagement/OrderManagement";
 import FavoriteProduct from "../pages/UserProfile/FavoriteProduct";
 
 const AppRoute: React.FC = () => {

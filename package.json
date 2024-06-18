@@ -19,6 +19,7 @@
     "@mui/lab": "^5.0.0-alpha.170",
     "@mui/material": "^5.15.18",
     "@mui/styled-engine-sc": "^6.0.0-alpha.18",
+    "@mui/x-data-grid": "^7.7.0",
     "@uidotdev/usehooks": "^2.4.1",
     "antd": "^5.15.4",
     "aos": "^2.3.4",

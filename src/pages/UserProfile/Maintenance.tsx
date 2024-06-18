@@ -12,6 +12,7 @@ import {
     ListItemIcon,
     ListItemText,
     ListSubheader,
+    Table,
     Typography,
 } from "@mui/material";
 import { Link } from "react-router-dom";
@@ -29,7 +30,7 @@ const Maintenance: React.FC = () => {
                 style={{
                     backgroundColor: "#ECF0F1",
                     borderRadius: "20px",
-                    width: "65%",
+                    width: "80%",
                     height: "100%",
                 }}
             >
@@ -92,7 +93,9 @@ const Maintenance: React.FC = () => {
                                         border: "1px solid ",
                                     }}
                                 >
+                                    <Table>
 
+                                    </Table>
 
                                 </Paper>
                             </Box>

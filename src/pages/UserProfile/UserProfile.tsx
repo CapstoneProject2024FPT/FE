@@ -54,7 +54,7 @@ const UserProfile: React.FC = () => {
         style={{
           backgroundColor: "#ECF0F1",
           borderRadius: "20px",
-          width: "65%",
+          width: "80%",
           height: "100%",
         }}
       >

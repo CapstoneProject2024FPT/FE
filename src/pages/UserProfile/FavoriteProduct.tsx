@@ -30,7 +30,7 @@ const FavoriteProduct: React.FC = () => {
                 style={{
                     backgroundColor: "#ECF0F1",
                     borderRadius: "20px",
-                    width: "65%",
+                    width: "80%",
                     height: "100%",
                 }}
             >
@@ -93,8 +93,21 @@ const FavoriteProduct: React.FC = () => {
                                         border: "1px solid ",
                                     }}
                                 >
-
-
+                                    <Typography variant="h5" component="h2">
+                                        Sản phẩm yêu thích
+                                    </Typography>
+                                    <Typography variant="h6" component="h2">
+                                        Sản phẩm 1
+                                    </Typography>
+                                    <Typography variant="h6" component="h2">
+                                        Sản phẩm 2
+                                    </Typography>
+                                    <Typography variant="h6" component="h2">
+                                        Sản phẩm 3
+                                    </Typography>
+                                    <Typography variant="h6" component="h2">
+                                        Sản phẩm 4
+                                    </Typography>
                                 </Paper>
                             </Box>
                         </Grid>
