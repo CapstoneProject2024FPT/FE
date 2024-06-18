@@ -131,6 +131,7 @@ const ProductDetail = () => {
                           data-fancybox="gallery"
                           href={imageList.imageURL}
                           key={index}
+                          style={{ marginRight: "5px" }}
                         >
                           <img
                             alt=""
