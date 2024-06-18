@@ -21,6 +21,9 @@ import Order from "../pages/Admin/Order/Order";
 import Products from "../pages/Products/Products";
 import Detail from "../pages/Products/ProductDetail/ProductDetail";
 import ViewProductDetail from "../pages/Admin/Product/ViewProductDetail";
+import Maintenance from "../pages/UserProfile/Maintenance";
+import OrderManagement from "../pages/UserProfile/OrderManagement/OrderManagement";
+import FavoriteProduct from "../pages/UserProfile/FavoriteProduct";
 
 const AppRoute: React.FC = () => {
   return (
@@ -51,6 +54,21 @@ const AppRoute: React.FC = () => {
           key="productList"
           path={config.routes.productList}
           element={<Products />}
+        />
+        <Route
+          key="favoriteProduct"
+          path={config.routes.favoriteProduct}
+          element={<FavoriteProduct />}
+        />
+        <Route
+          key="maintenance"
+          path={config.routes.maintenance}
+          element={<Maintenance />}
+        />
+        <Route
+          key="orderManagement"
+          path={config.routes.orderManagement}
+          element={<OrderManagement />}
         />
       </Route>
 
