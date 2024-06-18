@@ -3,7 +3,7 @@ import { Route, Routes } from "react-router-dom";
 import config from "../configs";
 import Login from "../pages/Login/Login";
 import Home from "../pages/Home/Home";
-import Cart from "../pages/Cart/Cart";
+import Checkout from "../pages/Cart/Checkout";
 import Dashboard from "../pages/Dashboard/Dashboard";
 import LayoutAdmin from "../layouts/AdminLayout/LayoutAdmin";
 import Account from "../pages/Admin/User/Account";
@@ -27,21 +27,30 @@ const AppRoute: React.FC = () => {
     <Routes>
       {/* authen */}
       <Route key="login" path={config.routes.login} element={<Login />} />
-      <Route key="productList" path={config.routes.productList} element={<Products />}></Route>
+
       {/* customer */}
       <Route key="customer" path={config.routes.home} element={<Layout />}>
         <Route key="home" path={config.routes.home} element={<Home />} />
-        <Route key="productDetail" path={config.routes.productDetail} element={<Detail />} />
+        <Route
+          key="productDetail"
+          path={config.routes.productDetail}
+          element={<Detail />}
+        />
         <Route
           key="payment-successfull"
           path={config.routes.paymentSuccessfull}
           element={<PaymentSuccessfull />}
         ></Route>
-        <Route key="cart" path={config.routes.cart} element={<Cart />} />
+        <Route key="cart" path={config.routes.cart} element={<Checkout />} />
         <Route
           key="user"
           path={config.routes.userProfile}
           element={<UserProfile />}
+        />
+        <Route
+          key="productList"
+          path={config.routes.productList}
+          element={<Products />}
         />
       </Route>
 

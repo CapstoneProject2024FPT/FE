@@ -1,11 +1,21 @@
+import { CategoryMachineDetail } from "./category";
+import { specificationDetail } from "./products";
+
 interface CartItem {
+  specifications: [specificationDetail];
+  image: [{ imageURL: string; createDate: string }];
+  category: CategoryMachineDetail;
+  quantity?: number;
+  sellingPrice: number;
   id: string;
   name: string;
-  price: number;
+  origin: string;
+  model: string;
   description: string;
-  brandName: string;
-  automatic: boolean;
-  image: string;
+  brand: string;
+  timeWarranty: number;
+  serialNumber: number;
+  currentQuantities: number;
 }
 
 export type cartProps = CartItem[];

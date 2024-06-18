@@ -1,6 +1,11 @@
 import { AxiosResponse } from "axios";
 import { axiosPublic } from "../axiosInstance";
-import { CATEGORY, CATEGORY_ID, GET_CATEGORY } from "../pathApiName";
+import {
+  CATEGORY,
+  CATEGORY_ID,
+  GET_CATEGORY,
+  GET_CATEGORY_PARENT,
+} from "../pathApiName";
 import { CategoryProps, CategoryReponse } from "../../models/category";
 import { useState } from "react";
 
@@ -22,6 +27,20 @@ export const CategoryApi = () => {
     }
   };
 
+  const getCategoryParent = async () => {
+    try {
+      setLoading(true);
+      const response: AxiosResponse<CategoryReponse> = await axiosPublic.get(
+        GET_CATEGORY_PARENT
+      );
+
+      setLoading(false);
+      return response.data.items;
+    } catch (error) {
+      setLoading(false);
+      throw new Error("Login failed");
+    }
+  };
   const deleteCategory = async (id: string) => {
     try {
       setLoading(true);
@@ -61,5 +80,12 @@ export const CategoryApi = () => {
       throw new Error("Login failed");
     }
   };
-  return { getCategory, loading, deleteCategory, addCategory, updateCategory };
+  return {
+    getCategory,
+    loading,
+    deleteCategory,
+    addCategory,
+    updateCategory,
+    getCategoryParent,
+  };
 };

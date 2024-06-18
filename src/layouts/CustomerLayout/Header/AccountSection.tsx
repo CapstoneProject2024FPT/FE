@@ -9,6 +9,8 @@ import Divider from "@mui/material/Divider";
 import IconButton from "@mui/material/IconButton";
 import Logout from "@mui/icons-material/Logout";
 import config from "../../../configs";
+import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
+import { Button } from "@mui/material";
 
 const AccountSection = () => {
   const jsonString = localStorage.getItem("loginInfo");
@@ -46,6 +48,11 @@ const AccountSection = () => {
   return (
     <>
       <Box sx={{ display: "flex", alignItems: "center", textAlign: "center" }}>
+        <Link to={config.routes.cart}>
+          <Button startIcon={<ShoppingCartIcon />} variant="outlined">
+            Giỏ hàng
+          </Button>
+        </Link>
         <IconButton
           onClick={handleClick}
           size="small"
