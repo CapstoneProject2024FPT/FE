@@ -6,8 +6,8 @@ import { Box, Stack, Button } from "@mui/material";
 import { UploadMultiFileProps } from "./type";
 //
 import BlockContent from "./BlockContent";
-// import RejectionFiles from './RejectionFiles';
-// import MultiFilePreview from './MultiFilePreview';
+import RejectionFiles from "./RejectionFiles";
+import MultiFilePreview from "./MultiFilePreview";
 
 // ----------------------------------------------------------------------
 
@@ -15,6 +15,7 @@ const DropZoneStyle = styled("div")(({ theme }) => ({
   outline: "none",
   padding: theme.spacing(5, 1),
   borderRadius: theme.shape.borderRadius,
+  backgroundColor: "#F4F6F8",
   border: `1px dashed rgba(145, 158, 171, 0.32)`,
   "&:hover": { opacity: 0.72, cursor: "pointer" },
 }));
@@ -23,17 +24,29 @@ const DropZoneStyle = styled("div")(({ theme }) => ({
 
 export default function UploadMultiFile({
   error,
+  showPreview = false,
   files,
   onUpload,
+  onRemove,
   onRemoveAll,
   helperText,
   sx,
   ...other
 }: UploadMultiFileProps) {
-  const { getRootProps, getInputProps, isDragActive, isDragReject } =
-    useDropzone({
-      ...other,
-    });
+  const {
+    getRootProps,
+    getInputProps,
+    isDragActive,
+    isDragReject,
+    fileRejections,
+  } = useDropzone({
+    accept: {
+      "image/jpeg": [".jpg", ".jpeg"],
+      "image/png": [],
+    },
+    useFsAccessApi: true,
+    ...other,
+  });
 
   return (
     <Box sx={{ width: "100%", ...sx }}>
@@ -53,9 +66,15 @@ export default function UploadMultiFile({
         <BlockContent />
       </DropZoneStyle>
 
-      {/* {fileRejections.length > 0 && <RejectionFiles fileRejections={fileRejections} />}
+      {fileRejections?.length > 0 && (
+        <RejectionFiles fileRejections={fileRejections} />
+      )}
 
-      <MultiFilePreview files={files} showPreview={showPreview} onRemove={onRemove} /> */}
+      <MultiFilePreview
+        files={files}
+        showPreview={showPreview}
+        onRemove={onRemove}
+      />
 
       {files?.length > 0 && (
         <Stack direction="row" justifyContent="flex-end" spacing={1.5}>

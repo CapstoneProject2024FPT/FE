@@ -5,10 +5,10 @@ import { FormHelperText } from "@mui/material";
 // type
 import {
   UploadAvatar,
-  UploadMultiFile,
   UploadSingleFile,
   UploadProps,
   UploadMultiFileProps,
+  UploadMultiFile,
 } from "../upload";
 
 // ----------------------------------------------------------------------
@@ -73,8 +73,7 @@ export function RHFUploadSingleFile({ name, ...other }: Props) {
   );
 }
 
-// ----------------------------------------------------------------------
-
+//.--------------------------------------------------------------------------------
 interface RHFUploadMultiFileProps extends Omit<UploadMultiFileProps, "files"> {
   name: string;
 }

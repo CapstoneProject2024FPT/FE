@@ -8,6 +8,8 @@ import ListItemIcon from "@mui/material/ListItemIcon";
 import Divider from "@mui/material/Divider";
 import IconButton from "@mui/material/IconButton";
 import Logout from "@mui/icons-material/Logout";
+import config from "../../../../configs";
+import { Typography } from "@mui/material";
 
 const AccountSection = () => {
   const jsonString = localStorage.getItem("userInfo");
@@ -45,6 +47,7 @@ const AccountSection = () => {
   return (
     <>
       <Box sx={{ display: "flex", alignItems: "center", textAlign: "center" }}>
+        <Typography>{user.name ? user.name : "Hồ Minh Dũng"}</Typography>
         <IconButton
           onClick={handleClick}
           size="small"
@@ -78,7 +81,10 @@ const AccountSection = () => {
         anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
       >
         <MenuItem>
-          <Link to="" style={{ textDecoration: "none", color: "inherit" }}>
+          <Link
+            to={config.adminRoutes.profile}
+            style={{ textDecoration: "none", color: "inherit" }}
+          >
             Profile
           </Link>
         </MenuItem>

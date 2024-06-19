@@ -8,9 +8,12 @@ import ListItemIcon from "@mui/material/ListItemIcon";
 import Divider from "@mui/material/Divider";
 import IconButton from "@mui/material/IconButton";
 import Logout from "@mui/icons-material/Logout";
+import config from "../../../configs";
+import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
+import { Button } from "@mui/material";
 
 const AccountSection = () => {
-  const jsonString = localStorage.getItem("userInfo");
+  const jsonString = localStorage.getItem("loginInfo");
   const user = JSON.parse(jsonString || "{}");
   const [name, setName] = React.useState(user?.fullName ? user.fullName : "U");
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
@@ -36,15 +39,20 @@ const AccountSection = () => {
   };
 
   const handleLogout = () => {
-    localStorage.removeItem("userInfo");
+    localStorage.removeItem("loginInfo");
     setTimeout(() => {
-      navigate("/");
+      navigate(config.routes.home);
     }, 500);
   };
 
   return (
     <>
       <Box sx={{ display: "flex", alignItems: "center", textAlign: "center" }}>
+        <Link to={config.routes.cart}>
+          <Button startIcon={<ShoppingCartIcon />} variant="outlined">
+            Giỏ hàng
+          </Button>
+        </Link>
         <IconButton
           onClick={handleClick}
           size="small"

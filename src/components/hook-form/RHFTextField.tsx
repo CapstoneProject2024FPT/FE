@@ -1,7 +1,7 @@
 // form
-import { useFormContext, Controller } from 'react-hook-form';
+import { useFormContext, Controller } from "react-hook-form";
 // @mui
-import { TextField, TextFieldProps } from '@mui/material';
+import { TextField, TextFieldProps } from "@mui/material";
 
 // ----------------------------------------------------------------------
 
@@ -12,14 +12,26 @@ type IProps = {
 type Props = IProps & TextFieldProps;
 
 export default function RHFTextField({ name, ...other }: Props) {
-  const { control } = useFormContext();
+  const { control, getValues } = useFormContext();
+  const fieldType = other.type || "text"; // Default type is "text"
 
   return (
     <Controller
       name={name}
       control={control}
       render={({ field, fieldState: { error } }) => (
-        <TextField {...field} fullWidth error={!!error} helperText={error?.message} {...other} />
+        <TextField
+          {...field}
+          fullWidth
+          error={!!error}
+          helperText={error?.message}
+          {...other}
+          value={
+            fieldType === "number"
+              ? getValues(name)?.toLocaleString() || ""
+              : field.value || "" // Ensure non-number fields have default empty value
+          }
+        />
       )}
     />
   );

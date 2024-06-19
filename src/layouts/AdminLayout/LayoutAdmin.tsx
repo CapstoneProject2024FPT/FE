@@ -30,10 +30,14 @@ const LayoutAdmin: React.FC = () => {
           transform: " scaleY(1)",
         }}
       >
-        <div className="demo-logo-vertical">
+        <div className="demo-logo-vertical" style={{ height: "auto" }}>
           <Logo />
         </div>
-        <Menu mode="inline" defaultSelectedKeys={["/"]} items={menuItems} />
+        <Menu
+          mode="inline"
+          defaultSelectedKeys={["/dashboard"]}
+          items={menuItems}
+        />
       </Sider>
       <Layout>
         <HeaderAdmin isCollapse={collapsed} handleCollapsed={handleCollapsed} />

@@ -1,48 +1,41 @@
-import { AxiosResponse } from "axios";
+import { RegisterData, UserData } from "../../models/UserData";
 import { axiosPublic } from "../axiosInstance";
-import { LOGIN } from "../pathApiName";
-import UserData from "../../models/UserData";
+import { LOGIN, REGISTER } from "../pathApiName";
 import { useState } from "react";
-interface LoginProps {
-  username: string;
-  password: string;
-}
-
-interface RegisterProps {
-  username: string;
-  password: string;
-}
+import axios from "axios";
 
 export const AuthApi = () => {
   const [loading, setLoading] = useState(false);
 
-  const apiLogin = async (loginData: LoginProps): Promise<UserData> => {
+  const apiLogin = async (loginData: UserData) => {
     setLoading(true);
     try {
-      const response: AxiosResponse<UserData> = await axiosPublic.post(
-        LOGIN,
-        loginData
-      );
+      const response = await axiosPublic.post(LOGIN, loginData);
 
-      return response.data;
-    } catch (error) {
-      throw new Error("Login failed");
+      return response;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+      if (axios.isAxiosError(error) && error.response) {
+        return error.response.data;
+      } else {
+        return { statusCode: 500, message: "Internal Server Error" };
+      }
     } finally {
       setLoading(false);
     }
   };
 
-  const apiRegister = async (
-    registerData: RegisterProps
-  ): Promise<UserData> => {
+  const apiRegister = async (registerData: RegisterData) => {
     try {
-      const response: AxiosResponse<UserData> = await axiosPublic.post(
-        LOGIN,
-        registerData
-      );
-      return response.data;
-    } catch (error) {
-      throw new Error("Login failed");
+      const response = await axiosPublic.post(REGISTER, registerData);
+      return response;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+      if (axios.isAxiosError(error) && error.response) {
+        return error.response.data;
+      } else {
+        return { statusCode: 500, message: "Internal Server Error" };
+      }
     }
   };
 

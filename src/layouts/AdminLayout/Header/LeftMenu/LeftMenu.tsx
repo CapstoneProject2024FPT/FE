@@ -1,6 +1,7 @@
 import React from "react";
 import { MenuFoldOutlined, MenuUnfoldOutlined } from "@ant-design/icons";
 import { Button } from "antd";
+import Logo from "../../../../components/Logo/Logo";
 
 interface HeaderProps {
   isCollapse: boolean;
@@ -10,7 +11,11 @@ interface HeaderProps {
 const LeftMenu: React.FC<HeaderProps> = ({ isCollapse, handleCollapsed }) => {
   return (
     <div style={{ display: "flex" }}>
-      {isCollapse && <div className="demo-logo-vertical">Logo</div>}
+      {isCollapse && (
+        <div className="demo-logo-vertical" style={{ height: "auto" }}>
+          <Logo />
+        </div>
+      )}
       <Button
         type="text"
         icon={isCollapse ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}

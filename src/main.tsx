@@ -9,6 +9,8 @@ import "react-toastify/dist/ReactToastify.css";
 import { ToastContainer } from "react-toastify";
 // editor
 import "react-quill/dist/quill.snow.css";
+//font-family
+import OverrideMuiTheme from "./theme/override.tsx";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
@@ -25,7 +27,9 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
         pauseOnHover
       />
       <GlobalStyled>
-        <App />
+        <OverrideMuiTheme>
+          <App />
+        </OverrideMuiTheme>
       </GlobalStyled>
     </AuthContextProvider>
   </React.StrictMode>
