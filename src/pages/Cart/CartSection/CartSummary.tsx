@@ -7,8 +7,10 @@ import {
   CardHeader,
   Typography,
   CardContent,
+  Button,
 } from "@mui/material";
 import { formatMoney } from "../../../utils/fn";
+import Iconify from "../../../components/Iconify";
 // utils
 
 // components
@@ -17,12 +19,27 @@ import { formatMoney } from "../../../utils/fn";
 
 type Props = {
   total: number;
+  enableEdit?: boolean;
+  onEdit?: VoidFunction;
 };
 
-export default function CartSummary({ total }: Props) {
+export default function CartSummary({ total, enableEdit, onEdit }: Props) {
   return (
     <Card sx={{ mb: 3 }}>
-      <CardHeader title="Tóm tắt giỏ hàng" />
+      <CardHeader
+        title="Tóm tắt giỏ hàng"
+        action={
+          enableEdit && (
+            <Button
+              size="small"
+              onClick={onEdit}
+              startIcon={<Iconify icon={"eva:edit-fill"} />}
+            >
+              Sửa
+            </Button>
+          )
+        }
+      />
 
       <CardContent>
         <Stack spacing={2}>

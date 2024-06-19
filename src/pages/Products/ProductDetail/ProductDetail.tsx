@@ -67,7 +67,7 @@ const Detail: React.FC = () => {
     if (isActive) return;
     setActive(!isActive);
     const existCart = localStorage.getItem("cart");
-    const productQuantity = { ...product, currentQuantities };
+    const productQuantity = { ...product, currentQuantities, id: params.id };
     if (existCart) {
       const parseProduct = JSON.parse(existCart);
       parseProduct.push(productQuantity);
