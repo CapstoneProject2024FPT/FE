@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { styled } from "@mui/material/styles";
 import {
   Box,
@@ -11,6 +11,10 @@ import {
 } from "@mui/material";
 import Iconify from "../../components/Iconify";
 import Cart from "./CartSection/Cart";
+import CheckoutBillingAddress from "./Billing/CheckoutBillingAddress";
+import CheckoutPayment from "./Payment/Payment";
+import { useLocation, useNavigate } from "react-router-dom";
+import config from "../../configs";
 
 const STEPS = ["Giỏ hàng", "Hoá đơn và địa chỉ", "Thanh Toán"];
 
@@ -24,7 +28,7 @@ const QontoConnector = styled(StepConnector)(({ theme }) => ({
   },
   "&.Mui-active, &.Mui-completed": {
     "& .MuiStepConnector-line": {
-      borderColor: theme.palette.primary.main,
+      borderColor: "#00AB55",
     },
   },
 }));
@@ -46,13 +50,13 @@ const QontoStepIcon: React.FC<QontoStepIconProps> = ({
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        color: active ? "primary.main" : "text.disabled",
+        color: active ? "#00AB55" : "text.disabled",
       }}
     >
       {completed ? (
         <Iconify
           icon={"eva:checkmark-fill"}
-          sx={{ zIndex: 1, width: 20, height: 20, color: "primary.main" }}
+          sx={{ zIndex: 1, width: 20, height: 20, color: "#00AB55" }}
         />
       ) : (
         <Box
@@ -69,17 +73,37 @@ const QontoStepIcon: React.FC<QontoStepIconProps> = ({
 };
 //----------------------------
 const Checkout: React.FC = () => {
-  const [activeStep, setActiveStep] = React.useState(0);
+  const navigate = useNavigate();
+  const location = useLocation();
+  const minActiveStep = 0;
+  const maxActiveStep = 4;
+  //make url
+  const urlParams = new URLSearchParams(location.search);
 
-  console.log(activeStep);
+  //take step at url (10 is decimal type)
+  const initialStep = parseInt(urlParams.get("step") || "0", 10);
+  const [activeStep, setActiveStep] = useState(initialStep);
 
+  useEffect(() => {
+    if (activeStep < maxActiveStep && activeStep >= minActiveStep) {
+      navigate(`${config.routes.cart}/?step=${activeStep}`, { replace: true });
+    } else {
+      navigate(config.routes.notFound);
+    }
+  }, [activeStep, navigate]);
+
+  //handle step
   const handleNext = () => {
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
   };
 
-  // const handleBack = () => {
-  //   setActiveStep((prevActiveStep) => prevActiveStep - 1);
-  // };
+  const handleBack = () => {
+    setActiveStep((prevActiveStep) => prevActiveStep - 1);
+  };
+
+  const handleGotoStep = (step: number) => {
+    setActiveStep(step);
+  };
   const isComplete = activeStep === STEPS.length;
   return (
     <>
@@ -113,7 +137,22 @@ const Checkout: React.FC = () => {
           </Grid>
         </Grid>
         {!isComplete ? (
-          <>{activeStep === 0 && <Cart handleNext={handleNext} />}</>
+          <>
+            {activeStep === 0 && <Cart handleNext={handleNext} />}
+            {activeStep === 1 && (
+              <CheckoutBillingAddress
+                handleNextStep={handleNext}
+                handleBack={handleBack}
+              />
+            )}
+            {activeStep === 2 && (
+              <CheckoutPayment
+                handleBack={handleBack}
+                handleNext={handleNext}
+                handleGoToStep={handleGotoStep}
+              />
+            )}
+          </>
         ) : (
           "thanh toán xong"
         )}

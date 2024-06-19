@@ -7,7 +7,6 @@ import Checkout from "../pages/Cart/Checkout";
 import Dashboard from "../pages/Dashboard/Dashboard";
 import LayoutAdmin from "../layouts/AdminLayout/LayoutAdmin";
 import Account from "../pages/Admin/User/Account";
-import NotFoundPage from "../pages/404/NotFoundPage";
 import Layout from "../layouts/CustomerLayout/Layout";
 import UserProfile from "../pages/UserProfile/UserProfile";
 import BlogNewPost from "../pages/Admin/Blog/BlogNewPost";
@@ -24,6 +23,7 @@ import ViewProductDetail from "../pages/Admin/Product/ViewProductDetail";
 import Maintenance from "../pages/UserProfile/Maintenance";
 import OrderManagement from "../pages/UserProfile/OrderManagement/OrderManagement";
 import FavoriteProduct from "../pages/UserProfile/FavoriteProduct";
+import Page404 from "../pages/404/NotFoundPage";
 
 const AppRoute: React.FC = () => {
   return (
@@ -141,7 +141,7 @@ const AppRoute: React.FC = () => {
       <Route
         key="notfound"
         path={config.routes.notFound}
-        element={<NotFoundPage />}
+        element={<Page404 />}
       ></Route>
     </Routes>
   );
