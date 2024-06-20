@@ -39,8 +39,8 @@ export default function ProductNewEditForm() {
   const { apiAddMachinery } = MachineryApi();
   const { getCategory } = CategoryApi();
 
-  const minTimeWarranty = 1;
-  const maxTimeWarranty = 2;
+  const minTimeWarranty = 12;
+  const maxTimeWarranty = 36;
 
   const initialSpecifications: Specification = {
     name: "",
@@ -276,6 +276,9 @@ export default function ProductNewEditForm() {
                   name="categoryId"
                   label="Chọn Loại máy"
                   SelectProps={{ native: true }}
+                  InputLabelProps={{
+                    shrink: true,
+                  }}
                 >
                   {categories && categories?.length > 0 ? (
                     categories?.map((category) => (
@@ -298,10 +301,10 @@ export default function ProductNewEditForm() {
                   InputLabelProps={{ shrink: true }}
                   InputProps={{
                     endAdornment: (
-                      <InputAdornment position="end">Năm</InputAdornment>
+                      <InputAdornment position="end">Tháng</InputAdornment>
                     ),
                     type: "number",
-                    inputProps: { min: 0, max: 2 },
+                    inputProps: { min: 0, max: maxTimeWarranty },
                   }}
                 />
               </Stack>

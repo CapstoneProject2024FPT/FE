@@ -19,7 +19,7 @@ export default function CreateProduct() {
         heading="Thêm mới sản phẩm"
         links={[
           { name: "Thống kê", href: config.adminRoutes.dashboard },
-          { name: "Sản phẩm" },
+          { name: "Sản phẩm", href: config.adminRoutes.product },
           { name: "Thêm mới sản phẩm" },
         ]}
       />

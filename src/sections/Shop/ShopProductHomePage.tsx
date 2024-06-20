@@ -14,12 +14,15 @@ type Props = {
 };
 
 export default function ShopProductHomePage({ products, loading }: Props) {
+  const displayedProducts: (Product | undefined)[] = loading
+    ? Array(4).fill(undefined)
+    : products.slice(0, 4);
   return (
     <Box
       sx={{
         marginTop: "5px",
         display: "grid",
-        gap: 3,
+        gap: 2,
         gridTemplateColumns: {
           xs: "repeat(1, 1fr)",
           sm: "repeat(2, 1fr)",
@@ -28,7 +31,7 @@ export default function ShopProductHomePage({ products, loading }: Props) {
         },
       }}
     >
-      {(loading ? [...Array(4)] : products).map((product, index) =>
+      {displayedProducts?.map((product, index) =>
         product ? (
           <ProductCard key={product.id} product={product} />
         ) : (

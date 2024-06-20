@@ -19,7 +19,7 @@ export default function ViewProductDetail() {
         heading="Chi tiết sản phẩm"
         links={[
           { name: "Thống kê", href: config.adminRoutes.dashboard },
-          { name: "Sản phẩm" },
+          { name: "Sản phẩm", href: config.adminRoutes.product },
           { name: "Chi tiết sản phẩm" },
         ]}
       />

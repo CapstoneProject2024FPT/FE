@@ -2,10 +2,11 @@ import { CategoryMachineDetail } from "./category";
 
 export interface Product {
   id: string;
-  image: string;
-  price: number;
-  salePrice: number;
+  image: [{ imageURL: string; createDate: string }];
   name: string;
+  sellingPrice: number;
+  model: string;
+  origin: string;
 }
 
 export type ProductProps = Product[];
@@ -83,7 +84,7 @@ export type Specification = {
 };
 
 //ProductDetail
-interface specificationDetail {
+export interface specificationDetail {
   specificationId: string;
   machineryId: string;
   name: string;

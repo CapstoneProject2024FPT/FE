@@ -1,17 +1,48 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import SimpleSlider from "../../components/carousel/Carousel";
 import { Box, Button, Typography } from "@mui/material";
 import ShopProductHomePage from "../../sections/Shop/ShopProductHomePage";
-import product from "../Home/product.json";
 import post from "../Home/blog.json";
-import { ProductProps } from "../../models/products";
+import { Product } from "../../models/products";
 import { PostProps } from "../../models/blog";
 import BlogHomePage from "../../sections/Blog/BLogHomePage";
 import { useNavigate } from "react-router-dom";
 import { routes } from "../../configs/routes";
+import { MachineryApi } from "../../api/services/apiMachinery";
 
 const Home: React.FC = () => {
-  const productNow: ProductProps = product as ProductProps;
+  const { apiGetMachineryPriority, loading, apiGetMachine } = MachineryApi();
+
+  const [productPriority, setProductPriority] = useState<Product[]>([]);
+  const [listMachine, setListMachine] = useState<Product[]>([]);
+
+  const fetchProductPriority = async () => {
+    try {
+      const [machineryPriorityResult, listResult] = await Promise.allSettled([
+        apiGetMachineryPriority(),
+        apiGetMachine("Active"),
+      ]);
+
+      if (machineryPriorityResult.status === "fulfilled") {
+        setProductPriority(machineryPriorityResult.value.data);
+      } else {
+        console.error(machineryPriorityResult.reason);
+      }
+
+      if (listResult.status === "fulfilled") {
+        setListMachine(listResult.value.data);
+      } else {
+        console.error(listResult.reason);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  useEffect(() => {
+    fetchProductPriority();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
   const New: PostProps = post as PostProps;
   const navigate = useNavigate();
   return (
@@ -51,19 +82,21 @@ const Home: React.FC = () => {
               background: "#fff",
               fontSize: "20px",
               fontWeight: "bold",
-              padding: "8px"
+              padding: "8px",
             }}
           >
             Sản Phẩm nổi bật
           </span>
         </Typography>
-        <ShopProductHomePage
-          products={productNow}
-          loading={!productNow.length}
-        />
+        <ShopProductHomePage products={productPriority} loading={loading} />
       </Box>
       <Box
-        sx={{ width: "100%", mt: 4, display: "flex", flexDirection: "column" }}
+        sx={{
+          width: "100%",
+          mt: 6,
+          display: "flex",
+          flexDirection: "column",
+        }}
       >
         <Typography
           component="h2"
@@ -90,10 +123,10 @@ const Home: React.FC = () => {
               background: "#fff",
               fontSize: "20px",
               fontWeight: "bold",
-              padding: "8px"
+              padding: "8px",
             }}
           >
-            Danh mục máy
+            Các Loại Máy Khác
           </span>
         </Typography>
         <Button
@@ -111,12 +144,9 @@ const Home: React.FC = () => {
         >
           Xem tất cả
         </Button>
-        <ShopProductHomePage
-          products={productNow}
-          loading={!productNow.length}
-        />
+        <ShopProductHomePage products={listMachine} loading={loading} />
       </Box>
-      <Box sx={{ width: "100%", mt: 4 }}>
+      <Box sx={{ width: "100%", mt: 6 }}>
         <Typography
           component="h2"
           sx={{
@@ -142,7 +172,7 @@ const Home: React.FC = () => {
               background: "#fff",
               fontSize: "20px",
               fontWeight: "bold",
-              padding: "8px"
+              padding: "8px",
             }}
           >
             Tin Tức

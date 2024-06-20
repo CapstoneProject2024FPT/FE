@@ -170,6 +170,7 @@ const TableProduct: React.FC = () => {
       title: "Độ ưu tiên",
       dataIndex: "priority",
       render: (priority) => priority || 0,
+      sorter: (a, b) => a.priority - b.priority,
     },
     {
       title: "Ngày tạo",

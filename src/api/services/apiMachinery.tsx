@@ -4,6 +4,7 @@ import {
   GET_MACHINERY,
   MACHINERY_DETAIL,
   MACHINERY_DETAIL_ID,
+  MACHINERY_HOME_PRIORITY,
   MACHINERY_ID,
   MACHINERY_LIST,
 } from "../pathApiName";
@@ -153,6 +154,7 @@ export const MachineryApi = () => {
       setLoading(false);
     }
   };
+
   const apiUpdateMachineryDetail = async (
     id: string,
     params: UpdateProduct
@@ -175,6 +177,24 @@ export const MachineryApi = () => {
     }
   };
 
+  const apiGetMachineryPriority = async () => {
+    setLoading(true);
+    try {
+      const response = await axiosPublic.get(MACHINERY_HOME_PRIORITY);
+      return response;
+    } catch (error) {
+      if (axios.isAxiosError(error) && error.response) {
+        return error.response.data;
+      } else {
+        return {
+          statusCode: 500,
+          message: "Gặp vấn đề quá trình lấy dư liệu",
+        };
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return {
     loading,
@@ -186,5 +206,6 @@ export const MachineryApi = () => {
     apiGetDetailMachine,
     apiUpdateMachineryDetail,
     apiGetMachineryID,
+    apiGetMachineryPriority,
   };
 };
