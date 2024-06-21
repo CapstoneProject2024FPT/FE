@@ -26,7 +26,6 @@ export default function ProductCard({ product }: Props) {
     >
       <Card
         sx={{
-          marginTop: "20px",
           padding: "20px",
           borderRadius: "5px",
           width: "100%",
@@ -42,14 +41,18 @@ export default function ProductCard({ product }: Props) {
         }}
       >
         <Box sx={{ position: "relative" }}>
-          <Image alt={name} src={image[0].imageURL} width="100" height="100" />
+          <Image
+            alt={name}
+            src={image[0].imageURL}
+            sx={{ width: "100%", height: "200px", objectFit: "contain" }}
+          />
         </Box>
 
         <Stack spacing={1} sx={{ p: 1 }}>
-          <Typography variant="subtitle2" noWrap>
+          <Typography variant="subtitle1" sx={{ fontWeight: "bold" }} noWrap>
             {name}
           </Typography>
-          <Typography variant="subtitle1">Xuất xứ: {origin}</Typography>
+          <Typography variant="subtitle2">Xuất xứ: {origin}</Typography>
 
           <Stack
             direction="row"

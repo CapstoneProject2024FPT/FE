@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import "./ProductList.scss";
 import { Box } from "@mui/material";
 import ProductCard from "../../../components/product-card/ProductCard";
+import ProductFilteredRow from "../../Filter/FilterProducts";
 
 const pageSize = 20;
 
@@ -63,27 +64,43 @@ const ProductList: React.FC = () => {
     setQuery(e.target.value);
   };
 
-  console.log(customPagination, handleSearch, navigate);
-
   const filteredRows = products?.filter((item) =>
     item.name?.toLowerCase().includes(query)
   );
+  const productFiltered = products?.map((item) => item);
 
   return (
-    <Box sx={{ width: "100%" }}>
-      {/* <Search
-        placeholder="Tìm kiếm"
-        onChange={handleSearch}
-        style={{ padding: "0 10%", height: "40px" }}
-      /> */}
+    <Box
+      sx={{
+        width: "90%",
+        display: "flex",
+        flexDirection: "row",
+        margin: "20px auto auto auto",
+        gap: "40px"
+      }}
+    >
+      <Box
+        sx={{
+          boxShadow:
+            "rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px",
+          borderRadius: "5px",
+          width: "20%",
+          minWidth: "200px",
+          height: "100%",
+          position: "sticky",
+          top: 0,
+        }}
+      >
+        <ProductFilteredRow listProduct={productFiltered} />
+      </Box>
       <Box
         sx={{
           display: "grid",
           gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))",
-          width: "90%",
-          gap: "50px",
+          gap: "25px",
           justifyContent: "space-between",
-          margin: "auto",
+          width: "80%",
+          padding: "0 20px",
         }}
       >
         {filteredRows?.map((product) => (

@@ -9,7 +9,7 @@ const Layout: React.FC = () => {
   return (
     <div style={{ margin: "0px" }}>
       <TopBar />
-      <div className="main-content">
+      <div className="main-content" style={{ marginTop: 0 }}>
         <Outlet />
       </div>
       <Footer />
