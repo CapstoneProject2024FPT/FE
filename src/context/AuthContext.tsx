@@ -38,7 +38,7 @@ export const AuthContextProvider: React.FC<AuthContextProviderProps> = ({
     const loginInfoString = localStorage.getItem("loginInfo");
     const auth = loginInfoString ? JSON.parse(loginInfoString) : null;
     if (auth) {
-      setAuthUser(auth.id);
+      setAuthUser(auth.data.id);
     }
   }, [authUser]); // Empty depen
 

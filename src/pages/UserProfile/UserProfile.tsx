@@ -1,32 +1,29 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Box from "@mui/material/Box";
 import Paper from "@mui/material/Paper";
 import Grid from "@mui/material/Unstable_Grid2";
-import PersonIcon from "@mui/icons-material/Person";
-import CachedIcon from "@mui/icons-material/Cached";
-import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
-import EngineeringIcon from "@mui/icons-material/Engineering";
 import FormLabel from "@mui/material/FormLabel";
 import FormControl from "@mui/material/FormControl";
 import FormGroup from "@mui/material/FormGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
-import { styled } from "@mui/system";
-import {
-  Button,
-  List,
-  ListItemButton,
-  ListItemIcon,
-  ListItemText,
-  ListSubheader,
-  OutlinedInput,
-  Typography,
-} from "@mui/material";
-import { Link } from "react-router-dom";
+import { styled } from "@mui/material/styles";
+import { Button, TextField, Typography } from "@mui/material";
+import { CutomerApi } from "../../api/services/apiUser";
+import { userModel } from "../../models/UserData";
+import SideBarUserProfile from "./SideBarUserProfile";
+import PopupUpdateUserProfile from "./PopupUser/PopupUpdateUserProfile";
+import { toast } from "react-toastify";
 
 const FormGrid = styled(Grid)(() => ({
   display: "flex",
   flexDirection: "column",
+}));
+
+const LabelStyle = styled(Typography)(({ theme }) => ({
+  ...theme.typography.subtitle2,
+  color: theme.palette.text.secondary,
+  marginBottom: theme.spacing(1),
 }));
 
 const UserProfile: React.FC = () => {
@@ -35,6 +32,14 @@ const UserProfile: React.FC = () => {
     women: false,
     other: false,
   });
+  const [open, setOpen] = useState<boolean>(false);
+
+  const [userProfile, setUserProfile] = useState<userModel>();
+
+  const loginInfoString = localStorage.getItem("loginInfo");
+  const auth = loginInfoString ? JSON.parse(loginInfoString) : null;
+
+  const { men, women, other } = state;
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setState({
@@ -43,7 +48,39 @@ const UserProfile: React.FC = () => {
     });
   };
 
-  const { men, women, other } = state;
+  //open
+  const handleOpen = () => {
+    setOpen(!open);
+  };
+
+  const handleClose = () => {
+    setOpen(!open);
+  };
+
+  const onUpdateSuccess = (response: string) => {
+    handleClose();
+    fetchUserProfile();
+    toast.success(response);
+  };
+  const { apiUserProfile } = CutomerApi();
+
+  const fetchUserProfile = async () => {
+    const id: string = auth?.data.id;
+    try {
+      if (id) {
+        const response = await apiUserProfile(id);
+
+        setUserProfile(response?.data);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    fetchUserProfile();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <>
@@ -61,52 +98,7 @@ const UserProfile: React.FC = () => {
         <Box sx={{ flexGrow: 1, margin: "2%", padding: "20px" }}>
           <Grid container spacing={2}>
             <Grid xs={12} md={3}>
-              <List
-                sx={{
-                  width: "100%",
-                  bgcolor: "background.paper",
-                  borderRadius: "10px",
-                  border: "1px solid ",
-                }}
-                component="nav"
-                aria-labelledby="nested-list-subheader"
-                subheader={
-                  <ListSubheader
-                    component="div"
-                    id="nested-list-subheader"
-                    style={{ borderRadius: "10px" }}
-                  >
-                    Tên người dùng
-                  </ListSubheader>
-                }
-              >
-                <div style={{ width: "auto" }}>
-                  <ListItemButton component={Link} to="/user">
-                    <ListItemIcon>
-                      <PersonIcon />
-                    </ListItemIcon>
-                    <ListItemText primary="Thông tin tài khoản" />
-                  </ListItemButton>
-                  <ListItemButton component={Link} to="/order-management">
-                    <ListItemIcon>
-                      <CachedIcon />
-                    </ListItemIcon>
-                    <ListItemText primary="Quản lý đơn hàng" />
-                  </ListItemButton>
-                  <ListItemButton component={Link} to="/favorite-product">
-                    <ListItemIcon>
-                      <FavoriteBorderIcon />
-                    </ListItemIcon>
-                    <ListItemText primary="Sản phẩm yêu thích" />
-                  </ListItemButton>
-                  <ListItemButton component={Link} to="/maintenance">
-                    <ListItemIcon>
-                      <EngineeringIcon />
-                    </ListItemIcon>
-                    <ListItemText primary="Bảo trì" />
-                  </ListItemButton>
-                </div>
-              </List>
+              <SideBarUserProfile />
             </Grid>
             <Grid xs={12} md={9}>
               <Box sx={{ marginLeft: "5%" }}>
@@ -119,45 +111,34 @@ const UserProfile: React.FC = () => {
                 >
                   <Grid container spacing={2}>
                     <FormGrid xs={12}>
-                      <FormLabel htmlFor="first-name">Họ</FormLabel>
-                      <OutlinedInput
-                        id="first-name"
-                        name="first-name"
-                        type="name"
-                        placeholder="John"
-                        autoComplete="first name"
-                      />
-                    </FormGrid>
-                    <FormGrid xs={12}>
-                      <FormLabel htmlFor="last-name">Tên</FormLabel>
-                      <OutlinedInput
-                        id="last-name"
-                        name="last-name"
-                        type="last-name"
+                      <LabelStyle>Họ và Tên</LabelStyle>
+                      <TextField
                         placeholder="Dũng"
-                        autoComplete="last name"
+                        InputProps={{
+                          readOnly: true,
+                        }}
+                        value={userProfile?.fullName || ""}
                       />
                     </FormGrid>
 
                     <FormGrid xs={12}>
-                      <FormLabel htmlFor="phone-number" required>
-                        Số điện thoại
-                      </FormLabel>
-                      <OutlinedInput
-                        id="phone-number"
-                        name="phone-number"
-                        type="phone-number"
-                        placeholder="0963697057"
-                        required
+                      <LabelStyle>Số Điện Thoại</LabelStyle>
+                      <TextField
+                        placeholder="0XX XXX XXXX"
+                        InputProps={{
+                          readOnly: true,
+                        }}
+                        value={userProfile?.phoneNumber || ""}
                       />
                     </FormGrid>
                     <FormGrid xs={12}>
-                      <FormLabel htmlFor="email">Email</FormLabel>
-                      <OutlinedInput
-                        id="email"
-                        name="email"
-                        type="email"
-                        placeholder="hominhdung@gmail.com"
+                      <LabelStyle>Địa chỉ email</LabelStyle>
+                      <TextField
+                        placeholder="email@gmail.com"
+                        InputProps={{
+                          readOnly: true,
+                        }}
+                        value={userProfile?.email || ""}
                       />
                     </FormGrid>
                     <FormGrid xs={12}>
@@ -201,12 +182,13 @@ const UserProfile: React.FC = () => {
                     </FormGrid>
 
                     <FormGrid xs={12}>
-                      <FormLabel htmlFor="birthday">Ngày sinh</FormLabel>
-                      <OutlinedInput
-                        id="birthday"
-                        name="birthday"
-                        type="birthday"
-                        placeholder="21/04/2002"
+                      <LabelStyle>Địa chỉ</LabelStyle>
+                      <TextField
+                        placeholder="168 Phan Đình Phùng ..."
+                        InputProps={{
+                          readOnly: true,
+                        }}
+                        value={userProfile?.address || ""}
                       />
                     </FormGrid>
                     <Button
@@ -215,11 +197,11 @@ const UserProfile: React.FC = () => {
                         color: "white",
                         fontSize: "20px",
                         cursor: "pointer",
-                        width: "200px",
                         margin: "10px",
                       }}
+                      onClick={handleOpen}
                     >
-                      Cập nhật
+                      Cập nhật Thông Tin
                     </Button>
                   </Grid>
                 </Paper>
@@ -228,6 +210,15 @@ const UserProfile: React.FC = () => {
           </Grid>
         </Box>
       </div>
+
+      {open && (
+        <PopupUpdateUserProfile
+          user={userProfile}
+          open={open}
+          handleClose={handleClose}
+          onUpdateSuccess={onUpdateSuccess}
+        />
+      )}
     </>
   );
 };
