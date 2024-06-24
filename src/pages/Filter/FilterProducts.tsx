@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Box,
   FormControl,
@@ -9,21 +9,72 @@ import {
 } from "@mui/material";
 
 import "./FilterProducts.scss";
+import { PRODUCT_FILTER } from "../../constants/filter";
+import { useNavigate } from "react-router-dom";
 
 interface ProductFilterProps {
   listProduct: any;
 }
 
+interface ProductFilter {
+  [key: string]: string[];
+  // other properties
+}
+
 const ProductFilteredRow: React.FC<ProductFilterProps> = ({ listProduct }) => {
-  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
-  const handleCategoryChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const product = event.target.name;
-    setSelectedCategories((prevSelectedCategories) =>
-      prevSelectedCategories.includes(product)
-        ? prevSelectedCategories.filter((c) => c !== product)
-        : [...prevSelectedCategories, product]
-    );
+  const [filter, setFilter] = useState<ProductFilter>({});
+  const navigate = useNavigate();
+
+  const handleCategoryChange = (
+    filterType: PRODUCT_FILTER,
+    value: string,
+    checked: boolean
+  ) => {
+    const item = filter[filterType] || [];
+    if (checked) {
+      filter[filterType] = [...item, value];
+    } else {
+      filter[filterType] = item.filter((val) => val !== value);
+    }
+
+    setFilter(filter);
+    updateURLSearchParams(filter);
   };
+
+  const updateURLSearchParams = (filter: ProductFilter) => {
+    const params = new URLSearchParams();
+
+    for (const key in filter) {
+      if (filter[key].length > 0) {
+        params.set(key, filter[key].join(","));
+      }
+    }
+
+    const to = { pathname: location.pathname, search: params.toString() };
+    navigate(to, { replace: true });
+  };
+
+  const getFilteredData = () => {
+
+  }
+
+  const getFilterFromURL = (): ProductFilter => {
+    const params = new URLSearchParams(window.location.search);
+    const newFilter: ProductFilter = {};
+
+    params.forEach((value, key) => {
+      newFilter[key] = value.split(",");
+    });
+
+    return newFilter;
+  };
+
+  // Initialize filter state from URL on component mount
+  useEffect(() => {
+    const initialFilter = getFilterFromURL();
+    setFilter(initialFilter);
+    console.log(initialFilter);
+  }, []);
 
   /* filter origin */
   const uniqueOrigins = [
@@ -90,8 +141,14 @@ const ProductFilteredRow: React.FC<ProductFilterProps> = ({ listProduct }) => {
                 key={origin}
                 control={
                   <Checkbox
-                    checked={selectedCategories.includes(origin)}
-                    onChange={handleCategoryChange}
+                    // checked={selectedCategories.includes(origin)}
+                    onChange={(_, checked) =>
+                      handleCategoryChange(
+                        PRODUCT_FILTER.ORIGIN,
+                        origin,
+                        checked
+                      )
+                    }
                     name={origin}
                   />
                 }
@@ -139,8 +196,13 @@ const ProductFilteredRow: React.FC<ProductFilterProps> = ({ listProduct }) => {
                 key={category}
                 control={
                   <Checkbox
-                    checked={selectedCategories.includes(category)}
-                    onChange={handleCategoryChange}
+                    onChange={(_, checked) =>
+                      handleCategoryChange(
+                        PRODUCT_FILTER.CATEGORY,
+                        category,
+                        checked
+                      )
+                    }
                     name={category}
                   />
                 }
@@ -186,8 +248,9 @@ const ProductFilteredRow: React.FC<ProductFilterProps> = ({ listProduct }) => {
                 key={brand}
                 control={
                   <Checkbox
-                    checked={selectedCategories.includes(brand)}
-                    onChange={handleCategoryChange}
+                    onChange={(_, checked) =>
+                      handleCategoryChange(PRODUCT_FILTER.BRAND, brand, checked)
+                    }
                     name={brand}
                   />
                 }
@@ -233,8 +296,13 @@ const ProductFilteredRow: React.FC<ProductFilterProps> = ({ listProduct }) => {
                 key={warranty}
                 control={
                   <Checkbox
-                    checked={selectedCategories.includes(warranty)}
-                    onChange={handleCategoryChange}
+                    onChange={(_, checked) =>
+                      handleCategoryChange(
+                        PRODUCT_FILTER.WARRANTY,
+                        warranty,
+                        checked
+                      )
+                    }
                     name={warranty}
                   />
                 }

@@ -4,10 +4,13 @@ import { MachineryApi } from "../../../api/services/apiMachinery";
 import { ProductAdmin } from "../../../models/products";
 import { useNavigate } from "react-router-dom";
 import "./ProductList.scss";
-import { Box } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import ProductCard from "../../../components/product-card/ProductCard";
 import ProductFilteredRow from "../../Filter/FilterProducts";
-
+import SortOutlinedIcon from "@mui/icons-material/SortOutlined";
+import { SortOutlined } from "@mui/icons-material";
+import MenuListComposition from "../../Sort/SortProducts";
+import SortMenu from "../../Sort/SortProducts";
 const pageSize = 20;
 
 const ProductList: React.FC = () => {
@@ -76,7 +79,7 @@ const ProductList: React.FC = () => {
         display: "flex",
         flexDirection: "row",
         margin: "20px auto auto auto",
-        gap: "40px"
+        gap: "40px",
       }}
     >
       <Box
@@ -93,19 +96,49 @@ const ProductList: React.FC = () => {
       >
         <ProductFilteredRow listProduct={productFiltered} />
       </Box>
-      <Box
-        sx={{
-          display: "grid",
-          gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))",
-          gap: "25px",
-          justifyContent: "space-between",
-          width: "80%",
-          padding: "0 20px",
-        }}
-      >
-        {filteredRows?.map((product) => (
-          <ProductCard key={product.id} product={product} />
-        ))}
+      <Box sx={{ width: "80%" }}>
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "space-around",
+            padding: "10px",
+            boxShadow:
+              "rgba(0, 0, 0, 0.1) 0px 0px 5px 0px, rgba(0, 0, 0, 0.1) 0px 0px 1px 0px",
+            borderRadius: "5px",
+            marginBottom: "10px",
+          }}
+        >
+          <Box sx={{width: "50%"}}>
+            <Typography
+              sx={{
+                textTransform: "uppercase",
+                fontSize: "18px",
+                fontWeight: "bold",
+              }}
+            >
+              Các loại máy
+            </Typography>
+          </Box>
+          <Box sx={{width: "50%", textAlign: "right"}}>
+            <SortMenu />
+          </Box>
+        </Box>
+        <Box
+          sx={{
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))",
+            gap: "25px",
+            justifyContent: "space-between",
+            width: "100%%",
+            padding: "0 20px",
+          }}
+        >
+          {filteredRows?.map((product) => (
+            <ProductCard key={product.id} product={product} />
+          ))}
+        </Box>
       </Box>
     </Box>
   );
