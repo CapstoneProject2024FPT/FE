@@ -2,10 +2,11 @@ import React from "react";
 import Box from "@mui/material/Box";
 import Paper from "@mui/material/Paper";
 import Grid from "@mui/material/Unstable_Grid2";
-import { Table, Typography } from "@mui/material";
-import SideBarUserProfile from "./SideBarUserProfile";
+import { Typography } from "@mui/material";
+import SideBarUserProfile from "./SideBar/SideBarUserProfile";
+import WarrantyManagement from "./Warranty/WarrantyManagement";
 
-const Maintenance: React.FC = () => {
+const Warranty: React.FC = () => {
   return (
     <>
       <Typography variant="h3" component="h2">
@@ -33,7 +34,7 @@ const Maintenance: React.FC = () => {
                     border: "1px solid ",
                   }}
                 >
-                  <Table></Table>
+                  <WarrantyManagement />
                 </Paper>
               </Box>
             </Grid>
@@ -44,4 +45,4 @@ const Maintenance: React.FC = () => {
   );
 };
 
-export default Maintenance;
+export default Warranty;

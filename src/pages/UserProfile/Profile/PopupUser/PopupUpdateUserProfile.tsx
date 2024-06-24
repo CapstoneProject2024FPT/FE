@@ -1,13 +1,13 @@
 import React from "react";
 import Box from "@mui/material/Box";
 import { Grid, Modal, Typography } from "@mui/material";
-import { CutomerApi } from "../../../api/services/apiUser";
-import { userModel, userPropUpdate } from "../../../models/UserData";
+import { CutomerApi } from "../../../../api/services/apiUser";
+import { userModel, userPropUpdate } from "../../../../models/UserData";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm } from "react-hook-form";
 import * as Yup from "yup";
-import { FormProvider, RHFTextField } from "../../../components/hook-form";
-import { patternValidate } from "../../../utils/pattern";
+import { FormProvider, RHFTextField } from "../../../../components/hook-form";
+import { patternValidate } from "../../../../utils/pattern";
 import { styled } from "@mui/material/styles";
 import { LoadingButton } from "@mui/lab";
 import { toast } from "react-toastify";

@@ -23,7 +23,15 @@ export interface userProps {
   role: string;
   status: string;
 }
-export interface staffModel extends userProps {
+
+export interface staffProps {
+  fullName: string;
+  email: string;
+  photoURL: string | null | undefined;
+  phoneNumber: string;
+  address: string;
+}
+export interface staffModel extends staffProps {
   yearOfExperience: number;
 }
 

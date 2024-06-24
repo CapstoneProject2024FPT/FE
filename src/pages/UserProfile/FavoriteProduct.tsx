@@ -3,7 +3,8 @@ import Box from "@mui/material/Box";
 import Paper from "@mui/material/Paper";
 import Grid from "@mui/material/Unstable_Grid2";
 import { Typography } from "@mui/material";
-import SideBarUserProfile from "./SideBarUserProfile";
+import SideBarUserProfile from "./SideBar/SideBarUserProfile";
+import Favorite from "./Favorite/Favorite";
 
 const FavoriteProduct: React.FC = () => {
   return (
@@ -33,21 +34,7 @@ const FavoriteProduct: React.FC = () => {
                     border: "1px solid ",
                   }}
                 >
-                  <Typography variant="h5" component="h2">
-                    Sản phẩm yêu thích
-                  </Typography>
-                  <Typography variant="h6" component="h2">
-                    Sản phẩm 1
-                  </Typography>
-                  <Typography variant="h6" component="h2">
-                    Sản phẩm 2
-                  </Typography>
-                  <Typography variant="h6" component="h2">
-                    Sản phẩm 3
-                  </Typography>
-                  <Typography variant="h6" component="h2">
-                    Sản phẩm 4
-                  </Typography>
+                  <Favorite />
                 </Paper>
               </Box>
             </Grid>
