@@ -6,16 +6,18 @@ import {
   IconButton,
   Paper,
   Stack,
+  Tooltip,
   Typography,
 } from "@mui/material";
 import Image from "../../components/Image";
-import React from "react";
+import React, { useState } from "react";
 import post from "../News/newDetail.json";
 import { formatDateFunc } from "../../utils/fn";
 import TextIconLabel from "../../components/TextIconLabel";
 import Iconify from "../../components/Iconify";
 import FacebookIcon from "@mui/icons-material/Facebook";
 import { blue } from "@mui/material/colors";
+import LinkIcon from "@mui/icons-material/Link";
 
 const NewsDetail: React.FC = () => {
   const news: PostDetailProps = post;
@@ -81,6 +83,13 @@ type HeaderProps = {
 };
 
 function Header({ title, cover, createAt, view }: HeaderProps) {
+  const [copy, setCopy] = useState<boolean>(false);
+  const linkToCopy = window.location.href;
+
+  const handleCopy = () => {
+    setCopy(!copy);
+    navigator.clipboard.writeText(linkToCopy);
+  };
   return (
     <Box>
       <Box>
@@ -97,7 +106,7 @@ function Header({ title, cover, createAt, view }: HeaderProps) {
               color: "rgba(0,0,0,0.9)",
             }}
           >
-            {createAt}
+            {formatDateFunc.formatDate(createAt)}
           </Typography>
           <TextIconLabel
             icon={
@@ -108,9 +117,20 @@ function Header({ title, cover, createAt, view }: HeaderProps) {
             }
             value={view}
           />
-          <IconButton>
-            <FacebookIcon sx={{ color: blue[500] }} />
-          </IconButton>
+          <Stack component="div" display="flex" direction="row">
+            <Tooltip title="Chia sẽ lên FaceBook">
+              <IconButton>
+                <FacebookIcon sx={{ color: blue[500] }} />
+              </IconButton>
+            </Tooltip>
+            <Tooltip
+              title={copy ? "Đã sao chép liên kết" : "Sao chép liên kết"}
+            >
+              <IconButton onClick={handleCopy}>
+                <LinkIcon sx={{ color: blue[500] }} />
+              </IconButton>
+            </Tooltip>
+          </Stack>
         </Stack>
       </Box>
 
