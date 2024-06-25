@@ -18,6 +18,7 @@ import Iconify from "../../components/Iconify";
 import FacebookIcon from "@mui/icons-material/Facebook";
 import { blue } from "@mui/material/colors";
 import LinkIcon from "@mui/icons-material/Link";
+import { FacebookShareButton } from "react-share";
 
 const NewsDetail: React.FC = () => {
   const news: PostDetailProps = post;
@@ -85,7 +86,7 @@ type HeaderProps = {
 function Header({ title, cover, createAt, view }: HeaderProps) {
   const [copy, setCopy] = useState<boolean>(false);
   const linkToCopy = window.location.href;
-
+  const shareUrl = window.location.href;
   const handleCopy = () => {
     setCopy(!copy);
     navigator.clipboard.writeText(linkToCopy);
@@ -108,20 +109,22 @@ function Header({ title, cover, createAt, view }: HeaderProps) {
           >
             {formatDateFunc.formatDate(createAt)}
           </Typography>
-          <TextIconLabel
-            icon={
-              <Iconify
-                icon="eva:eye-fill"
-                sx={{ width: 16, height: 16, mr: 0.5 }}
-              />
-            }
-            value={view}
-          />
+
           <Stack component="div" display="flex" direction="row">
+            <TextIconLabel
+              sx={{ mr: 2 }}
+              icon={
+                <Iconify
+                  icon="eva:eye-fill"
+                  sx={{ width: 16, height: 16, mr: 0.5 }}
+                />
+              }
+              value={view}
+            />
             <Tooltip title="Chia sẽ lên FaceBook">
-              <IconButton>
+              <FacebookShareButton url={shareUrl}>
                 <FacebookIcon sx={{ color: blue[500] }} />
-              </IconButton>
+              </FacebookShareButton>
             </Tooltip>
             <Tooltip
               title={copy ? "Đã sao chép liên kết" : "Sao chép liên kết"}
