@@ -10,7 +10,7 @@ import { CategoryApi } from "../../../../api/services/apiCategories";
 import { GetCategoryProps } from "../../../../models/category";
 import ArrowRightIcon from "@mui/icons-material/ArrowRight";
 import { blue } from "@mui/material/colors";
-import config from "../../../../configs";
+// import config from "../../../../configs";
 
 const cx = classNames.bind(styles);
 
