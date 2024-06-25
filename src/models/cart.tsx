@@ -1,7 +1,7 @@
 import { CategoryMachineDetail } from "./category";
 import { specificationDetail } from "./products";
 
-interface CartItem {
+export interface CartItem {
   specifications: [specificationDetail];
   image: [{ imageURL: string; createDate: string }];
   category: CategoryMachineDetail;

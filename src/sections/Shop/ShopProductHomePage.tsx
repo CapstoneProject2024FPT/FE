@@ -16,7 +16,7 @@ type Props = {
 export default function ShopProductHomePage({ products, loading }: Props) {
   const displayedProducts: (Product | undefined)[] = loading
     ? Array(4).fill(undefined)
-    : products.slice(0, 4);
+    : products?.slice(0, 4);
   return (
     <Box
       sx={{
