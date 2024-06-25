@@ -15,12 +15,10 @@ export const CategoryApi = () => {
   const getCategory = async () => {
     try {
       setLoading(true);
-      const response: AxiosResponse<CategoryReponse> = await axiosPublic.get(
-        GET_CATEGORY
-      );
+      const response = await axiosPublic.get(GET_CATEGORY);
 
       setLoading(false);
-      return response.data.items;
+      return response.data;
     } catch (error) {
       setLoading(false);
       throw new Error("Login failed");
