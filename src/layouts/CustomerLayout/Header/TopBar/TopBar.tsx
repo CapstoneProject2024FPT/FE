@@ -10,6 +10,7 @@ import { CategoryApi } from "../../../../api/services/apiCategories";
 import { GetCategoryProps } from "../../../../models/category";
 import ArrowRightIcon from "@mui/icons-material/ArrowRight";
 import { blue } from "@mui/material/colors";
+import config from "../../../../configs";
 
 const cx = classNames.bind(styles);
 
@@ -34,6 +35,7 @@ const TopBar: React.FC = () => {
     fetchCategory();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
   const renderMenu = (data: GetCategoryProps[]) => {
     return (
       <ul className={cx("menu")}>
@@ -56,7 +58,16 @@ const TopBar: React.FC = () => {
                       justifyContent: "space-between",
                     }}
                   >
-                    {item.name}
+                    <Link
+                      to={`#${item.id}`}
+                      style={{
+                        textDecoration: "none",
+                        color: "inherit",
+                        padding: "0",
+                      }}
+                    >
+                      {item.name}
+                    </Link>
                     {renderChildren(item.id) && (
                       <ArrowRightIcon sx={{ color: blue[500] }} />
                     )}
@@ -82,7 +93,18 @@ const TopBar: React.FC = () => {
         <ul className={cx("submenu")}>
           {children.map((child) => (
             <li key={child.id} className={cx("submenu-item")}>
-              <span style={{ color: "black" }}>{child.name}</span>
+              <span style={{ color: "black" }}>
+                <Link
+                  to={`#${child.id}`}
+                  style={{
+                    textDecoration: "none",
+                    color: "inherit",
+                    padding: "0",
+                  }}
+                >
+                  {child.name}
+                </Link>
+              </span>
             </li>
           ))}
         </ul>
