@@ -29,6 +29,7 @@ const SideBarUserProfile: React.FC = () => {
             component="div"
             id="nested-list-subheader"
             style={{ borderRadius: "10px" }}
+            sx={{ position: "static" }}
           >
             Tên người dùng
           </ListSubheader>
