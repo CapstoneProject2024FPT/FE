@@ -1,6 +1,6 @@
 export enum PRODUCT_FILTER {
   ORIGIN = "origin",
-  CATEGORY = "category",
+  CATEGORY = "CategoryId",
   BRAND = "brand",
-  WARRANTY = "warranty",
+  WARRANTY = "timeWarranty",
 }

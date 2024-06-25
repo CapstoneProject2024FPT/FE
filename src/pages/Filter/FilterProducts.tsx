@@ -11,9 +11,12 @@ import {
 import "./FilterProducts.scss";
 import { PRODUCT_FILTER } from "../../constants/filter";
 import { useNavigate } from "react-router-dom";
+import { MachineryApi } from "../../api/services/apiMachinery";
+import { ProductAdmin } from "../../models/products";
 
 interface ProductFilterProps {
   listProduct: any;
+  setProducts: React.Dispatch<React.SetStateAction<ProductAdmin[] | undefined>>;
 }
 
 interface ProductFilter {
@@ -21,7 +24,11 @@ interface ProductFilter {
   // other properties
 }
 
-const ProductFilteredRow: React.FC<ProductFilterProps> = ({ listProduct }) => {
+const ProductFilteredRow: React.FC<ProductFilterProps> = ({
+  listProduct,
+  setProducts,
+}) => {
+  const { apiGetList } = MachineryApi();
   const [filter, setFilter] = useState<ProductFilter>({});
   const navigate = useNavigate();
 
@@ -38,6 +45,7 @@ const ProductFilteredRow: React.FC<ProductFilterProps> = ({ listProduct }) => {
     }
 
     setFilter(filter);
+    getFilteredData(filter);
     updateURLSearchParams(filter);
   };
 
@@ -54,9 +62,14 @@ const ProductFilteredRow: React.FC<ProductFilterProps> = ({ listProduct }) => {
     navigate(to, { replace: true });
   };
 
-  const getFilteredData = () => {
-
-  }
+  const getFilteredData = async (params: any) => {
+    try {
+      const data = await apiGetList(params);
+      setProducts(data);
+    } catch (error) {
+      console.error("lỗi");
+    }
+  };
 
   const getFilterFromURL = (): ProductFilter => {
     const params = new URLSearchParams(window.location.search);
@@ -73,7 +86,7 @@ const ProductFilteredRow: React.FC<ProductFilterProps> = ({ listProduct }) => {
   useEffect(() => {
     const initialFilter = getFilterFromURL();
     setFilter(initialFilter);
-    console.log(initialFilter);
+    getFilteredData(initialFilter);
   }, []);
 
   /* filter origin */
@@ -83,7 +96,7 @@ const ProductFilteredRow: React.FC<ProductFilterProps> = ({ listProduct }) => {
 
   /* filter category */
   const uniqueCategory = [
-    ...new Set(listProduct?.map((item: any) => item.category.name)),
+    ...new Set(listProduct?.map((item: any) => item.category)),
   ];
 
   /* filter warranty */
@@ -141,7 +154,10 @@ const ProductFilteredRow: React.FC<ProductFilterProps> = ({ listProduct }) => {
                 key={origin}
                 control={
                   <Checkbox
-                    // checked={selectedCategories.includes(origin)}
+                    // checked={selectedCategories?.includes(origin)}
+                    defaultChecked={filter[PRODUCT_FILTER.ORIGIN]?.includes(
+                      origin
+                    )}
                     onChange={(_, checked) =>
                       handleCategoryChange(
                         PRODUCT_FILTER.ORIGIN,
@@ -193,20 +209,23 @@ const ProductFilteredRow: React.FC<ProductFilterProps> = ({ listProduct }) => {
           <FormGroup sx={{ paddingLeft: "20px" }}>
             {uniqueCategory.map((category: any) => (
               <FormControlLabel
-                key={category}
+                key={category.id}
                 control={
                   <Checkbox
+                    defaultChecked={filter[PRODUCT_FILTER.CATEGORY]?.includes(
+                      category.id
+                    )}
                     onChange={(_, checked) =>
                       handleCategoryChange(
                         PRODUCT_FILTER.CATEGORY,
-                        category,
+                        category.id,
                         checked
                       )
                     }
-                    name={category}
+                    name={category.id}
                   />
                 }
-                label={category}
+                label={category.name}
               />
             ))}
           </FormGroup>
@@ -248,6 +267,9 @@ const ProductFilteredRow: React.FC<ProductFilterProps> = ({ listProduct }) => {
                 key={brand}
                 control={
                   <Checkbox
+                    defaultChecked={filter[PRODUCT_FILTER.BRAND]?.includes(
+                      brand
+                    )}
                     onChange={(_, checked) =>
                       handleCategoryChange(PRODUCT_FILTER.BRAND, brand, checked)
                     }
@@ -296,6 +318,9 @@ const ProductFilteredRow: React.FC<ProductFilterProps> = ({ listProduct }) => {
                 key={warranty}
                 control={
                   <Checkbox
+                    defaultChecked={filter[PRODUCT_FILTER.WARRANTY]?.includes(
+                      warranty
+                    )}
                     onChange={(_, checked) =>
                       handleCategoryChange(
                         PRODUCT_FILTER.WARRANTY,

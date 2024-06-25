@@ -94,7 +94,10 @@ const ProductList: React.FC = () => {
           top: 0,
         }}
       >
-        <ProductFilteredRow listProduct={productFiltered} />
+        <ProductFilteredRow
+          listProduct={productFiltered}
+          setProducts={setProducts}
+        />
       </Box>
       <Box sx={{ width: "80%" }}>
         <Box
@@ -110,7 +113,7 @@ const ProductList: React.FC = () => {
             marginBottom: "10px",
           }}
         >
-          <Box sx={{width: "50%"}}>
+          <Box sx={{ width: "50%" }}>
             <Typography
               sx={{
                 textTransform: "uppercase",
@@ -121,7 +124,7 @@ const ProductList: React.FC = () => {
               Các loại máy
             </Typography>
           </Box>
-          <Box sx={{width: "50%", textAlign: "right"}}>
+          <Box sx={{ width: "50%", textAlign: "right" }}>
             <SortMenu />
           </Box>
         </Box>
