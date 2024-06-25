@@ -20,10 +20,11 @@ import Order from "../pages/Admin/Order/Order";
 import Products from "../pages/Products/Products";
 import Detail from "../pages/Products/ProductDetail/ProductDetail";
 import ViewProductDetail from "../pages/Admin/Product/ViewProductDetail";
-import Maintenance from "../pages/UserProfile/Maintenance";
-import OrderManagement from "../pages/UserProfile/OrderManagement/OrderManagement";
+import Maintenance from "../pages/UserProfile/Warranty";
+import OrderCustomer from "../pages/UserProfile/Order";
 import FavoriteProduct from "../pages/UserProfile/FavoriteProduct";
 import Page404 from "../pages/404/NotFoundPage";
+import NewsDetail from "../pages/News/NewsDetail";
 
 const AppRoute: React.FC = () => {
   return (
@@ -68,7 +69,12 @@ const AppRoute: React.FC = () => {
         <Route
           key="orderManagement"
           path={config.routes.orderManagement}
-          element={<OrderManagement />}
+          element={<OrderCustomer />}
+        />
+        <Route
+          key="newDetail"
+          path={config.routes.newsDetail}
+          element={<NewsDetail />}
         />
       </Route>
 

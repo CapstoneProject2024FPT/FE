@@ -20,7 +20,7 @@ const Home: React.FC = () => {
     try {
       const [machineryPriorityResult, listResult] = await Promise.allSettled([
         apiGetMachineryPriority(),
-        apiGetMachine("Active"),
+        apiGetMachine("Available"),
       ]);
 
       if (machineryPriorityResult.status === "fulfilled") {

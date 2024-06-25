@@ -47,8 +47,6 @@ const SignInForm: React.FC = () => {
     try {
       const response = await apiLogin(data);
 
-      console.log(response);
-
       if (response.status === 200) {
         localStorageFunc.setLocalStorage("loginInfo", JSON.stringify(response));
         setAuthUser(response.data);

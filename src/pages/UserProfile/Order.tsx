@@ -4,13 +4,13 @@ import Paper from "@mui/material/Paper";
 import Grid from "@mui/material/Unstable_Grid2";
 import { Typography } from "@mui/material";
 import SideBarUserProfile from "./SideBar/SideBarUserProfile";
-import Profile from "./Profile/Profile";
+import OrderManagement from "./OrderManagement/OrderManagement";
 
-const UserProfile: React.FC = () => {
+const OrderCustomer: React.FC = () => {
   return (
     <>
       <Typography variant="h3" component="h2">
-        Trang cá nhân
+        Quản lý đơn hàng
       </Typography>
       <div
         style={{
@@ -34,9 +34,7 @@ const UserProfile: React.FC = () => {
                     border: "1px solid ",
                   }}
                 >
-                  <Grid container spacing={2}>
-                    <Profile />
-                  </Grid>
+                  <OrderManagement />
                 </Paper>
               </Box>
             </Grid>
@@ -47,4 +45,4 @@ const UserProfile: React.FC = () => {
   );
 };
 
-export default UserProfile;
+export default OrderCustomer;

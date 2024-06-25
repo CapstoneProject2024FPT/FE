@@ -86,8 +86,11 @@ const AccountSection = () => {
         anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
       >
         <MenuItem>
-          <Link to="" style={{ textDecoration: "none", color: "inherit" }}>
-            Profile
+          <Link
+            to={config.routes.userProfile}
+            style={{ textDecoration: "none", color: "inherit" }}
+          >
+            Thông tin cá nhân
           </Link>
         </MenuItem>
         <Divider />

@@ -71,9 +71,6 @@ const CheckoutBillingAddress: React.FC<checkoutBillingAndAddress> = ({
 
           <Grid item xs={12} md={4}>
             <CartSummary total={total} />
-            <Button variant="contained" fullWidth onClick={handleNextStep}>
-              Tiếp Tục
-            </Button>
           </Grid>
         </Grid>
       </Container>
@@ -90,11 +87,12 @@ type AddressItemProps = {
 };
 
 function AddressItem({ onNextStep, address }: AddressItemProps) {
-  const { selectedAddress } = useAddress();
   const { addressType, fullAddress, isDefault, phone, receiver } = address;
 
+  const { setSelectedAddress } = useAddress();
+
   const handleCreateBilling = () => {
-    selectedAddress(address);
+    setSelectedAddress(address);
     onNextStep();
   };
   return (

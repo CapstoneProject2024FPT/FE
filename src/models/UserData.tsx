@@ -6,15 +6,33 @@ export interface RegisterData extends UserData {
   email: string;
   fullname: string;
 }
-interface userProps {
+
+export type userPropUpdate = {
+  fullName: string;
+  email: string;
+  phoneNumber: string;
+  address: string;
+};
+export interface userProps {
+  id: string;
+  fullName: string;
+  email: string;
+  photoURL: string | null | undefined;
+  phoneNumber: string;
+  address: string;
+  role: string;
+  status: string;
+}
+
+export interface staffProps {
   fullName: string;
   email: string;
   photoURL: string | null | undefined;
   phoneNumber: string;
   address: string;
 }
-export interface staffModel extends userProps {
+export interface staffModel extends staffProps {
   yearOfExperience: number;
 }
 
-export interface userModel extends userProps {}
+export interface userModel extends Omit<userProps, "photoURL"> {}
