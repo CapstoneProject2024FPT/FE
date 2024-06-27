@@ -45,10 +45,6 @@ export function PostContent({
   index,
   title,
 }: PostContentProps) {
-  // const isDesktop = useResponsive('up', 'md');
-
-  // const linkTo = PATH_DASHBOARD.blog.view(paramCase(title));
-
   const latestPostLarge = index === 0;
   const latestPostSmall = index === 1 || index === 2;
 

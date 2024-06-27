@@ -1,13 +1,21 @@
-import React from "react";
+import React, { useState } from "react";
 import * as Yup from "yup";
 // form
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 // @mui
-import { Grid, Button, Container } from "@mui/material";
+import {
+  Grid,
+  Button,
+  Container,
+  CardHeader,
+  Card,
+  CardContent,
+  TextField,
+} from "@mui/material";
 import { LoadingButton } from "@mui/lab";
 // @types
-import { CardOption, PaymentOption } from "../../../models/payment";
+import { PaymentOption } from "../../../models/payment";
 
 // components
 import Iconify from "../../../components/Iconify";
@@ -17,40 +25,23 @@ import CartSummary from "../CartSection/CartSummary";
 import CheckoutBillingInfo from "./CheckoutBillingInfo";
 import CheckoutPaymentMethods from "./CheckoutPaymentMethods";
 import { useCheckout } from "../../../zustand/useCheckout";
+import { CartItem } from "../../../models/cart";
+import { ApiCheckout } from "../../../api/services/apiCheckout";
+import { toast } from "react-toastify";
 
 // ----------------------------------------------------------------------
 
 const PAYMENT_OPTIONS: PaymentOption[] = [
   {
-    value: "paypal",
-    title: "Pay with Paypal",
-    description:
-      "You will be redirected to PayPal website to complete your purchase securely.",
-    icons: [
-      "https://minimal-assets-api-dev.vercel.app/assets/icons/ic_paypal.svg",
-    ],
+    value: "Vnpay",
+    title: "Thanh toán qua cộng Vnpay",
+    description: "Bạn sẽ được chuyển đi đến cổng thanh toán Vnpay.",
   },
   {
-    value: "credit_card",
-    title: "Credit / Debit Card",
-    description: "We support Mastercard, Visa, Discover and Stripe.",
-    icons: [
-      "https://minimal-assets-api-dev.vercel.app/assets/icons/ic_mastercard.svg",
-      "https://minimal-assets-api-dev.vercel.app/assets/icons/ic_visa.svg",
-    ],
+    value: "COD",
+    title: "Thanh toán khi nhận hàng",
+    description: "Khi bạn nhận được hàng sẽ thanh toán.",
   },
-  {
-    value: "cash",
-    title: "Cash on CheckoutDelivery",
-    description: "Pay with cash when your order is delivered.",
-    icons: [],
-  },
-];
-
-const CARDS_OPTIONS: CardOption[] = [
-  { value: "ViSa1", label: "**** **** **** 1212 - Jimmy Holland" },
-  { value: "ViSa2", label: "**** **** **** 2424 - Shawn Stokes" },
-  { value: "MasterCard", label: "**** **** **** 4545 - Cole Armstrong" },
 ];
 
 type FormValuesProps = {
@@ -68,6 +59,28 @@ const CheckoutPayment: React.FC<checkoutPaymentProps> = ({
   handleGoToStep,
 }) => {
   const { total } = useCheckout();
+  //api
+  const { apiCheckout } = ApiCheckout();
+  //user info
+  const loginInfo = localStorage.getItem("loginInfo");
+
+  const loginInfoString = loginInfo ? JSON.parse(loginInfo) : null;
+
+  const user = loginInfoString.data;
+
+  //cart item
+  const cart = localStorage.getItem("cart");
+
+  const cartListString = cart ? JSON.parse(cart) : [];
+
+  const machineList = cartListString.map((cart: CartItem) => ({
+    machineryId: cart.id,
+    quantity: cart.currentQuantities,
+    sellingPrice: cart.sellingPrice,
+  }));
+
+  const [note, setNote] = useState<string>("");
+
   const PaymentSchema = Yup.object().shape({
     payment: Yup.string().required("Chọn Phương Thức Thanh Toán"),
   });
@@ -88,7 +101,24 @@ const CheckoutPayment: React.FC<checkoutPaymentProps> = ({
 
   const onSubmit = async () => {
     try {
-      handleNext();
+      const params = {
+        accountId: user.id,
+        totalAmount: total,
+        finalAmount: total,
+        note: note,
+        machineryList: machineList,
+      };
+
+      const response = await apiCheckout(params);
+
+      if (response.status === 200) {
+        toast.success("Tạo đơn hàng thành công");
+        handleNext();
+        sessionStorage.removeItem("checkoutTotal");
+        sessionStorage.removeItem("cart");
+      } else {
+        toast.error(response.Error);
+      }
     } catch (error) {
       console.error(error);
     }
@@ -99,10 +129,20 @@ const CheckoutPayment: React.FC<checkoutPaymentProps> = ({
       <Container maxWidth="xl" sx={{ background: "#ECF0F1" }}>
         <Grid container spacing={3}>
           <Grid item xs={12} md={8} sx={{ mt: -3 }}>
-            <CheckoutPaymentMethods
-              cardOptions={CARDS_OPTIONS}
-              paymentOptions={PAYMENT_OPTIONS}
-            />
+            <CheckoutPaymentMethods paymentOptions={PAYMENT_OPTIONS} />
+            <Card sx={{ mb: 2 }}>
+              <CardHeader title="Ghi chú đơn hàng" />
+              <CardContent>
+                <TextField
+                  fullWidth
+                  multiline
+                  rows={4}
+                  value={note}
+                  placeholder="Nội dung cần ghi chú"
+                  onChange={(e) => setNote(e.target.value)}
+                />
+              </CardContent>
+            </Card>
             <Button
               size="small"
               color="inherit"

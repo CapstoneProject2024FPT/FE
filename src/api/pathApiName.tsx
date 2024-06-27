@@ -15,3 +15,9 @@ export const GET_CATEGORY = "categories?status=Active";
 export const CATEGORY_ID = "categories/:id";
 export const CATEGORY = "categories";
 export const GET_CATEGORY_PARENT = "categories?status=Active&type=Parent";
+
+//Customer
+export const CUSTOMER_PROFILE = "/users/:id";
+
+//checkout
+export const CHECKOUT = "/orders";

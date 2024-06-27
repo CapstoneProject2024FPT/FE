@@ -119,7 +119,7 @@ const Cart: React.FC<CartProp> = ({ handleNext }) => {
             </Typography>
             <Grid container spacing={2}>
               <Grid item xs={12} md={8}>
-                <TableContainer sx={{ minWidth: 720, width: "98%" }}>
+                <TableContainer sx={{ maxWidth: 820 }}>
                   <Table>
                     <TableHead>
                       <TableRow sx={{ background: "white" }}>
@@ -151,14 +151,25 @@ const Cart: React.FC<CartProp> = ({ handleNext }) => {
                             />
 
                             <Stack spacing={0.5}>
-                              <Typography
-                                noWrap
-                                variant="subtitle2"
-                                sx={{ maxWidth: 240 }}
+                              <Link
+                                to={config.routes.productDetail.replace(
+                                  ":id",
+                                  item.id
+                                )}
+                                style={{
+                                  textDecoration: "none",
+                                }}
                               >
-                                {item.name}
-                              </Typography>
-
+                                <Typography
+                                  noWrap
+                                  variant="subtitle2"
+                                  sx={{
+                                    color: "black",
+                                  }}
+                                >
+                                  {item.name}
+                                </Typography>
+                              </Link>
                               <Stack direction="row" alignItems="center">
                                 <Typography variant="body2">
                                   <Box
