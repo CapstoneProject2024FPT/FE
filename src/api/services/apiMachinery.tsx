@@ -11,6 +11,7 @@ import {
 import { useState } from "react";
 import {
   CreateProductFormADDSchema,
+  ProductAdmin,
   UpdateProduct,
 } from "../../models/products";
 import axios from "axios";
@@ -99,14 +100,8 @@ export const MachineryApi = () => {
     }
   };
 
-  interface priorityProps {
-    priority: number;
-  }
-
-  const apiUpdatePriorityMachine = async (id: string, param: priorityProps) => {
+  const apiUpdatePriorityMachine = async (id: string, param: ProductAdmin) => {
     setLoading(true);
-    console.log(id);
-    console.log(param);
     try {
       const response = await axiosPublic.put(
         MACHINERY_ID.replace(":id", id),

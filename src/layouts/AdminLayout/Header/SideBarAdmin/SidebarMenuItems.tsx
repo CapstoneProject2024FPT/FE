@@ -37,6 +37,10 @@ const MenuSideBars: MenuSideBar[] = [
         label: <Link to={config.adminRoutes.category}>Loại máy</Link>,
         key: config.adminRoutes.category,
       },
+      {
+        label: <Link to={config.adminRoutes.brand}>Thương hiệu</Link>,
+        key: config.adminRoutes.brand,
+      },
     ],
   },
 

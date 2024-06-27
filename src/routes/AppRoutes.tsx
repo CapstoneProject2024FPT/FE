@@ -25,6 +25,8 @@ import OrderCustomer from "../pages/UserProfile/Order";
 import FavoriteProduct from "../pages/UserProfile/FavoriteProduct";
 import Page404 from "../pages/404/NotFoundPage";
 import NewsDetail from "../pages/News/NewsDetail";
+import Brand from "../pages/Admin/Brand/Brand";
+import Rank from "../pages/Admin/Rank/Rank";
 
 const AppRoute: React.FC = () => {
   return (
@@ -129,6 +131,17 @@ const AppRoute: React.FC = () => {
           path={config.adminRoutes.category}
           element={<Category />}
         />
+
+        {/* brand  */}
+        <Route
+          key="brand"
+          path={config.adminRoutes.brand}
+          element={<Brand />}
+        />
+
+        {/* rank  */}
+        <Route key="rank" path={config.adminRoutes.rank} element={<Rank />} />
+
         {/* profile */}
         <Route
           key="profile"

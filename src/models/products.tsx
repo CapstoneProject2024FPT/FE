@@ -60,7 +60,7 @@ export interface CreateProductFormSchema {
   stockPrice: number;
   sellingPrice: number;
   categoryId: string;
-  brand: string;
+  brandId: string;
   timeWarranty: number;
 }
 
@@ -74,7 +74,7 @@ export interface CreateProductFormADDSchema {
   stockPrice: number;
   sellingPrice: number;
   categoryId: string;
-  brand: string;
+  brandId: string;
   timeWarranty: number;
 }
 
