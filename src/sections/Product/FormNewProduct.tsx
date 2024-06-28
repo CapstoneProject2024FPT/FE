@@ -178,7 +178,7 @@ export default function ProductNewEditForm() {
       if (response.status === 200) {
         toast.success("Thêm máy thành công");
       }
-      // reset();
+      reset();
     } catch (error) {
       console.error(error);
     }
