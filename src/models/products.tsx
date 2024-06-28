@@ -1,12 +1,16 @@
 import { CategoryMachineDetail } from "./category";
 
+type originProduct = {
+  id: string;
+  name: string;
+};
 export interface Product {
   id: string;
   image: [{ imageURL: string; createDate: string }];
   name: string;
   sellingPrice: number;
   model: string;
-  origin: string;
+  origin: originProduct;
 }
 
 export type ProductProps = Product[];
@@ -18,17 +22,22 @@ export interface ProductAdmin {
     name: string;
     type: string;
   };
-  description: string;
   id: string;
+  origin: originProduct;
   model: string;
+  description: string;
+  brand: {
+    id: string;
+    name: string;
+  };
   name: string;
-  origin: string;
   priority: number;
   quantity: number;
   sellingPrice: number;
   serialNumber: number;
   createDate: Date;
   image: [{ imageURL: string; createDate: string }];
+  status: string;
 }
 
 export interface ProductAdminCategory {
@@ -53,28 +62,28 @@ export interface ProductAdminSpecification {
 export interface CreateProductFormSchema {
   specificationList: Specification[] | undefined;
   name: string;
-  origin: string;
+  originId: string;
   model: string;
   description: string;
   imageURL: (string | undefined)[] | undefined;
   stockPrice: number;
   sellingPrice: number;
   categoryId: string;
-  brand: string;
+  brandId: string;
   timeWarranty: number;
 }
 
 export interface CreateProductFormADDSchema {
   specificationList: Specification[] | undefined;
   name: string;
-  origin: string;
+  originId: string;
   model: string;
   description: string;
   image: { imageURL: string | undefined }[] | undefined;
   stockPrice: number;
   sellingPrice: number;
   categoryId: string;
-  brand: string;
+  brandId: string;
   timeWarranty: number;
 }
 
@@ -99,22 +108,27 @@ export type ProductDetailProps = {
   sellingPrice: number;
   id: string;
   name: string;
-  origin: string;
+  origin: originProduct;
   model: string;
   description: string;
-  brand: string;
+  brand: {
+    id: string;
+    name: string;
+  };
   timeWarranty: number;
   serialNumber: number;
+  status: string;
 };
 
 //update product
 export interface UpdateProduct {
   name: string;
-  origin: string;
+  originId: string;
   model: string;
   description: string;
   sellingPrice: number;
-  brand: string;
+  brandId: string;
   timeWarranty: number;
   categoryId: string | undefined;
+  status: string;
 }

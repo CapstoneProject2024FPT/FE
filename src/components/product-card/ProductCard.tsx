@@ -52,7 +52,7 @@ export default function ProductCard({ product }: Props) {
           <Typography variant="subtitle1" sx={{ fontWeight: "bold" }} noWrap>
             {name}
           </Typography>
-          <Typography variant="subtitle2">Xuất xứ: {origin}</Typography>
+          <Typography variant="subtitle1">Xuất xứ: {origin.name}</Typography>
 
           <Stack
             direction="row"

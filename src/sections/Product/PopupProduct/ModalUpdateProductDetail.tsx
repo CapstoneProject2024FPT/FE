@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 import { Modal } from "antd";
 import { FormProvider, RHFTextField } from "../../../components/hook-form";
@@ -13,14 +13,18 @@ import { ProductDetailProps, UpdateProduct } from "../../../models/products";
 import { MachineryApi } from "../../../api/services/apiMachinery";
 import { toast } from "react-toastify";
 import { useParams } from "react-router-dom";
+import { brandTable } from "../../../models/brand";
+import { BrandApi } from "../../../api/services/apiBrand";
+import { OriginProps } from "../../../models/origin";
+import { ApiOrigin } from "../../../api/services/apiOrigin";
 
 interface UpdateProductForm {
   name: string;
-  origin: string;
+  originId: string;
   model: string;
   description: string;
   sellingPrice: number;
-  brand: string;
+  brandId: string;
   timeWarranty: number;
 }
 interface ModalProduct {
@@ -39,16 +43,48 @@ const ModalProductDetailPopup: React.FC<ModalProduct> = ({
   const minTimeWarranty = 12;
   const maxTimeWarranty = 36;
   const { apiUpdateMachineryDetail } = MachineryApi();
+  const { getBrand } = BrandApi();
+  const { apiGetOrigin } = ApiOrigin();
 
   const { id } = useParams<{ id: string }>();
+
+  const [brands, setBrands] = useState<brandTable[]>();
+  const [origins, setOrigins] = useState<OriginProps[]>();
+
+  const fetchData = async () => {
+    try {
+      const [origin, brand] = await Promise.allSettled([
+        apiGetOrigin(),
+        getBrand(),
+      ]);
+
+      if (origin.status === "fulfilled") {
+        setOrigins(origin.value.data);
+      } else {
+        console.error(origin.reason);
+      }
+
+      if (brand.status === "fulfilled") {
+        setBrands(brand.value);
+      } else {
+        console.error(brand.reason);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  useEffect(() => {
+    fetchData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const ProductSchema = Yup.object().shape({
     name: Yup.string().required("bắt buộc").min(5, "Tối thiểu 5 kí tự"),
     description: Yup.string()
       .required("bắt buộc")
       .min(20, "Tối thiểu 20 kí tự"),
-    origin: Yup.string().required("Bắt buộc có xuất xứ"),
-    brand: Yup.string().required("Bắt buộc có hãng"),
+    originId: Yup.string().required("Bắt buộc có xuất xứ"),
+    brandId: Yup.string().required("Bắt buộc có hãng"),
     model: Yup.string().required("Bắt buộc có mẫu sản phẩm"),
     sellingPrice: Yup.number()
       .moreThan(0, "Giá tiền lớn hơn 0")
@@ -62,10 +98,10 @@ const ModalProductDetailPopup: React.FC<ModalProduct> = ({
   const defaultValues: UpdateProductForm = {
     name: productData?.name || "",
     description: productData?.description || "",
-    origin: productData?.origin || "",
+    originId: productData?.origin?.id || "",
     model: productData?.model || "",
     sellingPrice: productData?.sellingPrice || 0,
-    brand: productData?.brand || "",
+    brandId: productData?.brand?.id || "",
     timeWarranty: productData?.timeWarranty || 0,
   };
 
@@ -82,22 +118,26 @@ const ModalProductDetailPopup: React.FC<ModalProduct> = ({
 
   const onSubmit = async (data: UpdateProductForm) => {
     try {
-      const params: UpdateProduct = {
-        //use spread operator to make the copy object
-        ...data,
-        categoryId: productData?.category?.id,
-      };
-      if (id) {
-        const response = await apiUpdateMachineryDetail(id, params);
+      if (productData) {
+        const params: UpdateProduct = {
+          //use spread operator to make the copy object
+          ...data,
+          categoryId: productData?.category?.id,
+          status: productData?.status,
+        };
+        console.log(params);
 
-        console.log(response);
+        if (id) {
+          const response = await apiUpdateMachineryDetail(id, params);
 
-        if (response && response.status === 200) {
-          onUpdateSuccess(response.data);
-        } else {
-          toast.error(response.Error);
+          if (response && response.status === 200) {
+            onUpdateSuccess(response.data);
+          } else {
+            toast.error(response.Error);
+          }
         }
       }
+
       reset();
     } catch (error) {
       console.error(error);
@@ -124,9 +164,51 @@ const ModalProductDetailPopup: React.FC<ModalProduct> = ({
             <Grid container spacing={1}>
               <Grid item xs={6}>
                 <Stack direction="column" display="flex" spacing={2}>
-                  <RHFTextField name="brand" label="Thương hiệu" autoFocus />
+                  <RHFTextField
+                    select
+                    name="brandId"
+                    label="Chọn thương hiệu máy "
+                    SelectProps={{ native: true }}
+                    InputLabelProps={{
+                      shrink: true,
+                    }}
+                  >
+                    <option value="">Chọn Thương hiệu</option>
+                    {brands && brands?.length > 0 ? (
+                      brands?.map((brand) => (
+                        <option key={brand.id} value={brand.id}>
+                          {brand.name}
+                        </option>
+                      ))
+                    ) : (
+                      <option value="" disabled>
+                        không có thương hiệu
+                      </option>
+                    )}
+                  </RHFTextField>
                   <RHFTextField name="model" label="Mẫu sản phẩm" autoFocus />
-                  <RHFTextField name="origin" label="Xuất xứ" autoFocus />
+                  <RHFTextField
+                    select
+                    name="originId"
+                    label="Chọn xuất xứ "
+                    SelectProps={{ native: true }}
+                    InputLabelProps={{
+                      shrink: true,
+                    }}
+                  >
+                    <option value="">Chọn Thương hiệu</option>
+                    {origins && origins?.length > 0 ? (
+                      origins?.map((origin) => (
+                        <option key={origin.id} value={origin.id}>
+                          {origin.name}
+                        </option>
+                      ))
+                    ) : (
+                      <option value="" disabled>
+                        không có quốc gia
+                      </option>
+                    )}
+                  </RHFTextField>
                 </Stack>
               </Grid>
               <Grid item xs={6}>

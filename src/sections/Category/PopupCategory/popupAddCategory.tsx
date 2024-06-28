@@ -74,7 +74,6 @@ const ModalCategoryPopupAdd: React.FC<ModalCategory> = ({
         ...data,
         masterCategoryId: selectCategory,
       };
-      console.log(dataSend);
 
       await addCategory(dataSend);
       if (onAddSuccess) {

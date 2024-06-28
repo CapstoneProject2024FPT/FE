@@ -226,7 +226,7 @@ const Detail: React.FC = () => {
                 sx={{ cursor: "pointer", color: "blue" }}
               >
                 {/* TODO: sau có brand thì change từ model về brand */}
-                {product?.brand}
+                {product?.brand?.name}
               </Typography>
             </Typography>
 

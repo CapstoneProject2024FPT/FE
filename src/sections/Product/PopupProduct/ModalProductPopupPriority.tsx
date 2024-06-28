@@ -16,9 +16,13 @@ interface ModalProduct {
 }
 
 interface priorityProps {
+  originId: string;
+  status: string;
   priority: number;
+  brandId: string;
   categoryId: string;
 }
+
 const ModalProductPopupPriority: React.FC<ModalProduct> = ({
   ProductData,
   openPriorityPopup,
@@ -40,15 +44,24 @@ const ModalProductPopupPriority: React.FC<ModalProduct> = ({
       if (ProductData) {
         const param: priorityProps = {
           priority: priority,
-          categoryId: ProductData?.category?.id,
+          originId: ProductData.origin.id,
+          brandId: ProductData.brand.id,
+          categoryId: ProductData.category.id,
+          status: ProductData.status,
         };
+
         const response = await apiUpdatePriorityMachine(ProductData?.id, param);
-        if (onUpdatePrioritySuccess) {
-          onUpdatePrioritySuccess(response);
+
+        if (response.status === 200) {
+          if (onUpdatePrioritySuccess) {
+            onUpdatePrioritySuccess(response.data);
+          }
+        } else {
+          toast.error(response.Error);
         }
       }
     } catch (error) {
-      toast.error("Lỗi xoá");
+      toast.error("lỗi cập nhật");
       console.error(error);
     }
   };
