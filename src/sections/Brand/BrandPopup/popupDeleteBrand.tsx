@@ -1,37 +1,33 @@
 import React from "react";
 //model
-import { GetCategoryProps } from "../../../models/category";
+import { brandTable } from "../../../models/brand";
 // form
 import { Button, Modal, Typography } from "antd";
 import { toast } from "react-toastify";
+import { BrandApi } from "../../../api/services/apiBrand";
 //api
-import { CategoryApi } from "../../../api/services/apiCategories";
 
-interface ModalCategory {
-  CategoryData: GetCategoryProps | null;
+interface ModalBrand {
+  BrandData: brandTable | null;
   openDeletePopup: boolean;
   handleCLoseDelete: () => void;
   onDeleteSuccess: (response: string) => void;
 }
 
-const ModalCategoryPopupDelete: React.FC<ModalCategory> = ({
-  CategoryData,
+const ModalBrandPopupDelete: React.FC<ModalBrand> = ({
+  BrandData,
   openDeletePopup,
   handleCLoseDelete,
   onDeleteSuccess,
 }) => {
-  const { loading, deleteCategory } = CategoryApi();
+  const { loading, deleteBrand } = BrandApi();
 
   const onSubmit = async () => {
     try {
-      if (CategoryData) {
-        const response = await deleteCategory(CategoryData?.id);
-        if (response.status === 200) {
-          if (onDeleteSuccess) {
-            onDeleteSuccess(response.data);
-          }
-        } else {
-          toast.error(response.Error);
+      if (BrandData) {
+        const response = await deleteBrand(BrandData?.id);
+        if (onDeleteSuccess) {
+          onDeleteSuccess(response);
         }
       }
     } catch (error) {
@@ -41,7 +37,7 @@ const ModalCategoryPopupDelete: React.FC<ModalCategory> = ({
   };
   return (
     <Modal
-      title="Chi Tiết Loại Máy"
+      title="Khả Dụng Thương Hiệu"
       open={openDeletePopup}
       onOk={handleCLoseDelete}
       onCancel={handleCLoseDelete}
@@ -60,10 +56,10 @@ const ModalCategoryPopupDelete: React.FC<ModalCategory> = ({
       ]}
     >
       <Typography.Text>
-        Bạn có muốn xoá loại máy tên: {CategoryData?.name}
+        Bạn có muốn xoá loại máy tên: {BrandData?.name}
       </Typography.Text>
     </Modal>
   );
 };
 
-export default ModalCategoryPopupDelete;
+export default ModalBrandPopupDelete;

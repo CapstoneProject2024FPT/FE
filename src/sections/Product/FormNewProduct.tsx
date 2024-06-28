@@ -28,6 +28,11 @@ import uploadImageToFirebase from "../../firebase/uploadImageToFirebase";
 import { MachineryApi } from "../../api/services/apiMachinery";
 import { CategoryApi } from "../../api/services/apiCategories";
 import { GetCategoryProps } from "../../models/category";
+import { brandTable } from "../../models/brand";
+import { BrandApi } from "../../api/services/apiBrand";
+import { toast } from "react-toastify";
+import { ApiOrigin } from "../../api/services/apiOrigin";
+import { OriginProps } from "../../models/origin";
 
 const LabelStyle = styled(Typography)(({ theme }) => ({
   ...theme.typography.subtitle2,
@@ -38,6 +43,8 @@ const LabelStyle = styled(Typography)(({ theme }) => ({
 export default function ProductNewEditForm() {
   const { apiAddMachinery } = MachineryApi();
   const { getCategory } = CategoryApi();
+  const { getBrand } = BrandApi();
+  const { apiGetOrigin } = ApiOrigin();
 
   const minTimeWarranty = 12;
   const maxTimeWarranty = 36;
@@ -48,10 +55,12 @@ export default function ProductNewEditForm() {
   };
 
   const [categories, setCategories] = useState<GetCategoryProps[]>();
+  const [brands, setBrands] = useState<brandTable[]>();
+  const [origins, setOrigins] = useState<OriginProps[]>();
 
   const defaultValues = {
     name: "",
-    origin: "",
+    originId: "",
     description: "",
     imageURL: [],
     model: "",
@@ -60,14 +69,14 @@ export default function ProductNewEditForm() {
     sellingPrice: 0,
     categoryId: "",
     specificationList: [initialSpecifications],
-    brand: "",
+    brandId: "",
     timeWarranty: 0,
   };
 
   const validationSchema = Yup.object().shape({
     name: Yup.string().required("Bắt buộc có tên sản phẩm"),
-    origin: Yup.string().required("Bắt buộc có xuất xứ"),
-    brand: Yup.string().required("Bắt buộc có hãng"),
+    originId: Yup.string().required("Bắt buộc có xuất xứ"),
+    brandId: Yup.string().required("Bắt buộc có hãng"),
     description: Yup.string().required("Bắt buộc có mô tả"),
     imageURL: Yup.array().of(Yup.string()).min(1, "Bắt buộc có hình"),
     model: Yup.string().required("Bắt buộc có mẫu sản phẩm"),
@@ -113,17 +122,41 @@ export default function ProductNewEditForm() {
     name: "specificationList",
   });
 
-  useEffect(() => {
-    const fetchCategories = async () => {
-      try {
-        const data = await getCategory();
-        setCategories(data);
-      } catch (error) {
-        console.error(error);
-      }
-    };
+  const fetchData = async () => {
+    try {
+      const [category, brand, origin] = await Promise.allSettled([
+        getCategory(),
+        getBrand(),
+        apiGetOrigin(),
+      ]);
 
-    fetchCategories();
+      if (category.status === "fulfilled") {
+        setCategories(category.value);
+      } else {
+        console.error(category.reason);
+      }
+
+      if (brand.status === "fulfilled") {
+        setBrands(brand.value);
+
+        console.log("brand", brand.value);
+      } else {
+        console.error(brand.reason);
+      }
+
+      if (origin.status === "fulfilled") {
+        setOrigins(origin.value.data);
+        console.log("origin", origin.value.data);
+      } else {
+        console.error(origin.reason);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -138,8 +171,13 @@ export default function ProductNewEditForm() {
       };
       delete transformedData.imageURL;
 
+      console.log(transformedData);
+
       const response = await apiAddMachinery(transformedData);
-      console.log(response);
+
+      if (response.status === 200) {
+        toast.success("Thêm máy thành công");
+      }
       reset();
     } catch (error) {
       console.error(error);
@@ -209,7 +247,6 @@ export default function ProductNewEditForm() {
                   onDrop={handleDrop}
                   onRemove={handleRemove}
                   onRemoveAll={handleRemoveAll}
-                  onUpload={() => console.log("ON UPLOAD")}
                 />
               </div>
               <div>
@@ -265,9 +302,51 @@ export default function ProductNewEditForm() {
           <Stack spacing={3}>
             <Card sx={{ p: 3 }}>
               <Stack spacing={3} mt={2}>
-                <RHFTextField required name="brand" label="Thương hiệu" />
+                <RHFTextField
+                  select
+                  name="brandId"
+                  label="Chọn thương hiệu máy "
+                  SelectProps={{ native: true }}
+                  InputLabelProps={{
+                    shrink: true,
+                  }}
+                >
+                  <option value="">Chọn Thương hiệu</option>
+                  {brands && brands?.length > 0 ? (
+                    brands?.map((brand) => (
+                      <option key={brand.id} value={brand.id}>
+                        {brand.name}
+                      </option>
+                    ))
+                  ) : (
+                    <option value="" disabled>
+                      không có thương hiệu
+                    </option>
+                  )}
+                </RHFTextField>
 
-                <RHFTextField required name="origin" label="Xuất xứ" />
+                <RHFTextField
+                  select
+                  name="originId"
+                  label="Chọn xuất xứ "
+                  SelectProps={{ native: true }}
+                  InputLabelProps={{
+                    shrink: true,
+                  }}
+                >
+                  <option value="">Chọn xuất xứ</option>
+                  {origins && origins?.length > 0 ? (
+                    origins?.map((origin) => (
+                      <option key={origin.id} value={origin.id}>
+                        {origin.name}
+                      </option>
+                    ))
+                  ) : (
+                    <option value="" disabled>
+                      không có xuất xứ
+                    </option>
+                  )}
+                </RHFTextField>
 
                 <RHFTextField required name="model" label="Mẫu sản phẩm" />
 
@@ -280,6 +359,7 @@ export default function ProductNewEditForm() {
                     shrink: true,
                   }}
                 >
+                  <option value="">Chọn Loại Máy</option>
                   {categories && categories?.length > 0 ? (
                     categories?.map((category) => (
                       <option key={category.id} value={category.id}>
@@ -288,7 +368,7 @@ export default function ProductNewEditForm() {
                     ))
                   ) : (
                     <option value="" disabled>
-                      No categories available
+                      Loại máy không khả dụng
                     </option>
                   )}
                 </RHFTextField>

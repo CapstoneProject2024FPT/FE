@@ -16,8 +16,15 @@ export const CATEGORY_ID = "categories/:id";
 export const CATEGORY = "categories";
 export const GET_CATEGORY_PARENT = "categories?status=Active&type=Parent";
 
+//brand
+export const GET_BRAND = "brand?status=Active";
+export const BRAND_ID = "brand/:id";
+export const BRAND = "brand";
 //Customer
 export const CUSTOMER_PROFILE = "/users/:id";
 
 //checkout
 export const CHECKOUT = "/orders";
+
+//origin
+export const ORIGIN = "origin";

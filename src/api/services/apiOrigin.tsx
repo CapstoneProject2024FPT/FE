@@ -1,16 +1,15 @@
 import { axiosPublic } from "../axiosInstance";
-import { CHECKOUT } from "../pathApiName";
+import { ORIGIN } from "../pathApiName";
 import { useState } from "react";
 import axios from "axios";
-import { CheckOutProp } from "../../models/checkout";
 
-export const ApiCheckout = () => {
+export const ApiOrigin = () => {
   const [loading, setLoading] = useState(false);
 
-  const apiCheckout = async (params: CheckOutProp) => {
+  const apiGetOrigin = async () => {
     setLoading(true);
     try {
-      const response = await axiosPublic.post(CHECKOUT, params);
+      const response = await axiosPublic.get(ORIGIN);
 
       return response;
 
@@ -26,5 +25,5 @@ export const ApiCheckout = () => {
     }
   };
 
-  return { apiCheckout, loading };
+  return { apiGetOrigin, loading };
 };

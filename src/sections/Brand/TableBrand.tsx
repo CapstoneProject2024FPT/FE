@@ -3,23 +3,21 @@ import type { MenuProps } from "antd";
 import type { TableProps } from "antd";
 import { DownOutlined } from "@ant-design/icons";
 import { Table, Input, Space, Dropdown, Button } from "antd";
-import ModalProductPopupDelete from "./PopupProduct/ModalProductPopupDelete";
+import { brandTable } from "../../models/brand";
+import { BrandApi } from "../../api/services/apiBrand";
 import { toast } from "react-toastify";
-import { MachineryApi } from "../../api/services/apiMachinery";
-import { ProductAdmin } from "../../models/products";
-import { useNavigate } from "react-router-dom";
-import config from "../../configs";
-import ModalProductPopupPriority from "./PopupProduct/ModalProductPopupPriority";
+import ModalBrandPopupAdd from "./BrandPopup/popupAddBrand";
 import { formatDateFunc } from "../../utils/fn";
+import ModalBrandPopupDetail from "./BrandPopup/popupBrandDetail";
+import ModalBrandPopupDelete from "./BrandPopup/popupDeleteBrand";
 
 type ColumnsType<T> = TableProps<T>["columns"];
 const { Search } = Input;
 
-const pageSize = 20;
+const pageSize = 10;
 
-const TableProduct: React.FC = () => {
-  const navigate = useNavigate();
-  const [products, setProducts] = useState<ProductAdmin[]>();
+const TableBrand: React.FC = () => {
+  const [brands, setBrands] = useState<brandTable[]>();
   const [pagination, setPagination] = useState({
     current: 1,
     pageSize: pageSize,
@@ -28,71 +26,68 @@ const TableProduct: React.FC = () => {
   const [query, setQuery] = useState<string>("");
 
   //popup
+  const [open, setOpen] = useState<boolean>(false);
+  const [openAddPopup, setOpenAddPopup] = useState<boolean>(false);
   const [openDeletePopup, setOpenDeletePopup] = useState<boolean>(false);
-  const [openPriorityPopup, setOpenPriorityPopup] = useState<boolean>(false);
-  const [selectedData, setSelectedData] = useState<ProductAdmin | null>(null);
+  const [selectedData, setSelectedData] = useState<brandTable | null>(null);
 
   //api
-  const { apiGetMachine, loading } = MachineryApi();
+  const { loading, getBrand } = BrandApi();
 
   //modal popup
-  const handleActionDetail = (record: ProductAdmin) => {
-    navigate(config.adminRoutes.viewDetailProduct.replace(":id", record.id));
+  const handleActionDetail = (record: brandTable) => {
+    setOpen(!open);
+    setSelectedData(record);
   };
-
-  //delete
-  const handleActionDelete = (record: ProductAdmin) => {
+  const handleActionDelete = (record: brandTable) => {
     setOpenDeletePopup(!openDeletePopup);
     setSelectedData(record);
+  };
+
+  const handleCLose = () => {
+    setOpen(!open);
   };
 
   const handleCLoseDelete = () => {
     setOpenDeletePopup(!openDeletePopup);
   };
 
-  //update priority
-  const handleActionPriority = (record: ProductAdmin) => {
-    setOpenPriorityPopup(!openPriorityPopup);
-    setSelectedData(record);
-  };
-
-  const handleCLosePriority = () => {
-    setOpenPriorityPopup(!openPriorityPopup);
+  const handleCloseAdd = () => {
+    setOpenAddPopup(!openAddPopup);
   };
 
   //----------------------------------------------------------------------------
-  const fetchProducts = async () => {
+  const fetchBrand = async () => {
     try {
-      const response = await apiGetMachine("Available");
-
-      if (response && response.status === 200) {
-        setProducts(response.data);
-      } else {
-        //lỗi show thông báo lỗi
-        toast.error(response.Error);
-      }
+      const data = await getBrand();
+      setBrands(data);
     } catch (error) {
       toast.error("lỗi");
     }
   };
 
   useEffect(() => {
-    fetchProducts();
+    fetchBrand();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const handleAddBrandSuccess = () => {
+    handleCloseAdd();
+    fetchBrand();
+    toast.success("Thêm loại máy thành công");
+  };
+
   const handleDeleteCategorySuccess = (response: string) => {
     handleCLoseDelete();
-    fetchProducts();
+    fetchBrand();
     toast.success(response);
   };
 
-  const handleUpdatePriorityCategorySuccess = (response: string) => {
-    handleCLosePriority();
-    fetchProducts();
+  const handleUpdateBrandSuccess = (response: string) => {
+    handleCLose();
+    fetchBrand();
     toast.success(response);
   };
-
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleTableChange = (newPagination: any) => {
     setPagination({
@@ -101,14 +96,14 @@ const TableProduct: React.FC = () => {
     });
 
     if (pagination.pageSize !== pagination?.pageSize) {
-      setProducts([]);
+      setBrands([]);
     }
   };
 
   const customPagination = {
     ...pagination,
     onChange: handleTableChange,
-    pageSizeOptions: ["20", "25", "50"], // Custom page size options
+    pageSizeOptions: ["10", "25", "50"], // Custom page size options
     showSizeChanger: false, // Show page size changer
     showQuickJumper: false, // Show quick jumper
   };
@@ -117,8 +112,8 @@ const TableProduct: React.FC = () => {
     setQuery(e.target.value);
   };
 
-  const filteredRows = products?.filter((item) =>
-    item.name?.toLowerCase().includes(query)
+  const filteredRows = brands?.filter((item) =>
+    item.name.toLowerCase().includes(query)
   );
 
   const items: MenuProps["items"] = [
@@ -130,47 +125,20 @@ const TableProduct: React.FC = () => {
       key: "2",
       label: "Xoá",
     },
-    {
-      key: "3",
-      label: "Chỉnh độ ưu tiên",
-    },
   ];
-  const columns: ColumnsType<ProductAdmin> = [
+  const columns: ColumnsType<brandTable> = [
     {
-      title: "Tên máy",
+      title: "Thương hiệu máy",
       dataIndex: "name",
       sorter: (a, b) => a.name.length - b.name.length,
       width: "20%",
     },
     {
-      title: "hình máy",
-      dataIndex: "image",
-      render: (images) => (
-        <img
-          src={images[0]?.imageURL}
-          alt="Product Image"
-          style={{ width: 100 }}
-        />
+      title: "Hình ảnh",
+      dataIndex: "urlImage",
+      render: (urlImage) => (
+        <img src={urlImage} alt="Product Image" style={{ width: 100 }} />
       ),
-    },
-    {
-      title: "Mẫu máy",
-      dataIndex: "model",
-    },
-    {
-      title: "Xuất xứ",
-      dataIndex: "origin",
-    },
-    {
-      title: "Số lượng",
-      dataIndex: "quantity",
-      render: (quantity) => quantity || 0,
-    },
-    {
-      title: "Độ ưu tiên",
-      dataIndex: "priority",
-      render: (priority) => priority || 0,
-      sorter: (a, b) => a.priority - b.priority,
     },
     {
       title: "Ngày tạo",
@@ -192,9 +160,6 @@ const TableProduct: React.FC = () => {
                     break;
                   case "2":
                     handleActionDelete(record);
-                    break;
-                  case "3":
-                    handleActionPriority(record);
                     break;
                   default:
                     break;
@@ -219,12 +184,8 @@ const TableProduct: React.FC = () => {
           onChange={handleSearch}
           style={{ width: 200, marginBottom: 16 }}
         />
-        <Button
-          onClick={() => {
-            navigate(config.adminRoutes.createProduct);
-          }}
-        >
-          Thêm máy
+        <Button onClick={() => setOpenAddPopup(!openAddPopup)}>
+          Thêm thương hiệu
         </Button>
       </div>
 
@@ -233,30 +194,37 @@ const TableProduct: React.FC = () => {
         rowKey={(record) => record.id}
         dataSource={filteredRows}
         pagination={customPagination}
-        bordered
         loading={loading}
         onChange={handleTableChange}
+        bordered
       />
+      {open && (
+        <ModalBrandPopupDetail
+          BrandData={selectedData}
+          open={open}
+          handleClose={handleCLose}
+          onUpdateSuccess={handleUpdateBrandSuccess}
+        />
+      )}
 
       {openDeletePopup && (
-        <ModalProductPopupDelete
-          ProductData={selectedData}
+        <ModalBrandPopupDelete
+          BrandData={selectedData}
           openDeletePopup={openDeletePopup}
           handleCLoseDelete={handleCLoseDelete}
           onDeleteSuccess={handleDeleteCategorySuccess}
         />
       )}
 
-      {openPriorityPopup && (
-        <ModalProductPopupPriority
-          ProductData={selectedData}
-          openPriorityPopup={openPriorityPopup}
-          handleCLosePriority={handleCLosePriority}
-          onUpdatePrioritySuccess={handleUpdatePriorityCategorySuccess}
+      {openAddPopup && (
+        <ModalBrandPopupAdd
+          open={openAddPopup}
+          handleClose={handleCloseAdd}
+          onAddSuccess={handleAddBrandSuccess}
         />
       )}
     </>
   );
 };
 
-export default TableProduct;
+export default TableBrand;

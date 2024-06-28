@@ -10,7 +10,7 @@ import {
   Typography,
 } from "@mui/material";
 import Image from "../../components/Image";
-import React, { useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import post from "../News/newDetail.json";
 import { formatDateFunc } from "../../utils/fn";
 import TextIconLabel from "../../components/TextIconLabel";
@@ -19,6 +19,7 @@ import FacebookIcon from "@mui/icons-material/Facebook";
 import { blue } from "@mui/material/colors";
 import LinkIcon from "@mui/icons-material/Link";
 import { FacebookShareButton } from "react-share";
+import ProgressBar from "../../components/progressBar/ProgressBar";
 
 const NewsDetail: React.FC = () => {
   const news: PostDetailProps = post;
@@ -87,12 +88,33 @@ function Header({ title, cover, createAt, view }: HeaderProps) {
   const [copy, setCopy] = useState<boolean>(false);
   const linkToCopy = window.location.href;
   const shareUrl = window.location.href;
+  //make to to return type of setTimeout
+  const timeOutId = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // const timeout = useCallback(() => {
+  //   timeOutId.current = setTimeout(() => {
+  //     setCopy(false);
+  //   }, 500);
+  // }, []);
+
+  const timeout = useCallback(() => {
+    timeOutId.current = setTimeout(() => {
+      setCopy(!copy);
+    }, 500);
+  }, [copy]);
+
   const handleCopy = () => {
     setCopy(!copy);
     navigator.clipboard.writeText(linkToCopy);
+    timeout();
   };
+
+  useEffect(() => {
+    return () => clearTimeout(timeOutId.current as NodeJS.Timeout);
+  }, []);
   return (
     <Box>
+      <ProgressBar />
       <Box>
         <Stack
           direction="column"

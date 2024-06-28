@@ -191,7 +191,7 @@ const ProductDetail = () => {
                     <TextField
                       name="brand"
                       label="Thương hiệu"
-                      value={machine?.brand || ""}
+                      value={machine?.brand?.name || ""}
                       InputProps={{
                         readOnly: true,
                       }}
@@ -200,7 +200,7 @@ const ProductDetail = () => {
                     <TextField
                       name="origin"
                       label="Xuất xứ"
-                      value={machine?.origin || ""}
+                      value={machine?.origin?.name || ""}
                       InputProps={{
                         readOnly: true,
                       }}

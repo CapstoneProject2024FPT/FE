@@ -1,4 +1,5 @@
-import { AxiosResponse } from "axios";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import axios from "axios";
 import { axiosPublic } from "../axiosInstance";
 import {
   CATEGORY,
@@ -6,7 +7,7 @@ import {
   GET_CATEGORY,
   GET_CATEGORY_PARENT,
 } from "../pathApiName";
-import { CategoryProps, CategoryReponse } from "../../models/category";
+import { CategoryProps } from "../../models/category";
 import { useState } from "react";
 
 export const CategoryApi = () => {
@@ -19,24 +20,32 @@ export const CategoryApi = () => {
 
       setLoading(false);
       return response.data;
-    } catch (error) {
+    } catch (error: any) {
+      if (axios.isAxiosError(error) && error.response) {
+        return error.response.data;
+      } else {
+        return { statusCode: 500, Error: "Internal Server Error" };
+      }
+    } finally {
       setLoading(false);
-      throw new Error("Login failed");
     }
   };
 
   const getCategoryParent = async () => {
     try {
       setLoading(true);
-      const response: AxiosResponse<CategoryReponse> = await axiosPublic.get(
-        GET_CATEGORY_PARENT
-      );
+      const response = await axiosPublic.get(GET_CATEGORY_PARENT);
 
       setLoading(false);
       return response.data.items;
-    } catch (error) {
+    } catch (error: any) {
+      if (axios.isAxiosError(error) && error.response) {
+        return error.response.data;
+      } else {
+        return { statusCode: 500, Error: "Internal Server Error" };
+      }
+    } finally {
       setLoading(false);
-      throw new Error("Login failed");
     }
   };
   const deleteCategory = async (id: string) => {
@@ -46,9 +55,14 @@ export const CategoryApi = () => {
 
       setLoading(false);
       return response.data;
-    } catch (error) {
+    } catch (error: any) {
+      if (axios.isAxiosError(error) && error.response) {
+        return error.response.data;
+      } else {
+        return { statusCode: 500, Error: "Internal Server Error" };
+      }
+    } finally {
       setLoading(false);
-      throw new Error("Login failed");
     }
   };
 
@@ -58,9 +72,14 @@ export const CategoryApi = () => {
       const response = await axiosPublic.post(CATEGORY, params);
       setLoading(false);
       return response.data;
-    } catch (error) {
+    } catch (error: any) {
+      if (axios.isAxiosError(error) && error.response) {
+        return error.response.data;
+      } else {
+        return { statusCode: 500, Error: "Internal Server Error" };
+      }
+    } finally {
       setLoading(false);
-      throw new Error("Login failed");
     }
   };
 
@@ -73,9 +92,14 @@ export const CategoryApi = () => {
       );
       setLoading(false);
       return response.data;
-    } catch (error) {
+    } catch (error: any) {
+      if (axios.isAxiosError(error) && error.response) {
+        return error.response.data;
+      } else {
+        return { statusCode: 500, Error: "Internal Server Error" };
+      }
+    } finally {
       setLoading(false);
-      throw new Error("Login failed");
     }
   };
   return {

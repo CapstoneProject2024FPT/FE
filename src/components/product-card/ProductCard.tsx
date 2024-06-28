@@ -49,7 +49,7 @@ export default function ProductCard({ product }: Props) {
           <Typography variant="subtitle2" noWrap>
             {name}
           </Typography>
-          <Typography variant="subtitle1">Xuất xứ: {origin}</Typography>
+          <Typography variant="subtitle1">Xuất xứ: {origin.name}</Typography>
 
           <Stack
             direction="row"
