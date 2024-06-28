@@ -32,7 +32,7 @@ const ModalBrandPopupDetail: React.FC<ModalBrand> = ({
 }) => {
   const { updateBrand } = BrandApi();
   const BrandSchema = Yup.object().shape({
-    name: Yup.string().required("bắt buộc").min(5, "Tối thiểu 5 kí tự"),
+    name: Yup.string().required("bắt buộc").min(1, "Tối thiểu 1 kí tự"),
     description: Yup.string()
       .required("bắt buộc")
       .min(20, "Tối thiểu 20 kí tự"),

@@ -5,8 +5,10 @@ import {
   UserOutlined,
   ShoppingOutlined,
   ContainerOutlined,
+  TransactionOutlined,
 } from "@ant-design/icons";
 import ReceiptLongIcon from "@mui/icons-material/ReceiptLong";
+import EngineeringIcon from "@mui/icons-material/Engineering";
 import config from "../../../../configs";
 
 const MenuSideBars: MenuSideBar[] = [
@@ -69,6 +71,22 @@ const MenuSideBars: MenuSideBar[] = [
         key: config.adminRoutes.order,
       },
     ],
+  },
+  {
+    label: "Bảo trì",
+    key: "warranty",
+    icon: <EngineeringIcon />,
+    children: [
+      {
+        label: <Link to={config.adminRoutes.maintenance}>Tất cả đơn hàng</Link>,
+        key: config.adminRoutes.maintenance,
+      },
+    ],
+  },
+  {
+    label: <Link to={config.adminRoutes.rank}>Hạng mức</Link>,
+    key: "rank",
+    icon: <TransactionOutlined />,
   },
 ];
 

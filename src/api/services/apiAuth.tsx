@@ -18,7 +18,7 @@ export const AuthApi = () => {
       if (axios.isAxiosError(error) && error.response) {
         return error.response.data;
       } else {
-        return { statusCode: 500, message: "Internal Server Error" };
+        return { statusCode: 500, Error: "Internal Server Error" };
       }
     } finally {
       setLoading(false);
@@ -34,7 +34,7 @@ export const AuthApi = () => {
       if (axios.isAxiosError(error) && error.response) {
         return error.response.data;
       } else {
-        return { statusCode: 500, message: "Internal Server Error" };
+        return { statusCode: 500, Error: "Internal Server Error" };
       }
     }
   };

@@ -26,8 +26,12 @@ const ModalCategoryPopupDelete: React.FC<ModalCategory> = ({
     try {
       if (CategoryData) {
         const response = await deleteCategory(CategoryData?.id);
-        if (onDeleteSuccess) {
-          onDeleteSuccess(response);
+        if (response.status === 200) {
+          if (onDeleteSuccess) {
+            onDeleteSuccess(response.data);
+          }
+        } else {
+          toast.error(response.Error);
         }
       }
     } catch (error) {

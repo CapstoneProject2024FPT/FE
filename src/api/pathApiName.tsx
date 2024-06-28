@@ -25,3 +25,6 @@ export const CUSTOMER_PROFILE = "/users/:id";
 
 //checkout
 export const CHECKOUT = "/orders";
+
+//origin
+export const ORIGIN = "origin";

@@ -33,4 +33,5 @@ export const adminRoutes = {
   brand: "/dashboard/brand",
   order: "/dashboard/orders",
   rank: "/dashboard/ranks",
+  maintenance: "/dashboard/maintenance",
 };
