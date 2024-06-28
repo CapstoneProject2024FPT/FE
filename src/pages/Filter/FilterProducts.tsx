@@ -13,6 +13,9 @@ import { PRODUCT_FILTER } from "../../constants/filter";
 import { useNavigate } from "react-router-dom";
 import { MachineryApi } from "../../api/services/apiMachinery";
 import { ProductAdmin } from "../../models/products";
+import { CategoryApi } from "../../api/services/apiCategories";
+import { BrandApi } from "../../api/services/apiBrands";
+import { ApiOrigin } from "../../api/services/apiOrigin";
 
 interface ProductFilterProps {
   listProduct: any;
@@ -29,8 +32,47 @@ const ProductFilteredRow: React.FC<ProductFilterProps> = ({
   setProducts,
 }) => {
   const { apiGetList } = MachineryApi();
-  const [filter, setFilter] = useState<ProductFilter>({});
+  const { apiGetOrigin } = ApiOrigin();
+  const { getCategoryName } = CategoryApi();
+  const { getBrandName } = BrandApi();
+
+  const [filter, setFilter] = useState<any>({});
+  const [listOriginName, setListOriginName] = useState<string[]>([]);
+  const [listCategoryName, setListCategoryName] = useState<string[]>([]);
+  const [listBrandName, setListBrandName] = useState<string[]>([]);
   const navigate = useNavigate();
+
+  // origin
+  const fetchOriginNames = async () => {
+    const response = await apiGetOrigin();
+    console.log(response)
+    const originName = response.data?.map((origin: any) => ({
+      id: origin.id,
+      name: origin.name,
+    }));
+    console.log(originName)
+    setListOriginName(originName);
+  };
+
+  // category
+  const fetchCategoryNames = async () => {
+    const response = await getCategoryName();
+    const categoryName = response?.map((category: any) => ({
+      id: category.id,
+      name: category.name,
+    }));
+    setListCategoryName(categoryName);
+  };
+
+  // brand
+  const fetchBrandNames = async () => {
+    const response = await getBrandName();
+    const brandName = response?.map((brand: any) => ({
+      id: brand.id,
+      name: brand.name,
+    }));
+    setListBrandName(brandName);
+  };
 
   const handleCategoryChange = (
     filterType: PRODUCT_FILTER,
@@ -41,7 +83,7 @@ const ProductFilteredRow: React.FC<ProductFilterProps> = ({
     if (checked) {
       filter[filterType] = [...item, value];
     } else {
-      filter[filterType] = item.filter((val) => val !== value);
+      filter[filterType] = item.filter((val: any) => val !== value);
     }
 
     setFilter(filter);
@@ -49,7 +91,7 @@ const ProductFilteredRow: React.FC<ProductFilterProps> = ({
     updateURLSearchParams(filter);
   };
 
-  const updateURLSearchParams = (filter: ProductFilter) => {
+  const updateURLSearchParams = (filter: any) => {
     const params = new URLSearchParams();
 
     for (const key in filter) {
@@ -87,25 +129,10 @@ const ProductFilteredRow: React.FC<ProductFilterProps> = ({
     const initialFilter = getFilterFromURL();
     setFilter(initialFilter);
     getFilteredData(initialFilter);
+    fetchOriginNames();
+    fetchCategoryNames();
+    fetchBrandNames();
   }, []);
-
-  /* filter origin */
-  const uniqueOrigins = [
-    ...new Set(listProduct?.map((item: any) => item.origin)),
-  ];
-
-  /* filter category */
-  const uniqueCategory = [
-    ...new Set(listProduct?.map((item: any) => item.category)),
-  ];
-
-  /* filter warranty */
-  const uniqueWarranties = [
-    ...new Set(listProduct?.map((item: any) => item.timeWarranty.toString())),
-  ];
-
-  /* filter brand */
-  const uniqueBrand = [...new Set(listProduct?.map((item: any) => item.brand))];
 
   return (
     <FormControl
@@ -149,33 +176,31 @@ const ProductFilteredRow: React.FC<ProductFilterProps> = ({
           }}
         >
           <FormGroup sx={{ paddingLeft: "20px" }}>
-            {uniqueOrigins.map((origin: any) => (
+            {listOriginName.map((origin: any) => (
               <FormControlLabel
-                key={origin}
+                key={`${origin?.id}`}
                 control={
                   <Checkbox
-                    // checked={selectedCategories?.includes(origin)}
-                    defaultChecked={filter[PRODUCT_FILTER.ORIGIN]?.includes(
-                      origin
+                    defaultChecked={filter[PRODUCT_FILTER.ORIGINID]?.includes(
+                      origin.id
                     )}
-                    onChange={(_, checked) =>
+                    onChange={(checked) =>
                       handleCategoryChange(
-                        PRODUCT_FILTER.ORIGIN,
-                        origin,
-                        checked
+                        PRODUCT_FILTER.ORIGINID,
+                        origin.id,
+                        checked.target.checked
                       )
                     }
-                    name={origin}
+                    name={`${origin?.name}`}
                   />
                 }
-                label={origin}
+                label={`${origin?.name}`}
                 style={{ fontSize: "10px" }}
               />
             ))}
           </FormGroup>
         </Box>
       </Box>
-
       <Box>
         <FormLabel
           sx={{
@@ -184,7 +209,7 @@ const ProductFilteredRow: React.FC<ProductFilterProps> = ({
             color: "black !important",
           }}
         >
-          Loại
+          Loại máy
         </FormLabel>
         <Box
           sx={{
@@ -207,25 +232,26 @@ const ProductFilteredRow: React.FC<ProductFilterProps> = ({
           }}
         >
           <FormGroup sx={{ paddingLeft: "20px" }}>
-            {uniqueCategory.map((category: any) => (
+            {listCategoryName.map((category: any) => (
               <FormControlLabel
-                key={category.id}
+                key={`${category?.id}`}
                 control={
                   <Checkbox
-                    defaultChecked={filter[PRODUCT_FILTER.CATEGORY]?.includes(
+                    defaultChecked={filter[PRODUCT_FILTER.CATEGORYID]?.includes(
                       category.id
                     )}
-                    onChange={(_, checked) =>
+                    onChange={(checked) =>
                       handleCategoryChange(
-                        PRODUCT_FILTER.CATEGORY,
+                        PRODUCT_FILTER.CATEGORYID,
                         category.id,
-                        checked
+                        checked.target.checked
                       )
                     }
-                    name={category.id}
+                    name={`${category?.name}`}
                   />
                 }
-                label={category.name}
+                label={`${category?.name}`}
+                style={{ fontSize: "10px" }}
               />
             ))}
           </FormGroup>
@@ -262,76 +288,25 @@ const ProductFilteredRow: React.FC<ProductFilterProps> = ({
           }}
         >
           <FormGroup sx={{ paddingLeft: "20px" }}>
-            {uniqueBrand.map((brand: any) => (
+            {listBrandName.map((brand: any) => (
               <FormControlLabel
-                key={brand}
+                key={`${brand?.id}`}
                 control={
                   <Checkbox
-                    defaultChecked={filter[PRODUCT_FILTER.BRAND]?.includes(
-                      brand
+                    defaultChecked={filter[PRODUCT_FILTER.BRANDID]?.includes(
+                      brand.id
                     )}
-                    onChange={(_, checked) =>
-                      handleCategoryChange(PRODUCT_FILTER.BRAND, brand, checked)
-                    }
-                    name={brand}
-                  />
-                }
-                label={brand}
-              />
-            ))}
-          </FormGroup>
-        </Box>
-      </Box>
-      <Box>
-        <FormLabel
-          sx={{
-            fontSize: "16px",
-            fontWeight: "bold",
-            color: "black !important",
-          }}
-        >
-          Hạn bảo hành
-        </FormLabel>
-        <Box
-          sx={{
-            maxHeight: "135px",
-            overflowY: "auto",
-            "&::-webkit-scrollbar": {
-              width: "8px",
-            },
-            "&::-webkit-scrollbar-track": {
-              boxShadow: "inset 0 0 5px grey",
-              borderRadius: "10px",
-            },
-            "&::-webkit-scrollbar-thumb": {
-              backgroundColor: "#888",
-              borderRadius: "10px",
-            },
-            "&::-webkit-scrollbar-thumb:hover": {
-              backgroundColor: "#555",
-            },
-          }}
-        >
-          <FormGroup sx={{ paddingLeft: "20px" }}>
-            {uniqueWarranties.map((warranty: any) => (
-              <FormControlLabel
-                key={warranty}
-                control={
-                  <Checkbox
-                    defaultChecked={filter[PRODUCT_FILTER.WARRANTY]?.includes(
-                      warranty
-                    )}
-                    onChange={(_, checked) =>
+                    onChange={(checked) =>
                       handleCategoryChange(
-                        PRODUCT_FILTER.WARRANTY,
-                        warranty,
-                        checked
+                        PRODUCT_FILTER.BRANDID,
+                        brand.id,
+                        checked.target.checked
                       )
                     }
-                    name={warranty}
+                    name={`${brand?.name}`}
                   />
                 }
-                label={`${warranty} Tháng`}
+                label={`${brand?.name}`}
               />
             ))}
           </FormGroup>

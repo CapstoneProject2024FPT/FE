@@ -2,9 +2,9 @@ export const LOGIN = "/auth/login";
 export const REGISTER = "/users";
 
 //Machinery
-export const GET_MACHINERY = "/Machinery";
+export const GET_MACHINERY = "/machinery";
 export const ADD_MACHINERY = "/Machinery";
-export const MACHINERY_LIST = "Machinery";
+export const MACHINERY_LIST = "machinery";
 export const MACHINERY_ID = "/Machinery/:id";
 export const MACHINERY_DETAIL = "Machinery/Detail";
 export const MACHINERY_DETAIL_ID = "/Machinery/Detail/:id";
@@ -28,3 +28,9 @@ export const CHECKOUT = "/orders";
 
 //origin
 export const ORIGIN = "origin";
+
+//brand
+export const GET_BRAND_NAME = "/brand";
+
+//warranty
+export const GET_WARRANTY = "/warranty";

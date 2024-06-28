@@ -29,7 +29,7 @@ const ProductList: React.FC = () => {
   //----------------------------------------------------------------------------
   const fetchProducts = async () => {
     try {
-      const apiResponse = await apiGetMachine("Active");
+      const apiResponse = await apiGetMachine("Available");
       setProducts(apiResponse.data);
     } catch (error) {
       toast.error("lỗi");
@@ -40,10 +40,8 @@ const ProductList: React.FC = () => {
     return () => {
       fetchProducts();
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleTableChange = (newPagination: any) => {
     setPagination({
       ...pagination,
