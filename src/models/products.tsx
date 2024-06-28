@@ -132,3 +132,10 @@ export interface UpdateProduct {
   categoryId: string | undefined;
   status: string;
 }
+
+//enum
+
+export enum TypeProduct {
+  Material = "Material",
+  Machinery = "Machinery",
+}

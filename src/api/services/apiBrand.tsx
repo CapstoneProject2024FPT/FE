@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import axios from "axios";
 import { brandProps, brandUpdateProps } from "../../models/brand";
 import { axiosPublic } from "../axiosInstance";
 import { BRAND, BRAND_ID, GET_BRAND } from "../pathApiName";
@@ -13,9 +15,14 @@ export const BrandApi = () => {
 
       setLoading(false);
       return response.data;
-    } catch (error) {
+    } catch (error: any) {
+      if (axios.isAxiosError(error) && error.response) {
+        return error.response.data;
+      } else {
+        return { statusCode: 500, Error: "Internal Server Error" };
+      }
+    } finally {
       setLoading(false);
-      throw new Error("Login failed");
     }
   };
 
@@ -26,9 +33,14 @@ export const BrandApi = () => {
 
       setLoading(false);
       return response.data;
-    } catch (error) {
+    } catch (error: any) {
+      if (axios.isAxiosError(error) && error.response) {
+        return error.response.data;
+      } else {
+        return { statusCode: 500, Error: "Internal Server Error" };
+      }
+    } finally {
       setLoading(false);
-      throw new Error("Login failed");
     }
   };
 
@@ -40,9 +52,14 @@ export const BrandApi = () => {
       const response = await axiosPublic.post(BRAND, params);
       setLoading(false);
       return response.data;
-    } catch (error) {
+    } catch (error: any) {
+      if (axios.isAxiosError(error) && error.response) {
+        return error.response.data;
+      } else {
+        return { statusCode: 500, Error: "Internal Server Error" };
+      }
+    } finally {
       setLoading(false);
-      throw new Error("Login failed");
     }
   };
 
@@ -55,9 +72,14 @@ export const BrandApi = () => {
       );
       setLoading(false);
       return response.data;
-    } catch (error) {
+    } catch (error: any) {
+      if (axios.isAxiosError(error) && error.response) {
+        return error.response.data;
+      } else {
+        return { statusCode: 500, Error: "Internal Server Error" };
+      }
+    } finally {
       setLoading(false);
-      throw new Error("Login failed");
     }
   };
   return {

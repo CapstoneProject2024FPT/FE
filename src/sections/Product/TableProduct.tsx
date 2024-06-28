@@ -158,8 +158,11 @@ const TableProduct: React.FC = () => {
       dataIndex: "model",
     },
     {
-      title: "Xuất xứ",
-      dataIndex: "origin",
+      title: "Thương hiệu",
+      dataIndex: "brand",
+      render: (brand) => {
+        return brand.name;
+      },
     },
     {
       title: "Số lượng",

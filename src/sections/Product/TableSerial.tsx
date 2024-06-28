@@ -3,91 +3,94 @@ import type { MenuProps } from "antd";
 import type { TableProps } from "antd";
 import { DownOutlined } from "@ant-design/icons";
 import { Table, Input, Space, Dropdown, Button } from "antd";
-import { brandTable } from "../../models/brand";
-import { BrandApi } from "../../api/services/apiBrand";
+
+import { serialProps } from "../../models/serialNumber";
+import { ApiSerial } from "../../api/services/apiSerialNumber";
 import { toast } from "react-toastify";
-import ModalBrandPopupAdd from "./BrandPopup/popupAddBrand";
 import { formatDateFunc } from "../../utils/fn";
-import ModalBrandPopupDetail from "./BrandPopup/popupBrandDetail";
-import ModalBrandPopupDelete from "./BrandPopup/popupDeleteBrand";
+import { useParams } from "react-router-dom";
+import ModalAddSerialPopup from "./PopupSerialnumber/ModalAddSerialNumber";
+import ModalSerialNumberDelete from "./PopupSerialnumber/ModalDeleteSerialNumber";
 
 type ColumnsType<T> = TableProps<T>["columns"];
 const { Search } = Input;
 
-const pageSize = 10;
+const pageSize = 20;
 
-const TableBrand: React.FC = () => {
-  const [brands, setBrands] = useState<brandTable[]>();
+const TableSerial: React.FC = () => {
+  const [serialNumbers, setSerialNumbers] = useState<serialProps[]>();
   const [pagination, setPagination] = useState({
     current: 1,
     pageSize: pageSize,
   });
+  //url
+  const { id } = useParams<{ id: string }>();
   //search
   const [query, setQuery] = useState<string>("");
 
   //popup
   const [open, setOpen] = useState<boolean>(false);
-  const [openAddPopup, setOpenAddPopup] = useState<boolean>(false);
   const [openDeletePopup, setOpenDeletePopup] = useState<boolean>(false);
-  const [selectedData, setSelectedData] = useState<brandTable | null>(null);
+  const [selectedData, setSelectedData] = useState<serialProps | null>(null);
 
   //api
-  const { loading, getBrand } = BrandApi();
+  const { apiGetSerialbyMachineId, loading } = ApiSerial();
 
   //modal popup
-  const handleActionDetail = (record: brandTable) => {
+  const handleActionDetail = (record: serialProps) => {
     setOpen(!open);
     setSelectedData(record);
   };
-  const handleActionDelete = (record: brandTable) => {
+  const handleActionDelete = (record: serialProps) => {
     setOpenDeletePopup(!openDeletePopup);
     setSelectedData(record);
+  };
+
+  const handleOpen = () => {
+    setOpen(!open);
   };
 
   const handleCLose = () => {
     setOpen(!open);
   };
-
   const handleCLoseDelete = () => {
     setOpenDeletePopup(!openDeletePopup);
   };
 
-  const handleCloseAdd = () => {
-    setOpenAddPopup(!openAddPopup);
-  };
-
   //----------------------------------------------------------------------------
-  const fetchBrand = async () => {
+  const fetchSerialMachine = async () => {
     try {
-      const data = await getBrand();
-      setBrands(data);
+      if (id) {
+        const response = await apiGetSerialbyMachineId(id);
+
+        setSerialNumbers(response.data);
+        setSelectedData(response.data[0]);
+      } else {
+        setSerialNumbers([]);
+        setSelectedData(null);
+      }
     } catch (error) {
       toast.error("lỗi");
     }
   };
 
   useEffect(() => {
-    fetchBrand();
+    fetchSerialMachine();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const handleAddBrandSuccess = () => {
-    handleCloseAdd();
-    fetchBrand();
-    toast.success("Thêm thương hiệu thành công");
-  };
-
-  const handleDeleteCategorySuccess = (response: string) => {
-    handleCLoseDelete();
-    fetchBrand();
-    toast.success(response);
-  };
-
-  const handleUpdateBrandSuccess = (response: string) => {
+  const handleAddSuccess = () => {
     handleCLose();
-    fetchBrand();
+    fetchSerialMachine();
+    toast.success("Thêm thành công");
+  };
+
+  const handleDeleteSerialSuccess = (response: string) => {
+    handleCLoseDelete();
+    fetchSerialMachine();
     toast.success(response);
   };
+
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleTableChange = (newPagination: any) => {
     setPagination({
@@ -96,14 +99,14 @@ const TableBrand: React.FC = () => {
     });
 
     if (pagination.pageSize !== pagination?.pageSize) {
-      setBrands([]);
+      setSerialNumbers([]);
     }
   };
 
   const customPagination = {
     ...pagination,
     onChange: handleTableChange,
-    pageSizeOptions: ["10", "25", "50"], // Custom page size options
+    pageSizeOptions: ["20", "25", "50"], // Custom page size options
     showSizeChanger: false, // Show page size changer
     showQuickJumper: false, // Show quick jumper
   };
@@ -112,8 +115,8 @@ const TableBrand: React.FC = () => {
     setQuery(e.target.value);
   };
 
-  const filteredRows = brands?.filter((item) =>
-    item.name.toLowerCase().includes(query)
+  const filteredRows = serialNumbers?.filter((item) =>
+    item.serialNumber.toLowerCase().includes(query)
   );
 
   const items: MenuProps["items"] = [
@@ -126,24 +129,30 @@ const TableBrand: React.FC = () => {
       label: "Xoá",
     },
   ];
-  const columns: ColumnsType<brandTable> = [
+  const columns: ColumnsType<serialProps> = [
     {
-      title: "Thương hiệu máy",
-      dataIndex: "name",
-      sorter: (a, b) => a.name.length - b.name.length,
+      title: "Số seri",
+      dataIndex: "serialNumber",
+      sorter: (a, b) => a.serialNumber.length - b.serialNumber.length,
       width: "20%",
     },
     {
-      title: "Hình ảnh",
-      dataIndex: "urlImage",
-      render: (urlImage) => (
-        <img src={urlImage} alt="Product Image" style={{ width: 100 }} />
-      ),
+      title: "Trạng thái",
+      dataIndex: "status",
+      render: (status) => {
+        return status === "Available"
+          ? "Còn"
+          : status === "Sold"
+          ? "Đã bán"
+          : "Tạm dừng";
+      },
     },
     {
       title: "Ngày tạo",
       dataIndex: "createDate",
-      render: (createDate) => formatDateFunc.formatDate(createDate),
+      render: (createDate) => {
+        return formatDateFunc.formatDate(createDate);
+      },
     },
     {
       title: "Hành Động",
@@ -184,9 +193,7 @@ const TableBrand: React.FC = () => {
           onChange={handleSearch}
           style={{ width: 200, marginBottom: 16 }}
         />
-        <Button onClick={() => setOpenAddPopup(!openAddPopup)}>
-          Thêm thương hiệu
-        </Button>
+        <Button onClick={handleOpen}>Thêm máy</Button>
       </div>
 
       <Table
@@ -196,35 +203,26 @@ const TableBrand: React.FC = () => {
         pagination={customPagination}
         loading={loading}
         onChange={handleTableChange}
-        bordered
       />
       {open && (
-        <ModalBrandPopupDetail
-          BrandData={selectedData}
+        <ModalAddSerialPopup
+          ProductData={selectedData}
           open={open}
-          handleClose={handleCLose}
-          onUpdateSuccess={handleUpdateBrandSuccess}
+          handleCLose={handleCLose}
+          onSuccess={handleAddSuccess}
         />
       )}
 
       {openDeletePopup && (
-        <ModalBrandPopupDelete
-          BrandData={selectedData}
+        <ModalSerialNumberDelete
+          ProductData={selectedData}
           openDeletePopup={openDeletePopup}
           handleCLoseDelete={handleCLoseDelete}
-          onDeleteSuccess={handleDeleteCategorySuccess}
-        />
-      )}
-
-      {openAddPopup && (
-        <ModalBrandPopupAdd
-          open={openAddPopup}
-          handleClose={handleCloseAdd}
-          onAddSuccess={handleAddBrandSuccess}
+          onDeleteSuccess={handleDeleteSerialSuccess}
         />
       )}
     </>
   );
 };
 
-export default TableBrand;
+export default TableSerial;

@@ -28,3 +28,7 @@ export const CHECKOUT = "/orders";
 
 //origin
 export const ORIGIN = "origin";
+
+//serialNumer
+export const SERIALNUMBER = "inventories";
+export const SERIALNUMBER_ID = "inventories/:id";

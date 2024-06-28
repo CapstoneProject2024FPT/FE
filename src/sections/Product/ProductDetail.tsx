@@ -21,7 +21,7 @@ import Paper from "@mui/material/Paper";
 
 //api
 import { MachineryApi } from "../../api/services/apiMachinery";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 //components
 import { useEffect, useState } from "react";
@@ -30,6 +30,7 @@ import { toast } from "react-toastify";
 import Fancybox from "../../components/fancy-box-slide/FancyBox";
 import ModalProductDetailPopup from "./PopupProduct/ModalUpdateProductDetail";
 import { Button } from "antd";
+import config from "../../configs";
 
 const LabelStyle = styled(Typography)(({ theme }) => ({
   ...theme.typography.subtitle2,
@@ -38,6 +39,7 @@ const LabelStyle = styled(Typography)(({ theme }) => ({
 }));
 
 const ProductDetail = () => {
+  const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
   const [machine, setMachine] = useState<ProductDetailProps>();
   const [open, setOpen] = useState<boolean>(false);
@@ -70,6 +72,12 @@ const ProductDetail = () => {
   const handleClose = () => {
     setOpen(!open);
   };
+
+  const handleOpenSerial = () => {
+    if (id) {
+      navigate(config.adminRoutes.viewSerialProduct.replace(":id", id));
+    }
+  };
   const handleUpdateSuccess = (response: string) => {
     handleClose();
     fetchProductDetail();
@@ -83,11 +91,11 @@ const ProductDetail = () => {
         <>
           <Box sx={{ display: "flex", justifyContent: "flex-end", mb: 2 }}>
             <Stack spacing={2} display="flex" direction="row">
-              <Button onClick={() => handleClickOpen()}>
-                Cập nhật thông tin máy
+              <Button onClick={() => handleOpenSerial()}>
+                Cập nhật số lượng máy
               </Button>
               <Button onClick={() => handleClickOpen()}>
-                Cập nhật thông số kĩ thuật của máy
+                Cập nhật thông tin máy
               </Button>
             </Stack>
           </Box>
