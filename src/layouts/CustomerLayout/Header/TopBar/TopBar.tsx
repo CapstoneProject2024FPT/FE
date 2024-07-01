@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import Logo from "../../../../components/Logo/Logo";
 
 import RightMenu from "../RightMenu/RightMenu";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import classNames from "classnames/bind";
 import styles from "./TopBar.module.scss";
 import SearchBar from "../SearchBar/SearchBar";
@@ -10,7 +10,6 @@ import { CategoryApi } from "../../../../api/services/apiCategories";
 import { GetCategoryProps } from "../../../../models/category";
 import ArrowRightIcon from "@mui/icons-material/ArrowRight";
 import { blue } from "@mui/material/colors";
-// import config from "../../../../configs";
 
 const cx = classNames.bind(styles);
 
@@ -23,6 +22,7 @@ const LogoContainer = () => {
 };
 
 const TopBar: React.FC = () => {
+  const navigate = useNavigate();
   const { getCategory } = CategoryApi();
   const [menuData, setMenuData] = useState<GetCategoryProps[]>([]);
 
@@ -33,8 +33,17 @@ const TopBar: React.FC = () => {
 
   useEffect(() => {
     fetchCategory();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  const handleCategoryClick = (categoryId?: string) => {
+    const query = categoryId ? `?CategoryId=${categoryId}` : "";
+    const targetPath = `/product-list${query}`;
+    if (location.pathname === targetPath) {
+      window.location.href = targetPath;
+    } else {
+      navigate(targetPath);
+    }
+  };
 
   const renderMenu = (data: GetCategoryProps[]) => {
     return (
@@ -42,6 +51,11 @@ const TopBar: React.FC = () => {
         <li
           className={cx("menu-item")}
           style={{ height: "54px", alignContent: "center" }}
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation()
+            handleCategoryClick();
+          }}
         >
           <span>LOẠI MÁY</span>
           <ul className={cx("submenu")}>
@@ -64,6 +78,11 @@ const TopBar: React.FC = () => {
                         textDecoration: "none",
                         color: "inherit",
                         padding: "0",
+                      }}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation()
+                        handleCategoryClick(item.id);
                       }}
                     >
                       {item.name}
@@ -100,6 +119,11 @@ const TopBar: React.FC = () => {
                     textDecoration: "none",
                     color: "inherit",
                     padding: "0",
+                  }}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation()
+                    handleCategoryClick(child.id);
                   }}
                 >
                   {child.name}

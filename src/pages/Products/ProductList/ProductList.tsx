@@ -2,19 +2,18 @@ import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { MachineryApi } from "../../../api/services/apiMachinery";
 import { ProductAdmin } from "../../../models/products";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import "./ProductList.scss";
 import { Box, Typography } from "@mui/material";
 import ProductCard from "../../../components/product-card/ProductCard";
 import ProductFilteredRow from "../../Filter/FilterProducts";
-import SortOutlinedIcon from "@mui/icons-material/SortOutlined";
-import { SortOutlined } from "@mui/icons-material";
-import MenuListComposition from "../../Sort/SortProducts";
 import SortMenu from "../../Sort/SortProducts";
-const pageSize = 20;
 
+const pageSize = 20;
+const useQuery = () => {
+  return new URLSearchParams(useLocation().search);
+};
 const ProductList: React.FC = () => {
-  const navigate = useNavigate();
   const [products, setProducts] = useState<ProductAdmin[]>();
   const [pagination, setPagination] = useState({
     current: 1,
@@ -26,11 +25,16 @@ const ProductList: React.FC = () => {
   //api
   const { apiGetMachine } = MachineryApi();
 
+  const queryParam = useQuery();
+  const categoryId = queryParam.get("CategoryId");
+
   //----------------------------------------------------------------------------
   const fetchProducts = async () => {
     try {
       const apiResponse = await apiGetMachine("Available");
-      setProducts(apiResponse.data);
+      const productList = apiResponse.data
+      setProducts(productList);
+      console.log(productList)
     } catch (error) {
       toast.error("lỗi");
     }
@@ -66,7 +70,8 @@ const ProductList: React.FC = () => {
   };
 
   const filteredRows = products?.filter((item) =>
-    item.name?.toLowerCase().includes(query)
+    item.name?.toLowerCase().includes(query) &&
+  (!categoryId || item.category.id === categoryId)
   );
   const productFiltered = products?.map((item) => item);
 
