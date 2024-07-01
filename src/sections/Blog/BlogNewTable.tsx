@@ -3,9 +3,9 @@ import type { MenuProps } from "antd";
 import type { TableProps } from "antd";
 import { DownOutlined } from "@ant-design/icons";
 import { Table, Input, Space, Dropdown, Button } from "antd";
-
 import { toast } from "react-toastify";
 import { Post } from "../../models/blog";
+import { PlusOutlined } from "@ant-design/icons";
 
 type ColumnsType<T> = TableProps<T>["columns"];
 const { Search } = Input;
@@ -162,11 +162,13 @@ const TableBlogNew: React.FC = () => {
     <>
       <div style={{ display: "flex", justifyContent: "space-between" }}>
         <Search
-          placeholder="Search"
+          placeholder="Nhập từ khoá"
           onChange={handleSearch}
           style={{ width: 200, marginBottom: 16 }}
         />
-        <Button onClick={() => {}}>Thêm Tin tức</Button>
+        <Button onClick={() => {}} icon={<PlusOutlined />}>
+          Thêm Tin tức
+        </Button>
       </div>
 
       <Table

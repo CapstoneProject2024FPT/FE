@@ -10,6 +10,7 @@ import ModalBrandPopupAdd from "./BrandPopup/popupAddBrand";
 import { formatDateFunc } from "../../utils/fn";
 import ModalBrandPopupDetail from "./BrandPopup/popupBrandDetail";
 import ModalBrandPopupDelete from "./BrandPopup/popupDeleteBrand";
+import { PlusOutlined } from "@ant-design/icons";
 
 type ColumnsType<T> = TableProps<T>["columns"];
 const { Search } = Input;
@@ -74,7 +75,7 @@ const TableBrand: React.FC = () => {
   const handleAddBrandSuccess = () => {
     handleCloseAdd();
     fetchBrand();
-    toast.success("Thêm loại máy thành công");
+    toast.success("Thêm thương hiệu thành công");
   };
 
   const handleDeleteCategorySuccess = (response: string) => {
@@ -180,11 +181,14 @@ const TableBrand: React.FC = () => {
     <>
       <div style={{ display: "flex", justifyContent: "space-between" }}>
         <Search
-          placeholder="Search"
+          placeholder="Nhập từ khoá"
           onChange={handleSearch}
           style={{ width: 200, marginBottom: 16 }}
         />
-        <Button onClick={() => setOpenAddPopup(!openAddPopup)}>
+        <Button
+          onClick={() => setOpenAddPopup(!openAddPopup)}
+          icon={<PlusOutlined />}
+        >
           Thêm thương hiệu
         </Button>
       </div>

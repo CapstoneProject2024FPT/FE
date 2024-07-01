@@ -37,7 +37,7 @@ const ModalBrandPopupDelete: React.FC<ModalBrand> = ({
   };
   return (
     <Modal
-      title="Khả Dụng Thương Hiệu"
+      title="Hạng Mức"
       open={openDeletePopup}
       onOk={handleCLoseDelete}
       onCancel={handleCLoseDelete}

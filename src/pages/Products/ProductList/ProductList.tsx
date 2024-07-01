@@ -25,7 +25,7 @@ const ProductList: React.FC = () => {
   //----------------------------------------------------------------------------
   const fetchProducts = async () => {
     try {
-      const apiResponse = await apiGetMachine("Active");
+      const apiResponse = await apiGetMachine("Available");
       setProducts(apiResponse.data);
     } catch (error) {
       toast.error("lỗi");
