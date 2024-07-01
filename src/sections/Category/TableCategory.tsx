@@ -9,6 +9,7 @@ import ModalCategoryPopup from "./PopupCategory/popupDetailCategory";
 import ModalCategoryPopupDelete from "./PopupCategory/popupDeleteCategory";
 import { toast } from "react-toastify";
 import ModalCategoryPopupAdd from "./PopupCategory/popupAddCategory";
+import { PlusOutlined } from "@ant-design/icons";
 
 type ColumnsType<T> = TableProps<T>["columns"];
 const { Search } = Input;
@@ -169,11 +170,14 @@ const TableCategory: React.FC = () => {
     <>
       <div style={{ display: "flex", justifyContent: "space-between" }}>
         <Search
-          placeholder="Search"
+          placeholder="Nhập từ khoá"
           onChange={handleSearch}
           style={{ width: 200, marginBottom: 16 }}
         />
-        <Button onClick={() => setOpenAddPopup(!openAddPopup)}>
+        <Button
+          onClick={() => setOpenAddPopup(!openAddPopup)}
+          icon={<PlusOutlined />}
+        >
           Thêm loại máy
         </Button>
       </div>

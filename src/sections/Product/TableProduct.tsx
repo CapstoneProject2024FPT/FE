@@ -11,6 +11,7 @@ import { useNavigate } from "react-router-dom";
 import config from "../../configs";
 import ModalProductPopupPriority from "./PopupProduct/ModalProductPopupPriority";
 import { formatDateFunc } from "../../utils/fn";
+import { PlusOutlined } from "@ant-design/icons";
 
 type ColumnsType<T> = TableProps<T>["columns"];
 const { Search } = Input;
@@ -167,7 +168,7 @@ const TableProduct: React.FC = () => {
     {
       title: "Số lượng",
       dataIndex: "quantity",
-      render: (quantity) => quantity || 0,
+      render: (quantity) => quantity.Available || 0,
     },
     {
       title: "Độ ưu tiên",
@@ -218,11 +219,12 @@ const TableProduct: React.FC = () => {
     <>
       <div style={{ display: "flex", justifyContent: "space-between" }}>
         <Search
-          placeholder="Search"
+          placeholder="Nhập từ khoá"
           onChange={handleSearch}
           style={{ width: 200, marginBottom: 16 }}
         />
         <Button
+          icon={<PlusOutlined />}
           onClick={() => {
             navigate(config.adminRoutes.createProduct);
           }}
@@ -239,6 +241,11 @@ const TableProduct: React.FC = () => {
         bordered
         loading={loading}
         onChange={handleTableChange}
+        locale={{
+          triggerDesc: "Sắp xếp giảm dần",
+          triggerAsc: "Sắp xếp tăng dần",
+          cancelSort: "Huỷ sắp xếp",
+        }}
       />
 
       {openDeletePopup && (

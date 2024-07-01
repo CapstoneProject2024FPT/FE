@@ -1,5 +1,8 @@
 export interface rankProps {
-  id: string;
   name: string;
-  range: string;
+  range: number;
+}
+
+export interface getRank extends rankProps {
+  id: string;
 }
