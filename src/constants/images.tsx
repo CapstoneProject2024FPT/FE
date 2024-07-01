@@ -4,6 +4,10 @@ import background from "../assets/images/background_login.jpg";
 import logo from "../assets/images/logo-SMMMS.png";
 import emptyContent from "../assets/images/illustration_empty_content.svg";
 import emptyCart from "../assets/images/illustration_empty_cart.svg";
+import goldFrame from "../assets/images/gold_rank.png";
+import bronzeFrame from "../assets/images/bronze_rank.png";
+import silverFrame from "../assets/images/silver_rank.png";
+import diamondFrame from "../assets/images/diamond_rank.png";
 
 const images = {
   logo,
@@ -11,6 +15,10 @@ const images = {
   background,
   emptyContent,
   emptyCart,
+  goldFrame,
+  bronzeFrame,
+  silverFrame,
+  diamondFrame,
 };
 
 export default images;

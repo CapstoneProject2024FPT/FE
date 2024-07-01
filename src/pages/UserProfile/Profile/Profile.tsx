@@ -6,11 +6,15 @@ import FormGroup from "@mui/material/FormGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
 import { styled } from "@mui/material/styles";
-import { Button, TextField, Typography } from "@mui/material";
+import { Box, Button, TextField, Typography } from "@mui/material";
 import { CutomerApi } from "../../../api/services/apiUser";
 import { userModel } from "../../../models/UserData";
 import PopupUpdateUserProfile from "./PopupUser/PopupUpdateUserProfile";
 import { toast } from "react-toastify";
+import styles from "./userPropfile.module.scss";
+import classNames from "classnames/bind";
+
+const cx = classNames.bind(styles);
 
 const FormGrid = styled(Grid)(() => ({
   display: "flex",
@@ -79,9 +83,46 @@ const Profile: React.FC = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const rankImageMap: { [key: string]: string } = {
+    Đồng: "bonze-border",
+    Bạc: "silver-border",
+    Vàng: "gold-border",
+  };
+
+  const defaultclassRank = "";
+
+  const classRank = userProfile?.rank?.name
+    ? rankImageMap[userProfile.rank.name]
+    : defaultclassRank;
+
   return (
     <>
       <FormGrid xs={12}>
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            flexDirection: "column",
+          }}
+        >
+          <div className={cx("avatar", "avatar-large", classRank)}>
+            <img
+              src="https://static.gamersclub.com.br/players/avatar/737335/737335_full.jpg"
+              alt="Usuário"
+              className={cx("avatar-image")}
+            />
+          </div>
+          <Box sx={{ mt: 2 }}>
+            <LabelStyle>
+              Hạng:
+              {userProfile?.rank?.name
+                ? userProfile?.rank?.name
+                : "Chưa có hạng"}
+            </LabelStyle>
+          </Box>
+        </Box>
+
         <LabelStyle>Họ và Tên</LabelStyle>
         <TextField
           placeholder="Dũng"
