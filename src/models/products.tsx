@@ -13,6 +13,11 @@ export interface Product {
   origin: originProduct;
 }
 
+interface QuantityProps {
+  Available: number;
+  Sold: number;
+  Discontinued: number;
+}
 export type ProductProps = Product[];
 
 //productTable
@@ -32,7 +37,7 @@ export interface ProductAdmin {
   };
   name: string;
   priority: number;
-  quantity: number;
+  quantity: QuantityProps;
   sellingPrice: number;
   serialNumber: number;
   createDate: Date;
@@ -104,7 +109,7 @@ export type ProductDetailProps = {
   specifications: [specificationDetail];
   image: [{ imageURL: string; createDate: string }];
   category: CategoryMachineDetail;
-  quantity?: number;
+  quantity?: QuantityProps;
   sellingPrice: number;
   id: string;
   name: string;
@@ -131,4 +136,11 @@ export interface UpdateProduct {
   timeWarranty: number;
   categoryId: string | undefined;
   status: string;
+}
+
+//enum
+
+export enum TypeProduct {
+  Material = "Material",
+  Machinery = "Machinery",
 }

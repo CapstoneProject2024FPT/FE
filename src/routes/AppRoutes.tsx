@@ -27,6 +27,7 @@ import Page404 from "../pages/404/NotFoundPage";
 import NewsDetail from "../pages/News/NewsDetail";
 import Brand from "../pages/Admin/Brand/Brand";
 import Rank from "../pages/Admin/Rank/Rank";
+import SerialNumberPropductDetail from "../pages/Admin/Product/SerialNumberProduct";
 
 const AppRoute: React.FC = () => {
   return (
@@ -123,6 +124,11 @@ const AppRoute: React.FC = () => {
           key="ProductDetail"
           path={config.adminRoutes.viewDetailProduct}
           element={<ViewProductDetail />}
+        />
+        <Route
+          key="serialnumber"
+          path={config.adminRoutes.viewSerialProduct}
+          element={<SerialNumberPropductDetail />}
         />
 
         {/* category */}

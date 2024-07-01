@@ -2,9 +2,15 @@ import React, { useEffect, useState } from "react";
 import type { MenuProps } from "antd";
 import type { TableProps } from "antd";
 import { DownOutlined } from "@ant-design/icons";
-import { Table, Input, Space, Dropdown } from "antd";
-import { GetCategoryProps } from "../../models/category";
-import { CategoryApi } from "../../api/services/apiCategories";
+import { Table, Input, Space, Dropdown, Button } from "antd";
+import { getRank } from "../../models/rank";
+import { ApiRank } from "../../api/services/apiRank";
+import { toast } from "react-toastify";
+import { fNumber } from "../../utils/formatNumber";
+import ModalRankDetail from "./PopupRank/ModalRankDetail";
+import { PlusOutlined } from "@ant-design/icons";
+import ModalRankAdd from "./PopupRank/ModalAddRank";
+import ModalRankDelete from "./PopupRank/ModalDeleteRank";
 
 type ColumnsType<T> = TableProps<T>["columns"];
 const { Search } = Input;
@@ -12,7 +18,7 @@ const { Search } = Input;
 const pageSize = 20;
 
 const TableRank: React.FC = () => {
-  const [categories, setCategories] = useState<GetCategoryProps[]>();
+  const [ranks, setRanks] = useState<getRank[]>();
   const [pagination, setPagination] = useState({
     current: 1,
     pageSize: pageSize,
@@ -22,65 +28,67 @@ const TableRank: React.FC = () => {
 
   //popup
   const [open, setOpen] = useState<boolean>(false);
+  const [openAddPopup, setOpenAddPopup] = useState<boolean>(false);
   const [openDeletePopup, setOpenDeletePopup] = useState<boolean>(false);
-  const [selectedData, setSelectedData] = useState<GetCategoryProps | null>(
-    null
-  );
-
-  console.log(selectedData);
+  const [selectedData, setSelectedData] = useState<getRank | null>(null);
 
   //api
-  const { loading } = CategoryApi();
+  const { loading, apiGetRank } = ApiRank();
 
   //modal popup
-  const handleActionDetail = (record: GetCategoryProps) => {
+  const handleActionDetail = (record: getRank) => {
     setOpen(!open);
     setSelectedData(record);
   };
-  const handleActionDelete = (record: GetCategoryProps) => {
+  const handleActionDelete = (record: getRank) => {
     setOpenDeletePopup(!openDeletePopup);
     setSelectedData(record);
   };
-  //   const handleCLose = () => {
-  //     setOpen(!open);
-  //   };
-  //   const handleCLoseDelete = () => {
-  //     setOpenDeletePopup(!openDeletePopup);
-  //   };
-  //   const handleCloseAdd = () => {
-  //     setOpenAddPopup(!openAddPopup);
-  //   };
+  const handleCLose = () => {
+    setOpen(!open);
+  };
+  const handleCLoseDelete = () => {
+    setOpenDeletePopup(!openDeletePopup);
+  };
+  const handleCloseAdd = () => {
+    setOpenAddPopup(!openAddPopup);
+  };
 
   //----------------------------------------------------------------------------
-  //   const fetchOrder = async () => {
-  //     try {
-  //       const data = await getCategory();
-  //       setCategories(data);
-  //     } catch (error) {
-  //       toast.error("lỗi");
-  //     }
-  //   };
+  const fetchRank = async () => {
+    try {
+      const response = await apiGetRank();
+      if (response.status === 200) {
+        setRanks(response.data);
+      } else {
+        toast.error(response.Error);
+      }
+    } catch (error) {
+      toast.error("lỗi");
+    }
+  };
 
   useEffect(() => {
+    fetchRank();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  //   const handleAddCategorySuccess = () => {
-  //     handleCloseAdd();
-  //     fetchCategories();
-  //     toast.success("Thêm loại máy thành công");
-  //   };
+  const handleAddRankSuccess = () => {
+    handleCloseAdd();
+    fetchRank();
+    toast.success("Thêm hạng thành công");
+  };
 
-  //   const handleDeleteCategorySuccess = (response: string) => {
-  //     handleCLoseDelete();
-  //     fetchCategories();
-  //     toast.success(response);
-  //   };
-  //   const handleUpdateCategorySuccess = (response: string) => {
-  //     handleCLose();
-  //     fetchCategories();
-  //     toast.success(response);
-  //   };
+  const handleDeleteRankSuccess = (response: string) => {
+    handleCLoseDelete();
+    fetchRank();
+    toast.success(response);
+  };
+  const handleUpdateRankSuccess = (response: string) => {
+    handleCLose();
+    fetchRank();
+    toast.success(response);
+  };
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleTableChange = (newPagination: any) => {
     setPagination({
@@ -89,7 +97,7 @@ const TableRank: React.FC = () => {
     });
 
     if (pagination.pageSize !== pagination?.pageSize) {
-      setCategories([]);
+      setRanks([]);
     }
   };
 
@@ -105,7 +113,7 @@ const TableRank: React.FC = () => {
     setQuery(e.target.value);
   };
 
-  const filteredRows = categories?.filter((item) =>
+  const filteredRows = ranks?.filter((item) =>
     item.name.toLowerCase().includes(query)
   );
 
@@ -119,16 +127,19 @@ const TableRank: React.FC = () => {
       label: "Xoá",
     },
   ];
-  const columns: ColumnsType<GetCategoryProps> = [
+  const columns: ColumnsType<getRank> = [
     {
-      title: "Loại máy",
+      title: "Tên hạng ",
       dataIndex: "name",
       sorter: (a, b) => a.name.length - b.name.length,
       width: "20%",
     },
     {
-      title: "Cấp",
-      dataIndex: "type",
+      title: "Hạng mức",
+      dataIndex: "range",
+      render: (range) => fNumber(range),
+      sorter: (a, b) => a.range - b.range,
+      showSorterTooltip: true,
     },
     {
       title: "Hành Động",
@@ -163,11 +174,19 @@ const TableRank: React.FC = () => {
 
   return (
     <>
-      <Search
-        placeholder="Search"
-        onChange={handleSearch}
-        style={{ width: 200, marginBottom: 16 }}
-      />
+      <div style={{ display: "flex", justifyContent: "space-between" }}>
+        <Search
+          placeholder="Nhập từ khoá"
+          onChange={handleSearch}
+          style={{ width: 200, marginBottom: 16 }}
+        />
+        <Button
+          onClick={() => setOpenAddPopup(!openAddPopup)}
+          icon={<PlusOutlined />}
+        >
+          Thêm loại máy
+        </Button>
+      </div>
 
       <Table
         columns={columns}
@@ -176,32 +195,37 @@ const TableRank: React.FC = () => {
         pagination={customPagination}
         loading={loading}
         onChange={handleTableChange}
+        locale={{
+          triggerDesc: "Sắp xếp giảm dần",
+          triggerAsc: "Sắp xếp tăng dần",
+          cancelSort: "Huỷ sắp xếp",
+        }}
       />
-      {/* {open && (
-        <ModalCategoryPopup
-          CategoryData={selectedData}
+      {open && (
+        <ModalRankDetail
+          RankData={selectedData}
           open={open}
           handleClose={handleCLose}
-          onUpdateSuccess={handleUpdateCategorySuccess}
+          onUpdateSuccess={handleUpdateRankSuccess}
         />
-      )} */}
+      )}
 
-      {/* {openDeletePopup && (
-        <ModalCategoryPopupDelete
-          CategoryData={selectedData}
-          openDeletePopup={openDeletePopup}
-          handleCLoseDelete={handleCLoseDelete}
-          onDeleteSuccess={handleDeleteCategorySuccess}
+      {openDeletePopup && (
+        <ModalRankDelete
+          RankData={selectedData}
+          open={openDeletePopup}
+          handleClose={handleCLoseDelete}
+          onDeleteSuccess={handleDeleteRankSuccess}
         />
-      )} */}
+      )}
 
-      {/* {openAddPopup && (
-        <ModalCategoryPopupAdd
+      {openAddPopup && (
+        <ModalRankAdd
           open={openAddPopup}
           handleClose={handleCloseAdd}
-          onAddSuccess={handleAddCategorySuccess}
+          onAddSuccess={handleAddRankSuccess}
         />
-      )} */}
+      )}
     </>
   );
 };

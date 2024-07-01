@@ -22,6 +22,7 @@ export interface userProps {
   address: string;
   role: string;
   status: string;
+  rank: { name: string; range: number };
 }
 
 export interface staffProps {

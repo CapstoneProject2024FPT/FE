@@ -7,7 +7,6 @@ export const ADD_MACHINERY = "/Machinery";
 export const MACHINERY_LIST = "machinery";
 export const MACHINERY_ID = "/Machinery/:id";
 export const MACHINERY_DETAIL = "Machinery/Detail";
-export const MACHINERY_DETAIL_ID = "/Machinery/Detail/:id";
 export const MACHINERY_HOME_PRIORITY = "Machinery?Priority=1";
 
 //Category
@@ -34,3 +33,10 @@ export const GET_BRAND_NAME = "/brand";
 
 //warranty
 export const GET_WARRANTY = "/warranty";
+//serialNumer
+export const SERIALNUMBER = "inventories";
+export const SERIALNUMBER_ID = "inventories/:id";
+
+//rank
+export const RANK = "rank";
+export const RANK_ID = "rank/:id";

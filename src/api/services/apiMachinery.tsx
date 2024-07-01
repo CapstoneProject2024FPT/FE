@@ -2,8 +2,6 @@ import { axiosPrivate, axiosPublic } from "../axiosInstance";
 import {
   ADD_MACHINERY,
   GET_MACHINERY,
-  MACHINERY_DETAIL,
-  MACHINERY_DETAIL_ID,
   MACHINERY_HOME_PRIORITY,
   MACHINERY_ID,
   MACHINERY_LIST,
@@ -134,7 +132,7 @@ export const MachineryApi = () => {
   const apiGetMachineryID = async (id: string) => {
     setLoading(true);
     try {
-      const response = await axiosPublic.get(`${MACHINERY_DETAIL}/${id}`);
+      const response = await axiosPublic.get(MACHINERY_ID.replace(":id", id));
       return response.data;
     } catch (error) {
       console.error(error);
@@ -147,9 +145,7 @@ export const MachineryApi = () => {
   const apiGetDetailMachine = async (id: string) => {
     setLoading(true);
     try {
-      const response = await axiosPublic.get(
-        MACHINERY_DETAIL_ID.replace(":id", id)
-      );
+      const response = await axiosPublic.get(MACHINERY_ID.replace(":id", id));
       return response;
     } catch (error) {
       if (axios.isAxiosError(error) && error.response) {

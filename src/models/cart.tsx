@@ -1,11 +1,16 @@
 import { CategoryMachineDetail } from "./category";
 import { specificationDetail } from "./products";
 
+interface QuantityProps {
+  Available: number;
+  Sold: number;
+  Discontinued: number;
+}
 export interface CartItem {
   specifications: [specificationDetail];
   image: [{ imageURL: string; createDate: string }];
   category: CategoryMachineDetail;
-  quantity?: number;
+  quantity?: QuantityProps;
   sellingPrice: number;
   id: string;
   name: string;

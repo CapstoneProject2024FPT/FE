@@ -3,12 +3,14 @@ import type { MenuProps } from "antd";
 import type { TableProps } from "antd";
 import { DownOutlined } from "@ant-design/icons";
 import { Table, Input, Space, Dropdown, Button } from "antd";
-import { GetCategoryProps } from "../../models/category";
-import { CategoryApi } from "../../api/services/apiCategories";
-import ModalCategoryPopup from "./PopupCategory/popupDetailCategory";
-import ModalCategoryPopupDelete from "./PopupCategory/popupDeleteCategory";
+
+import { serialProps } from "../../models/serialNumber";
+import { ApiSerial } from "../../api/services/apiSerialNumber";
 import { toast } from "react-toastify";
-import ModalCategoryPopupAdd from "./PopupCategory/popupAddCategory";
+import { formatDateFunc } from "../../utils/fn";
+import { useParams } from "react-router-dom";
+import ModalAddSerialPopup from "./PopupSerialnumber/ModalAddSerialNumber";
+import ModalSerialNumberDelete from "./PopupSerialnumber/ModalDeleteSerialNumber";
 import { PlusOutlined } from "@ant-design/icons";
 
 type ColumnsType<T> = TableProps<T>["columns"];
@@ -16,76 +18,80 @@ const { Search } = Input;
 
 const pageSize = 20;
 
-const TableCategory: React.FC = () => {
-  const [categories, setCategories] = useState<GetCategoryProps[]>();
+const TableSerial: React.FC = () => {
+  const [serialNumbers, setSerialNumbers] = useState<serialProps[]>();
   const [pagination, setPagination] = useState({
     current: 1,
     pageSize: pageSize,
   });
+  //url
+  const { id } = useParams<{ id: string }>();
   //search
   const [query, setQuery] = useState<string>("");
 
   //popup
   const [open, setOpen] = useState<boolean>(false);
   const [openDeletePopup, setOpenDeletePopup] = useState<boolean>(false);
-  const [openAddPopup, setOpenAddPopup] = useState<boolean>(false);
-  const [selectedData, setSelectedData] = useState<GetCategoryProps | null>(
-    null
-  );
+  const [selectedData, setSelectedData] = useState<serialProps | null>(null);
 
   //api
-  const { getCategory, loading } = CategoryApi();
+  const { apiGetSerialbyMachineId, loading } = ApiSerial();
 
   //modal popup
-  const handleActionDetail = (record: GetCategoryProps) => {
+  const handleActionDetail = (record: serialProps) => {
     setOpen(!open);
     setSelectedData(record);
   };
-  const handleActionDelete = (record: GetCategoryProps) => {
+  const handleActionDelete = (record: serialProps) => {
     setOpenDeletePopup(!openDeletePopup);
     setSelectedData(record);
   };
+
+  const handleOpen = () => {
+    setOpen(!open);
+  };
+
   const handleCLose = () => {
     setOpen(!open);
   };
   const handleCLoseDelete = () => {
     setOpenDeletePopup(!openDeletePopup);
   };
-  const handleCloseAdd = () => {
-    setOpenAddPopup(!openAddPopup);
-  };
 
   //----------------------------------------------------------------------------
-  const fetchCategories = async () => {
+  const fetchSerialMachine = async () => {
     try {
-      const data = await getCategory();
-      setCategories(data);
+      if (id) {
+        const response = await apiGetSerialbyMachineId(id);
+
+        setSerialNumbers(response.data);
+        setSelectedData(response.data[0]);
+      } else {
+        setSerialNumbers([]);
+        setSelectedData(null);
+      }
     } catch (error) {
       toast.error("lỗi");
     }
   };
 
   useEffect(() => {
-    fetchCategories();
+    fetchSerialMachine();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const handleAddCategorySuccess = () => {
-    handleCloseAdd();
-    fetchCategories();
-    toast.success("Thêm loại máy thành công");
+  const handleAddSuccess = () => {
+    handleCLose();
+    fetchSerialMachine();
+    toast.success("Thêm thành công");
   };
 
-  const handleDeleteCategorySuccess = (response: string) => {
+  const handleDeleteSerialSuccess = (response: string) => {
     handleCLoseDelete();
-    fetchCategories();
+    fetchSerialMachine();
     toast.success(response);
   };
-  const handleUpdateCategorySuccess = (response: string) => {
-    handleCLose();
-    fetchCategories();
-    toast.success(response);
-  };
+
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleTableChange = (newPagination: any) => {
     setPagination({
@@ -94,7 +100,7 @@ const TableCategory: React.FC = () => {
     });
 
     if (pagination.pageSize !== pagination?.pageSize) {
-      setCategories([]);
+      setSerialNumbers([]);
     }
   };
 
@@ -110,8 +116,8 @@ const TableCategory: React.FC = () => {
     setQuery(e.target.value);
   };
 
-  const filteredRows = categories?.filter((item) =>
-    item.name.toLowerCase().includes(query)
+  const filteredRows = serialNumbers?.filter((item) =>
+    item.serialNumber.toLowerCase().includes(query)
   );
 
   const items: MenuProps["items"] = [
@@ -124,16 +130,30 @@ const TableCategory: React.FC = () => {
       label: "Xoá",
     },
   ];
-  const columns: ColumnsType<GetCategoryProps> = [
+  const columns: ColumnsType<serialProps> = [
     {
-      title: "Loại máy",
-      dataIndex: "name",
-      sorter: (a, b) => a.name.length - b.name.length,
+      title: "Số seri",
+      dataIndex: "serialNumber",
+      sorter: (a, b) => a.serialNumber.length - b.serialNumber.length,
       width: "20%",
     },
     {
-      title: "Cấp",
-      dataIndex: "type",
+      title: "Trạng thái",
+      dataIndex: "status",
+      render: (status) => {
+        return status === "Available"
+          ? "Còn"
+          : status === "Sold"
+          ? "Đã bán"
+          : "Tạm dừng";
+      },
+    },
+    {
+      title: "Ngày tạo",
+      dataIndex: "createDate",
+      render: (createDate) => {
+        return formatDateFunc.formatDate(createDate);
+      },
     },
     {
       title: "Hành Động",
@@ -174,11 +194,8 @@ const TableCategory: React.FC = () => {
           onChange={handleSearch}
           style={{ width: 200, marginBottom: 16 }}
         />
-        <Button
-          onClick={() => setOpenAddPopup(!openAddPopup)}
-          icon={<PlusOutlined />}
-        >
-          Thêm loại máy
+        <Button onClick={handleOpen} icon={<PlusOutlined />}>
+          Thêm máy
         </Button>
       </div>
 
@@ -189,34 +206,31 @@ const TableCategory: React.FC = () => {
         pagination={customPagination}
         loading={loading}
         onChange={handleTableChange}
+        locale={{
+          triggerDesc: "Sắp xếp giảm dần",
+          triggerAsc: "Sắp xếp tăng dần",
+          cancelSort: "Huỷ sắp xếp",
+        }}
       />
       {open && (
-        <ModalCategoryPopup
-          CategoryData={selectedData}
+        <ModalAddSerialPopup
+          ProductData={selectedData}
           open={open}
-          handleClose={handleCLose}
-          onUpdateSuccess={handleUpdateCategorySuccess}
+          handleCLose={handleCLose}
+          onSuccess={handleAddSuccess}
         />
       )}
 
       {openDeletePopup && (
-        <ModalCategoryPopupDelete
-          CategoryData={selectedData}
+        <ModalSerialNumberDelete
+          ProductData={selectedData}
           openDeletePopup={openDeletePopup}
           handleCLoseDelete={handleCLoseDelete}
-          onDeleteSuccess={handleDeleteCategorySuccess}
-        />
-      )}
-
-      {openAddPopup && (
-        <ModalCategoryPopupAdd
-          open={openAddPopup}
-          handleClose={handleCloseAdd}
-          onAddSuccess={handleAddCategorySuccess}
+          onDeleteSuccess={handleDeleteSerialSuccess}
         />
       )}
     </>
   );
 };
 
-export default TableCategory;
+export default TableSerial;
