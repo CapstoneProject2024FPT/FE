@@ -35,3 +35,6 @@ export const SERIALNUMBER_ID = "inventories/:id";
 //rank
 export const RANK = "rank";
 export const RANK_ID = "rank/:id";
+
+//accont
+export const USER_BY_ROLE = "users";

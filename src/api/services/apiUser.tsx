@@ -50,5 +50,6 @@ export const CutomerApi = () => {
       setLoading(false);
     }
   };
+
   return { apiUserProfile, loading, updateProfile };
 };

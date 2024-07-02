@@ -1,7 +1,9 @@
 import * as React from "react";
 import { Tabs } from "antd";
 import TabValue from "../User/AccountType";
-
+import { Container } from "@mui/material";
+import HeaderBreadcrumbs from "../../../components/HeaderBreadcrumbs";
+import config from "../../../configs";
 interface TabItem {
   key: string;
   label: React.ReactNode;
@@ -29,9 +31,16 @@ const Account: React.FC = () => {
   });
 
   return (
-    <div style={{ height: "100%" }}>
+    <Container>
+      <HeaderBreadcrumbs
+        heading="Tài Khoản"
+        links={[
+          { name: "Thống kê", href: config.adminRoutes.dashboard },
+          { name: "Tài khoản" },
+        ]}
+      />
       <Tabs type="card" defaultActiveKey="1" items={tabItems} />
-    </div>
+    </Container>
   );
 };
 

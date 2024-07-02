@@ -2,6 +2,15 @@ export interface UserData {
   username: string;
   password: string;
 }
+
+export enum RoleType {
+  ADMIN = "Admin",
+  USER = "User",
+  SALE = "Sale",
+  MANAGER = "Manager",
+  TECHNICAL = "Technical",
+}
+
 export interface RegisterData extends UserData {
   email: string;
   fullname: string;
@@ -17,14 +26,13 @@ export interface userProps {
   id: string;
   fullName: string;
   email: string;
-  photoURL: string | null | undefined;
+  image: string | null | undefined;
   phoneNumber: string;
   address: string;
   role: string;
   status: string;
   rank: { name: string; range: number };
 }
-
 export interface staffProps {
   fullName: string;
   email: string;
@@ -36,4 +44,6 @@ export interface staffModel extends staffProps {
   yearOfExperience: number;
 }
 
-export interface userModel extends Omit<userProps, "photoURL"> {}
+export interface userModel extends userProps {
+  amount: number;
+}
