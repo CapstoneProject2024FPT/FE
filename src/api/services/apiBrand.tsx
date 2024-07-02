@@ -82,11 +82,30 @@ export const BrandApi = () => {
       setLoading(false);
     }
   };
+
+  const getBrandName = async () => {
+    try {
+      setLoading(true);
+      const response = await axiosPublic.get(GET_BRAND);
+      setLoading(false);
+      return response.data;
+    } catch (error: any) {
+      if (axios.isAxiosError(error) && error.response) {
+        return error.response.data;
+      } else {
+        return { statusCode: 500, Error: "Internal Server Error" };
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return {
     getBrand,
     loading,
     deleteBrand,
     addBrand,
     updateBrand,
+    getBrandName,
   };
 };

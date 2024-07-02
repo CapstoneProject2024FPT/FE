@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useEffect, useState } from "react";
 import {
   Box,
@@ -14,7 +15,7 @@ import { useNavigate } from "react-router-dom";
 import { MachineryApi } from "../../api/services/apiMachinery";
 import { ProductAdmin } from "../../models/products";
 import { CategoryApi } from "../../api/services/apiCategories";
-import { BrandApi } from "../../api/services/apiBrands";
+import { BrandApi } from "../../api/services/apiBrand";
 import { ApiOrigin } from "../../api/services/apiOrigin";
 
 interface ProductFilterProps {
@@ -27,10 +28,7 @@ interface ProductFilter {
   // other properties
 }
 
-const ProductFilteredRow: React.FC<ProductFilterProps> = ({
-  listProduct,
-  setProducts,
-}) => {
+const ProductFilteredRow: React.FC<ProductFilterProps> = ({ setProducts }) => {
   const { apiGetList } = MachineryApi();
   const { apiGetOrigin } = ApiOrigin();
   const { getCategoryName } = CategoryApi();
@@ -45,12 +43,12 @@ const ProductFilteredRow: React.FC<ProductFilterProps> = ({
   // origin
   const fetchOriginNames = async () => {
     const response = await apiGetOrigin();
-    console.log(response)
+    console.log(response);
     const originName = response.data?.map((origin: any) => ({
       id: origin.id,
       name: origin.name,
     }));
-    console.log(originName)
+    console.log(originName);
     setListOriginName(originName);
   };
 
@@ -132,6 +130,7 @@ const ProductFilteredRow: React.FC<ProductFilterProps> = ({
     fetchOriginNames();
     fetchCategoryNames();
     fetchBrandNames();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (

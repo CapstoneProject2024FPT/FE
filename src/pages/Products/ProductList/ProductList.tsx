@@ -2,39 +2,24 @@ import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { MachineryApi } from "../../../api/services/apiMachinery";
 import { ProductAdmin } from "../../../models/products";
-import { useLocation, useNavigate } from "react-router-dom";
 import "./ProductList.scss";
 import { Box, Typography } from "@mui/material";
 import ProductCard from "../../../components/product-card/ProductCard";
 import ProductFilteredRow from "../../Filter/FilterProducts";
 import SortMenu from "../../Sort/SortProducts";
 
-const pageSize = 20;
-const useQuery = () => {
-  return new URLSearchParams(useLocation().search);
-};
 const ProductList: React.FC = () => {
   const [products, setProducts] = useState<ProductAdmin[]>();
-  const [pagination, setPagination] = useState({
-    current: 1,
-    pageSize: pageSize,
-  });
-  //search
-  const [query, setQuery] = useState<string>("");
 
   //api
   const { apiGetMachine } = MachineryApi();
-
-  const queryParam = useQuery();
-  const categoryId = queryParam.get("CategoryId");
 
   //----------------------------------------------------------------------------
   const fetchProducts = async () => {
     try {
       const apiResponse = await apiGetMachine("Available");
-      const productList = apiResponse.data
+      const productList = apiResponse.data;
       setProducts(productList);
-      console.log(productList)
     } catch (error) {
       toast.error("lỗi");
     }
@@ -44,35 +29,9 @@ const ProductList: React.FC = () => {
     return () => {
       fetchProducts();
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const handleTableChange = (newPagination: any) => {
-    setPagination({
-      ...pagination,
-      ...newPagination,
-    });
-
-    if (pagination.pageSize !== pagination?.pageSize) {
-      setProducts([]);
-    }
-  };
-
-  const customPagination = {
-    ...pagination,
-    onChange: handleTableChange,
-    pageSizeOptions: ["20", "25", "50"], // Custom page size options
-    showSizeChanger: false, // Show page size changer
-    showQuickJumper: false, // Show quick jumper
-  };
-
-  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setQuery(e.target.value);
-  };
-
-  const filteredRows = products?.filter((item) =>
-    item.name?.toLowerCase().includes(query) &&
-  (!categoryId || item.category.id === categoryId)
-  );
   const productFiltered = products?.map((item) => item);
 
   return (
@@ -141,7 +100,7 @@ const ProductList: React.FC = () => {
             padding: "0 20px",
           }}
         >
-          {filteredRows?.map((product) => (
+          {products?.map((product) => (
             <ProductCard key={product.id} product={product} />
           ))}
         </Box>

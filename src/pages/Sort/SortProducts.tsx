@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Box, Button, Menu, MenuItem } from "@mui/material";
 
 const SortMenu = () => {
@@ -6,6 +6,7 @@ const SortMenu = () => {
   const sortTypes = ["A -> Z", "Z -> A", "Giá tăng dần", "Giá giảm dần"];
   const [selectedSort, setSelectedSort] = useState(`Sắp xếp: ${sortTypes[0]}`);
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleClick = (event: any) => {
     setAnchorEl(event.currentTarget);
   };
@@ -20,8 +21,13 @@ const SortMenu = () => {
   };
 
   return (
-    <Box sx={{width: "100%"}}>
-      <Button aria-controls="sort-menu" aria-haspopup="true" onClick={handleClick} sx={{width: "100%"}}>
+    <Box sx={{ width: "100%" }}>
+      <Button
+        aria-controls="sort-menu"
+        aria-haspopup="true"
+        onClick={handleClick}
+        sx={{ width: "100%" }}
+      >
         {selectedSort}
       </Button>
       <Menu
@@ -30,10 +36,13 @@ const SortMenu = () => {
         keepMounted
         open={Boolean(anchorEl)}
         onClose={handleClose}
-        sx={{ width: '300px' }}
+        sx={{ width: "300px" }}
       >
         {sortTypes.map((sortType) => (
-          <MenuItem key={sortType} onClick={() => handleMenuItemClick(sortType)}>
+          <MenuItem
+            key={sortType}
+            onClick={() => handleMenuItemClick(sortType)}
+          >
             {sortType}
           </MenuItem>
         ))}
