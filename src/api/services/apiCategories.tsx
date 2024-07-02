@@ -17,7 +17,18 @@ export const CategoryApi = () => {
     try {
       setLoading(true);
       const response = await axiosPublic.get(GET_CATEGORY);
+      setLoading(false);
+      return response.data;
+    } catch (error) {
+      setLoading(false);
+      throw new Error("Login failed");
+    }
+  };
 
+  const getCategoryName = async () => {
+    try {
+      setLoading(true);
+      const response = await axiosPublic.get(CATEGORY);
       setLoading(false);
       return response.data;
     } catch (error: any) {
@@ -103,8 +114,9 @@ export const CategoryApi = () => {
     }
   };
   return {
-    getCategory,
     loading,
+    getCategory,
+    getCategoryName,
     deleteCategory,
     addCategory,
     updateCategory,

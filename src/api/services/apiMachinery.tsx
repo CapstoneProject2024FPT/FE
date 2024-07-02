@@ -1,4 +1,4 @@
-import { axiosPrivate, axiosPublic } from "../axiosInstance";
+import { axiosPublic } from "../axiosInstance";
 import {
   ADD_MACHINERY,
   GET_MACHINERY,
@@ -14,9 +14,10 @@ import {
 import axios from "axios";
 
 interface GetListProps {
-  name?: string;
-  origin?: string;
-  model?: string;
+  name?: string[];
+  origin?: string[];
+  model?: string[];
+  brand?: string[];
   description?: string;
   status?: string;
   serialNumber?: string;
@@ -30,11 +31,15 @@ export const MachineryApi = () => {
   const apiGetList = async (params: GetListProps) => {
     setLoading(true);
     try {
-      const response = await axiosPrivate.get(GET_MACHINERY, {
+      const response = await axiosPublic.get(GET_MACHINERY, {
         params,
+        paramsSerializer: {
+          indexes: null, // no brackets at all
+        },
       });
       return response.data;
     } catch (error) {
+      console.error(error);
       if (axios.isAxiosError(error) && error.response) {
         return error.response.data;
       } else {
