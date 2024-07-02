@@ -7,6 +7,8 @@ import ModalUserPopup from "./PopupCustomer/popupDetailUser";
 import { ApiAccount } from "../../../../../api/services/apiAccount";
 import { RoleType, userModel } from "../../../../../models/UserData";
 import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
+import config from "../../../../../configs";
 
 type ColumnsType<T> = TableProps<T>["columns"];
 const { Search } = Input;
@@ -19,7 +21,9 @@ const CustomerData: React.FC = () => {
     current: 1,
     pageSize: pageSize,
   });
-  const [query, setQuery] = useState<string>("");
+
+  const navigate = useNavigate();
+  // const [query, setQuery] = useState<string>("");
   const [selectedData, setSelectedData] = useState<userModel | null>(null);
   const [open, setOpen] = useState<boolean>(false);
   const { loading, apiGetUserByRole } = ApiAccount();
@@ -34,14 +38,16 @@ const CustomerData: React.FC = () => {
     setOpen(!open);
   };
 
+  const handleNavigate = (record: userModel) => {
+    navigate(config.adminRoutes.userDetail.replace(":id", record.id));
+  };
   const fetchAccountUser = async () => {
     const params = {
       Role: RoleType.USER,
+      size: 20,
     };
     const response = await apiGetUserByRole(params);
     if (response.status === 200) {
-      console.log(response);
-
       setData(response.data.items);
     } else {
       toast.error(response.Error);
@@ -73,18 +79,18 @@ const CustomerData: React.FC = () => {
     showQuickJumper: false, // Show quick jumper
   };
 
-  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setQuery(e.target.value);
-  };
+  // const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+  //   setQuery(e.target.value);
+  // };
 
   const items: MenuProps["items"] = [
     {
       key: "1",
-      label: "Delete",
+      label: "Chi tiết",
     },
     {
       key: "2",
-      label: "Detail",
+      label: "Cấm",
     },
   ];
   const columns: ColumnsType<userModel> = [
@@ -105,15 +111,63 @@ const CustomerData: React.FC = () => {
       },
     },
     {
+      title: "Giới tính",
+      dataIndex: "gender",
+      width: "20%",
+      render: (gender) => {
+        return gender === "Male"
+          ? "Nam"
+          : gender === "Female"
+          ? "Nữ"
+          : "Chưa cập nhật";
+      },
+    },
+    {
+      title: "Hạng",
+      dataIndex: "rank",
+      width: "20%",
+      render: (rank) => {
+        return rank?.name ? rank?.name : "Chưa có hạng";
+      },
+    },
+    {
       title: "Email",
       dataIndex: "email",
+    },
+    {
+      title: "Tình trạng",
+      dataIndex: "status",
+      width: "20%",
+      render: (status) => {
+        return status === "Activate"
+          ? "Khả Dụng"
+          : status === "Banned"
+          ? "Tài Khoản bị cấm"
+          : "Không khả dụng";
+      },
     },
     {
       title: "Action",
       key: "operation",
       render: (record) => (
         <Space size="middle">
-          <Dropdown menu={{ items, onClick: () => handleActionClick(record) }}>
+          <Dropdown
+            menu={{
+              items,
+              onClick: ({ key }) => {
+                switch (key) {
+                  case "1":
+                    handleNavigate(record);
+                    break;
+                  case "2":
+                    handleActionClick(record);
+                    break;
+                  default:
+                    break;
+                }
+              },
+            }}
+          >
             <a>
               Thêm <DownOutlined />
             </a>
@@ -127,7 +181,7 @@ const CustomerData: React.FC = () => {
     <>
       <Search
         placeholder="Nhập Từ khoá"
-        onChange={handleSearch} // Update search value on change
+        onChange={() => {}} // Update search value on change
         style={{ width: 200, marginBottom: 16 }}
       />
       <Table

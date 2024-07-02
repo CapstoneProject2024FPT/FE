@@ -12,7 +12,7 @@ import config from "../../../../configs";
 import { Typography } from "@mui/material";
 
 const AccountSection = () => {
-  const jsonString = localStorage.getItem("userInfo");
+  const jsonString = localStorage.getItem("loginInfo");
   const user = JSON.parse(jsonString || "{}");
   const [name, setName] = React.useState(user?.fullName ? user.fullName : "U");
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
@@ -38,7 +38,7 @@ const AccountSection = () => {
   };
 
   const handleLogout = () => {
-    localStorage.removeItem("userInfo");
+    localStorage.removeItem("loginInfo");
     setTimeout(() => {
       navigate("/");
     }, 500);
@@ -85,7 +85,7 @@ const AccountSection = () => {
             to={config.adminRoutes.profile}
             style={{ textDecoration: "none", color: "inherit" }}
           >
-            Profile
+            Thông tin cá nhân
           </Link>
         </MenuItem>
         <Divider />
@@ -93,7 +93,7 @@ const AccountSection = () => {
           <ListItemIcon>
             <Logout fontSize="small" />
           </ListItemIcon>
-          Logout
+          Đăng xuất
         </MenuItem>
       </Menu>
     </>

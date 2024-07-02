@@ -1,16 +1,22 @@
-import React from "react";
+import React, { useCallback } from "react";
 import Box from "@mui/material/Box";
-import { Grid, Modal, Typography } from "@mui/material";
+import { Card, Grid, Modal, Typography } from "@mui/material";
 import { CutomerApi } from "../../../../api/services/apiUser";
 import { userModel, userPropUpdate } from "../../../../models/UserData";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm } from "react-hook-form";
 import * as Yup from "yup";
-import { FormProvider, RHFTextField } from "../../../../components/hook-form";
+import {
+  FormProvider,
+  RHFSelect,
+  RHFTextField,
+  RHFUploadAvatar,
+} from "../../../../components/hook-form";
 import { patternValidate } from "../../../../utils/pattern";
 import { styled } from "@mui/material/styles";
 import { LoadingButton } from "@mui/lab";
 import { toast } from "react-toastify";
+import uploadImageToFirebase from "../../../../firebase/uploadImageToFirebase";
 
 interface userData {
   open: boolean;
@@ -37,6 +43,16 @@ const LabelStyle = styled(Typography)(({ theme }) => ({
   marginBottom: theme.spacing(1),
 }));
 
+const GENDER_OPTION = [
+  {
+    id: "Male",
+    value: "Nam",
+  },
+  {
+    id: "Female",
+    value: "Nữ",
+  },
+];
 const PopupUpdateUserProfile: React.FC<userData> = ({
   user,
   handleClose,
@@ -55,6 +71,8 @@ const PopupUpdateUserProfile: React.FC<userData> = ({
         patternValidate.phone,
         "Phải đúng số điện thoại, bắt đầu bằng 0 và đủ 10 số"
       ),
+    image: Yup.string(),
+    gender: Yup.string(),
   });
 
   const defaultValues: userPropUpdate = {
@@ -62,6 +80,10 @@ const PopupUpdateUserProfile: React.FC<userData> = ({
     email: user?.email || "",
     address: user?.address || "",
     phoneNumber: user?.phoneNumber || "",
+    image:
+      user?.image ||
+      "https://firebasestorage.googleapis.com/v0/b/selling-maintainance-machinery.appspot.com/o/images%20(1).jfif?alt=media&token=5d70b7f3-d5c5-4de7-ba5a-767a328f9b82",
+    gender: user?.gender || "",
   };
 
   const methods = useForm<userPropUpdate>({
@@ -71,6 +93,7 @@ const PopupUpdateUserProfile: React.FC<userData> = ({
 
   const {
     handleSubmit,
+    setValue,
     formState: { isSubmitting },
   } = methods;
 
@@ -83,6 +106,7 @@ const PopupUpdateUserProfile: React.FC<userData> = ({
         role: user?.role,
         status: user?.status,
       };
+
       if (user) {
         const response = await updateProfile(user.id, params);
 
@@ -98,30 +122,89 @@ const PopupUpdateUserProfile: React.FC<userData> = ({
     }
   };
 
+  const handleDrop = useCallback(
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    async (acceptedFiles: any[]) => {
+      const file = acceptedFiles[0];
+
+      const avatar = await uploadImageToFirebase(file);
+
+      if (typeof avatar === "string") {
+        setValue("image", avatar);
+      } else {
+        console.error("Avatar is not a string:", avatar);
+      }
+    },
+    [setValue]
+  );
   return (
-    <Modal open={open} onClose={handleClose}>
+    <Modal
+      open={open}
+      onClose={handleClose}
+      sx={{
+        overflow: "auto",
+      }}
+    >
       <Box sx={style}>
         <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
           <Grid container spacing={2}>
-            <Grid item xs={12}>
-              <LabelStyle>Họ và Tên</LabelStyle>
-              <RHFTextField name="fullName" required />
+            <Grid item xs={12} md={6}>
+              <Card sx={{ textAlign: "center" }}>
+                <RHFUploadAvatar
+                  name="image"
+                  maxSize={3145728}
+                  onDrop={handleDrop}
+                  helperText={
+                    <Typography
+                      variant="caption"
+                      sx={{
+                        mt: 2,
+                        mx: "auto",
+                        display: "block",
+                        textAlign: "center",
+                        color: "text.secondary",
+                      }}
+                    >
+                      Cho phép *.jpeg, *.jpg, *.png, *.gif
+                      <br /> tối đa 3.1mb
+                    </Typography>
+                  }
+                />
+              </Card>
             </Grid>
-            <Grid item xs={12}>
-              <LabelStyle>Số Điện Thoại</LabelStyle>
-              <RHFTextField
-                name="phoneNumber"
-                placeholder="0963697057"
-                required
-              />
+            <Grid item xs={12} md={6}>
+              <Grid item xs={12}>
+                <LabelStyle>Họ và Tên</LabelStyle>
+                <RHFTextField name="fullName" required />
+              </Grid>
+              <Grid item xs={12}>
+                <LabelStyle>Số Điện Thoại</LabelStyle>
+                <RHFTextField
+                  name="phoneNumber"
+                  placeholder="0963697057"
+                  required
+                />
+              </Grid>
             </Grid>
-            <Grid item xs={12}>
+
+            <Grid item xs={12} md={6}>
               <LabelStyle>Địa chỉ email</LabelStyle>
               <RHFTextField
                 required
                 name="email"
                 placeholder="email@gmail.com"
               />
+            </Grid>
+
+            <Grid item xs={12} md={6}>
+              <LabelStyle>Giới tính</LabelStyle>
+              <RHFSelect name="gender">
+                {GENDER_OPTION.map((gender) => (
+                  <option key={gender.id} value={gender.id}>
+                    {gender.value}
+                  </option>
+                ))}
+              </RHFSelect>
             </Grid>
             <Grid item xs={12}>
               <LabelStyle>Địa chỉ</LabelStyle>

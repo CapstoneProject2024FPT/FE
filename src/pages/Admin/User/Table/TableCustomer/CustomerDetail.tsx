@@ -1,9 +1,10 @@
 import * as React from "react";
-import { Tabs } from "antd";
-import { TabValue } from "../User/AccountType";
 import { Container } from "@mui/material";
-import HeaderBreadcrumbs from "../../../components/HeaderBreadcrumbs";
-import config from "../../../configs";
+import HeaderBreadcrumbs from "../../../../../components/HeaderBreadcrumbs";
+import config from "../../../../../configs";
+import { Tabs } from "antd";
+import { TabValueCustomerDetail } from "../../AccountType";
+
 interface TabItem {
   key: string;
   label: React.ReactNode;
@@ -25,8 +26,8 @@ const getItemTab = (
   };
 };
 
-const Account: React.FC = () => {
-  const tabItems = TabValue.map((item) => {
+const AccountDetailCustomer: React.FC = () => {
+  const tabItems = TabValueCustomerDetail.map((item) => {
     return getItemTab(item.label, item.key, item.icon, item.children);
   });
 
@@ -36,7 +37,8 @@ const Account: React.FC = () => {
         heading="Tài Khoản"
         links={[
           { name: "Thống kê", href: config.adminRoutes.dashboard },
-          { name: "Tài khoản" },
+          { name: "Tài khoản", href: config.adminRoutes.user },
+          { name: "Chi tiết tài khoản" },
         ]}
       />
       <Tabs type="card" defaultActiveKey="1" items={tabItems} />
@@ -44,4 +46,4 @@ const Account: React.FC = () => {
   );
 };
 
-export default Account;
+export default AccountDetailCustomer;

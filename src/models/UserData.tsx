@@ -16,32 +16,33 @@ export interface RegisterData extends UserData {
   fullname: string;
 }
 
-export type userPropUpdate = {
+export interface userPropUpdate {
   fullName: string;
   email: string;
   phoneNumber: string;
   address: string;
-};
+  image: string | undefined;
+  gender: string | undefined;
+}
+
+export interface staffUpdateProps extends userPropUpdate {
+  yearsOfExperience: number;
+}
+
 export interface userProps {
   id: string;
   fullName: string;
   email: string;
-  image: string | null | undefined;
+  image: string | undefined;
   phoneNumber: string;
   address: string;
   role: string;
   status: string;
   rank: { name: string; range: number };
+  gender: string;
 }
-export interface staffProps {
-  fullName: string;
-  email: string;
-  photoURL: string | null | undefined;
-  phoneNumber: string;
-  address: string;
-}
-export interface staffModel extends staffProps {
-  yearOfExperience: number;
+export interface staffProps extends Omit<userProps, "rank"> {
+  yearsOfExperience: number;
 }
 
 export interface userModel extends userProps {

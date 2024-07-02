@@ -1,13 +1,12 @@
 import React, { useEffect, useState } from "react";
 import Grid from "@mui/material/Unstable_Grid2";
 import { styled } from "@mui/material/styles";
-import { Box, Button, TextField, Typography } from "@mui/material";
-import { CutomerApi } from "../../../api/services/apiUser";
-import { userModel } from "../../../models/UserData";
-import PopupUpdateUserProfile from "./PopupUser/PopupUpdateUserProfile";
-import { toast } from "react-toastify";
+import { Box, TextField, Typography } from "@mui/material";
+import { CutomerApi } from "../../../../../../api/services/apiUser";
+import { userModel } from "../../../../../../models/UserData";
 import styles from "./userPropfile.module.scss";
 import classNames from "classnames/bind";
+import { useParams } from "react-router-dom";
 
 const cx = classNames.bind(styles);
 
@@ -22,31 +21,14 @@ const LabelStyle = styled(Typography)(({ theme }) => ({
   marginBottom: theme.spacing(1),
 }));
 
-const Profile: React.FC = () => {
-  const [open, setOpen] = useState<boolean>(false);
+const CustomerInfo: React.FC = () => {
+  const { id } = useParams<{ id: string }>();
+
   const [userProfile, setUserProfile] = useState<userModel>();
 
-  const loginInfoString = localStorage.getItem("loginInfo");
-  const auth = loginInfoString ? JSON.parse(loginInfoString) : null;
-
-  //open
-  const handleOpen = () => {
-    setOpen(!open);
-  };
-
-  const handleClose = () => {
-    setOpen(!open);
-  };
-
-  const onUpdateSuccess = (response: string) => {
-    handleClose();
-    fetchUserProfile();
-    toast.success(response);
-  };
   const { apiUserProfile } = CutomerApi();
 
   const fetchUserProfile = async () => {
-    const id: string = auth?.data.id;
     try {
       if (id) {
         const response = await apiUserProfile(id);
@@ -88,7 +70,7 @@ const Profile: React.FC = () => {
         >
           <div className={cx("avatar", "avatar-large", classRank)}>
             <img
-              src={userProfile?.image}
+              src="https://static.gamersclub.com.br/players/avatar/737335/737335_full.jpg"
               alt="Usuário"
               className={cx("avatar-image")}
             />
@@ -160,29 +142,8 @@ const Profile: React.FC = () => {
           value={userProfile?.address || ""}
         />
       </FormGrid>
-      <Button
-        style={{
-          backgroundColor: "#3498DB",
-          color: "white",
-          fontSize: "20px",
-          cursor: "pointer",
-          margin: "10px",
-        }}
-        onClick={handleOpen}
-      >
-        Cập nhật Thông Tin
-      </Button>
-
-      {open && (
-        <PopupUpdateUserProfile
-          user={userProfile}
-          open={open}
-          handleClose={handleClose}
-          onUpdateSuccess={onUpdateSuccess}
-        />
-      )}
     </>
   );
 };
 
-export default Profile;
+export default CustomerInfo;

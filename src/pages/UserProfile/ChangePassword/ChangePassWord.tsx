@@ -23,14 +23,13 @@ interface passwordChange {
   currentPassword: string;
   newPassword: string;
 }
-export default function AccountChangePassword() {
+export default function UserChangePassword() {
   const { ChangePassword } = CutomerApi();
 
   const loginInfoString = localStorage.getItem("loginInfo");
   const auth = loginInfoString ? JSON.parse(loginInfoString) : null;
-
   const ChangePassWordSchema = Yup.object().shape({
-    oldPassword: Yup.string().required("Mật khấu mới là cần thiết"),
+    oldPassword: Yup.string().required("Mật khấu cũ là cần thiết"),
     newPassword: Yup.string()
       .min(6, "Tồi thiểu phải dc 6 kí tự")
       .max(19, "Tồi đa phải dc 19 kí tự")
@@ -88,13 +87,13 @@ export default function AccountChangePassword() {
           <RHFTextField
             name="oldPassword"
             type="password"
-            label="Mật Khẩu hiện tại"
+            label="Mật khẩu cũ"
           />
 
           <RHFTextField
             name="newPassword"
             type="password"
-            label="Mật Khẩu mới"
+            label="Mật khẩu mới"
           />
 
           <RHFTextField
@@ -108,7 +107,7 @@ export default function AccountChangePassword() {
             variant="contained"
             loading={isSubmitting}
           >
-            Lưu mật khẩu mới
+            Lưu Mật Khẩu
           </LoadingButton>
         </Stack>
       </FormProvider>

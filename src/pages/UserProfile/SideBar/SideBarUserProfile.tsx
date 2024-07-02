@@ -11,6 +11,8 @@ import {
   ListSubheader,
 } from "@mui/material";
 import { Link } from "react-router-dom";
+import Iconify from "../../../components/Iconify";
+import config from "../../../configs";
 
 const SideBarUserProfile: React.FC = () => {
   return (
@@ -36,25 +38,34 @@ const SideBarUserProfile: React.FC = () => {
         }
       >
         <div style={{ width: "auto" }}>
-          <ListItemButton component={Link} to="/user">
+          <ListItemButton component={Link} to={config.routes.userProfile}>
             <ListItemIcon>
               <PersonIcon />
             </ListItemIcon>
             <ListItemText primary="Thông tin tài khoản" />
           </ListItemButton>
-          <ListItemButton component={Link} to="/order-management">
+          <ListItemButton
+            component={Link}
+            to={config.routes.userChangePassword}
+          >
+            <ListItemIcon>
+              <Iconify icon={"ic:round-vpn-key"} width={20} height={20} />
+            </ListItemIcon>
+            <ListItemText primary="Đổi mật khẩu" />
+          </ListItemButton>
+          <ListItemButton component={Link} to={config.routes.orderManagement}>
             <ListItemIcon>
               <CachedIcon />
             </ListItemIcon>
             <ListItemText primary="Quản lý đơn hàng" />
           </ListItemButton>
-          <ListItemButton component={Link} to="/favorite-product">
+          <ListItemButton component={Link} to={config.routes.favoriteProduct}>
             <ListItemIcon>
               <FavoriteBorderIcon />
             </ListItemIcon>
             <ListItemText primary="Sản phẩm yêu thích" />
           </ListItemButton>
-          <ListItemButton component={Link} to="/maintenance">
+          <ListItemButton component={Link} to={config.routes.maintenance}>
             <ListItemIcon>
               <EngineeringIcon />
             </ListItemIcon>
