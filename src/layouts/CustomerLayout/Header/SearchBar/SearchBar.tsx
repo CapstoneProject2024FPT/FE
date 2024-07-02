@@ -12,7 +12,7 @@ const SearchBar: React.FC = () => {
     event: KeyboardEvent<HTMLInputElement | HTMLTextAreaElement>
   ): Promise<void> => {
     if (event.key === "Enter") {
-      await apiGetList({ name: search });
+      await apiGetList({ name: [search] });
     }
   };
 
