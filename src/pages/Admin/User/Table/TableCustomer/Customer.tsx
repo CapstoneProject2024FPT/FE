@@ -1,42 +1,35 @@
 import React, { useEffect, useState } from "react";
 import type { MenuProps } from "antd";
-import type { GetProp, TableProps } from "antd";
+import type { TableProps } from "antd";
 import { DownOutlined } from "@ant-design/icons";
 import { Dropdown, Space, Table, Input } from "antd";
 import ModalUserPopup from "./PopupCustomer/popupDetailUser";
+import { ApiAccount } from "../../../../../api/services/apiAccount";
+import { RoleType, userModel } from "../../../../../models/UserData";
+import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
+import config from "../../../../../configs";
 
 type ColumnsType<T> = TableProps<T>["columns"];
 const { Search } = Input;
 
-export interface DataType {
-  name: string;
-  username: string;
-  email: string;
-  id: string;
-}
-
-interface TableParams {
-  sortField?: string;
-  sortOrder?: string;
-  filters?: Parameters<GetProp<TableProps, "onChange">>[1];
-}
-
 const pageSize = 20;
 
 const CustomerData: React.FC = () => {
-  const [data, setData] = useState<DataType[]>();
-  const [loading, setLoading] = useState(false);
-  const [tableParams, setTableParams] = useState<TableParams>({});
+  const [data, setData] = useState<userModel[]>();
   const [pagination, setPagination] = useState({
     current: 1,
     pageSize: pageSize,
   });
-  const [query, setQuery] = useState<string>("");
-  const [selectedData, setSelectedData] = useState<DataType | null>(null);
+
+  const navigate = useNavigate();
+  // const [query, setQuery] = useState<string>("");
+  const [selectedData, setSelectedData] = useState<userModel | null>(null);
   const [open, setOpen] = useState<boolean>(false);
+  const { loading, apiGetUserByRole } = ApiAccount();
 
   // Function to handle action click
-  const handleActionClick = (record: DataType) => {
+  const handleActionClick = (record: userModel) => {
     setOpen(!open);
     setSelectedData(record);
   };
@@ -44,22 +37,25 @@ const CustomerData: React.FC = () => {
   const handleCLose = () => {
     setOpen(!open);
   };
-  useEffect(() => {
-    const fetchData = () => {
-      setLoading(true);
-      fetch(`https://jsonplaceholder.typicode.com/users`)
-        .then((res) => res.json())
-        .then((res) => {
-          console.log(res);
 
-          setData(res);
-          setLoading(false);
-          setTableParams({
-            ...tableParams,
-          });
-        });
+  const handleNavigate = (record: userModel) => {
+    navigate(config.adminRoutes.userDetail.replace(":id", record.id));
+  };
+  const fetchAccountUser = async () => {
+    const params = {
+      Role: RoleType.USER,
+      size: 20,
     };
-    fetchData();
+    const response = await apiGetUserByRole(params);
+    if (response.status === 200) {
+      setData(response.data.items);
+    } else {
+      toast.error(response.Error);
+    }
+  };
+
+  useEffect(() => {
+    fetchAccountUser();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -83,55 +79,97 @@ const CustomerData: React.FC = () => {
     showQuickJumper: false, // Show quick jumper
   };
 
-  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setQuery(e.target.value);
-  };
-
-  const keys = ["name", "email", "username"];
-  const filteredRows = data?.filter((item) =>
-    keys.some((key) =>
-      item[key as keyof DataType].toLowerCase().includes(query)
-    )
-  );
+  // const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+  //   setQuery(e.target.value);
+  // };
 
   const items: MenuProps["items"] = [
     {
       key: "1",
-      label: "Delete",
+      label: "Chi tiết",
     },
     {
       key: "2",
-      label: "Detail",
+      label: "Cấm",
     },
   ];
-  const columns: ColumnsType<DataType> = [
+  const columns: ColumnsType<userModel> = [
     {
-      title: "Name",
-      dataIndex: "name",
-      sorter: (a, b) => a.name.length - b.name.length,
+      title: "Tên",
+      dataIndex: "fullName",
+      sorter: (a, b) => a.fullName.length - b.fullName.length,
       width: "20%",
     },
     {
-      title: "username",
-      dataIndex: "username",
-      filters: [
-        { text: "Male", value: "male" },
-        { text: "Female", value: "female" },
-      ],
+      title: "Vị trí",
+      dataIndex: "role",
       width: "20%",
+      render: (role) => {
+        if (role === RoleType.USER) {
+          return "Người dùng";
+        }
+      },
+    },
+    {
+      title: "Giới tính",
+      dataIndex: "gender",
+      width: "20%",
+      render: (gender) => {
+        return gender === "Male"
+          ? "Nam"
+          : gender === "Female"
+          ? "Nữ"
+          : "Chưa cập nhật";
+      },
+    },
+    {
+      title: "Hạng",
+      dataIndex: "rank",
+      width: "20%",
+      render: (rank) => {
+        return rank?.name ? rank?.name : "Chưa có hạng";
+      },
     },
     {
       title: "Email",
       dataIndex: "email",
     },
     {
+      title: "Tình trạng",
+      dataIndex: "status",
+      width: "20%",
+      render: (status) => {
+        return status === "Activate"
+          ? "Khả Dụng"
+          : status === "Banned"
+          ? "Tài Khoản bị cấm"
+          : "Không khả dụng";
+      },
+    },
+    {
       title: "Action",
       key: "operation",
       render: (record) => (
         <Space size="middle">
-          <Dropdown menu={{ items, onClick: () => handleActionClick(record) }}>
+          <Dropdown
+            menu={{
+              items,
+              onClick: ({ key }) => {
+                switch (key) {
+                  case "1":
+                    handleNavigate(record);
+                    break;
+                  case "2":
+                    handleActionClick(record);
+                    break;
+                  default:
+                    break;
+                }
+              },
+            }}
+          >
             <a>
-              More <DownOutlined />
+              Thêm <DownOutlined />
             </a>
           </Dropdown>
         </Space>
@@ -142,15 +180,15 @@ const CustomerData: React.FC = () => {
   return (
     <>
       <Search
-        placeholder="Search"
-        onChange={handleSearch} // Update search value on change
+        placeholder="Nhập Từ khoá"
+        onChange={() => {}} // Update search value on change
         style={{ width: 200, marginBottom: 16 }}
       />
       <Table
         bordered
         columns={columns}
         rowKey={(record) => record.id}
-        dataSource={filteredRows}
+        dataSource={data}
         pagination={customPagination}
         loading={loading}
         onChange={handleTableChange}

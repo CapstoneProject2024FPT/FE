@@ -3,9 +3,14 @@ import type { MenuProps } from "antd";
 import type { TableProps } from "antd";
 import { DownOutlined } from "@ant-design/icons";
 import { Table, Input, Space, Dropdown, Button } from "antd";
-
 import { toast } from "react-toastify";
-import { Post } from "../../models/blog";
+import { PostGetProps } from "../../models/blog";
+import { PlusOutlined } from "@ant-design/icons";
+import { ApiNews } from "../../api/services/apiNews";
+import { formatDateFunc } from "../../utils/fn";
+import { useNavigate } from "react-router-dom";
+import config from "../../configs";
+import BlogAbleModal from "./PopupBLog/BlogAbleModal";
 
 type ColumnsType<T> = TableProps<T>["columns"];
 const { Search } = Input;
@@ -13,7 +18,9 @@ const { Search } = Input;
 const pageSize = 20;
 
 const TableBlogNew: React.FC = () => {
-  const [blogNews, setBlogNews] = useState<Post[]>([]);
+  const navigate = useNavigate();
+  const { apiGetNews } = ApiNews();
+  const [blogNews, setBlogNews] = useState<PostGetProps[]>([]);
   const [pagination, setPagination] = useState({
     current: 1,
     pageSize: pageSize,
@@ -22,33 +29,28 @@ const TableBlogNew: React.FC = () => {
   const [query, setQuery] = useState<string>("");
 
   //popup
-  const [open, setOpen] = useState<boolean>(false);
-  const [openDeletePopup, setOpenDeletePopup] = useState<boolean>(false);
-  const [selectedData, setSelectedData] = useState<Post | null>(null);
+  const [openStatusPopup, setOpenStatusPopup] = useState<boolean>(false);
+  const [selectedData, setSelectedData] = useState<PostGetProps | null>(null);
 
   //modal popup
-  const handleActionDetail = (record: Post) => {
-    setOpen(!open);
+  const handleActionDetail = (record: PostGetProps) => {
+    navigate(config.adminRoutes.blog.replace(":id", record.id));
+  };
+  const handleActionOpenPopupStatus = (record: PostGetProps) => {
+    setOpenStatusPopup(!openStatusPopup);
     setSelectedData(record);
-  };
-  const handleActionDelete = (record: Post) => {
-    setOpenDeletePopup(!openDeletePopup);
-    setSelectedData(record);
-  };
-  const handleCLose = () => {
-    setOpen(!open);
-  };
-  const handleCLoseDelete = () => {
-    setOpenDeletePopup(!openDeletePopup);
   };
 
-  console.log(handleCLose, selectedData, handleCLoseDelete);
+  const handleCLoseStatusPopup = () => {
+    setOpenStatusPopup(!openStatusPopup);
+  };
 
   //----------------------------------------------------------------------------
   const fetchBlogNews = async () => {
     try {
-      //   const data = await ;
-      //   setBlogNews(data);
+      const response = await apiGetNews();
+
+      setBlogNews(response.data);
     } catch (error) {
       toast.error("lỗi");
     }
@@ -70,11 +72,12 @@ const TableBlogNew: React.FC = () => {
   //     fetchBlogNews();
   //     toast.success(response);
   //   };
-  //   const handleUpdateCategorySuccess = (response: string) => {
-  //     handleCLose();
-  //     fetchBlogNews();
-  //     toast.success(response);
-  //   };
+
+  const handleUpdateStatusNewsSuccess = (text: string) => {
+    handleCLoseStatusPopup();
+    fetchBlogNews();
+    toast.success(text);
+  };
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleTableChange = (newPagination: any) => {
     setPagination({
@@ -110,22 +113,42 @@ const TableBlogNew: React.FC = () => {
     },
     {
       key: "2",
-      label: "Xoá",
+      label: "Điều chỉnh trạng thái",
     },
   ];
-  const columns: ColumnsType<Post> = [
+  const columns: ColumnsType<PostGetProps> = [
     {
       title: "tiêu đề",
-      dataIndex: "name",
+      dataIndex: "title",
       width: "20%",
     },
     {
       title: "Hình",
-      dataIndex: "type",
+      dataIndex: "cover",
+      render: (cover) => (
+        <img src={cover} alt="ảnh bìa" style={{ width: 100 }} />
+      ),
+      width: "20%",
     },
     {
       title: "Ngày tạo",
+      dataIndex: "createDate",
+      render: (createDate) => formatDateFunc.formatDate(createDate),
+    },
+    {
+      title: "Người viết",
+      dataIndex: "account",
+      render: (account) => account.fullName,
+    },
+    {
+      title: "Trạng Thái",
+      dataIndex: "status",
+      render: (status) => (status === "Active" ? "Đang hiển thị" : "Đang ẩn"),
+    },
+    {
+      title: "Độ hot",
       dataIndex: "type",
+      render: (type) => (type === "Normal" ? "Bình Thường" : "Tin Nóng" || ""),
     },
     {
       title: "Hành Động",
@@ -141,7 +164,7 @@ const TableBlogNew: React.FC = () => {
                     handleActionDetail(record);
                     break;
                   case "2":
-                    handleActionDelete(record);
+                    handleActionOpenPopupStatus(record);
                     break;
                   default:
                     break;
@@ -162,11 +185,18 @@ const TableBlogNew: React.FC = () => {
     <>
       <div style={{ display: "flex", justifyContent: "space-between" }}>
         <Search
-          placeholder="Search"
+          placeholder="Nhập từ khoá"
           onChange={handleSearch}
           style={{ width: 200, marginBottom: 16 }}
         />
-        <Button onClick={() => {}}>Thêm Tin tức</Button>
+        <Button
+          onClick={() => {
+            navigate(config.adminRoutes.createNew);
+          }}
+          icon={<PlusOutlined />}
+        >
+          Thêm Tin tức
+        </Button>
       </div>
 
       <Table
@@ -175,7 +205,17 @@ const TableBlogNew: React.FC = () => {
         dataSource={filteredRows}
         pagination={customPagination}
         onChange={handleTableChange}
+        bordered
       />
+
+      {openStatusPopup && (
+        <BlogAbleModal
+          NewsData={selectedData}
+          handleCLose={handleCLoseStatusPopup}
+          onUpdateSuccess={handleUpdateStatusNewsSuccess}
+          open={openStatusPopup}
+        />
+      )}
     </>
   );
 };

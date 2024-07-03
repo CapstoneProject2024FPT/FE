@@ -55,6 +55,8 @@ const Detail: React.FC = () => {
   useEffect(() => {
     return () => {
       fetchProducts();
+      //scroll to top
+      window.scrollTo(0, 0);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -226,7 +228,7 @@ const Detail: React.FC = () => {
                 sx={{ cursor: "pointer", color: "blue" }}
               >
                 {/* TODO: sau có brand thì change từ model về brand */}
-                {product?.brand}
+                {product?.brand?.name}
               </Typography>
             </Typography>
 
@@ -281,62 +283,70 @@ const Detail: React.FC = () => {
                 50
               </Typography>
 
-              <Box sx={{ display: "flex", alignItems: "center" }}>
-                Số lượng:
+              <Box>
                 <Box
                   sx={{
                     display: "flex",
                     alignItems: "center",
-                    marginLeft: "10px",
-                    border: "1px solid lightgray",
-                    borderRadius: "5px",
                   }}
                 >
-                  <Button
+                  Số lượng:
+                  <Box
                     sx={{
-                      width: "34px",
-                      height: "34px",
-                      minWidth: "34px",
-                      borderTopRightRadius: 0,
-                      borderBottomRightRadius: 0,
-
-                      "&:hover": { backgroundColor: "lightgrey" },
-                      "&.disabled:hover": {
-                        cursor: "not-allowed",
-                      },
+                      display: "flex",
+                      alignItems: "center",
+                      marginLeft: "10px",
+                      border: "1px solid lightgray",
+                      borderRadius: "5px",
                     }}
-                    onClick={() => decreaseQuantity()}
-                    className={`${currentQuantities <= 1 && "disabled"}`}
                   >
-                    -
-                  </Button>
-                  <Divider orientation="vertical" flexItem />
-                  <InputBase
-                    value={currentQuantities}
-                    sx={{
-                      width: "40px",
-                      height: "34px",
-                      textAlignLast: "center",
-                    }}
-                    type="text"
-                    onChange={onChangeQuantities}
-                  ></InputBase>
-                  <Divider orientation="vertical" flexItem />
-                  <Button
-                    sx={{
-                      width: "34px",
-                      height: "34px",
-                      minWidth: "34px",
-                      borderTopLeftRadius: 0,
-                      borderBottomLeftRadius: 0,
+                    <Button
+                      sx={{
+                        width: "34px",
+                        height: "34px",
+                        minWidth: "34px",
+                        borderTopRightRadius: 0,
+                        borderBottomRightRadius: 0,
 
-                      "&:hover": { backgroundColor: "lightgrey" },
-                    }}
-                    onClick={() => increaseQuantity()}
-                  >
-                    +
-                  </Button>
+                        "&:hover": { backgroundColor: "lightgrey" },
+                        "&.disabled:hover": {
+                          cursor: "not-allowed",
+                        },
+                      }}
+                      onClick={() => decreaseQuantity()}
+                      className={`${currentQuantities <= 1 && "disabled"}`}
+                    >
+                      -
+                    </Button>
+                    <Divider orientation="vertical" flexItem />
+                    <InputBase
+                      value={currentQuantities}
+                      sx={{
+                        width: "40px",
+                        height: "34px",
+                        textAlignLast: "center",
+                      }}
+                      type="text"
+                      onChange={onChangeQuantities}
+                    ></InputBase>
+                    <Divider orientation="vertical" flexItem />
+                    <Button
+                      sx={{
+                        width: "34px",
+                        height: "34px",
+                        minWidth: "34px",
+                        borderTopLeftRadius: 0,
+                        borderBottomLeftRadius: 0,
+
+                        "&:hover": { backgroundColor: "lightgrey" },
+                      }}
+                      onClick={() => increaseQuantity()}
+                    >
+                      +
+                    </Button>
+                  </Box>
                 </Box>
+                Hiện có: {product?.quantity?.Available}
               </Box>
 
               <Button
@@ -521,6 +531,10 @@ const Detail: React.FC = () => {
         </Box>
       </Box>
       <Box sx={{ mt: 2 }}>
+        <Divider sx={{ borderBottomWidth: "5px", margin: "20px 0" }} />
+        <Box>
+          <Typography variant="h5" sx={{margin: "10px 0", fontWeight: "bold"}}>Thông số: {product?.name}</Typography>
+        </Box>
         {product?.specifications.map((item, index) => (
           <Box
             key={index}

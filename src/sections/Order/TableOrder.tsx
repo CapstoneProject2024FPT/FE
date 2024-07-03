@@ -164,7 +164,7 @@ const TableOrder: React.FC = () => {
   return (
     <>
       <Search
-        placeholder="Search"
+        placeholder="Nhập từ khoá"
         onChange={handleSearch}
         style={{ width: 200, marginBottom: 16 }}
       />

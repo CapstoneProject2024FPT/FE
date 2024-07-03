@@ -9,6 +9,7 @@ import {
 
 // components
 import Iconify from "../../../components/Iconify";
+import { useAddress } from "../../../zustand/useAddress";
 
 // ----------------------------------------------------------------------
 
@@ -17,6 +18,7 @@ type Props = {
 };
 
 export default function CheckoutBillingInfo({ onBackStep }: Props) {
+  const { address } = useAddress();
   return (
     <Card sx={{ mb: 3 }}>
       <CardHeader
@@ -33,21 +35,19 @@ export default function CheckoutBillingInfo({ onBackStep }: Props) {
       />
       <CardContent>
         <Typography variant="subtitle2" gutterBottom>
-          ffff
+          {address?.receiver}
           <Typography
             component="span"
             variant="body2"
             sx={{ color: "text.secondary" }}
-          >
-            ffff
-          </Typography>
+          ></Typography>
         </Typography>
 
         <Typography variant="body2" gutterBottom>
-          fffff
+          {address?.phone}
         </Typography>
         <Typography variant="body2" sx={{ color: "text.secondary" }}>
-          fddfdf
+          {address?.fullAddress}
         </Typography>
       </CardContent>
     </Card>

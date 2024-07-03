@@ -27,10 +27,13 @@ const ModalProductPopupDelete: React.FC<ModalCategory> = ({
     try {
       if (ProductData) {
         const response = await apiDeleteMachine(ProductData?.id);
-        console.log(response);
 
-        if (onDeleteSuccess) {
-          onDeleteSuccess(response);
+        if (response.status === 200) {
+          if (onDeleteSuccess) {
+            onDeleteSuccess(response.data);
+          }
+        } else {
+          toast.error(response.Error);
         }
       }
     } catch (error) {

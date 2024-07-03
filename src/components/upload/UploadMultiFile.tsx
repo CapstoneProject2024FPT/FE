@@ -26,7 +26,6 @@ export default function UploadMultiFile({
   error,
   showPreview = false,
   files,
-  onUpload,
   onRemove,
   onRemoveAll,
   helperText,
@@ -79,10 +78,7 @@ export default function UploadMultiFile({
       {files?.length > 0 && (
         <Stack direction="row" justifyContent="flex-end" spacing={1.5}>
           <Button color="inherit" size="small" onClick={onRemoveAll}>
-            Remove all
-          </Button>
-          <Button size="small" variant="contained" onClick={onUpload}>
-            Upload files
+            Xoá hết
           </Button>
         </Stack>
       )}

@@ -119,7 +119,7 @@ const Cart: React.FC<CartProp> = ({ handleNext }) => {
             </Typography>
             <Grid container spacing={2}>
               <Grid item xs={12} md={8}>
-                <TableContainer sx={{ minWidth: 720, width: "98%" }}>
+                <TableContainer sx={{ maxWidth: 820 }}>
                   <Table>
                     <TableHead>
                       <TableRow sx={{ background: "white" }}>
@@ -151,14 +151,25 @@ const Cart: React.FC<CartProp> = ({ handleNext }) => {
                             />
 
                             <Stack spacing={0.5}>
-                              <Typography
-                                noWrap
-                                variant="subtitle2"
-                                sx={{ maxWidth: 240 }}
+                              <Link
+                                to={config.routes.productDetail.replace(
+                                  ":id",
+                                  item.id
+                                )}
+                                style={{
+                                  textDecoration: "none",
+                                }}
                               >
-                                {item.name}
-                              </Typography>
-
+                                <Typography
+                                  noWrap
+                                  variant="subtitle2"
+                                  sx={{
+                                    color: "black",
+                                  }}
+                                >
+                                  {item.name}
+                                </Typography>
+                              </Link>
                               <Stack direction="row" alignItems="center">
                                 <Typography variant="body2">
                                   <Box
@@ -183,6 +194,7 @@ const Cart: React.FC<CartProp> = ({ handleNext }) => {
                                   size="small"
                                   color="inherit"
                                   onClick={() => decreaseQuantity(item.id)}
+                                  disabled={item.currentQuantities <= 1}
                                 >
                                   <Iconify
                                     icon={"eva:minus-fill"}
@@ -210,7 +222,10 @@ const Cart: React.FC<CartProp> = ({ handleNext }) => {
                                 variant="caption"
                                 sx={{ color: "text.secondary" }}
                               >
-                                số lượng: {item?.quantity ? item?.quantity : 2}
+                                số lượng:{" "}
+                                {item?.quantity?.Available
+                                  ? item?.quantity?.Available
+                                  : 2}
                               </Typography>
                             </Box>
                           </TableCell>
@@ -245,7 +260,7 @@ const Cart: React.FC<CartProp> = ({ handleNext }) => {
                   </Button>
                 </Link>
               </Grid>
-              <Grid xs={12} md={4} sx={{ mt: 2 }}>
+              <Grid item xs={12} md={4} sx={{ mt: 2 }}>
                 <CartSummary total={total} />
                 <Button
                   variant="contained"

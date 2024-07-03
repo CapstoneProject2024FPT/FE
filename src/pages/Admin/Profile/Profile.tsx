@@ -35,7 +35,7 @@ export default function ProfileAccount() {
   return (
     <Container>
       <HeaderBreadcrumbs
-        heading="Account"
+        heading="Thông tin cá nhân"
         links={[
           { name: "Thống kê", href: config.adminRoutes.dashboard },
           { name: "Điều chỉnh thông tin cá nhân" },

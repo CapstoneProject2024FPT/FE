@@ -2,22 +2,14 @@ import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { MachineryApi } from "../../../api/services/apiMachinery";
 import { ProductAdmin } from "../../../models/products";
-import { useNavigate } from "react-router-dom";
 import "./ProductList.scss";
-import { Box } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import ProductCard from "../../../components/product-card/ProductCard";
-
-const pageSize = 20;
+import ProductFilteredRow from "../../Filter/FilterProducts";
+import SortMenu from "../../Sort/SortProducts";
 
 const ProductList: React.FC = () => {
-  const navigate = useNavigate();
   const [products, setProducts] = useState<ProductAdmin[]>();
-  const [pagination, setPagination] = useState({
-    current: 1,
-    pageSize: pageSize,
-  });
-  //search
-  const [query, setQuery] = useState<string>("");
 
   //api
   const { apiGetMachine } = MachineryApi();
@@ -25,8 +17,9 @@ const ProductList: React.FC = () => {
   //----------------------------------------------------------------------------
   const fetchProducts = async () => {
     try {
-      const apiResponse = await apiGetMachine("Active");
-      setProducts(apiResponse.data);
+      const apiResponse = await apiGetMachine("Available");
+      const productList = apiResponse.data;
+      setProducts(productList);
     } catch (error) {
       toast.error("lỗi");
     }
@@ -39,56 +32,78 @@ const ProductList: React.FC = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const handleTableChange = (newPagination: any) => {
-    setPagination({
-      ...pagination,
-      ...newPagination,
-    });
-
-    if (pagination.pageSize !== pagination?.pageSize) {
-      setProducts([]);
-    }
-  };
-
-  const customPagination = {
-    ...pagination,
-    onChange: handleTableChange,
-    pageSizeOptions: ["20", "25", "50"], // Custom page size options
-    showSizeChanger: false, // Show page size changer
-    showQuickJumper: false, // Show quick jumper
-  };
-
-  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setQuery(e.target.value);
-  };
-
-  console.log(customPagination, handleSearch, navigate);
-
-  const filteredRows = products?.filter((item) =>
-    item.name?.toLowerCase().includes(query)
-  );
+  const productFiltered = products?.map((item) => item);
 
   return (
-    <Box sx={{ width: "100%" }}>
-      {/* <Search
-        placeholder="Tìm kiếm"
-        onChange={handleSearch}
-        style={{ padding: "0 10%", height: "40px" }}
-      /> */}
+    <Box
+      sx={{
+        width: "90%",
+        display: "flex",
+        flexDirection: "row",
+        margin: "20px auto auto auto",
+        gap: "40px",
+      }}
+    >
       <Box
         sx={{
-          display: "grid",
-          gridTemplateColumns: "repeat(auto-fill, minmax(350px, 1fr))",
-          width: "90%",
-          gap: "50px",
-          justifyContent: "space-between",
-          margin: "auto",
+          boxShadow:
+            "rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px",
+          borderRadius: "5px",
+          width: "20%",
+          minWidth: "200px",
+          height: "100%",
+          position: "sticky",
+          top: 0,
         }}
       >
-        {filteredRows?.map((product) => (
-          <ProductCard key={product.id} product={product} />
-        ))}
+        <ProductFilteredRow
+          listProduct={productFiltered}
+          setProducts={setProducts}
+        />
+      </Box>
+      <Box sx={{ width: "80%" }}>
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "space-around",
+            padding: "10px",
+            boxShadow:
+              "rgba(0, 0, 0, 0.1) 0px 0px 5px 0px, rgba(0, 0, 0, 0.1) 0px 0px 1px 0px",
+            borderRadius: "5px",
+            marginBottom: "10px",
+          }}
+        >
+          <Box sx={{ width: "50%" }}>
+            <Typography
+              sx={{
+                textTransform: "uppercase",
+                fontSize: "18px",
+                fontWeight: "bold",
+              }}
+            >
+              Các loại máy
+            </Typography>
+          </Box>
+          <Box sx={{ width: "50%", textAlign: "right" }}>
+            <SortMenu />
+          </Box>
+        </Box>
+        <Box
+          sx={{
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))",
+            gap: "25px",
+            justifyContent: "space-between",
+            width: "100%%",
+            padding: "0 20px",
+          }}
+        >
+          {products?.map((product) => (
+            <ProductCard key={product.id} product={product} />
+          ))}
+        </Box>
       </Box>
     </Box>
   );

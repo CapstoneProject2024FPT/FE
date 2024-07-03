@@ -1,9 +1,7 @@
-import { axiosPrivate, axiosPublic } from "../axiosInstance";
+import { axiosPublic } from "../axiosInstance";
 import {
   ADD_MACHINERY,
   GET_MACHINERY,
-  MACHINERY_DETAIL,
-  MACHINERY_DETAIL_ID,
   MACHINERY_HOME_PRIORITY,
   MACHINERY_ID,
   MACHINERY_LIST,
@@ -16,9 +14,10 @@ import {
 import axios from "axios";
 
 interface GetListProps {
-  name?: string;
-  origin?: string;
-  model?: string;
+  name?: string[];
+  origin?: string[];
+  model?: string[];
+  brand?: string[];
   description?: string;
   status?: string;
   serialNumber?: string;
@@ -32,15 +31,19 @@ export const MachineryApi = () => {
   const apiGetList = async (params: GetListProps) => {
     setLoading(true);
     try {
-      const response = await axiosPrivate.get(GET_MACHINERY, {
+      const response = await axiosPublic.get(GET_MACHINERY, {
         params,
+        paramsSerializer: {
+          indexes: null, // no brackets at all
+        },
       });
       return response.data;
     } catch (error) {
+      console.error(error);
       if (axios.isAxiosError(error) && error.response) {
         return error.response.data;
       } else {
-        return { statusCode: 500, message: "Gặp vấn đề quá trình lấy dư liệu" };
+        return { statusCode: 500, Error: "Gặp vấn đề quá trình lấy dư liệu" };
       }
     } finally {
       setLoading(false);
@@ -56,7 +59,7 @@ export const MachineryApi = () => {
       if (axios.isAxiosError(error) && error.response) {
         return error.response.data;
       } else {
-        return { statusCode: 500, message: "Gặp vấn đề quá trình lấy dư liệu" };
+        return { statusCode: 500, Error: "Gặp vấn đề quá trình lấy dư liệu" };
       }
     } finally {
       setLoading(false);
@@ -75,7 +78,7 @@ export const MachineryApi = () => {
       if (axios.isAxiosError(error) && error.response) {
         return error.response.data;
       } else {
-        return { statusCode: 500, message: "Gặp vấn đề quá trình lấy dư liệu" };
+        return { statusCode: 500, Error: "Gặp vấn đề quá trình lấy dư liệu" };
       }
     } finally {
       setLoading(false);
@@ -92,7 +95,7 @@ export const MachineryApi = () => {
       if (axios.isAxiosError(error) && error.response) {
         return error.response.data;
       } else {
-        return { statusCode: 500, message: "Gặp vấn đề quá trình lấy dư liệu" };
+        return { statusCode: 500, Error: "Gặp vấn đề quá trình lấy dư liệu" };
       }
     } finally {
       setLoading(false);
@@ -100,13 +103,15 @@ export const MachineryApi = () => {
   };
 
   interface priorityProps {
+    originId: string;
+    status: string;
     priority: number;
+    brandId: string;
+    categoryId: string;
   }
 
   const apiUpdatePriorityMachine = async (id: string, param: priorityProps) => {
     setLoading(true);
-    console.log(id);
-    console.log(param);
     try {
       const response = await axiosPublic.put(
         MACHINERY_ID.replace(":id", id),
@@ -117,7 +122,7 @@ export const MachineryApi = () => {
       if (axios.isAxiosError(error) && error.response) {
         return error.response.data;
       } else {
-        return { statusCode: 500, message: "Gặp vấn đề quá trình lấy dư liệu" };
+        return { statusCode: 500, Error: "Gặp vấn đề quá trình lấy dư liệu" };
       }
     } finally {
       setLoading(false);
@@ -127,7 +132,7 @@ export const MachineryApi = () => {
   const apiGetMachineryID = async (id: string) => {
     setLoading(true);
     try {
-      const response = await axiosPublic.get(`${MACHINERY_DETAIL}/${id}`);
+      const response = await axiosPublic.get(MACHINERY_ID.replace(":id", id));
       return response.data;
     } catch (error) {
       console.error(error);
@@ -140,15 +145,13 @@ export const MachineryApi = () => {
   const apiGetDetailMachine = async (id: string) => {
     setLoading(true);
     try {
-      const response = await axiosPublic.get(
-        MACHINERY_DETAIL_ID.replace(":id", id)
-      );
+      const response = await axiosPublic.get(MACHINERY_ID.replace(":id", id));
       return response;
     } catch (error) {
       if (axios.isAxiosError(error) && error.response) {
         return error.response.data;
       } else {
-        return { statusCode: 500, message: "Gặp vấn đề quá trình lấy dư liệu" };
+        return { statusCode: 500, Error: "Gặp vấn đề quá trình lấy dư liệu" };
       }
     } finally {
       setLoading(false);
@@ -170,7 +173,7 @@ export const MachineryApi = () => {
       if (axios.isAxiosError(error) && error.response) {
         return error.response.data;
       } else {
-        return { statusCode: 500, message: "Gặp vấn đề quá trình lấy dư liệu" };
+        return { statusCode: 500, Error: "Gặp vấn đề quá trình lấy dư liệu" };
       }
     } finally {
       setLoading(false);
@@ -188,7 +191,7 @@ export const MachineryApi = () => {
       } else {
         return {
           statusCode: 500,
-          message: "Gặp vấn đề quá trình lấy dư liệu",
+          Error: "Gặp vấn đề quá trình lấy dư liệu",
         };
       }
     } finally {

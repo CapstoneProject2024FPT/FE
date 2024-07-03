@@ -1,11 +1,10 @@
 //Payment
-export type PaymentType = "paypal" | "credit_card" | "cash";
+export type PaymentType = "COD" | "Vnpay";
 
 export type PaymentOption = {
   value: PaymentType;
   title: string;
   description: string;
-  icons: string[];
 };
 
 export type CardOption = {

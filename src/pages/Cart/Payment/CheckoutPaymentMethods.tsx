@@ -7,9 +7,6 @@ import {
   Card,
   Radio,
   Stack,
-  Button,
-  Collapse,
-  TextField,
   Typography,
   RadioGroup,
   CardHeader,
@@ -20,9 +17,8 @@ import {
 // hooks
 
 // @types
-import { CardOption, PaymentOption } from "../../../models/payment";
+import { PaymentOption } from "../../../models/payment";
 // components
-import Image from "../../../components/Image";
 import Iconify from "../../../components/Iconify";
 
 // ----------------------------------------------------------------------
@@ -41,13 +37,9 @@ const OptionStyle = styled("div")(({ theme }) => ({
 
 type Props = {
   paymentOptions: PaymentOption[];
-  cardOptions: CardOption[];
 };
 
-export default function CheckoutPaymentMethods({
-  paymentOptions,
-  cardOptions,
-}: Props) {
+export default function CheckoutPaymentMethods({ paymentOptions }: Props) {
   const { control } = useFormContext();
 
   return (
@@ -62,9 +54,7 @@ export default function CheckoutPaymentMethods({
               <RadioGroup row {...field}>
                 <Stack spacing={2}>
                   {paymentOptions.map((method) => {
-                    const { value, title, icons, description } = method;
-
-                    const hasChildren = value === "credit_card";
+                    const { value, title, description } = method;
 
                     const selected = field.value === value;
 
@@ -75,7 +65,6 @@ export default function CheckoutPaymentMethods({
                           ...(selected && {
                             boxShadow: "5px 10px #888888",
                           }),
-                          ...(hasChildren && { flexWrap: "wrap" }),
                         }}
                       >
                         <FormControlLabel
@@ -102,46 +91,6 @@ export default function CheckoutPaymentMethods({
                           }
                           sx={{ flexGrow: 1, py: 3 }}
                         />
-
-                        <Stack direction="row" spacing={1} flexShrink={0}>
-                          {icons.map((icon) => (
-                            <Image key={icon} alt="logo card" src={icon} />
-                          ))}
-                        </Stack>
-
-                        {hasChildren && (
-                          <Collapse
-                            in={field.value === "credit_card"}
-                            sx={{ width: 1 }}
-                          >
-                            <TextField
-                              select
-                              fullWidth
-                              label="Cards"
-                              SelectProps={{ native: true }}
-                            >
-                              {cardOptions.map((option) => (
-                                <option key={option.value} value={option.value}>
-                                  {option.label}
-                                </option>
-                              ))}
-                            </TextField>
-
-                            <Button
-                              size="small"
-                              startIcon={
-                                <Iconify
-                                  icon={"eva:plus-fill"}
-                                  width={20}
-                                  height={20}
-                                />
-                              }
-                              sx={{ my: 3 }}
-                            >
-                              Add new card
-                            </Button>
-                          </Collapse>
-                        )}
                       </OptionStyle>
                     );
                   })}

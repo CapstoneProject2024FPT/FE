@@ -41,7 +41,7 @@ const columns: ColumnsType<DataType> = [
   },
 ];
 
-const StaffData: React.FC = () => {
+const StaffTechnical: React.FC = () => {
   const [data, setData] = useState<DataType[]>();
   const [loading, setLoading] = useState(false);
   const [tableParams, setTableParams] = useState<TableParams>({});
@@ -121,4 +121,4 @@ const StaffData: React.FC = () => {
   );
 };
 
-export default StaffData;
+export default StaffTechnical;

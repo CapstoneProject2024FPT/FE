@@ -1,114 +1,78 @@
-import * as Yup from "yup";
-import { useSnackbar } from "notistack";
-import { useCallback } from "react";
-// form
-import { useForm } from "react-hook-form";
-import { yupResolver } from "@hookform/resolvers/yup";
+/* eslint-disable react-hooks/exhaustive-deps */
 // @mui
-import { Box, Grid, Card, Stack, Typography } from "@mui/material";
-import { LoadingButton } from "@mui/lab";
-import { Resolver } from "react-hook-form";
-// mockdata
-import user from "./user.json";
+import {
+  Box,
+  Grid,
+  Card,
+  Stack,
+  Avatar,
+  Button,
+  TextField,
+} from "@mui/material";
 //models
 // components
-import {
-  FormProvider,
-  RHFTextField,
-  RHFUploadAvatar,
-} from "../../../components/hook-form";
-import { patternValidate } from "../../../utils/pattern";
-import uploadImageToFirebase from "../../../firebase/uploadImageToFirebase";
-import { staffModel } from "../../../models/UserData";
+import { staffProps } from "../../../models/UserData";
+import { CutomerApi } from "../../../api/services/apiUser";
+import { useEffect, useState } from "react";
+import { toast } from "react-toastify";
+import UserEditForm from "./Modal/UserEditForm";
 
 // ----------------------------------------------------------------------
 
 export default function AccountGeneral() {
-  const { enqueueSnackbar } = useSnackbar();
+  const { apiUserProfile } = CutomerApi();
+  const [profile, setProfile] = useState<staffProps>();
+  const [open, setOpen] = useState<boolean>(false);
 
-  const UpdateUserSchema = Yup.object().shape({
-    fullName: Yup.string().required("Bắt buộc"),
-    email: Yup.string().matches(patternValidate.email).required("Bắt buộc"),
-    phoneNumber: Yup.string()
-      .matches(patternValidate.phone, "Phải đúng số điện thoại")
-      .required("Bắt buộc"),
-    address: Yup.string().required("bắt buộc").min(10, "Tối thiểu 10 kí tự"),
-    yearOfExperience: Yup.number().moreThan(0, "không thể nhỏ hơn 0"),
-    photoURL: Yup.string().nullable(),
-  });
+  const fetchProfile = async () => {
+    const response = await apiUserProfile(
+      "7c2e8a5b-7c1c-4412-91db-f35b860078f7"
+    );
 
-  const defaultValues = {
-    fullName: user?.fullName || "",
-    email: user?.email || "",
-    photoURL: user?.photoUrl || "",
-    phoneNumber: user?.phoneNumber || "",
-    address: user?.address || "",
-    yearOfExperience: user?.yearOfExperience || 0,
-  };
-
-  const methods = useForm<staffModel>({
-    resolver: yupResolver(UpdateUserSchema) as Resolver<staffModel>,
-    defaultValues,
-  });
-
-  const {
-    setValue,
-    handleSubmit,
-    formState: { isSubmitting },
-  } = methods;
-
-  const onSubmit = async (data: staffModel) => {
-    try {
-      console.log(data);
-
-      await new Promise((resolve) => setTimeout(resolve, 500));
-      enqueueSnackbar("Update success!");
-    } catch (error) {
-      console.error(error);
+    if (response.status === 200) {
+      setProfile(response.data);
+    } else {
+      toast.error(response.Error);
     }
   };
 
-  const handleDrop = useCallback(
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    async (acceptedFiles: any[]) => {
-      const file = acceptedFiles[0];
+  useEffect(() => {
+    fetchProfile();
+  }, []);
 
-      const avatar = await uploadImageToFirebase(file);
+  const handleUpdate = () => {
+    setOpen(!open);
+  };
+  const handleClose = () => {
+    setOpen(!open);
+  };
 
-      if (typeof avatar === "string") {
-        setValue("photoURL", avatar);
-      } else {
-        console.error("Avatar is not a string:", avatar);
-      }
-    },
-    [setValue]
-  );
-
+  const onUpdateSuccess = (response: string) => {
+    handleClose();
+    fetchProfile();
+    toast.success(response);
+  };
   return (
-    <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
+    <>
       <Grid container spacing={3}>
         <Grid item xs={12} md={4}>
-          <Card sx={{ py: 10, px: 3, textAlign: "center" }}>
-            <RHFUploadAvatar
-              name="photoURL"
-              maxSize={3145728}
-              onDrop={handleDrop}
-              helperText={
-                <Typography
-                  variant="caption"
-                  sx={{
-                    mt: 2,
-                    mx: "auto",
-                    display: "block",
-                    textAlign: "center",
-                    color: "text.secondary",
-                  }}
-                >
-                  Allowed *.jpeg, *.jpg, *.png, *.gif
-                  <br /> max size of 3.1mb
-                </Typography>
-              }
-            />
+          <Card sx={{ py: 5, textAlign: "center" }}>
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <Avatar
+                sx={{ width: 135, height: 135 }}
+                src={
+                  profile?.image
+                    ? profile?.image
+                    : "https://firebasestorage.googleapis.com/v0/b/selling-maintainance-machinery.appspot.com/o/images%20(1).jfif?alt=media&token=5d70b7f3-d5c5-4de7-ba5a-767a328f9b82"
+                }
+              />
+            </Box>
           </Card>
         </Grid>
 
@@ -125,28 +89,81 @@ export default function AccountGeneral() {
                 },
               }}
             >
-              <RHFTextField name="fullName" label="Name" />
-              <RHFTextField name="email" label="Email Address" />
-              <RHFTextField name="phoneNumber" label="Phone Number" />
-              <RHFTextField
-                name="yearOfExperience"
-                label="Year Of Experience"
+              <TextField
+                name="fullName"
+                label="Tên"
+                value={profile?.fullName || ""}
+                InputProps={{
+                  readOnly: true,
+                }}
               />
-              <RHFTextField name="address" label="Address" multiline />
+              <TextField
+                name="address"
+                label="Giới tính"
+                multiline
+                value={
+                  profile?.gender === "Male"
+                    ? "Nam"
+                    : profile?.gender === "Female"
+                    ? "Nữ"
+                    : "Chưa cập nhật"
+                }
+                InputProps={{
+                  readOnly: true,
+                }}
+              />
+              <TextField
+                name="email"
+                label="Địa chỉ email"
+                value={profile?.email || ""}
+                InputProps={{
+                  readOnly: true,
+                }}
+              />
+              <TextField
+                name="phoneNumber"
+                label="Số điện thoại"
+                value={profile?.phoneNumber || ""}
+                InputProps={{
+                  readOnly: true,
+                }}
+              />
+              <TextField
+                name="yearOfExperience"
+                label="Kinh Nghiệm"
+                value={profile?.yearsOfExperience || 0}
+                InputProps={{
+                  readOnly: true,
+                }}
+              />
+              <TextField
+                name="address"
+                label="Địa chỉ"
+                multiline
+                value={profile?.address || ""}
+                InputProps={{
+                  readOnly: true,
+                }}
+              />
             </Box>
 
             <Stack spacing={3} alignItems="flex-end" sx={{ mt: 3 }}>
-              <LoadingButton
-                type="submit"
-                variant="contained"
-                loading={isSubmitting}
-              >
-                Save Changes
-              </LoadingButton>
+              <Button type="submit" variant="contained" onClick={handleUpdate}>
+                Cập nhật thông tin
+              </Button>
             </Stack>
           </Card>
         </Grid>
       </Grid>
-    </FormProvider>
+
+      {open && (
+        <UserEditForm
+          userData={profile}
+          open={open}
+          handleClose={handleClose}
+          onUpdateSuccess={onUpdateSuccess}
+        />
+      )}
+    </>
   );
 }
