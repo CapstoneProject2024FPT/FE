@@ -94,11 +94,32 @@ export const ApiNewsCategories = () => {
     }
   };
 
+  interface paramAvailable {
+    status: string;
+  }
+  const getNewsCategoriesAvailable = async (params: paramAvailable) => {
+    try {
+      setLoading(true);
+      const response = await axiosPublic.get(NEWS_CATEGORIES, { params });
+
+      setLoading(false);
+      return response;
+    } catch (error: any) {
+      if (axios.isAxiosError(error) && error.response) {
+        return error.response.data;
+      } else {
+        return { statusCode: 500, Error: "Internal Server Error" };
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
   return {
     getNewsCategories,
     loading,
     deleteNewsCategories,
     addNewsCategories,
     updateNewsCategory,
+    getNewsCategoriesAvailable,
   };
 };

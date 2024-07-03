@@ -31,6 +31,7 @@ import SerialNumberPropductDetail from "../pages/Admin/Product/SerialNumberProdu
 import AccountDetailCustomer from "../pages/Admin/User/Table/TableCustomer/CustomerDetail";
 import ChangePassword from "../pages/UserProfile/ChangePassword";
 import NewsCategories from "../pages/Admin/NewsCategories/NewsCategories";
+import BlogPostDetail from "../pages/Admin/Blog/BlogPostDetail";
 
 const AppRoute: React.FC = () => {
   return (
@@ -122,7 +123,11 @@ const AppRoute: React.FC = () => {
           path={config.adminRoutes.createNew}
           element={<BlogNewPost />}
         />
-
+        <Route
+          key="NewsDetail"
+          path={config.adminRoutes.blog}
+          element={<BlogPostDetail />}
+        />
         {/* news Categories  */}
         <Route
           key="newCategories"

@@ -47,7 +47,8 @@ export const RANK_ID = "rank/:id";
 export const USER_BY_ROLE = "users";
 
 //news
-
+export const NEWS = "news";
+export const NEWS_ID = "news/:id";
 //newsCategories
 export const NEWS_CATEGORIES = "/newsCategory";
 export const NEWS_CATEGORIES_ID = "/newsCategory/:id";

@@ -3,10 +3,10 @@ import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
-import { NewPostFormValues } from "../../models/blog";
+import { NewPostFormValues } from "../../../models/blog";
 import { Box, Container, Typography } from "@mui/material";
-import Image from "../../components/Image";
-import EmptyContent from "../../components/EmptyContent";
+import Image from "../../../components/Image";
+import EmptyContent from "../../../components/EmptyContent";
 
 interface PreviewDialog {
   values: NewPostFormValues;
@@ -18,13 +18,13 @@ export default function PreviewDialog({
   handleClose,
   open,
 }: PreviewDialog) {
-  const { title, content, description } = values;
+  const { title, newsContent, description } = values;
 
   const cover = typeof values.cover === "string" ? values.cover : values.cover;
 
-  const image = typeof values.image === "string" ? values.image : values.image;
+  const image = Array.isArray(values?.imageURL) ? values?.imageURL : undefined;
 
-  const hasContent = title || description || content || cover || image;
+  const hasContent = title || description || newsContent || cover || image;
 
   const hasHero = title || cover;
 
@@ -62,21 +62,31 @@ export default function PreviewDialog({
                   <Typography variant="h6" sx={{ mb: 5 }}>
                     {description}
                   </Typography>
+
                   <Box
-                    component="img"
-                    display="flex"
-                    alignItems="center"
                     sx={{
-                      objectFit: "cover",
-                      width: "80%",
-                      height: "400px",
-                      margin: "0 auto",
+                      display: "grid",
+                      gridTemplateColumns: "repeat(2, 1fr)",
+                      gap: 1,
                     }}
-                    alt="The house from the offer."
-                    src={image}
-                  />
+                  >
+                    {image?.map((img, idx) => (
+                      <Box
+                        key={idx}
+                        component="img"
+                        sx={{
+                          objectFit: "cover",
+                          width: "80%",
+                          height: "200px",
+                          margin: "0 auto",
+                        }}
+                        alt="The house from the offer."
+                        src={img}
+                      />
+                    ))}
+                  </Box>
                 </Box>
-                <div dangerouslySetInnerHTML={{ __html: content }} />
+                <div dangerouslySetInnerHTML={{ __html: newsContent }} />
               </Container>
             </>
           ) : (

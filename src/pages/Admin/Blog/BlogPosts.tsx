@@ -8,11 +8,11 @@ const BlogPosts: React.FC = () => {
   return (
     <Container>
       <HeaderBreadcrumbs
-        heading="Tất cả loại máy"
+        heading="Tất cả tin tức"
         links={[
           { name: "Thống kê", href: config.adminRoutes.dashboard },
-          { name: "Loại máy" },
-          { name: "Tất cả Loại máy" },
+          { name: "tin tức" },
+          { name: "Tất cả tin tức" },
         ]}
       />
       <TableBlogNew />

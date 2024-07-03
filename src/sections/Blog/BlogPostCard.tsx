@@ -3,30 +3,49 @@ import { Box, Card, Typography, CardContent, Stack } from "@mui/material";
 // routes
 
 // utils
-import { formatDateFunc, truncate } from "../../utils/fn";
+import { formatDateFunc } from "../../utils/fn";
 // @types
-import { Post } from "../../models/blog";
+import { PostGetProps } from "../../models/blog";
 // components
 import Image from "../../components/Image";
 import Iconify from "../../components/Iconify";
 import TextIconLabel from "../../components/TextIconLabel";
+import { Link } from "react-router-dom";
+import config from "../../configs";
 
 type Props = {
-  post: Post;
+  post: PostGetProps;
   index?: number;
 };
 
 export default function BlogPostCard({ post }: Props) {
-  const { cover, title, view, createAt } = post;
+  const { cover, title, createDate, id } = post;
 
   return (
-    <Card>
-      <Box sx={{ position: "relative" }}>
-        <Image alt="cover" src={cover} ratio="4/3" />
-      </Box>
+    <Link
+      to={config.routes.newsDetail.replace(":id", id)}
+      style={{ textDecoration: "none" }}
+    >
+      <Card
+        sx={{
+          p: 1,
+          height: "100%",
+          transition: "transform 0.2s ease-in-out",
+          "&:hover": {
+            transform: "scale(1.05)",
+          },
+          boxShadow:
+            "rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px",
+          cursor: "pointer",
+        }}
+      >
+        <Box sx={{ position: "relative", borderBottom: "1px black solid" }}>
+          <Image alt="cover" src={cover} ratio="4/3" />
+        </Box>
 
-      <PostContent title={title} view={view} createdAt={createAt} />
-    </Card>
+        <PostContent title={title} createdAt={createDate} />
+      </Card>
+    </Link>
   );
 }
 
@@ -34,21 +53,13 @@ export default function BlogPostCard({ post }: Props) {
 
 type PostContentProps = {
   title: string;
-  view: number;
-  createdAt: Date | string;
+  createdAt: Date;
   index?: number;
 };
 
-export function PostContent({
-  view,
-  createdAt,
-  index,
-  title,
-}: PostContentProps) {
+export function PostContent({ createdAt, index, title }: PostContentProps) {
   const latestPostLarge = index === 0;
   const latestPostSmall = index === 1 || index === 2;
-
-  const POST_INFO = [{ number: view, icon: "eva:eye-fill" }];
 
   return (
     <CardContent
@@ -64,24 +75,30 @@ export function PostContent({
         }),
       }}
     >
-      <Typography
-        gutterBottom
-        variant="caption"
-        component="div"
-        sx={{
-          color: "text.disabled",
-          ...((latestPostLarge || latestPostSmall) && {
-            opacity: 0.64,
-            color: "common.white",
-          }),
-        }}
-      >
-        {formatDateFunc.formatDate(createdAt)}
-      </Typography>
+      <TextIconLabel
+        icon={<Iconify icon="uil:calender" sx={{ width: 30, height: 18 }} />}
+        value={
+          <Typography
+            gutterBottom
+            variant="caption"
+            component="div"
+            sx={{
+              fontWeight: "600",
+              ...((latestPostLarge || latestPostSmall) && {
+                opacity: 0.8,
+                color: "common.white",
+              }),
+            }}
+          >
+            {formatDateFunc.formatDate(createdAt)}
+          </Typography>
+        }
+      />
+
       <Typography
         gutterBottom
         variant="h6"
-        component="h3"
+        component="h6"
         sx={{
           color: "black",
           ...((latestPostLarge || latestPostSmall) && {
@@ -90,7 +107,7 @@ export function PostContent({
           }),
         }}
       >
-        {truncate(title)}
+        {title}
       </Typography>
       <Stack
         flexWrap="wrap"
@@ -104,25 +121,7 @@ export function PostContent({
             color: "common.white",
           }),
         }}
-      >
-        {POST_INFO.map((info, index) => (
-          <TextIconLabel
-            key={index}
-            icon={
-              <Iconify
-                icon={info.icon}
-                sx={{ width: 16, height: 16, mr: 0.5 }}
-              />
-            }
-            value={info.number}
-            sx={{
-              typography: "caption",
-              ml: index === 0 ? 0 : 1.5,
-              color: "black",
-            }}
-          />
-        ))}
-      </Stack>
+      ></Stack>
     </CardContent>
   );
 }

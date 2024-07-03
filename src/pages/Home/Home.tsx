@@ -2,26 +2,33 @@ import React, { useEffect, useState } from "react";
 import SimpleSlider from "../../components/carousel/Carousel";
 import { Box, Button, Typography } from "@mui/material";
 import ShopProductHomePage from "../../sections/Shop/ShopProductHomePage";
-import post from "../Home/blog.json";
 import { Product } from "../../models/products";
-import { PostProps } from "../../models/blog";
+import { PostGetProps } from "../../models/blog";
 import BlogHomePage from "../../sections/Blog/BLogHomePage";
 import { useNavigate } from "react-router-dom";
 import { routes } from "../../configs/routes";
 import { MachineryApi } from "../../api/services/apiMachinery";
+import { ApiNews } from "../../api/services/apiNews";
 
 const Home: React.FC = () => {
   const { apiGetMachineryPriority, loading, apiGetMachine } = MachineryApi();
+  const { apiGetNewsHomePage } = ApiNews();
 
   const [productPriority, setProductPriority] = useState<Product[]>([]);
   const [listMachine, setListMachine] = useState<Product[]>([]);
+  const [listNews, setListNews] = useState<PostGetProps[]>([]);
 
   const fetchProductPriority = async () => {
     try {
-      const [machineryPriorityResult, listResult] = await Promise.allSettled([
-        apiGetMachineryPriority(),
-        apiGetMachine("Available"),
-      ]);
+      const params = {
+        status: "Active",
+      };
+      const [machineryPriorityResult, listResult, listNewsResult] =
+        await Promise.allSettled([
+          apiGetMachineryPriority(),
+          apiGetMachine("Available"),
+          apiGetNewsHomePage(params),
+        ]);
 
       if (machineryPriorityResult.status === "fulfilled") {
         setProductPriority(machineryPriorityResult.value.data);
@@ -34,6 +41,12 @@ const Home: React.FC = () => {
       } else {
         console.error(listResult.reason);
       }
+
+      if (listNewsResult.status === "fulfilled") {
+        setListNews(listNewsResult.value.data);
+      } else {
+        console.error(listNewsResult.reason);
+      }
     } catch (error) {
       console.error(error);
     }
@@ -43,7 +56,6 @@ const Home: React.FC = () => {
     fetchProductPriority();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-  const New: PostProps = post as PostProps;
   const navigate = useNavigate();
   return (
     <div
@@ -178,7 +190,7 @@ const Home: React.FC = () => {
             Tin Tức
           </span>
         </Typography>
-        <BlogHomePage posts={New} loading={!New.length} />
+        <BlogHomePage posts={listNews} loading={!listNews.length} />
       </Box>
     </div>
   );
