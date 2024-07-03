@@ -1,7 +1,7 @@
 // @mui
 import { Box } from "@mui/material";
 // @type
-import { Post } from "../../models/blog";
+import { PostGetProps } from "../../models/blog";
 
 import { SkeletonPostItem } from "../../components/skeleton";
 import BlogPostCard from "./BlogPostCard";
@@ -9,7 +9,7 @@ import BlogPostCard from "./BlogPostCard";
 // ----------------------------------------------------------------------
 
 type Props = {
-  posts: Post[];
+  posts: PostGetProps[];
   loading: boolean;
 };
 

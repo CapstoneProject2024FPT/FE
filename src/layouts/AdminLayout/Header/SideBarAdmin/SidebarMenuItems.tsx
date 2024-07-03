@@ -59,6 +59,12 @@ const MenuSideBars: MenuSideBar[] = [
         label: <Link to={config.adminRoutes.createNew}>Thêm mới tin tức</Link>,
         key: config.adminRoutes.createNew,
       },
+      {
+        label: (
+          <Link to={config.adminRoutes.newsCategory}>Thể Loại Tin tức</Link>
+        ),
+        key: config.adminRoutes.newsCategory,
+      },
     ],
   },
   {

@@ -138,15 +138,12 @@ export default function ProductNewEditForm() {
 
       if (brand.status === "fulfilled") {
         setBrands(brand.value);
-
-        console.log("brand", brand.value);
       } else {
         console.error(brand.reason);
       }
 
       if (origin.status === "fulfilled") {
         setOrigins(origin.value.data);
-        console.log("origin", origin.value.data);
       } else {
         console.error(origin.reason);
       }
@@ -170,8 +167,6 @@ export default function ProductNewEditForm() {
         })),
       };
       delete transformedData.imageURL;
-
-      console.log(transformedData);
 
       const response = await apiAddMachinery(transformedData);
 

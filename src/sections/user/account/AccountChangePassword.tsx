@@ -1,5 +1,4 @@
 import * as Yup from "yup";
-import { useSnackbar } from "notistack";
 // form
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm } from "react-hook-form";
@@ -9,6 +8,8 @@ import { LoadingButton } from "@mui/lab";
 // components
 import { FormProvider, RHFTextField } from "../../../components/hook-form";
 import { patternValidate } from "../../../utils/pattern";
+import { CutomerApi } from "../../../api/services/apiUser";
+import { toast } from "react-toastify";
 
 // ----------------------------------------------------------------------
 
@@ -18,8 +19,15 @@ type FormValuesProps = {
   confirmNewPassword: string;
 };
 
+interface passwordChange {
+  currentPassword: string;
+  newPassword: string;
+}
 export default function AccountChangePassword() {
-  const { enqueueSnackbar } = useSnackbar();
+  const { ChangePassword } = CutomerApi();
+
+  const loginInfoString = localStorage.getItem("loginInfo");
+  const auth = loginInfoString ? JSON.parse(loginInfoString) : null;
 
   const ChangePassWordSchema = Yup.object().shape({
     oldPassword: Yup.string().required("Mật khấu mới là cần thiết"),
@@ -33,7 +41,7 @@ export default function AccountChangePassword() {
       ),
     confirmNewPassword: Yup.string()
       .required("Bắt buộc nhập")
-      .oneOf([Yup.ref("password")], "Phải giống với mật khẩu"),
+      .oneOf([Yup.ref("newPassword")], "Phải giống với mật khẩu"),
   });
 
   const defaultValues = {
@@ -55,10 +63,19 @@ export default function AccountChangePassword() {
 
   const onSubmit = async (data: FormValuesProps) => {
     try {
-      await new Promise((resolve) => setTimeout(resolve, 500));
-      console.log(data);
-      reset();
-      enqueueSnackbar("Update success!");
+      const id: string = auth?.data.id;
+      const params: passwordChange = {
+        currentPassword: data.oldPassword,
+        newPassword: data.newPassword,
+      };
+      const response = await ChangePassword(id, params);
+      console.log(response);
+      if (response.status === 200) {
+        toast.success(response.data.message);
+        reset();
+      } else {
+        toast.error(response.Error);
+      }
     } catch (error) {
       console.error(error);
     }
@@ -71,19 +88,19 @@ export default function AccountChangePassword() {
           <RHFTextField
             name="oldPassword"
             type="password"
-            label="Old Password"
+            label="Mật Khẩu hiện tại"
           />
 
           <RHFTextField
             name="newPassword"
             type="password"
-            label="New Password"
+            label="Mật Khẩu mới"
           />
 
           <RHFTextField
             name="confirmNewPassword"
             type="password"
-            label="Confirm New Password"
+            label="Nhập lại mật khẩu"
           />
 
           <LoadingButton
@@ -91,7 +108,7 @@ export default function AccountChangePassword() {
             variant="contained"
             loading={isSubmitting}
           >
-            Save Changes
+            Lưu mật khẩu mới
           </LoadingButton>
         </Stack>
       </FormProvider>

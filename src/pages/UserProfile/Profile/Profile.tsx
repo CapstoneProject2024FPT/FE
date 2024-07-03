@@ -1,10 +1,5 @@
 import React, { useEffect, useState } from "react";
 import Grid from "@mui/material/Unstable_Grid2";
-import FormLabel from "@mui/material/FormLabel";
-import FormControl from "@mui/material/FormControl";
-import FormGroup from "@mui/material/FormGroup";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import Checkbox from "@mui/material/Checkbox";
 import { styled } from "@mui/material/styles";
 import { Box, Button, TextField, Typography } from "@mui/material";
 import { CutomerApi } from "../../../api/services/apiUser";
@@ -28,26 +23,11 @@ const LabelStyle = styled(Typography)(({ theme }) => ({
 }));
 
 const Profile: React.FC = () => {
-  const [state, setState] = React.useState({
-    men: true,
-    women: false,
-    other: false,
-  });
   const [open, setOpen] = useState<boolean>(false);
-
   const [userProfile, setUserProfile] = useState<userModel>();
 
   const loginInfoString = localStorage.getItem("loginInfo");
   const auth = loginInfoString ? JSON.parse(loginInfoString) : null;
-
-  const { men, women, other } = state;
-
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setState({
-      ...state,
-      [event.target.name]: event.target.checked,
-    });
-  };
 
   //open
   const handleOpen = () => {
@@ -108,7 +88,7 @@ const Profile: React.FC = () => {
         >
           <div className={cx("avatar", "avatar-large", classRank)}>
             <img
-              src="https://static.gamersclub.com.br/players/avatar/737335/737335_full.jpg"
+              src={userProfile?.image}
               alt="Usuário"
               className={cx("avatar-image")}
             />
@@ -154,39 +134,20 @@ const Profile: React.FC = () => {
         />
       </FormGrid>
       <FormGrid xs={12}>
-        <FormControl component="fieldset" variant="standard">
-          <FormLabel component="legend">Giới tính</FormLabel>
-          <FormGroup>
-            <div>
-              <FormControlLabel
-                control={
-                  <Checkbox checked={men} onChange={handleChange} name="men" />
-                }
-                label="Nam"
-              />
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    checked={women}
-                    onChange={handleChange}
-                    name="women"
-                  />
-                }
-                label="Nữ"
-              />
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    checked={other}
-                    onChange={handleChange}
-                    name="other"
-                  />
-                }
-                label="Khác"
-              />
-            </div>
-          </FormGroup>
-        </FormControl>
+        <LabelStyle>Giới tính</LabelStyle>
+        <TextField
+          placeholder="Name"
+          InputProps={{
+            readOnly: true,
+          }}
+          value={
+            userProfile?.gender === "Male"
+              ? "Nam"
+              : userProfile?.gender === "Female"
+              ? "Nữ"
+              : "Chưa cập nhật"
+          }
+        />
       </FormGrid>
 
       <FormGrid xs={12}>

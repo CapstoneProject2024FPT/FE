@@ -1,8 +1,8 @@
-import { ReactNode } from "react";
-import ReactQuill, { ReactQuillProps } from "react-quill";
+import { ReactNode, useEffect, useState } from "react";
+import ReactQuill, { Quill, ReactQuillProps } from "react-quill";
 // @mui
 import { styled } from "@mui/material/styles";
-import { Box, BoxProps } from "@mui/material";
+import { Box, BoxProps, Typography } from "@mui/material";
 //
 import EditorToolbar, {
   formats,
@@ -76,6 +76,23 @@ export default function Editor({
       matchVisual: false,
     },
   };
+  const [textCount, setTextCount] = useState(0);
+
+  useEffect(() => {
+    let text = "";
+
+    if (typeof value === "string") {
+      text = value;
+    } else if (value && typeof value === "object") {
+      // use Quill Api to convert the deltastatic string
+      const tempContainer = document.createElement("div");
+      new Quill(tempContainer).setContents(value);
+      text = tempContainer.innerText;
+    }
+
+    const textLength = text.replace(/<[^>]*>/g, "").length; // Remove HTML tags /<[^>]*>/g
+    setTextCount(textLength);
+  }, [value]);
 
   return (
     <div>
@@ -96,6 +113,13 @@ export default function Editor({
       </RootStyle>
 
       {helperText && helperText}
+      <Typography
+        variant="body2"
+        color="textSecondary"
+        sx={{ mt: 1, textAlign: "right" }}
+      >
+        {textCount} kí tự
+      </Typography>
     </div>
   );
 }

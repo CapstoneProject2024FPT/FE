@@ -1,5 +1,7 @@
+//auth
 export const LOGIN = "/auth/login";
 export const REGISTER = "/users";
+export const CHANGE_PASSWORD = "/users/:id/password";
 
 //Machinery
 export const GET_MACHINERY = "/machinery";
@@ -40,3 +42,13 @@ export const SERIALNUMBER_ID = "inventories/:id";
 //rank
 export const RANK = "rank";
 export const RANK_ID = "rank/:id";
+
+//accont
+export const USER_BY_ROLE = "users";
+
+//news
+export const NEWS = "news";
+export const NEWS_ID = "news/:id";
+//newsCategories
+export const NEWS_CATEGORIES = "/newsCategory";
+export const NEWS_CATEGORIES_ID = "/newsCategory/:id";

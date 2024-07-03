@@ -1,9 +1,9 @@
 import { Modal } from "antd";
 import React from "react";
-import { DataType } from "../Customer";
+import { userModel } from "../../../../../../models/UserData";
 
 interface ModalUser {
-  userData: DataType | null;
+  userData: userModel | null;
   open: boolean;
   handleClose: () => void;
 }

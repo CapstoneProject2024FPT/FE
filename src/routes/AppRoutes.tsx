@@ -28,6 +28,10 @@ import NewsDetail from "../pages/News/NewsDetail";
 import Brand from "../pages/Admin/Brand/Brand";
 import Rank from "../pages/Admin/Rank/Rank";
 import SerialNumberPropductDetail from "../pages/Admin/Product/SerialNumberProduct";
+import AccountDetailCustomer from "../pages/Admin/User/Table/TableCustomer/CustomerDetail";
+import ChangePassword from "../pages/UserProfile/ChangePassword";
+import NewsCategories from "../pages/Admin/NewsCategories/NewsCategories";
+import BlogPostDetail from "../pages/Admin/Blog/BlogPostDetail";
 
 const AppRoute: React.FC = () => {
   return (
@@ -53,6 +57,11 @@ const AppRoute: React.FC = () => {
           key="user"
           path={config.routes.userProfile}
           element={<UserProfile />}
+        />
+        <Route
+          key="changePassword"
+          path={config.routes.userChangePassword}
+          element={<ChangePassword />}
         />
         <Route
           key="productList"
@@ -92,10 +101,16 @@ const AppRoute: React.FC = () => {
           path={config.adminRoutes.dashboard}
           element={<Dashboard />}
         />
+        {/* account  */}
         <Route
           key="user"
           path={config.adminRoutes.user}
           element={<Account />}
+        />
+        <Route
+          key="userDetail"
+          path={config.adminRoutes.userDetail}
+          element={<AccountDetailCustomer />}
         />
         {/* news */}
         <Route
@@ -107,6 +122,17 @@ const AppRoute: React.FC = () => {
           key="createNew"
           path={config.adminRoutes.createNew}
           element={<BlogNewPost />}
+        />
+        <Route
+          key="NewsDetail"
+          path={config.adminRoutes.blog}
+          element={<BlogPostDetail />}
+        />
+        {/* news Categories  */}
+        <Route
+          key="newCategories"
+          path={config.adminRoutes.newsCategory}
+          element={<NewsCategories />}
         />
 
         {/* product */}
