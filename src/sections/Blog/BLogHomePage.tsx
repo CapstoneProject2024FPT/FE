@@ -14,6 +14,9 @@ type Props = {
 };
 
 export default function BlogHomePage({ posts, loading }: Props) {
+  const displayedNews: (PostGetProps | undefined)[] = loading
+    ? Array(4).fill(undefined)
+    : posts?.slice(0, 4);
   return (
     <Box
       sx={{
@@ -28,7 +31,7 @@ export default function BlogHomePage({ posts, loading }: Props) {
         },
       }}
     >
-      {(loading ? [...Array(4)] : posts).map((post, index) =>
+      {displayedNews?.map((post, index) =>
         post ? (
           <BlogPostCard post={post} key={post.id} />
         ) : (

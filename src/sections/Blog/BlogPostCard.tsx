@@ -29,7 +29,11 @@ export default function BlogPostCard({ post }: Props) {
       <Card
         sx={{
           p: 1,
+          padding: "20px",
+          borderRadius: "5px",
+          width: "100%",
           height: "100%",
+          color: "black",
           transition: "transform 0.2s ease-in-out",
           "&:hover": {
             transform: "scale(1.05)",
@@ -39,8 +43,9 @@ export default function BlogPostCard({ post }: Props) {
           cursor: "pointer",
         }}
       >
-        <Box sx={{ position: "relative", borderBottom: "1px black solid" }}>
-          <Image alt="cover" src={cover} ratio="4/3" />
+        <Box sx={{ position: "relative" }}>
+          <Image alt="cover" src={cover} ratio="4/3"
+          sx={{ width: "100%", height: "200px", objectFit: "contain" }} />
         </Box>
 
         <PostContent title={title} createdAt={createDate} />
