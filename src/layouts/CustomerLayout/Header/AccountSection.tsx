@@ -11,10 +11,12 @@ import Logout from "@mui/icons-material/Logout";
 import config from "../../../configs";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import { Button } from "@mui/material";
+import { useAuthContext } from "../../../context/AuthContext";
 
 const AccountSection = () => {
   const jsonString = localStorage.getItem("loginInfo");
   const user = JSON.parse(jsonString || "{}");
+  const { setAuthUser } = useAuthContext();
   const [name, setName] = React.useState(user?.fullName ? user.fullName : "U");
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const navigate = useNavigate();
@@ -40,6 +42,7 @@ const AccountSection = () => {
 
   const handleLogout = () => {
     localStorage.removeItem("loginInfo");
+    setAuthUser(null);
     setTimeout(() => {
       navigate(config.routes.home);
     }, 500);
@@ -98,7 +101,7 @@ const AccountSection = () => {
           <ListItemIcon>
             <Logout fontSize="small" />
           </ListItemIcon>
-          Logout
+          Đăng xuất
         </MenuItem>
       </Menu>
     </>

@@ -27,6 +27,7 @@ const SignInForm: React.FC = () => {
     password: Yup.string().required("bắt buộc").min(8, "Tối thiểu 8 kí tự"),
   });
 
+  const role = ["Sale", "Admin", "Manager"];
   const defaultValues: UserData = {
     username: "",
     password: "",
@@ -53,6 +54,8 @@ const SignInForm: React.FC = () => {
         toast.success("Đăng nhập thành công");
         if (response?.data.role === "User") {
           navigate(config.routes.home);
+        } else if (role.includes(response?.data?.role)) {
+          navigate(config.adminRoutes.dashboard);
         }
       }
       if (response.statusCode === 401) {

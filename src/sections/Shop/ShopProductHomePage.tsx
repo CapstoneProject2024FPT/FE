@@ -20,6 +20,7 @@ export default function ShopProductHomePage({ products, loading }: Props) {
   return (
     <Box
       sx={{
+        width: "100%",
         marginTop: "5px",
         display: "grid",
         gridTemplateColumns: {
@@ -28,7 +29,7 @@ export default function ShopProductHomePage({ products, loading }: Props) {
           md: "repeat(3, 1fr)",
           lg: "repeat(4, 1fr)",
         },
-        gap: 2,
+        gap: 1,
       }}
     >
       {displayedProducts?.map((product, index) =>

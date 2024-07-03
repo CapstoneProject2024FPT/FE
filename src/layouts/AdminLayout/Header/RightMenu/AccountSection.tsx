@@ -10,10 +10,12 @@ import IconButton from "@mui/material/IconButton";
 import Logout from "@mui/icons-material/Logout";
 import config from "../../../../configs";
 import { Typography } from "@mui/material";
+import { useAuthContext } from "../../../../context/AuthContext";
 
 const AccountSection = () => {
   const jsonString = localStorage.getItem("loginInfo");
   const user = JSON.parse(jsonString || "{}");
+  const { setAuthUser } = useAuthContext();
   const [name, setName] = React.useState(user?.fullName ? user.fullName : "U");
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const navigate = useNavigate();
@@ -39,6 +41,7 @@ const AccountSection = () => {
 
   const handleLogout = () => {
     localStorage.removeItem("loginInfo");
+    setAuthUser(null);
     setTimeout(() => {
       navigate("/");
     }, 500);
