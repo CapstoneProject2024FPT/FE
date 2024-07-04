@@ -196,7 +196,7 @@ const Home: React.FC = () => {
             Tin Tức
           </span>
         </Typography>
-        <BlogHomePage posts={listNews} loading={!listNews.length} />
+        <BlogHomePage posts={listNews} loading={loading} />
       </Box>
     </div>
   );

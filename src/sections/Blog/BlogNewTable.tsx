@@ -11,6 +11,7 @@ import { formatDateFunc } from "../../utils/fn";
 import { useNavigate } from "react-router-dom";
 import config from "../../configs";
 import BlogAbleModal from "./PopupBLog/BlogAbleModal";
+import BlogHotModal from "./PopupBLog/BlogHotModal";
 
 type ColumnsType<T> = TableProps<T>["columns"];
 const { Search } = Input;
@@ -30,6 +31,7 @@ const TableBlogNew: React.FC = () => {
 
   //popup
   const [openStatusPopup, setOpenStatusPopup] = useState<boolean>(false);
+  const [openHotPopup, setOpenHotPopup] = useState<boolean>(false);
   const [selectedData, setSelectedData] = useState<PostGetProps | null>(null);
 
   //modal popup
@@ -45,6 +47,14 @@ const TableBlogNew: React.FC = () => {
     setOpenStatusPopup(!openStatusPopup);
   };
 
+  const handleOpenHot = (record: PostGetProps) => {
+    setSelectedData(record);
+    setOpenHotPopup(!openHotPopup);
+  };
+
+  const handleCloseOpenHot = () => {
+    setOpenHotPopup(!openHotPopup);
+  };
   //----------------------------------------------------------------------------
   const fetchBlogNews = async () => {
     try {
@@ -61,17 +71,11 @@ const TableBlogNew: React.FC = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  //   const handleAddCategorySuccess = () => {
-  //     handleCloseAdd();
-  //     fetchBlogNews();
-  //     toast.success("Thêm loại máy thành công");
-  //   };
-
-  //   const handleDeleteCategorySuccess = (response: string) => {
-  //     handleCLoseDelete();
-  //     fetchBlogNews();
-  //     toast.success(response);
-  //   };
+  const handleUpdateHotNewsSuccess = () => {
+    handleCloseOpenHot();
+    fetchBlogNews();
+    toast.success("Cập nhật thành công");
+  };
 
   const handleUpdateStatusNewsSuccess = (text: string) => {
     handleCLoseStatusPopup();
@@ -114,6 +118,10 @@ const TableBlogNew: React.FC = () => {
     {
       key: "2",
       label: "Điều chỉnh trạng thái",
+    },
+    {
+      key: "3",
+      label: "Điều chỉnh độ hot",
     },
   ];
   const columns: ColumnsType<PostGetProps> = [
@@ -166,6 +174,9 @@ const TableBlogNew: React.FC = () => {
                   case "2":
                     handleActionOpenPopupStatus(record);
                     break;
+                  case "3":
+                    handleOpenHot(record);
+                    break;
                   default:
                     break;
                 }
@@ -214,6 +225,14 @@ const TableBlogNew: React.FC = () => {
           handleCLose={handleCLoseStatusPopup}
           onUpdateSuccess={handleUpdateStatusNewsSuccess}
           open={openStatusPopup}
+        />
+      )}
+      {openHotPopup && (
+        <BlogHotModal
+          NewsData={selectedData}
+          handleCLose={handleCloseOpenHot}
+          onUpdateSuccess={handleUpdateHotNewsSuccess}
+          open={openHotPopup}
         />
       )}
     </>

@@ -1,5 +1,5 @@
 import { axiosPublic } from "../axiosInstance";
-import { USER_BY_ROLE } from "../pathApiName";
+import { REGISTER, USER_BY_ROLE, USER_ID } from "../pathApiName";
 import { useState } from "react";
 import axios from "axios";
 
@@ -29,5 +29,112 @@ export const ApiAccount = () => {
     }
   };
 
-  return { loading, apiGetUserByRole };
+  const apiBanned = async (id: string) => {
+    setLoading(true);
+
+    try {
+      const response = await axiosPublic.delete(USER_ID.replace(":id", id));
+
+      return response;
+
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+      if (axios.isAxiosError(error) && error.response) {
+        return error.response.data;
+      } else {
+        return { statusCode: 500, message: "Internal Server Error" };
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  interface unBannedProps {
+    role: string;
+    status: string;
+    gender: string;
+  }
+
+  const apiUnbanned = async (id: string, params: unBannedProps) => {
+    setLoading(true);
+
+    try {
+      const response = await axiosPublic.put(
+        USER_ID.replace(":id", id),
+        params
+      );
+
+      return response;
+
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+      if (axios.isAxiosError(error) && error.response) {
+        return error.response.data;
+      } else {
+        return { statusCode: 500, message: "Internal Server Error" };
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  interface changeRoleProps {
+    role: string;
+    status: string;
+    gender: string;
+    fullName: string;
+  }
+  const apiUpdateRole = async (id: string, params: changeRoleProps) => {
+    setLoading(true);
+
+    try {
+      const response = await axiosPublic.put(
+        USER_ID.replace(":id", id),
+        params
+      );
+
+      return response;
+
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+      if (axios.isAxiosError(error) && error.response) {
+        return error.response.data;
+      } else {
+        return { statusCode: 500, message: "Internal Server Error" };
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  interface AddModal {
+    fullName: string;
+    password: string;
+    username: string;
+    phoneNumber: string;
+    email: string;
+    role: string;
+  }
+
+  const apiCreateEmployee = async (registerData: AddModal) => {
+    try {
+      const response = await axiosPublic.post(REGISTER, registerData);
+      return response;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+      if (axios.isAxiosError(error) && error.response) {
+        return error.response.data;
+      } else {
+        return { statusCode: 500, Error: "Internal Server Error" };
+      }
+    }
+  };
+  return {
+    loading,
+    apiGetUserByRole,
+    apiBanned,
+    apiUnbanned,
+    apiUpdateRole,
+    apiCreateEmployee,
+  };
 };
