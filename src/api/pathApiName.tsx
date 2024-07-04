@@ -45,9 +45,9 @@ export const RANK_ID = "rank/:id";
 
 //accont
 export const USER_BY_ROLE = "users";
-
+export const USER_ID = "users/:id";
 //news
-export const NEWS = "news";
+export const NEWS = "news/noPaginate";
 export const NEWS_ID = "news/:id";
 //newsCategories
 export const NEWS_CATEGORIES = "/newsCategory";
