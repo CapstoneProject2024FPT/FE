@@ -23,11 +23,13 @@ import {
 } from "@mui/icons-material";
 import "./ProductDetail.scss";
 import { toast } from "react-toastify";
-import { useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { MachineryApi } from "../../../api/services/apiMachinery";
 import Zoom from "../../../components/zoomImageHover";
 import { ProductDetailProps } from "../../../models/products";
 import { formatMoney } from "../../../utils/fn";
+import { useAuthContext } from "../../../context/AuthContext";
+import config from "../../../configs";
 
 const Detail: React.FC = () => {
   const params = useParams();
@@ -37,7 +39,10 @@ const Detail: React.FC = () => {
   const [isRed, setIsRed] = useState(false);
   const [product, setProduct] = useState<ProductDetailProps>();
   const { apiGetMachineryID } = MachineryApi();
+  const navigate = useNavigate();
+  const location = useLocation();
 
+  const { authUser } = useAuthContext();
   const fetchProducts = async () => {
     try {
       const id = params.id;
@@ -66,18 +71,31 @@ const Detail: React.FC = () => {
   };
 
   const addToCart = () => {
-    if (isActive) return;
-    setActive(!isActive);
-    const existCart = localStorage.getItem("cart");
-    const productQuantity = { ...product, currentQuantities, id: params.id };
-    if (existCart) {
-      const parseProduct = JSON.parse(existCart);
-      parseProduct.push(productQuantity);
-      localStorage.setItem("cart", JSON.stringify(parseProduct));
-      toast.success("Thêm sản phẩm thành công");
+    if (authUser) {
+      if (isActive) return;
+      setActive(!isActive);
+      const existCart = localStorage.getItem("cart");
+      const productQuantity = { ...product, currentQuantities, id: params.id };
+      if (existCart) {
+        const parseProduct = JSON.parse(existCart);
+        const existProduct = parseProduct.findIndex(
+          (p: { id: string | undefined }) => p.id === productQuantity.id
+        );
+        if (existProduct !== -1) {
+          parseProduct[existProduct].currentQuantities = +currentQuantities;
+          toast.success("Thêm sản phẩm thành công");
+        } else {
+          parseProduct.push(productQuantity);
+          toast.success("Thêm sản phẩm thành công");
+        }
+        localStorage.setItem("cart", JSON.stringify(parseProduct));
+      } else {
+        localStorage.setItem("cart", JSON.stringify([productQuantity]));
+        toast.success("Thêm sản phẩm thành công");
+      }
     } else {
-      localStorage.setItem("cart", JSON.stringify([productQuantity]));
-      toast.success("Thêm sản phẩm thành công");
+      localStorage.setItem("historyPath", location.pathname);
+      navigate(config.routes.login);
     }
   };
 
@@ -533,7 +551,12 @@ const Detail: React.FC = () => {
       <Box sx={{ mt: 2 }}>
         <Divider sx={{ borderBottomWidth: "5px", margin: "20px 0" }} />
         <Box>
-          <Typography variant="h5" sx={{margin: "10px 0", fontWeight: "bold"}}>Thông số: {product?.name}</Typography>
+          <Typography
+            variant="h5"
+            sx={{ margin: "10px 0", fontWeight: "bold" }}
+          >
+            Thông số: {product?.name}
+          </Typography>
         </Box>
         {product?.specifications.map((item, index) => (
           <Box
