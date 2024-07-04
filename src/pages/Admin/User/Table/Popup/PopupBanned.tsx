@@ -60,7 +60,7 @@ const ModaBanned: React.FC<ModalUser> = ({
   };
   return (
     <Modal
-      title="Hạng Mức"
+      title="Trạng Thái"
       open={open}
       onOk={handleCLose}
       onCancel={handleCLose}

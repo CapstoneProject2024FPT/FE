@@ -13,12 +13,9 @@ import * as Yup from "yup";
 import { LoadingButton } from "@mui/lab";
 import { Card, Stack } from "@mui/material";
 import { toast } from "react-toastify";
-import {
-  RoleType,
-  staffProps,
-  userModel,
-} from "../../../../../models/UserData";
+import { staffProps, userModel } from "../../../../../models/UserData";
 import { ApiAccount } from "../../../../../api/services/apiAccount";
+import { RoleData } from "../../RoleData";
 
 interface ModalUser {
   UserData: userModel | staffProps | undefined;
@@ -31,25 +28,6 @@ interface changeProps {
   fullName: string;
   role: string;
 }
-
-const RoleData = [
-  {
-    id: RoleType.USER,
-    name: "Người dùng",
-  },
-  {
-    id: RoleType.SALE,
-    name: "Nhân viên bán hàng",
-  },
-  {
-    id: RoleType.TECHNICAL,
-    name: "Nhân viên kĩ thuật",
-  },
-  {
-    id: RoleType.MANAGER,
-    name: "Quản lí",
-  },
-];
 const ModalChangeRole: React.FC<ModalUser> = ({
   UserData,
   open,
@@ -112,9 +90,9 @@ const ModalChangeRole: React.FC<ModalUser> = ({
       <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
         <Card sx={{ p: 3 }}>
           <Stack spacing={3}>
-            <RHFTextField name="fullName" label="Tên Loại Máy" autoFocus />
-            <RHFSelect name="role" label="Vị trí">
-              {RoleData.map((role) => (
+            <RHFTextField name="fullName" label="Tên" autoFocus />
+            <RHFSelect name="role" label="Chức vụ">
+              {RoleData?.map((role) => (
                 <option key={role.id} value={role.id}>
                   {role.name}
                 </option>

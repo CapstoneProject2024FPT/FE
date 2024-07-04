@@ -1,5 +1,5 @@
 import { axiosPublic } from "../axiosInstance";
-import { USER_BY_ROLE, USER_ID } from "../pathApiName";
+import { REGISTER, USER_BY_ROLE, USER_ID } from "../pathApiName";
 import { useState } from "react";
 import axios from "axios";
 
@@ -107,5 +107,34 @@ export const ApiAccount = () => {
     }
   };
 
-  return { loading, apiGetUserByRole, apiBanned, apiUnbanned, apiUpdateRole };
+  interface AddModal {
+    fullName: string;
+    password: string;
+    username: string;
+    phoneNumber: string;
+    email: string;
+    role: string;
+  }
+
+  const apiCreateEmployee = async (registerData: AddModal) => {
+    try {
+      const response = await axiosPublic.post(REGISTER, registerData);
+      return response;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+      if (axios.isAxiosError(error) && error.response) {
+        return error.response.data;
+      } else {
+        return { statusCode: 500, Error: "Internal Server Error" };
+      }
+    }
+  };
+  return {
+    loading,
+    apiGetUserByRole,
+    apiBanned,
+    apiUnbanned,
+    apiUpdateRole,
+    apiCreateEmployee,
+  };
 };

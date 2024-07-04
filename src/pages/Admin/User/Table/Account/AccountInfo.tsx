@@ -3,13 +3,14 @@ import Grid from "@mui/material/Unstable_Grid2";
 import { styled } from "@mui/material/styles";
 import { Box, TextField, Typography } from "@mui/material";
 import { CutomerApi } from "../../../../../api/services/apiUser";
-import { RoleType, staffProps } from "../../../../../models/UserData";
+import { staffProps } from "../../../../../models/UserData";
 import styles from "./userProfile.module.scss";
 import classNames from "classnames/bind";
 import { useParams } from "react-router-dom";
 import { Button } from "antd";
 import ModalChangeRole from "../Popup/PopupChangeRole";
 import { toast } from "react-toastify";
+import { RoleData } from "../../RoleData";
 
 const cx = classNames.bind(styles);
 
@@ -55,38 +56,20 @@ const AccountInfo: React.FC = () => {
   }, []);
 
   const onSuccess = () => {
-    toast.success("Cập nhật vị trí thành công");
+    toast.success("Cập nhật chức vụ thành công");
     handleClose();
     fetchUserProfile();
   };
 
-  const RoleData = [
-    {
-      id: RoleType.USER,
-      name: "Người dùng",
-    },
-    {
-      id: RoleType.SALE,
-      name: "Nhân viên bán hàng",
-    },
-    {
-      id: RoleType.TECHNICAL,
-      name: "Nhân viên kĩ thuật",
-    },
-    {
-      id: RoleType.MANAGER,
-      name: "Quản lí",
-    },
-  ];
   const defaultRole = "";
 
   const RoleName = userProfile?.role
-    ? RoleData.find((role) => role.id === userProfile?.role)?.name
+    ? RoleData?.find((role) => role.id === userProfile?.role)?.name
     : defaultRole;
 
   return (
     <>
-      <Button onClick={handleOpenChangeRole}>Cập nhật vị trí</Button>
+      <Button onClick={handleOpenChangeRole}>Cập nhật chức vụ</Button>
       <FormGrid xs={12}>
         <Box
           sx={{
@@ -104,7 +87,7 @@ const AccountInfo: React.FC = () => {
             />
           </div>
           <Box sx={{ mt: 2 }}>
-            <LabelStyle>Vị Trí: {RoleName}</LabelStyle>
+            <LabelStyle>Chức vụ: {RoleName}</LabelStyle>
           </Box>
         </Box>
 

@@ -2,13 +2,16 @@ import React, { useEffect, useState } from "react";
 import type { MenuProps } from "antd";
 import type { TableProps } from "antd";
 import { DownOutlined } from "@ant-design/icons";
-import { Dropdown, Space, Table, Input } from "antd";
+import { Dropdown, Space, Table, Input, Button } from "antd";
 import { ApiAccount } from "../../../../../api/services/apiAccount";
 import { RoleType, staffProps } from "../../../../../models/UserData";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import config from "../../../../../configs";
 import ModaBanned from "../Popup/PopupBanned";
+import { Stack } from "@mui/material";
+import { PlusOutlined } from "@ant-design/icons";
+import ModalAddEmployee from "../Popup/PopupAddEmployee";
 
 type ColumnsType<T> = TableProps<T>["columns"];
 const { Search } = Input;
@@ -27,7 +30,7 @@ const ManagerData: React.FC = () => {
   const [selectedData, setSelectedData] = useState<staffProps | null>(null);
   const [open, setOpen] = useState<boolean>(false);
   const { loading, apiGetUserByRole } = ApiAccount();
-
+  const [openAdd, setOpenAdd] = useState<boolean>(false);
   // Function to handle action click
   const handleActionClick = (record: staffProps) => {
     setOpen(!open);
@@ -38,6 +41,18 @@ const ManagerData: React.FC = () => {
     setOpen(!open);
   };
 
+  const handleOpenAdd = () => {
+    setOpenAdd(!openAdd);
+  };
+  const handleCloseOpenAdd = () => {
+    setOpenAdd(!openAdd);
+  };
+
+  const onSuccessAdd = () => {
+    toast.success("Thêm nhân viên thành công");
+    handleCLose();
+    fetchAccountUser();
+  };
   const handleNavigate = (record: staffProps) => {
     navigate(config.adminRoutes.accountDetail.replace(":id", record.id));
   };
@@ -96,7 +111,7 @@ const ManagerData: React.FC = () => {
     },
     {
       key: "2",
-      label: "Cấm",
+      label: "Chỉnh Trạng Thái",
     },
   ];
   const columns: ColumnsType<staffProps> = [
@@ -107,7 +122,7 @@ const ManagerData: React.FC = () => {
       width: "20%",
     },
     {
-      title: "Vị trí",
+      title: "Chức vụ",
       dataIndex: "role",
       width: "20%",
       render: (role) => {
@@ -177,11 +192,22 @@ const ManagerData: React.FC = () => {
 
   return (
     <>
-      <Search
-        placeholder="Nhập Từ khoá"
-        onChange={() => {}} // Update search value on change
-        style={{ width: 200, marginBottom: 16 }}
-      />
+      <Stack
+        display="flex"
+        direction="row"
+        sx={{
+          justifyContent: "space-between",
+        }}
+      >
+        <Search
+          placeholder="Nhập Từ khoá"
+          onChange={() => {}} // Update search value on change
+          style={{ width: 200, marginBottom: 16 }}
+        />
+        <Button icon={<PlusOutlined />} onClick={handleOpenAdd}>
+          Thêm mới Quản lí
+        </Button>
+      </Stack>
       <Table
         bordered
         columns={columns}
@@ -198,6 +224,14 @@ const ManagerData: React.FC = () => {
           open={open}
           handleCLose={handleCLose}
           onSuccess={onSuccess}
+        />
+      )}
+      {openAdd && (
+        <ModalAddEmployee
+          handleClose={handleCloseOpenAdd}
+          onUpdateSuccess={onSuccessAdd}
+          open={openAdd}
+          role={RoleType.MANAGER}
         />
       )}
     </>

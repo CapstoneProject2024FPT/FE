@@ -1,5 +1,5 @@
 import { axiosPublic } from "../axiosInstance";
-import { NEWS, NEWS_ID } from "../pathApiName";
+import { NEWS_ADMIN, NEWS_HOME, NEWS_ID } from "../pathApiName";
 import { useState } from "react";
 import axios from "axios";
 import { NewPostFormADDValues, NewUpdateFormValues } from "../../models/blog";
@@ -10,7 +10,7 @@ export const ApiNews = () => {
   const apiPostNews = async (params: NewPostFormADDValues) => {
     setLoading(true);
     try {
-      const response = await axiosPublic.post(NEWS, params);
+      const response = await axiosPublic.post(NEWS_ADMIN, params);
       return response;
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
@@ -27,7 +27,7 @@ export const ApiNews = () => {
   const apiGetNews = async () => {
     setLoading(true);
     try {
-      const response = await axiosPublic.get(NEWS);
+      const response = await axiosPublic.get(NEWS_ADMIN);
       return response;
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
@@ -129,7 +129,7 @@ export const ApiNews = () => {
   const apiGetNewsHomePage = async (params: newsHome) => {
     setLoading(true);
     try {
-      const response = await axiosPublic.get(NEWS, { params });
+      const response = await axiosPublic.get(NEWS_HOME, { params });
       return response;
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {

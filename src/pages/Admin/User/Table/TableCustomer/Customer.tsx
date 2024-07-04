@@ -3,12 +3,12 @@ import type { MenuProps } from "antd";
 import type { TableProps } from "antd";
 import { DownOutlined } from "@ant-design/icons";
 import { Dropdown, Space, Table, Input } from "antd";
-import ModalUserPopup from "./PopupCustomer/popupDetailUser";
 import { ApiAccount } from "../../../../../api/services/apiAccount";
 import { RoleType, userModel } from "../../../../../models/UserData";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import config from "../../../../../configs";
+import ModaBanned from "../Popup/PopupBanned";
 
 type ColumnsType<T> = TableProps<T>["columns"];
 const { Search } = Input;
@@ -83,6 +83,12 @@ const CustomerData: React.FC = () => {
   //   setQuery(e.target.value);
   // };
 
+  const onSuccess = () => {
+    handleCLose();
+    toast.success("Cập nhật trạng thái thành công");
+    fetchAccountUser();
+  };
+
   const items: MenuProps["items"] = [
     {
       key: "1",
@@ -90,7 +96,7 @@ const CustomerData: React.FC = () => {
     },
     {
       key: "2",
-      label: "Cấm",
+      label: "Chỉnh Trạng Thái",
     },
   ];
   const columns: ColumnsType<userModel> = [
@@ -101,7 +107,7 @@ const CustomerData: React.FC = () => {
       width: "20%",
     },
     {
-      title: "Vị trí",
+      title: "Chức vụ",
       dataIndex: "role",
       width: "20%",
       render: (role) => {
@@ -194,10 +200,11 @@ const CustomerData: React.FC = () => {
         onChange={handleTableChange}
       />
       {open && (
-        <ModalUserPopup
-          userData={selectedData}
-          handleClose={handleCLose}
+        <ModaBanned
+          UserData={selectedData}
+          handleCLose={handleCLose}
           open={open}
+          onSuccess={onSuccess}
         />
       )}
     </>

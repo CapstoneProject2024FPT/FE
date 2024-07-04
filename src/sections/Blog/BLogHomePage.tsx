@@ -28,7 +28,7 @@ export default function BlogHomePage({ posts, loading }: Props) {
         },
       }}
     >
-      {(loading ? [...Array(4)] : posts).map((post, index) =>
+      {(loading ? [...Array(4)] : posts)?.map((post, index) =>
         post ? (
           <BlogPostCard post={post} key={post.id} />
         ) : (
