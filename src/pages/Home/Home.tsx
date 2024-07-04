@@ -11,7 +11,8 @@ import { MachineryApi } from "../../api/services/apiMachinery";
 import { ApiNews } from "../../api/services/apiNews";
 
 const Home: React.FC = () => {
-  const { apiGetMachineryPriority, loading, apiGetMachine } = MachineryApi();
+  const { apiGetMachineryPriority, loading, apiGetMachineAtHome } =
+    MachineryApi();
   const { apiGetNewsHomePage } = ApiNews();
 
   const [productPriority, setProductPriority] = useState<Product[]>([]);
@@ -20,24 +21,29 @@ const Home: React.FC = () => {
 
   const fetchProductPriority = async () => {
     try {
-      const params = {
+      const paramsNews = {
         status: "Active",
+        size: 4,
+      };
+      const paramsMachine = {
+        status: "Available",
+        size: 4,
       };
       const [machineryPriorityResult, listResult, listNewsResult] =
         await Promise.allSettled([
           apiGetMachineryPriority(),
-          apiGetMachine("Available"),
-          apiGetNewsHomePage(params),
+          apiGetMachineAtHome(paramsMachine),
+          apiGetNewsHomePage(paramsNews),
         ]);
 
       if (machineryPriorityResult.status === "fulfilled") {
-        setProductPriority(machineryPriorityResult.value.data);
+        setProductPriority(machineryPriorityResult.value.data.items);
       } else {
         console.error(machineryPriorityResult.reason);
       }
 
       if (listResult.status === "fulfilled") {
-        setListMachine(listResult.value.data);
+        setListMachine(listResult.value.data.items);
       } else {
         console.error(listResult.reason);
       }
