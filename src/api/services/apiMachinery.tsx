@@ -2,6 +2,7 @@ import { axiosPublic } from "../axiosInstance";
 import {
   ADD_MACHINERY,
   GET_MACHINERY,
+  MACHINERY,
   MACHINERY_HOME_PRIORITY,
   MACHINERY_ID,
   MACHINERY_LIST,
@@ -206,7 +207,7 @@ export const MachineryApi = () => {
   const apiGetMachineAtHome = async (params: machineAtHome) => {
     setLoading(true);
     try {
-      const response = await axiosPublic.get(MACHINERY_LIST, { params });
+      const response = await axiosPublic.get(MACHINERY, { params });
       return response;
     } catch (error) {
       if (axios.isAxiosError(error) && error.response) {
