@@ -51,7 +51,7 @@ const StaffTechnical: React.FC = () => {
 
   const onSuccessAdd = () => {
     toast.success("Thêm nhân viên thành công");
-    handleCLose();
+    handleCloseOpenAdd();
     fetchAccountUser();
   };
   const handleNavigate = (record: staffProps) => {
@@ -127,8 +127,8 @@ const StaffTechnical: React.FC = () => {
       dataIndex: "role",
       width: "20%",
       render: (role) => {
-        if (role === RoleType.MANAGER) {
-          return "Quản lí";
+        if (role === RoleType.TECHNICAL) {
+          return "Nhân viên kĩ thuật";
         }
       },
     },
