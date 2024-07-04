@@ -10,7 +10,7 @@ export const ApiNews = () => {
   const apiPostNews = async (params: NewPostFormADDValues) => {
     setLoading(true);
     try {
-      const response = await axiosPublic.post(NEWS_ADMIN, params);
+      const response = await axiosPublic.post(NEWS_HOME, params);
       return response;
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
@@ -98,12 +98,12 @@ export const ApiNews = () => {
     }
   };
 
-  interface ableNews {
+  interface ableNewsAndType {
     type: string;
     status: string;
     newsCategoryId: string;
   }
-  const apiAbleNews = async (id: string, params: ableNews) => {
+  const apiAbleAndTypeNews = async (id: string, params: ableNewsAndType) => {
     setLoading(true);
     try {
       const response = await axiosPublic.put(
@@ -150,7 +150,7 @@ export const ApiNews = () => {
     apiGetNewsDetail,
     apiUpdateNewsDetail,
     apiDisableNews,
-    apiAbleNews,
+    apiAbleAndTypeNews,
     apiGetNewsHomePage,
   };
 };
