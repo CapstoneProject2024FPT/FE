@@ -78,9 +78,17 @@ const Detail: React.FC = () => {
       const productQuantity = { ...product, currentQuantities, id: params.id };
       if (existCart) {
         const parseProduct = JSON.parse(existCart);
-        parseProduct.push(productQuantity);
+        const existProduct = parseProduct.findIndex(
+          (p: { id: string | undefined }) => p.id === productQuantity.id
+        );
+        if (existProduct !== -1) {
+          parseProduct[existProduct].currentQuantities = +currentQuantities;
+          toast.success("Thêm sản phẩm thành công");
+        } else {
+          parseProduct.push(productQuantity);
+          toast.success("Thêm sản phẩm thành công");
+        }
         localStorage.setItem("cart", JSON.stringify(parseProduct));
-        toast.success("Thêm sản phẩm thành công");
       } else {
         localStorage.setItem("cart", JSON.stringify([productQuantity]));
         toast.success("Thêm sản phẩm thành công");
