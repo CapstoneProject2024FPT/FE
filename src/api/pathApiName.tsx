@@ -4,12 +4,12 @@ export const REGISTER = "/users";
 export const CHANGE_PASSWORD = "/users/:id/password";
 
 //Machinery
-export const GET_MACHINERY = "/machinery";
+export const GET_MACHINERY = "/machinery/noPaginate";
 export const ADD_MACHINERY = "/Machinery";
-export const MACHINERY_LIST = "machinery";
+export const MACHINERY_LIST = "machinery/noPaginate";
 export const MACHINERY_ID = "/Machinery/:id";
 export const MACHINERY_DETAIL = "Machinery/Detail";
-export const MACHINERY_HOME_PRIORITY = "Machinery?Priority=1";
+export const MACHINERY_HOME_PRIORITY = "Machinery?Priority=1&size=4";
 
 //Category
 export const GET_CATEGORY = "categories?status=Active";

@@ -22,6 +22,7 @@ const Home: React.FC = () => {
     try {
       const params = {
         status: "Active",
+        size: 4,
       };
       const [machineryPriorityResult, listResult, listNewsResult] =
         await Promise.allSettled([
@@ -31,7 +32,7 @@ const Home: React.FC = () => {
         ]);
 
       if (machineryPriorityResult.status === "fulfilled") {
-        setProductPriority(machineryPriorityResult.value.data);
+        setProductPriority(machineryPriorityResult.value.data.items);
       } else {
         console.error(machineryPriorityResult.reason);
       }
@@ -43,7 +44,7 @@ const Home: React.FC = () => {
       }
 
       if (listNewsResult.status === "fulfilled") {
-        setListNews(listNewsResult.value.data);
+        setListNews(listNewsResult.value.data.items);
       } else {
         console.error(listNewsResult.reason);
       }
