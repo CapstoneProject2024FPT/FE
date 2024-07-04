@@ -6,7 +6,7 @@ export const CHANGE_PASSWORD = "/users/:id/password";
 //Machinery
 export const GET_MACHINERY = "/machinery/noPaginate";
 export const ADD_MACHINERY = "/Machinery";
-export const MACHINERY_LIST = "machinery/noPaginate";
+export const MACHINERY_LIST = "Machinery";
 export const MACHINERY_ID = "/Machinery/:id";
 export const MACHINERY_DETAIL = "Machinery/Detail";
 export const MACHINERY_HOME_PRIORITY = "Machinery?Priority=1&size=4";
