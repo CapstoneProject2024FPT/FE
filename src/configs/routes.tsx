@@ -23,6 +23,7 @@ export const adminRoutes = {
   dashboard: "/dashboard",
   user: "/dashboard/user",
   userDetail: "/dashboard/userDetail/:id",
+  accountDetail: "/dashboard/accountDetail/:id",
   blogs: "/dashboard/news",
   blog: `/dashboard/news/${suffix.detailId}`,
   createNew: "/dashboard/create/news",

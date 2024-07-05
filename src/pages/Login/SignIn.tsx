@@ -20,6 +20,7 @@ const cx = classNames.bind(styles);
 
 const SignInForm: React.FC = () => {
   const navigate = useNavigate();
+  const returnUrl = localStorage.getItem("historyPath");
   const { setAuthUser } = useAuthContext();
   const { apiLogin } = AuthApi();
   const LoginSchema = Yup.object().shape({
@@ -28,6 +29,7 @@ const SignInForm: React.FC = () => {
   });
 
   const role = ["Sale", "Admin", "Manager"];
+
   const defaultValues: UserData = {
     username: "",
     password: "",
@@ -47,13 +49,16 @@ const SignInForm: React.FC = () => {
   const onSubmit = async (data: UserData) => {
     try {
       const response = await apiLogin(data);
-
       if (response.status === 200) {
         localStorageFunc.setLocalStorage("loginInfo", JSON.stringify(response));
         setAuthUser(response.data);
         toast.success("Đăng nhập thành công");
         if (response?.data.role === "User") {
-          navigate(config.routes.home);
+          if (returnUrl) {
+            navigate(returnUrl);
+          } else {
+            navigate(config.routes.home);
+          }
         } else if (role.includes(response?.data?.role)) {
           navigate(config.adminRoutes.dashboard);
         }

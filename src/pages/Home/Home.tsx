@@ -220,7 +220,8 @@ const Home: React.FC = () => {
         >
           Xem tất cả
         </Button>
-        <BlogHomePage posts={listNews} loading={!listNews.length} />
+        {/* <BlogHomePage posts={listNews} loading={!listNews.length} /> */}
+        <BlogHomePage posts={listNews} loading={loading} />
       </Box>
     </div>
   );

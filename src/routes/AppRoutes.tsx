@@ -32,6 +32,7 @@ import AccountDetailCustomer from "../pages/Admin/User/Table/TableCustomer/Custo
 import ChangePassword from "../pages/UserProfile/ChangePassword";
 import NewsCategories from "../pages/Admin/NewsCategories/NewsCategories";
 import BlogPostDetail from "../pages/Admin/Blog/BlogPostDetail";
+import AccountDetail from "../pages/Admin/User/Table/AccountDetail";
 
 const AppRoute: React.FC = () => {
   return (
@@ -112,6 +113,12 @@ const AppRoute: React.FC = () => {
           path={config.adminRoutes.userDetail}
           element={<AccountDetailCustomer />}
         />
+        <Route
+          key="accountDetail"
+          path={config.adminRoutes.accountDetail}
+          element={<AccountDetail />}
+        />
+
         {/* news */}
         <Route
           key="new"
