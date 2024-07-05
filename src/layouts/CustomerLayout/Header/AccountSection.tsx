@@ -42,6 +42,7 @@ const AccountSection = () => {
 
   const handleLogout = () => {
     localStorage.removeItem("loginInfo");
+    localStorage.removeItem("historyPath");
     setAuthUser(null);
     setTimeout(() => {
       navigate(config.routes.home);

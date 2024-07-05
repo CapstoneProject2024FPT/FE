@@ -1,15 +1,16 @@
 //auth
 export const LOGIN = "/auth/login";
-export const REGISTER = "/users";
+export const REGISTER = "register/users";
 export const CHANGE_PASSWORD = "/users/:id/password";
 
 //Machinery
-export const GET_MACHINERY = "/machinery";
+export const GET_MACHINERY = "/machinery/noPaginate";
 export const ADD_MACHINERY = "/Machinery";
-export const MACHINERY_LIST = "machinery";
+export const MACHINERY = "/Machinery";
+export const MACHINERY_LIST = "Machinery/noPaginate";
 export const MACHINERY_ID = "/Machinery/:id";
 export const MACHINERY_DETAIL = "Machinery/Detail";
-export const MACHINERY_HOME_PRIORITY = "Machinery?Priority=1";
+export const MACHINERY_HOME_PRIORITY = "Machinery?Priority=1&size=4";
 
 //Category
 export const GET_CATEGORY = "categories?status=Active";
@@ -45,10 +46,15 @@ export const RANK_ID = "rank/:id";
 
 //accont
 export const USER_BY_ROLE = "users";
-
+export const USER_ID = "users/:id";
 //news
-export const NEWS = "news";
+export const NEWS_HOME = "news";
 export const NEWS_ID = "news/:id";
+export const NEWS_ADMIN = "news/noPaginate";
+
 //newsCategories
 export const NEWS_CATEGORIES = "/newsCategory";
 export const NEWS_CATEGORIES_ID = "/newsCategory/:id";
+
+//create
+export const STAFF = "register/staff";

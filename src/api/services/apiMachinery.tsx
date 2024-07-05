@@ -2,6 +2,7 @@ import { axiosPublic } from "../axiosInstance";
 import {
   ADD_MACHINERY,
   GET_MACHINERY,
+  MACHINERY,
   MACHINERY_HOME_PRIORITY,
   MACHINERY_ID,
   MACHINERY_LIST,
@@ -199,6 +200,25 @@ export const MachineryApi = () => {
     }
   };
 
+  interface machineAtHome {
+    status: string;
+    size: number;
+  }
+  const apiGetMachineAtHome = async (params: machineAtHome) => {
+    setLoading(true);
+    try {
+      const response = await axiosPublic.get(MACHINERY, { params });
+      return response;
+    } catch (error) {
+      if (axios.isAxiosError(error) && error.response) {
+        return error.response.data;
+      } else {
+        return { statusCode: 500, Error: "Gặp vấn đề quá trình lấy dư liệu" };
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
   return {
     loading,
     apiGetList,
@@ -210,5 +230,6 @@ export const MachineryApi = () => {
     apiUpdateMachineryDetail,
     apiGetMachineryID,
     apiGetMachineryPriority,
+    apiGetMachineAtHome,
   };
 };

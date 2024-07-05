@@ -24,15 +24,19 @@ export default function AccountGeneral() {
   const [profile, setProfile] = useState<staffProps>();
   const [open, setOpen] = useState<boolean>(false);
 
-  const fetchProfile = async () => {
-    const response = await apiUserProfile(
-      "7c2e8a5b-7c1c-4412-91db-f35b860078f7"
-    );
+  const loginInfoString = localStorage.getItem("loginInfo");
+  const auth = loginInfoString ? JSON.parse(loginInfoString) : null;
 
-    if (response.status === 200) {
-      setProfile(response.data);
-    } else {
-      toast.error(response.Error);
+  const fetchProfile = async () => {
+    const id = auth?.data.id;
+    if (id) {
+      const response = await apiUserProfile(id);
+
+      if (response.status === 200) {
+        setProfile(response.data);
+      } else {
+        toast.error(response.Error);
+      }
     }
   };
 

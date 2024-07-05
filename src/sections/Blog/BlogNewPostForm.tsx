@@ -123,6 +123,7 @@ export default function BlogNewPostForm() {
         })),
       };
       delete transformedData.imageURL;
+
       const response = await apiPostNews(transformedData);
       if (response.status === 200) {
         toast.success("Thêm tin tức mới thành công");

@@ -14,19 +14,24 @@ interface ModalNews {
   onUpdateSuccess: (text: string) => void;
 }
 
-const BlogAbleModal: React.FC<ModalNews> = ({
+const BlogHotModal: React.FC<ModalNews> = ({
   NewsData,
   open,
   handleCLose,
   onUpdateSuccess,
 }) => {
-  const { loading, apiAbleAndTypeNews, apiDisableNews } = ApiNews();
+  const { loading, apiAbleAndTypeNews } = ApiNews();
 
   const onSubmit = async () => {
     try {
       if (NewsData) {
-        if (NewsData.status === "Active") {
-          const response = await apiDisableNews(NewsData?.id);
+        if (NewsData.type === "Hot") {
+          const params = {
+            type: "Normal",
+            newsCategoryId: NewsData?.newsCategory.newsCategoryId,
+            status: NewsData.status,
+          };
+          const response = await apiAbleAndTypeNews(NewsData?.id, params);
           if (response.status === 200) {
             if (onUpdateSuccess) {
               onUpdateSuccess("Ẩn tin tức thành công");
@@ -37,9 +42,9 @@ const BlogAbleModal: React.FC<ModalNews> = ({
           }
         } else {
           const params = {
-            type: NewsData.type,
+            type: "Hot",
             newsCategoryId: NewsData?.newsCategory.newsCategoryId,
-            status: "Active",
+            status: NewsData.status,
           };
           const response = await apiAbleAndTypeNews(NewsData?.id, params);
           if (response.status === 200) {
@@ -77,17 +82,17 @@ const BlogAbleModal: React.FC<ModalNews> = ({
         </Button>,
       ]}
     >
-      {NewsData?.status === "Active" ? (
+      {NewsData?.type === "Normal" ? (
         <Typography.Text>
-          Bạn có muốn ẩn tin tức có tiêu đề: {NewsData?.title}
+          Bạn có muốn chỉnh tin tức có tiêu đề: {NewsData?.title} thành tin nóng
         </Typography.Text>
       ) : (
         <Typography.Text>
-          Bạn có muốn hiển thị lại tin tức có tiêu đề: {NewsData?.title}
+          Bạn có muốn chỉnh tin tức có tiêu đề: {NewsData?.title} về bình thường
         </Typography.Text>
       )}
     </Modal>
   );
 };
 
-export default BlogAbleModal;
+export default BlogHotModal;
