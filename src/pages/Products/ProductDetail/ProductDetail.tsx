@@ -61,11 +61,10 @@ const Detail: React.FC = () => {
   };
 
   useEffect(() => {
-    return () => {
-      fetchProducts();
-      //scroll to top
-      window.scrollTo(0, 0);
-    };
+    fetchProducts();
+    //scroll to top
+    window.scrollTo(0, 0);
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
