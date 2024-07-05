@@ -134,7 +134,7 @@ export const MachineryApi = () => {
     setLoading(true);
     try {
       const response = await axiosPublic.get(MACHINERY_ID.replace(":id", id));
-      return response.data;
+      return response;
     } catch (error) {
       console.error(error);
       throw new Error("Login failed");
