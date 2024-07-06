@@ -1,3 +1,4 @@
+import React from "react";
 import { Box, Card, Typography, CardContent, Stack } from "@mui/material";
 import { formatDateFunc } from "../../../utils/fn";
 import { PostGetProps } from "../../../models/blog";
@@ -13,7 +14,7 @@ type Props = {
 };
 
 export default function NewsCard({ post }: Props) {
-  const { cover, title, createDate, id } = post;
+  const { cover, title, createDate, id, description } = post;
   return (
     <Link
       to={config.routes.newsDetail.replace(":id", id)}
@@ -22,10 +23,9 @@ export default function NewsCard({ post }: Props) {
       <Card
         sx={{
           display: "flex",
-          flexDirection: "row",
+          flexDirection: { xs: "column", sm: "row" }, // Flex direction for smaller screens
           alignItems: "center",
-          justifyContent: "space-around",
-          gap: "20px",
+          justifyContent: "space-between",
           borderRadius: "5px",
           color: "black",
           transition: "transform 0.2s ease-in-out",
@@ -41,16 +41,18 @@ export default function NewsCard({ post }: Props) {
           sx={{
             flex: "1",
             position: "relative",
+            width: { xs: "100%"}, // Full width on smaller screens
           }}
         >
           <Image
             alt="cover"
             src={cover}
             sx={{
-              width: "100% !important",
-              height: "250px",
+              width: { xs: "100%", sm: "250px !important" }, // Responsive width
+              height: "auto", // Maintain aspect ratio
               objectFit: "contain",
               padding: "20px",
+            margin: "auto"
             }}
           />
         </Box>
@@ -59,7 +61,7 @@ export default function NewsCard({ post }: Props) {
             flex: "2",
           }}
         >
-          <PostContent title={title} createdAt={createDate} />
+          <PostContent title={title} createdAt={createDate} description={description} />
         </Box>
       </Card>
     </Link>
@@ -70,15 +72,15 @@ type PostContentProps = {
   title: string;
   createdAt: Date;
   index?: number;
+  description?: string;
 };
 
-export function PostContent({ createdAt, index, title }: PostContentProps) {
+export function PostContent({ createdAt, index, title, description }: PostContentProps) {
   const latestPostLarge = index === 0;
   const latestPostSmall = index === 1 || index === 2;
   return (
     <CardContent
       sx={{
-        pt: 4.5,
         width: 1,
         ...((latestPostLarge || latestPostSmall) && {
           pt: 0,
@@ -126,6 +128,21 @@ export function PostContent({ createdAt, index, title }: PostContentProps) {
         }}
       >
         {title}
+      </Typography>
+      <Typography
+        sx={{
+          color: "black",
+          display: "-webkit-box",
+          WebkitBoxOrient: "vertical",
+          overflow: "hidden",
+          WebkitLineClamp: 4, // Change this value to the number of lines you want to show
+          ...((latestPostLarge || latestPostSmall) && {
+            opacity: 0.64,
+            color: "common.white",
+          }),
+        }}
+      >
+        {description}
       </Typography>
       <Stack
         flexWrap="wrap"

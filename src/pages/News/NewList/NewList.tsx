@@ -8,12 +8,16 @@ import { ApiNews } from "../../../api/services/apiNews";
 import { PostGetProps } from "../../../models/blog";
 import NewsCard from "./NewsCard";
 import NewsFilteredRow from "../../Filter/News/FilterNews";
+import { LogoutOutlined, RotateLeftOutlined } from "@mui/icons-material";
 
 const ListNews: React.FC = () => {
   const [listNews, setListNews] = useState<PostGetProps[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [resetFilters, setResetFilters] = useState(false); // State for resetting filters
+
   const { apiGetListNews } = ApiNews();
+
   const fetchListNews = async () => {
     try {
       const response = await apiGetListNews();
@@ -45,6 +49,12 @@ const ListNews: React.FC = () => {
     };
   }, []);
 
+  const handleResetFilters = () => {
+    setResetFilters(true); // Trigger reset
+    setListNews([]); // Optionally clear the news list
+    fetchListNews(); // Fetch the news list again if needed
+  };
+
   return (
     <Box
       sx={{
@@ -68,7 +78,7 @@ const ListNews: React.FC = () => {
           top: 0,
         }}
       >
-        <NewsFilteredRow setListNews={setListNews} />
+        <NewsFilteredRow setListNews={setListNews} resetFilters={resetFilters} setResetFilters={setResetFilters} />
       </Box>
 
       <Box sx={{ display: { xs: "block", md: "none" } }}>
@@ -101,11 +111,15 @@ const ListNews: React.FC = () => {
             sx={{
               width: "250px",
               padding: "20px",
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "space-between",
               boxShadow:
                 "rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px",
               borderRadius: "5px",
               height: "100%",
               overflowY: "auto",
+              zIndex: 1100, // Higher z-index for Drawer
               "&::-webkit-scrollbar": {
                 width: "8px",
               },
@@ -122,8 +136,62 @@ const ListNews: React.FC = () => {
               },
             }}
           >
-            {/* <ProductFilteredRow showNewsCategoryFilter={true} /> */}
-            <NewsFilteredRow setListNews={setListNews} />
+            {/* Filter content */}
+            <NewsFilteredRow setListNews={setListNews} resetFilters={resetFilters} setResetFilters={setResetFilters} />
+            <Box>
+              {isDrawerOpen && (
+                <Box sx={{ display: "flex", justifyContent: "space-around" }}>
+                  <Button
+                    variant="outlined"
+                    onClick={toggleDrawer(false)}
+                    sx={{
+                      backgroundColor: "white",
+                      borderRadius: "5px",
+                      "&:hover": {
+                        borderColor: "#1976d2",
+                        borderRadius: "5px",
+                        backgroundColor: "white",
+                      },
+                    }}
+                  >
+                    <LogoutOutlined
+                      sx={{
+                        transform: "scaleX(-1)",
+                        marginRight: "5px",
+                        "&:hover": {
+                          color: "#1976d2",
+                          backgroundColor: "white",
+                          borderRadius: "none",
+                        },
+                      }}
+                    />
+                  </Button>
+                  <Button
+                    variant="outlined"
+                    onClick={handleResetFilters} // Reset filters on click
+                    sx={{
+                      backgroundColor: "white",
+                      borderRadius: "5px",
+                      "&:hover": {
+                        borderColor: "#1976d2",
+                        borderRadius: "5px",
+                        backgroundColor: "white",
+                      },
+                    }}
+                  >
+                    <RotateLeftOutlined
+                      sx={{
+                        "&:hover": {
+                          color: "#1976d2",
+                          backgroundColor: "white",
+                          borderRadius: "none",
+                        },
+                      }}
+                    />
+                  </Button>
+                </Box>
+              )}
+            </Box>
           </Box>
         </Drawer>
       </Box>
@@ -152,9 +220,6 @@ const ListNews: React.FC = () => {
               Tin tức mới
             </Typography>
           </Box>
-          {/* <Box sx={{ width: "50%", textAlign: "right" }}>
-            <SortMenu />
-          </Box> */}
         </Box>
         {loading ? (
           <Skeleton />
@@ -166,7 +231,6 @@ const ListNews: React.FC = () => {
               justifyContent: "space-between",
               padding: "0 20px",
               gridTemplateColumns: {
-                xs: "repeat(3, 1fr)",
                 md: "1fr",
               },
             }}
