@@ -1,9 +1,9 @@
 import { create } from "zustand";
-import { addressUser } from "../pages/Cart/Billing/address";
+import { addressProps } from "../models/address";
 
 interface addressChoice {
-  address: addressUser | null;
-  setSelectedAddress: (address: addressUser) => void;
+  address: addressProps | null;
+  setSelectedAddress: (address: addressProps) => void;
 }
 
 export const useAddress = create<addressChoice>((set) => {
