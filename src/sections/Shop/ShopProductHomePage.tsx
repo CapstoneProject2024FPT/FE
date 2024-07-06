@@ -14,9 +14,6 @@ type Props = {
 };
 
 export default function ShopProductHomePage({ products, loading }: Props) {
-  const displayedProducts: (Product | undefined)[] = loading
-    ? Array(4).fill(undefined)
-    : products?.slice(0, 4);
   return (
     <Box
       sx={{
@@ -32,7 +29,7 @@ export default function ShopProductHomePage({ products, loading }: Props) {
         gap: 1,
       }}
     >
-      {displayedProducts?.map((product, index) =>
+      {(loading ? [...Array(4)] : products)?.map((product, index) =>
         product ? (
           <ProductCard key={product.id} product={product} />
         ) : (

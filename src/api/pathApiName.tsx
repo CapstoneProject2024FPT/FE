@@ -58,3 +58,9 @@ export const NEWS_CATEGORIES_ID = "/newsCategory/:id";
 
 //create
 export const STAFF = "register/staff";
+
+//address
+export const GET_CITY = "city";
+export const GET_DISTRICT = "district";
+export const GET_WARD = "ward";
+export const GET_ADDRESS = "address";
