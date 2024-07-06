@@ -20,9 +20,10 @@ export default function BlogHomePage({ posts, loading }: Props) {
   return (
     <Box
       sx={{
+        width: "100%",
         marginTop: "5px",
         display: "grid",
-        gap: 3,
+        gap: 1,
         gridTemplateColumns: {
           xs: "repeat(1, 1fr)",
           sm: "repeat(2, 1fr)",

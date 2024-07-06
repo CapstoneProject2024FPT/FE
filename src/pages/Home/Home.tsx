@@ -216,7 +216,7 @@ const Home: React.FC = () => {
             },
             marginBottom: "12px",
           }}
-          onClick={() => navigate(routes.productList)}
+          onClick={() => navigate(routes.news)}
         >
           Xem tất cả
         </Button>

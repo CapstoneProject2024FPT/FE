@@ -1,25 +1,24 @@
 import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
-import { MachineryApi } from "../../../api/services/apiMachinery";
-import { ProductAdmin } from "../../../models/products";
-import "./ProductList.scss";
+import "./NewList.scss";
 import { Box, Button, Drawer, Typography } from "@mui/material";
-import ProductCard from "../../../components/product-card/ProductCard";
-import ProductFilteredRow from "../../Filter/Products/FilterProducts";
-import SortMenu from "../../Sort/SortProducts";
 import { GridFilterListIcon } from "@mui/x-data-grid";
 import { Skeleton } from "antd";
+import { ApiNews } from "../../../api/services/apiNews";
+import { PostGetProps } from "../../../models/blog";
+import NewsCard from "./NewsCard";
+import NewsFilteredRow from "../../Filter/News/FilterNews";
 
-const ProductList: React.FC = () => {
-  const [products, setProducts] = useState<ProductAdmin[]>([]);
+const ListNews: React.FC = () => {
+  const [listNews, setListNews] = useState<PostGetProps[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-  const { apiGetMachine } = MachineryApi();
-  const fetchProducts = async () => {
+  const { apiGetListNews } = ApiNews();
+  const fetchListNews = async () => {
     try {
-      const apiResponse = await apiGetMachine("Available");
-      const productList = apiResponse.data;
-      setProducts(productList);
+      const response = await apiGetListNews();
+      const listNews = response.items;
+      setListNews(listNews);
       setLoading(false);
     } catch (error) {
       toast.error("lỗi");
@@ -27,7 +26,7 @@ const ProductList: React.FC = () => {
   };
 
   useEffect(() => {
-    fetchProducts();
+    fetchListNews();
   }, []);
 
   const toggleDrawer = (open: boolean) => () => {
@@ -69,8 +68,9 @@ const ProductList: React.FC = () => {
           top: 0,
         }}
       >
-        <ProductFilteredRow setProducts={setProducts}/>
+        <NewsFilteredRow setListNews={setListNews} />
       </Box>
+
       <Box sx={{ display: { xs: "block", md: "none" } }}>
         <Button
           variant="outlined"
@@ -92,7 +92,9 @@ const ProductList: React.FC = () => {
               },
             }}
           />
-          <Typography sx={{marginLeft: "4px"}} className="hide-text-on-small">Lọc</Typography>
+          <Typography sx={{ marginLeft: "4px" }} className="hide-text-on-small">
+            Lọc
+          </Typography>
         </Button>
         <Drawer anchor="left" open={isDrawerOpen} onClose={toggleDrawer(false)}>
           <Box
@@ -120,7 +122,8 @@ const ProductList: React.FC = () => {
               },
             }}
           >
-            <ProductFilteredRow setProducts={setProducts}/>
+            {/* <ProductFilteredRow showNewsCategoryFilter={true} /> */}
+            <NewsFilteredRow setListNews={setListNews} />
           </Box>
         </Drawer>
       </Box>
@@ -146,7 +149,7 @@ const ProductList: React.FC = () => {
                 fontWeight: "bold",
               }}
             >
-              Các loại máy
+              Tin tức mới
             </Typography>
           </Box>
           {/* <Box sx={{ width: "50%", textAlign: "right" }}>
@@ -159,15 +162,17 @@ const ProductList: React.FC = () => {
           <Box
             sx={{
               display: "grid",
-              gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))",
               gap: "25px",
               justifyContent: "space-between",
-              width: "100%%",
               padding: "0 20px",
+              gridTemplateColumns: {
+                xs: "repeat(3, 1fr)",
+                md: "1fr",
+              },
             }}
           >
-            {products?.map((product) => (
-              <ProductCard key={product.id} product={product} />
+            {listNews?.map((post) => (
+              <NewsCard key={post.id} post={post} />
             ))}
           </Box>
         )}
@@ -176,4 +181,4 @@ const ProductList: React.FC = () => {
   );
 };
 
-export default ProductList;
+export default ListNews;
