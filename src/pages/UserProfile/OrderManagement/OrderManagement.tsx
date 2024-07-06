@@ -67,7 +67,7 @@ const Row = (props: { row: OrderProps }) => {
                   <TableRow>
                     <TableCell>Tên sản phẩm</TableCell>
                     <TableCell>Số lượng</TableCell>
-                    <TableCell>Tổng tiền</TableCell>
+                    <TableCell>Giá sản phẩm</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
@@ -80,25 +80,7 @@ const Row = (props: { row: OrderProps }) => {
                   ))}
                 </TableBody>
               </Table>
-              <Typography variant="h6" gutterBottom component="div">
-                Thông tin người dùng
-              </Typography>
-              <Table size="small" aria-label="user-info">
-                <TableBody>
-                  <TableRow>
-                    <TableCell>ID người dùng</TableCell>
-                    <TableCell>{row.userInfo.userId}</TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell>Họ và tên</TableCell>
-                    <TableCell>{row.userInfo.fullName}</TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell>Vai trò</TableCell>
-                    <TableCell>{row.userInfo.role}</TableCell>
-                  </TableRow>
-                </TableBody>
-              </Table>
+
               <Typography variant="h6" gutterBottom component="div">
                 Thông tin bổ sung
               </Typography>
@@ -155,7 +137,7 @@ const OrderTable: React.FC = () => {
         Đơn hàng
       </Typography>
       <TableContainer component={Paper}>
-        <Table aria-label="collapsible table">
+        <Table aria-label="collapsible table" >
           <TableHead>
             <TableRow>
               <TableCell />
