@@ -4,6 +4,7 @@ export interface CheckOutProp {
   finalAmount: number;
   note: string;
   machineryList: machineDetail[];
+  addressId: string;
 }
 
 interface machineDetail {

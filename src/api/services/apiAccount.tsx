@@ -1,5 +1,5 @@
 import { axiosPublic } from "../axiosInstance";
-import { REGISTER, USER_BY_ROLE, USER_ID } from "../pathApiName";
+import { STAFF, USER_BY_ROLE, USER_ID } from "../pathApiName";
 import { useState } from "react";
 import axios from "axios";
 
@@ -118,7 +118,7 @@ export const ApiAccount = () => {
 
   const apiCreateEmployee = async (registerData: AddModal) => {
     try {
-      const response = await axiosPublic.post(REGISTER, registerData);
+      const response = await axiosPublic.post(STAFF, registerData);
       return response;
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {

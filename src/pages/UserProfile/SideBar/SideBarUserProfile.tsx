@@ -53,6 +53,16 @@ const SideBarUserProfile: React.FC = () => {
             </ListItemIcon>
             <ListItemText primary="Đổi mật khẩu" />
           </ListItemButton>
+          <ListItemButton component={Link} to={config.routes.userAddress}>
+            <ListItemIcon>
+              <Iconify
+                icon={"mdi:address-marker-outline"}
+                width={20}
+                height={20}
+              />
+            </ListItemIcon>
+            <ListItemText primary="Địa chỉ" />
+          </ListItemButton>
           <ListItemButton component={Link} to={config.routes.orderManagement}>
             <ListItemIcon>
               <CachedIcon />

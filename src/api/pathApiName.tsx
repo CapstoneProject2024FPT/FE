@@ -1,6 +1,6 @@
 //auth
 export const LOGIN = "/auth/login";
-export const REGISTER = "/users";
+export const REGISTER = "register/users";
 export const CHANGE_PASSWORD = "/users/:id/password";
 
 //Machinery
@@ -55,3 +55,12 @@ export const NEWS_ADMIN = "news/noPaginate";
 //newsCategories
 export const NEWS_CATEGORIES = "/newsCategory";
 export const NEWS_CATEGORIES_ID = "/newsCategory/:id";
+
+//create
+export const STAFF = "register/staff";
+
+//address
+export const GET_CITY = "city";
+export const GET_DISTRICT = "district";
+export const GET_WARD = "ward";
+export const GET_ADDRESS = "address";

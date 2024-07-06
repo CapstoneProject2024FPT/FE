@@ -50,7 +50,7 @@ const ManagerData: React.FC = () => {
 
   const onSuccessAdd = () => {
     toast.success("Thêm nhân viên thành công");
-    handleCLose();
+    handleCloseOpenAdd();
     fetchAccountUser();
   };
   const handleNavigate = (record: staffProps) => {

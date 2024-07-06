@@ -28,6 +28,7 @@ import { useCheckout } from "../../../zustand/useCheckout";
 import { CartItem } from "../../../models/cart";
 import { ApiCheckout } from "../../../api/services/apiCheckout";
 import { toast } from "react-toastify";
+import { useAddress } from "../../../zustand/useAddress";
 
 // ----------------------------------------------------------------------
 
@@ -59,6 +60,7 @@ const CheckoutPayment: React.FC<checkoutPaymentProps> = ({
   handleGoToStep,
 }) => {
   const { total } = useCheckout();
+  const { address } = useAddress();
   //api
   const { apiCheckout } = ApiCheckout();
   //user info
@@ -66,7 +68,7 @@ const CheckoutPayment: React.FC<checkoutPaymentProps> = ({
 
   const loginInfoString = loginInfo ? JSON.parse(loginInfo) : null;
 
-  const user = loginInfoString.data;
+  const user = loginInfoString?.data;
 
   //cart item
   const cart = localStorage.getItem("cart");
@@ -101,25 +103,30 @@ const CheckoutPayment: React.FC<checkoutPaymentProps> = ({
 
   const onSubmit = async () => {
     try {
-      const params = {
-        accountId: user.id,
-        totalAmount: total,
-        finalAmount: total,
-        note: note,
-        machineryList: machineList,
-      };
+      if (address && user) {
+        const params = {
+          accountId: user.id,
+          totalAmount: total,
+          finalAmount: total,
+          note: note,
+          machineryList: machineList,
+          addressId: address.id,
+        };
 
-      const response = await apiCheckout(params);
+        const response = await apiCheckout(params);
 
-      if (response.status === 200) {
-        toast.success("Tạo đơn hàng thành công");
-        handleNext();
-        sessionStorage.removeItem("checkoutTotal");
-        sessionStorage.removeItem("cart");
-      } else {
-        toast.error(response.Error);
+        if (response.status === 200) {
+          toast.success("Tạo đơn hàng thành công");
+          handleNext();
+          sessionStorage.removeItem("checkoutTotal");
+          localStorage.removeItem("cart");
+          sessionStorage.removeItem("address");
+        } else {
+          toast.error(response.Error);
+        }
       }
     } catch (error) {
+      toast.error("Xảy ra lỗi trong quá trình tạo đơn hàng");
       console.error(error);
     }
   };

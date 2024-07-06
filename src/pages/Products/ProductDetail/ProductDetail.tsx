@@ -32,7 +32,7 @@ import { useAuthContext } from "../../../context/AuthContext";
 import config from "../../../configs";
 
 const Detail: React.FC = () => {
-  const params = useParams();
+  const { id } = useParams<{ id: string }>();
   const [selectedImage, setSelectedImage] = useState<number>(0);
   const [currentQuantities, setCurrentQuantities] = useState<number>(1);
   const [isActive, setActive] = useState(false);
@@ -45,10 +45,13 @@ const Detail: React.FC = () => {
   const { authUser } = useAuthContext();
   const fetchProducts = async () => {
     try {
-      const id = params.id;
       if (id) {
-        const data = await apiGetMachineryID(id);
-        setProduct(data);
+        const response = await apiGetMachineryID(id);
+        if (response.status === 200) {
+          setProduct(response.data);
+        } else {
+          toast.error("Có lỗi trong quá trình lấy");
+        }
       } else {
         throw new Error("Loi");
       }
@@ -58,11 +61,10 @@ const Detail: React.FC = () => {
   };
 
   useEffect(() => {
-    return () => {
-      fetchProducts();
-      //scroll to top
-      window.scrollTo(0, 0);
-    };
+    fetchProducts();
+    //scroll to top
+    window.scrollTo(0, 0);
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -75,7 +77,7 @@ const Detail: React.FC = () => {
       if (isActive) return;
       setActive(!isActive);
       const existCart = localStorage.getItem("cart");
-      const productQuantity = { ...product, currentQuantities, id: params.id };
+      const productQuantity = { ...product, currentQuantities, id: id };
       if (existCart) {
         const parseProduct = JSON.parse(existCart);
         const existProduct = parseProduct.findIndex(
@@ -567,7 +569,7 @@ const Detail: React.FC = () => {
               alignItems: "center",
 
               "& p": { flex: "1 1 50%", padding: "5px" },
-              "& p:first-child": {
+              "& ": {
                 backgroundColor: "#F2F2F2",
                 borderRight: "1px solid #dee2e6",
                 textTransform: "capitalize",
