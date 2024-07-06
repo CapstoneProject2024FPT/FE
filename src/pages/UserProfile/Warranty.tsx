@@ -1,12 +1,19 @@
-import React from "react";
+import React, { useState } from "react";
 import Box from "@mui/material/Box";
 import Paper from "@mui/material/Paper";
 import Grid from "@mui/material/Unstable_Grid2";
-import { Container, Typography } from "@mui/material";
+import { Container, Typography, Tabs, Tab } from "@mui/material";
 import SideBarUserProfile from "./SideBar/SideBarUserProfile";
 import WarrantyManagement from "./Warranty/WarrantyManagement";
+import WarrantyRequests from "./Warranty/WarrantyRequests";
 
 const Warranty: React.FC = () => {
+  const [tabValue, setTabValue] = useState(0);
+
+  const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
+    setTabValue(newValue);
+  };
+
   return (
     <>
       <Typography variant="h3" component="h2">
@@ -20,7 +27,7 @@ const Warranty: React.FC = () => {
         }}
       >
         <Box sx={{ flexGrow: 1, margin: "2%", padding: "20px" }}>
-          <Grid container spacing={2}>
+          <Grid container spacing={1}>
             <Grid xs={12} md={3}>
               <SideBarUserProfile />
             </Grid>
@@ -33,7 +40,12 @@ const Warranty: React.FC = () => {
                     border: "1px solid ",
                   }}
                 >
-                  <WarrantyManagement />
+                  <Tabs value={tabValue} onChange={handleTabChange}>
+                    <Tab label="Yêu cầu bảo hành" />
+                    <Tab label="Quản lý bảo hành" />
+                  </Tabs>
+                  {tabValue === 0 && <WarrantyManagement />}
+                  {tabValue === 1 && <WarrantyRequests />}
                 </Paper>
               </Box>
             </Grid>
