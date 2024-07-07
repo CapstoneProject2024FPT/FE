@@ -45,7 +45,7 @@ const Row = (props: { row: OrderProps }) => {
 
   const formatAddress = (address: any | undefined) => {
     if (!address) {
-      return "Address not available";
+      return "Địa chỉ không xác định";
     }
     return ` ${address?.ward?.name}, ${address?.district?.name}, ${address?.city?.name}`;
   };
