@@ -10,7 +10,6 @@ import {
   TableHead,
   TableRow,
   Box,
-  Button,
   Collapse,
   IconButton
 } from "@mui/material";
@@ -19,11 +18,6 @@ import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import { ApiOrder } from "../../../api/services/apiOrder";
 import { OrderProps } from "../../../models/order";
 
-const createData = (order: OrderProps) => {
-  return {
-    ...order
-  };
-};
 
 const Row = (props: { row: OrderProps }) => {
   const { row } = props;
