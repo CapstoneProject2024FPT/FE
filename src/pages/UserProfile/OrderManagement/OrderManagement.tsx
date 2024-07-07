@@ -98,7 +98,7 @@ const Row = (props: { row: OrderProps }) => {
   );
 };
 
-const OrderTable: React.FC = () => {
+const OrderManagement: React.FC = () => {
   const [orders, setOrders] = useState<OrderProps[]>([]);
 
   //api
@@ -153,4 +153,4 @@ const OrderTable: React.FC = () => {
   );
 };
 
-export default OrderTable;
+export default OrderManagement;
