@@ -11,13 +11,20 @@ import {
   TableRow,
   Box,
   Collapse,
-  IconButton
+  IconButton,
 } from "@mui/material";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import { ApiOrder } from "../../../api/services/apiOrder";
 import { OrderProps } from "../../../models/order";
 
+
+const statusMapping: { [key: string]: string } = {
+  "Pending": "Đang chờ xử lý",
+  "Completed": "Hoàn thành",
+  "Canceled": "Đã hủy",
+  // Add more status mappings as needed
+};
 
 const Row = (props: { row: OrderProps }) => {
   const { row } = props;
@@ -28,7 +35,20 @@ const Row = (props: { row: OrderProps }) => {
       style: "currency",
       currency: "VND",
     }).format(totalAmount);
-  }
+  };
+
+  const formatStatus = (status: string) => {
+    return statusMapping[status] || status;
+  };
+
+
+
+  const formatAddress = (address: any | undefined) => {
+    if (!address) {
+      return "Address not available";
+    }
+    return ` ${address?.ward?.name}, ${address?.district?.name}, ${address?.city?.name}`;
+  };
 
   return (
     <React.Fragment>
@@ -47,7 +67,7 @@ const Row = (props: { row: OrderProps }) => {
         <TableCell>{new Date(row.createDate).toLocaleDateString()}</TableCell>
         <TableCell>{new Date(row.completedDate).toLocaleDateString()}</TableCell>
         <TableCell>{formatTotalAmount(row.finalAmount)}</TableCell>
-        <TableCell>{row.status}</TableCell>
+        <TableCell>{formatStatus(row.status)}</TableCell>
       </TableRow>
       <TableRow>
         <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={8}>
@@ -86,7 +106,9 @@ const Row = (props: { row: OrderProps }) => {
                   </TableRow>
                   <TableRow>
                     <TableCell>Địa chỉ</TableCell>
-                    <TableCell>{row.address}</TableCell>
+                    <TableCell>
+                      {formatAddress(row.address)}
+                    </TableCell>
                   </TableRow>
                 </TableBody>
               </Table>
@@ -104,7 +126,6 @@ const OrderManagement: React.FC = () => {
   //api
   const { apiGetOrder } = ApiOrder();
 
-  //----------------------------------------------------------------------------
   const fetchOrders = async () => {
     try {
       const apiResponse = await apiGetOrder();
@@ -117,13 +138,9 @@ const OrderManagement: React.FC = () => {
   };
 
   useEffect(() => {
-    return () => {
-      fetchOrders();
-    };
+    fetchOrders();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-
 
   return (
     <Container maxWidth="lg">
@@ -131,7 +148,7 @@ const OrderManagement: React.FC = () => {
         Đơn hàng
       </Typography>
       <TableContainer component={Paper}>
-        <Table aria-label="collapsible table" >
+        <Table aria-label="collapsible table">
           <TableHead>
             <TableRow>
               <TableCell />
