@@ -113,6 +113,8 @@ const CheckoutPayment: React.FC<checkoutPaymentProps> = ({
           addressId: address.id,
         };
 
+        console.log(params);
+
         const response = await apiCheckout(params);
 
         if (response.status === 200) {
