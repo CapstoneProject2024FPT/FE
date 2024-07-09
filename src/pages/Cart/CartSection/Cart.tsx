@@ -131,7 +131,7 @@ const Cart: React.FC<CartProp> = ({ handleNext }) => {
                       </TableRow>
                     </TableHead>
                     <TableBody>
-                      {CartItems.map((item, index) => (
+                      {CartItems?.map((item, index) => (
                         <TableRow
                           sx={{ height: "130px", background: "white" }}
                           key={index}
@@ -209,6 +209,10 @@ const Cart: React.FC<CartProp> = ({ handleNext }) => {
                                   size="small"
                                   color="inherit"
                                   onClick={() => increaseQuantity(item.id)}
+                                  disabled={
+                                    item.currentQuantities >=
+                                    (item.quantity?.Available ?? 0)
+                                  }
                                 >
                                   <Iconify
                                     icon={"eva:plus-fill"}

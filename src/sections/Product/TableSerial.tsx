@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import type { MenuProps } from "antd";
 import type { TableProps } from "antd";
 import { DownOutlined } from "@ant-design/icons";
-import { Table, Input, Space, Dropdown, Button } from "antd";
+import { Table, Input, Space, Dropdown, Button, Typography } from "antd";
 
 import { serialProps } from "../../models/serialNumber";
 import { ApiSerial } from "../../api/services/apiSerialNumber";
@@ -12,52 +12,61 @@ import { useParams } from "react-router-dom";
 import ModalAddSerialPopup from "./PopupSerialnumber/ModalAddSerialNumber";
 import ModalSerialNumberDelete from "./PopupSerialnumber/ModalDeleteSerialNumber";
 import { PlusOutlined } from "@ant-design/icons";
+import { MachineryApi } from "../../api/services/apiMachinery";
+import { ProductAdmin } from "../../models/products";
 
 type ColumnsType<T> = TableProps<T>["columns"];
 const { Search } = Input;
 
 const pageSize = 20;
 
-const TableSerial: React.FC = () => {
+interface TableSerial {
+  handleSetName: (text: string) => void;
+}
+const TableSerial: React.FC<TableSerial> = ({ handleSetName }) => {
   const [serialNumbers, setSerialNumbers] = useState<serialProps[]>();
   const [pagination, setPagination] = useState({
     current: 1,
     pageSize: pageSize,
   });
+  const [machinery, SetMachinery] = useState<ProductAdmin>();
   //url
   const { id } = useParams<{ id: string }>();
   //search
   const [query, setQuery] = useState<string>("");
 
   //popup
-  const [open, setOpen] = useState<boolean>(false);
+  const [openAdd, setOpenAdd] = useState<boolean>(false);
   const [openDeletePopup, setOpenDeletePopup] = useState<boolean>(false);
   const [selectedData, setSelectedData] = useState<serialProps | null>(null);
 
   //api
   const { apiGetSerialbyMachineId, loading } = ApiSerial();
-
+  const { apiGetDetailMachine } = MachineryApi();
   //modal popup
-  const handleActionDetail = (record: serialProps) => {
-    setOpen(!open);
-    setSelectedData(record);
-  };
   const handleActionDelete = (record: serialProps) => {
     setOpenDeletePopup(!openDeletePopup);
     setSelectedData(record);
   };
 
   const handleOpen = () => {
-    setOpen(!open);
+    setOpenAdd(!openAdd);
   };
 
   const handleCLose = () => {
-    setOpen(!open);
+    setOpenAdd(!openAdd);
   };
   const handleCLoseDelete = () => {
     setOpenDeletePopup(!openDeletePopup);
   };
 
+  const fetchMachineDetail = async () => {
+    if (id) {
+      const response = await apiGetDetailMachine(id);
+      SetMachinery(response.data);
+      handleSetName(response.data.name);
+    }
+  };
   //----------------------------------------------------------------------------
   const fetchSerialMachine = async () => {
     try {
@@ -77,6 +86,7 @@ const TableSerial: React.FC = () => {
 
   useEffect(() => {
     fetchSerialMachine();
+    fetchMachineDetail();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -123,10 +133,6 @@ const TableSerial: React.FC = () => {
   const items: MenuProps["items"] = [
     {
       key: "1",
-      label: "Chi tiết",
-    },
-    {
-      key: "2",
       label: "Xoá",
     },
   ];
@@ -166,9 +172,6 @@ const TableSerial: React.FC = () => {
               onClick: ({ key }) => {
                 switch (key) {
                   case "1":
-                    handleActionDetail(record);
-                    break;
-                  case "2":
                     handleActionDelete(record);
                     break;
                   default:
@@ -188,6 +191,7 @@ const TableSerial: React.FC = () => {
 
   return (
     <>
+      <Typography.Text>Tên máy: {machinery?.name}</Typography.Text>
       <div style={{ display: "flex", justifyContent: "space-between" }}>
         <Search
           placeholder="Nhập từ khoá"
@@ -212,10 +216,10 @@ const TableSerial: React.FC = () => {
           cancelSort: "Huỷ sắp xếp",
         }}
       />
-      {open && (
+      {openAdd && (
         <ModalAddSerialPopup
-          ProductData={selectedData}
-          open={open}
+          productData={machinery}
+          open={openAdd}
           handleCLose={handleCLose}
           onSuccess={handleAddSuccess}
         />
