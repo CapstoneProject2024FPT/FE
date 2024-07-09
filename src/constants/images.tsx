@@ -8,6 +8,7 @@ import goldFrame from "../assets/images/gold_rank.png";
 import bronzeFrame from "../assets/images/bronze_rank.png";
 import silverFrame from "../assets/images/silver_rank.png";
 import diamondFrame from "../assets/images/diamond_rank.png";
+import emptyOrder from "../assets/images/empty_order.jpg";
 
 const images = {
   logo,
@@ -19,6 +20,7 @@ const images = {
   bronzeFrame,
   silverFrame,
   diamondFrame,
+  emptyOrder,
 };
 
 export default images;
