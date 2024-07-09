@@ -15,6 +15,7 @@ import CheckoutNewAddressForm from "./CheckoutNewAddressForm";
 import { ApiAddress } from "../../../api/services/apiAddress";
 import { addressProps } from "../../../models/address";
 import { toast } from "react-toastify";
+import { formatAddress } from "../../../utils/fn";
 
 // ----------------------------------------------------------------------
 
@@ -128,7 +129,7 @@ type AddressItemProps = {
 };
 
 function AddressItem({ onNextStep, address }: AddressItemProps) {
-  const { account, city, district, name, note, ward } = address;
+  const { account, name } = address;
 
   const { setSelectedAddress } = useAddress();
 
@@ -150,7 +151,7 @@ function AddressItem({ onNextStep, address }: AddressItemProps) {
           <Typography variant="subtitle1">Tên: {account.fullName}</Typography>
           <Typography variant="subtitle1">Tên địa chỉ: {name}</Typography>
           <Typography variant="body2" gutterBottom>
-            Địa chỉ: {note}, {ward.name}, {district.name}, {city.name}
+            Địa chỉ: {formatAddress(address)}
           </Typography>
         </Box>
 

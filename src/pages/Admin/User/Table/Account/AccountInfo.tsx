@@ -11,6 +11,7 @@ import { Button } from "antd";
 import ModalChangeRole from "../Popup/PopupChangeRole";
 import { toast } from "react-toastify";
 import { RoleData } from "../../RoleData";
+import ModalAddress from "../Popup/popupAddress";
 
 const cx = classNames.bind(styles);
 
@@ -29,6 +30,7 @@ const AccountInfo: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const [openModalRole, setOpenModalRole] = useState<boolean>(false);
   const [userProfile, setUserProfile] = useState<staffProps>();
+  const [open, setOpen] = useState<boolean>(false);
 
   const { apiUserProfile } = CutomerApi();
 
@@ -67,6 +69,13 @@ const AccountInfo: React.FC = () => {
     ? RoleData?.find((role) => role.id === userProfile?.role)?.name
     : defaultRole;
 
+  //modal
+  const handleOpen = () => {
+    setOpen(!open);
+  };
+  const handleCloseModalAddress = () => {
+    setOpen(!open);
+  };
   return (
     <>
       <Button onClick={handleOpenChangeRole}>Cập nhật chức vụ</Button>
@@ -112,6 +121,12 @@ const AccountInfo: React.FC = () => {
         />
       </FormGrid>
       <FormGrid xs={12}>
+        <LabelStyle>Địa chỉ</LabelStyle>
+        <Button style={{ maxWidth: "150px" }} onClick={handleOpen}>
+          Địa chỉ
+        </Button>
+      </FormGrid>
+      <FormGrid xs={12}>
         <LabelStyle>Địa chỉ email</LabelStyle>
         <TextField
           placeholder="email@gmail.com"
@@ -139,16 +154,6 @@ const AccountInfo: React.FC = () => {
       </FormGrid>
 
       <FormGrid xs={12}>
-        <LabelStyle>Địa chỉ</LabelStyle>
-        <TextField
-          placeholder="168 Phan Đình Phùng ..."
-          InputProps={{
-            readOnly: true,
-          }}
-          value={userProfile?.address || ""}
-        />
-      </FormGrid>
-      <FormGrid xs={12}>
         <LabelStyle>Số năm kinh nghiệm</LabelStyle>
         <TextField
           placeholder="168 Phan Đình Phùng ..."
@@ -165,6 +170,13 @@ const AccountInfo: React.FC = () => {
           handleClose={handleClose}
           open={openModalRole}
           onUpdateSuccess={onSuccess}
+        />
+      )}
+      {open && (
+        <ModalAddress
+          handleClose={handleCloseModalAddress}
+          open={open}
+          id={userProfile?.id}
         />
       )}
     </>

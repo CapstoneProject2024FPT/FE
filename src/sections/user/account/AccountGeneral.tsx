@@ -140,15 +140,6 @@ export default function AccountGeneral() {
                   readOnly: true,
                 }}
               />
-              <TextField
-                name="address"
-                label="Địa chỉ"
-                multiline
-                value={profile?.address || ""}
-                InputProps={{
-                  readOnly: true,
-                }}
-              />
             </Box>
 
             <Stack spacing={3} alignItems="flex-end" sx={{ mt: 3 }}>

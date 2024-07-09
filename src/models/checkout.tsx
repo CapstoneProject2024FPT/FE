@@ -1,5 +1,4 @@
 export interface CheckOutProp {
-  accountId: string;
   totalAmount: number;
   finalAmount: number;
   note: string;

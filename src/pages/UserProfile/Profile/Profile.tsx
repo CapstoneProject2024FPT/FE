@@ -149,17 +149,6 @@ const Profile: React.FC = () => {
           }
         />
       </FormGrid>
-
-      <FormGrid xs={12}>
-        <LabelStyle>Địa chỉ</LabelStyle>
-        <TextField
-          placeholder="168 Phan Đình Phùng ..."
-          InputProps={{
-            readOnly: true,
-          }}
-          value={userProfile?.address || ""}
-        />
-      </FormGrid>
       <Button
         style={{
           backgroundColor: "#3498DB",

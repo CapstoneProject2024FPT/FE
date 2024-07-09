@@ -7,6 +7,7 @@ import ModalCreateAddress from "./popup/ModalCreateAddress";
 import { addressProps } from "../../../models/address";
 import { Button } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
+import { formatAddress } from "../../../utils/fn";
 
 // ----------------------------------------------------------------------
 
@@ -87,7 +88,7 @@ type AddressItemProps = {
   address: addressProps;
 };
 function AddressItem({ address }: AddressItemProps) {
-  const { account, city, district, name, note, ward } = address;
+  const { account, name } = address;
   return (
     <>
       <Card
@@ -105,7 +106,7 @@ function AddressItem({ address }: AddressItemProps) {
           <Typography variant="subtitle1">Tên: {account.fullName}</Typography>
           <Typography variant="subtitle1">Tên địa chỉ: {name}</Typography>
           <Typography variant="body2" gutterBottom>
-            Địa chỉ: {note}, {ward.name}, {district.name}, {city.name}
+            Địa chỉ: {formatAddress(address)}
           </Typography>
         </Box>
         <Stack

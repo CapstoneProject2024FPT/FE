@@ -66,7 +66,6 @@ const UserEditForm: React.FC<userModal> = ({
     phoneNumber: Yup.string()
       .matches(patternValidate.phone, "Phải đúng số điện thoại")
       .required("Bắt buộc"),
-    address: Yup.string().required("bắt buộc").min(10, "Tối thiểu 10 kí tự"),
     yearsOfExperience: Yup.number()
       .required("bắt buộc")
       .moreThan(0, "không thể nhỏ hơn 0"),
@@ -81,7 +80,6 @@ const UserEditForm: React.FC<userModal> = ({
       userData?.image ||
       "https://firebasestorage.googleapis.com/v0/b/selling-maintainance-machinery.appspot.com/o/images%20(1).jfif?alt=media&token=5d70b7f3-d5c5-4de7-ba5a-767a328f9b82",
     phoneNumber: userData?.phoneNumber || "",
-    address: userData?.address || "",
     yearsOfExperience: userData?.yearsOfExperience || 0,
     gender: userData?.gender || "",
   };
@@ -105,9 +103,6 @@ const UserEditForm: React.FC<userModal> = ({
           role: userData?.role,
           status: userData?.status,
         };
-
-        console.log(params);
-
         const response = await updateProfile(userData.id, params);
 
         if (response.StatusCode === 400) {
@@ -202,12 +197,6 @@ const UserEditForm: React.FC<userModal> = ({
                       </option>
                     ))}
                   </RHFSelect>
-                  <RHFTextField
-                    name="address"
-                    label="Địa chỉ"
-                    multiline
-                    sx={{ gridColumn: { xs: "span 1", sm: "span 2" } }}
-                  />
                 </Box>
               </Card>
             </Grid>

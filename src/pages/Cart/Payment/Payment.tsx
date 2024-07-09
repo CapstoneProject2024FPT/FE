@@ -63,12 +63,6 @@ const CheckoutPayment: React.FC<checkoutPaymentProps> = ({
   const { address } = useAddress();
   //api
   const { apiCheckout } = ApiCheckout();
-  //user info
-  const loginInfo = localStorage.getItem("loginInfo");
-
-  const loginInfoString = loginInfo ? JSON.parse(loginInfo) : null;
-
-  const user = loginInfoString?.data;
 
   //cart item
   const cart = localStorage.getItem("cart");
@@ -103,15 +97,16 @@ const CheckoutPayment: React.FC<checkoutPaymentProps> = ({
 
   const onSubmit = async () => {
     try {
-      if (address && user) {
+      if (address) {
         const params = {
-          accountId: user.id,
           totalAmount: total,
           finalAmount: total,
           note: note,
           machineryList: machineList,
           addressId: address.id,
         };
+
+        console.log(params);
 
         const response = await apiCheckout(params);
 

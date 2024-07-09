@@ -1,17 +1,15 @@
 import { axiosPublic } from "../axiosInstance";
-import { SERIALNUMBER, SERIALNUMBER_ID } from "../pathApiName";
+import { ORDER } from "../pathApiName";
 import { useState } from "react";
 import axios from "axios";
 
-export const ApiSerial = () => {
+export const ApiOrder = () => {
   const [loading, setLoading] = useState(false);
 
-  const apiGetSerialbyMachineId = async (query: string) => {
+  const apiGetOrder = async () => {
     setLoading(true);
     try {
-      const response = await axiosPublic.get(
-        `${SERIALNUMBER}?MachineryId=${query}`
-      );
+      const response = await axiosPublic.get(ORDER);
 
       return response;
 
@@ -27,21 +25,14 @@ export const ApiSerial = () => {
     }
   };
 
-  interface addProps {
-    machineryId: string;
+  interface GetOrderProps {
+    AccountId: string;
   }
-  interface quantitySerial {
-    quantity: number;
-  }
-  const apiAddSerialbyMachineId = async (
-    requestBody: addProps,
-    paramsQuantity: quantitySerial
-  ) => {
+  const apiGetOrderById = async (params: GetOrderProps) => {
     setLoading(true);
+
     try {
-      const response = await axiosPublic.post(SERIALNUMBER, requestBody, {
-        params: paramsQuantity,
-      });
+      const response = await axiosPublic.get(ORDER, { params });
 
       return response;
 
@@ -57,24 +48,20 @@ export const ApiSerial = () => {
     }
   };
 
-  interface UpdateProps {
+  interface CancelOrderProps {
+    orderId: string;
     status: string;
-    type: string;
+    note: string;
   }
-  const apiDeleteSerialbyMachineId = async (
-    id: string,
-    params: UpdateProps
-  ) => {
+
+  const apiCancelOrder = async (params: CancelOrderProps) => {
     setLoading(true);
     try {
-      const response = await axiosPublic.put(
-        SERIALNUMBER_ID.replace(":id", id),
-        params
-      );
-
+      const response = await axiosPublic.put(`${ORDER}/${params.orderId}`, {
+        status: params.status,
+        note: params.note,
+      });
       return response;
-
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       if (axios.isAxiosError(error) && error.response) {
         return error.response.data;
@@ -85,10 +72,6 @@ export const ApiSerial = () => {
       setLoading(false);
     }
   };
-  return {
-    apiGetSerialbyMachineId,
-    loading,
-    apiAddSerialbyMachineId,
-    apiDeleteSerialbyMachineId,
-  };
+
+  return { apiGetOrder, loading, apiGetOrderById, apiCancelOrder };
 };
