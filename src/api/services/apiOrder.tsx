@@ -30,7 +30,6 @@ export const ApiOrder = () => {
   }
   const apiGetOrderById = async (params: GetOrderProps) => {
     setLoading(true);
-    console.log(params);
 
     try {
       const response = await axiosPublic.get(ORDER, { params });

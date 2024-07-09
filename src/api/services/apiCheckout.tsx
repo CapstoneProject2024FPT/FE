@@ -1,4 +1,4 @@
-import { axiosPublic } from "../axiosInstance";
+import { axiosPrivate } from "../axiosInstance";
 import { CHECKOUT } from "../pathApiName";
 import { useState } from "react";
 import axios from "axios";
@@ -10,7 +10,7 @@ export const ApiCheckout = () => {
   const apiCheckout = async (params: CheckOutProp) => {
     setLoading(true);
     try {
-      const response = await axiosPublic.post(CHECKOUT, params);
+      const response = await axiosPrivate.post(CHECKOUT, params);
 
       return response;
 

@@ -23,4 +23,4 @@ export interface CartItem {
   currentQuantities: number;
 }
 
-export type cartProps = CartItem[];
+export type cartProps = CartItem[] | [];
