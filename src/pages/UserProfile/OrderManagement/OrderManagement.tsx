@@ -1,156 +1,172 @@
-import React from "react";
-import { DataGrid, GridColDef } from "@mui/x-data-grid";
-import ModalOrderPopup from "./Modal/PopupDetailOrder";
-import { useState } from "react";
+import React, { useState, useEffect } from "react";
+import {
+  Container,
+  Typography,
+  Paper,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Box,
+  Collapse,
+  IconButton,
+} from "@mui/material";
+import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
+import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
+import { ApiOrder } from "../../../api/services/apiOrder";
+import { OrderProps } from "../../../models/order";
 
-const Order = [
-  {
-    ID: 1,
-    orderID: "123456",
-    orderDate: "2021-10-10",
-    orderStatus: "Đang chờ",
-    orderTotal: 1000000,
-    orderDetail: [
-      {
-        productID: "1",
-        productName: "Máy tiện",
-        productPrice: 1000000,
-        productQuantity: 1,
-      },
-      {
-        productID: "1",
-        productName: "Máy tiện",
-        productPrice: 1000000,
-        productQuantity: 1,
-      },
-      {
-        productID: "1",
-        productName: "Máy tiện",
-        productPrice: 1000000,
-        productQuantity: 1,
-      },
-    ],
-  },
-  {
-    ID: 2,
-    orderID: "123457",
-    orderDate: "2021-10-11",
-    orderStatus: "Đã giao",
-    orderTotal: 2000000,
-    orderDetail: [
-      {
-        productID: "2",
-        productName: "Máy khoan",
-        productPrice: 2000000,
-        productQuantity: 1,
-      },
-    ],
-  },
-  {
-    ID: 3,
-    orderID: "123458",
-    orderDate: "2021-10-12",
-    orderStatus: "Đã hủy",
-    orderTotal: 3000000,
-    orderDetail: [
-      {
-        productID: "3",
-        productName: "Máy xung điện",
-        productPrice: 3000000,
-        productQuantity: 1,
-      },
-    ],
-  },
-];
 
-const OrderManagement: React.FC = () => {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const [selectedData, setSelectedData] = useState<any>({});
-  const [open, setOpen] = useState<boolean>(false);
-  const handleCLose = () => {
-    setOpen(!open);
+const statusMapping: { [key: string]: string } = {
+  "Pending": "Đang chờ xử lý",
+  "Completed": "Hoàn thành",
+  "Canceled": "Đã hủy",
+  // Add more status mappings as needed
+};
+
+const Row = (props: { row: OrderProps }) => {
+  const { row } = props;
+  const [open, setOpen] = useState(false);
+
+  const formatTotalAmount = (totalAmount: number) => {
+    return new Intl.NumberFormat("vi-VN", {
+      style: "currency",
+      currency: "VND",
+    }).format(totalAmount);
   };
-  const columns: GridColDef[] = [
-    { field: "ID", headerName: "SI", width: 70 },
-    {
-      field: "orderID",
-      headerName: "Mã đơn hàng",
-      width: 130,
-      filterable: false,
-      sortable: false,
-      disableColumnMenu: true,
-    },
-    { field: "orderDate", headerName: "Ngày đặt hàng", width: 130 },
-    {
-      field: "orderStatus",
-      headerName: "Trạng thái",
-      width: 130,
-      filterable: false,
-      sortable: false,
-      disableColumnMenu: true,
-    },
-    {
-      field: "orderTotal",
-      headerName: "Tổng tiền",
-      width: 130,
-      filterable: false,
-      sortable: false,
-      disableColumnMenu: true,
-    },
-    {
-      field: "orderDetail",
-      headerName: "Chi tiết đơn hàng",
-      width: 130,
-      renderCell: (data) => {
-        return (
-          <div>
-            <button
-              style={{
-                backgroundColor: "#2ECC71",
-                color: "white",
-                padding: "5px 10px",
-                border: "none",
-                borderRadius: "5px",
-                cursor: "pointer",
-              }}
-              onClick={() => {
-                setOpen(!open);
-                setSelectedData(data.row);
-              }}
-            >
-              Xem chi tiết
-            </button>
-          </div>
-        );
-      },
-    },
-  ];
+
+  const formatStatus = (status: string) => {
+    return statusMapping[status] || status;
+  };
+
+
+
+  const formatAddress = (address: any | undefined) => {
+    if (!address) {
+      return "Địa chỉ không xác định";
+    }
+    return ` ${address?.ward?.name}, ${address?.district?.name}, ${address?.city?.name}`;
+  };
 
   return (
-    <>
-      <div style={{ height: 400, width: "100%" }}>
-        <DataGrid
-          rows={Order}
-          getRowId={(row) => row.ID}
-          columns={columns}
-          initialState={{
-            pagination: {
-              paginationModel: { page: 0, pageSize: 5 },
-            },
-          }}
-          pageSizeOptions={[5, 10]}
-          disableRowSelectionOnClick
-        />
-      </div>
+    <React.Fragment>
+      <TableRow>
+        <TableCell>
+          <IconButton
+            aria-label="expand row"
+            size="small"
+            onClick={() => setOpen(!open)}
+          >
+            {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
+          </IconButton>
+        </TableCell>
 
-      {open && (
-        <ModalOrderPopup
-          orderData={selectedData}
-          handleClose={handleCLose}
-          open={open}
-        />
-      )}
-    </>
+        <TableCell>{row.invoiceCode}</TableCell>
+        <TableCell>{new Date(row.createDate).toLocaleDateString()}</TableCell>
+        <TableCell>{new Date(row.completedDate).toLocaleDateString()}</TableCell>
+        <TableCell>{formatTotalAmount(row.finalAmount)}</TableCell>
+        <TableCell>{formatStatus(row.status)}</TableCell>
+      </TableRow>
+      <TableRow>
+        <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={8}>
+          <Collapse in={open} timeout="auto" unmountOnExit>
+            <Box margin={1}>
+              <Typography variant="h6" gutterBottom component="div">
+                Chi tiết sản phẩm
+              </Typography>
+              <Table size="small" aria-label="products">
+                <TableHead>
+                  <TableRow>
+                    <TableCell>Tên sản phẩm</TableCell>
+                    <TableCell>Số lượng</TableCell>
+                    <TableCell>Giá sản phẩm</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {row.productList.map((product) => (
+                    <TableRow key={product.productId}>
+                      <TableCell>{product.productName}</TableCell>
+                      <TableCell>{product.quantity}</TableCell>
+                      <TableCell>{formatTotalAmount(product.totalAmount)}</TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+
+              <Typography variant="h6" gutterBottom component="div">
+                Thông tin bổ sung
+              </Typography>
+              <Table size="small" aria-label="additional-info">
+                <TableBody>
+                  <TableRow>
+                    <TableCell>Ghi chú</TableCell>
+                    <TableCell>{row.note}</TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell>Địa chỉ</TableCell>
+                    <TableCell>
+                      {formatAddress(row.address)}
+                    </TableCell>
+                  </TableRow>
+                </TableBody>
+              </Table>
+            </Box>
+          </Collapse>
+        </TableCell>
+      </TableRow>
+    </React.Fragment>
+  );
+};
+
+const OrderManagement: React.FC = () => {
+  const [orders, setOrders] = useState<OrderProps[]>([]);
+
+  //api
+  const { apiGetOrder } = ApiOrder();
+
+  const fetchOrders = async () => {
+    try {
+      const apiResponse = await apiGetOrder();
+      const orderList = apiResponse.data;
+      setOrders(orderList.items);
+      console.log(orderList);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    fetchOrders();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  return (
+    <Container maxWidth="lg">
+      <Typography variant="h4" component="h1" gutterBottom>
+        Đơn hàng
+      </Typography>
+      <TableContainer component={Paper}>
+        <Table aria-label="collapsible table">
+          <TableHead>
+            <TableRow>
+              <TableCell />
+              <TableCell>Mã hóa đơn</TableCell>
+              <TableCell>Ngày tạo</TableCell>
+              <TableCell>Ngày hoàn thành</TableCell>
+              <TableCell>Tổng tiền</TableCell>
+              <TableCell>Trạng thái</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {orders.map((order) => (
+              <Row key={order.orderId} row={order} />
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+    </Container>
   );
 };
 
