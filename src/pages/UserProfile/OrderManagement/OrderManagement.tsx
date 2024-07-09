@@ -168,9 +168,11 @@ const OrderManagement: React.FC = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {orders.map((order) => (
-              <Row key={order.orderId} row={order} />
-            ))}
+            {orders
+              .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+              .map((order) => (
+                <Row key={order.orderId} row={order} />
+              ))}
           </TableBody>
         </Table>
         <TablePagination
