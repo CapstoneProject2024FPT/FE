@@ -2,21 +2,18 @@ import React from "react";
 import Box from "@mui/material/Box";
 import Paper from "@mui/material/Paper";
 import Grid from "@mui/material/Unstable_Grid2";
-import { Container, Typography } from "@mui/material";
+import { Container } from "@mui/material";
 import SideBarUserProfile from "./SideBar/SideBarUserProfile";
 import Profile from "./Profile/Profile";
 
 const UserProfile: React.FC = () => {
   return (
     <>
-      <Typography variant="h3" component="h2">
-        Trang cá nhân
-      </Typography>
+
       <Container
-        maxWidth="lg"
+        maxWidth={false}
         style={{
           backgroundColor: "#ECF0F1",
-          borderRadius: "20px",
         }}
       >
         <Box sx={{ flexGrow: 1, margin: "2%", padding: "20px" }}>

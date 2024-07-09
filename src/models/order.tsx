@@ -1,3 +1,29 @@
+export enum StatusType {
+  PENDING = "Pending",
+  COMPLETED = "Completed",
+  CANCELED = "Canceled",
+  CONFIRMED = "Confirmed",
+}
+
+export const statusMapping = [
+  {
+    id: StatusType.PENDING,
+    name: "Chờ xác nhận",
+  },
+  {
+    id: StatusType.COMPLETED,
+    name: "Hoàn thành",
+  },
+  {
+    id: StatusType.CANCELED,
+    name: "Đã hủy",
+  },
+  {
+    id: StatusType.CONFIRMED,
+    name: "Đã xác nhận",
+  },
+]
+
 export interface OrderProps {
   orderId: string;
   invoiceCode: string;
@@ -21,6 +47,7 @@ export interface AddressDetail {
   ward: WardDetail;
 }
 interface ProductDetail {
+  orderDetailId: string;
   productId: string;
   productName: string;
   quantity: number;
