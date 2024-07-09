@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import Box from "@mui/material/Box";
 import Paper from "@mui/material/Paper";
 import Grid from "@mui/material/Unstable_Grid2";
-import { Container, Typography, Tabs, Tab } from "@mui/material";
+import { Container, Tabs, Tab } from "@mui/material";
 import SideBarUserProfile from "./SideBar/SideBarUserProfile";
 import WarrantyManagement from "./Warranty/WarrantyManagement";
 import WarrantyRequests from "./Warranty/WarrantyRequests";
@@ -18,14 +18,10 @@ const Warranty: React.FC = () => {
 
   return (
     <>
-      <Typography variant="h3" component="h2">
-        Bảo trì
-      </Typography>
       <Container
-        maxWidth="lg"
+        maxWidth={false}
         style={{
           backgroundColor: "#ECF0F1",
-          borderRadius: "20px",
         }}
       >
         <Box sx={{ flexGrow: 1, margin: "2%", padding: "20px" }}>

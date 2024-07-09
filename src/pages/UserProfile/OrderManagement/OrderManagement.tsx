@@ -13,26 +13,44 @@ import {
   Collapse,
   IconButton,
   TablePagination,
+  Button,
 } from "@mui/material";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import { ApiOrder } from "../../../api/services/apiOrder";
-import { OrderProps } from "../../../models/order";
+import { OrderProps, statusMapping, StatusType } from "../../../models/order";
 import { formatAddress, formatDateFunc, formatMoney } from "../../../utils/fn";
+import { toast } from "react-toastify";
 
-const statusMapping: { [key: string]: string } = {
-  Pending: "Đang chờ xử lý",
-  Completed: "Hoàn thành",
-  Canceled: "Đã hủy",
-  // Add more status mappings as needed
+
+
+const getStatusStyles = (status: string) => {
+  switch (status) {
+    case "Pending":
+      return { backgroundColor: "yellow", color: "black" };
+    case "Completed":
+      return { backgroundColor: "green", color: "white" };
+    case "Canceled":
+      return { backgroundColor: "red", color: "white" };
+    default:
+      return { backgroundColor: "transparent", color: "black" };
+  }
 };
 
-const Row = (props: { row: OrderProps }) => {
-  const { row } = props;
+const Row = (props: { row: OrderProps, onCancelOrder: (orderId: string, status: string, note: string) => void }) => {
+  const { row, onCancelOrder } = props;
   const [open, setOpen] = useState(false);
 
-  const formatStatus = (status: string) => {
-    return statusMapping[status] || status;
+
+  const defaultStatus = "Đang chờ xác nhận";
+
+  const StatusName = row?.status
+    ? statusMapping?.find((status) => status.id === row?.status)?.name
+    : defaultStatus;
+
+
+  const handleCancelOrder = () => {
+    onCancelOrder(row.orderId, "Canceled", "Chú thích");
   };
 
   return (
@@ -50,9 +68,29 @@ const Row = (props: { row: OrderProps }) => {
 
         <TableCell>{row.invoiceCode}</TableCell>
         <TableCell>{formatDateFunc.formatDate(row.createDate)}</TableCell>
-        <TableCell>{formatDateFunc.formatDate(row.completedDate)}</TableCell>
+        <TableCell>
+          {row.completedDate ? formatDateFunc.formatDate(row.completedDate) : "Chưa hoàn thành"}
+        </TableCell>
         <TableCell>{formatMoney(row.finalAmount)}</TableCell>
-        <TableCell>{formatStatus(row.status)}</TableCell>
+        <TableCell>
+          <Box
+            sx={{
+              ...getStatusStyles(row.status),
+              padding: "8px 16px",
+              borderRadius: "8px",
+              display: "inline-block",
+            }}
+          >
+            {StatusName}
+          </Box>
+        </TableCell>
+        <TableCell>
+          {row.status === StatusType.PENDING && (
+            <Button variant="contained" color="secondary" onClick={handleCancelOrder}>
+              Hủy đơn hàng
+            </Button>
+          )}
+        </TableCell>
       </TableRow>
       <TableRow>
         <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={8}>
@@ -71,7 +109,7 @@ const Row = (props: { row: OrderProps }) => {
                 </TableHead>
                 <TableBody>
                   {row.productList.map((product) => (
-                    <TableRow key={product.productId}>
+                    <TableRow key={product.orderDetailId}>
                       <TableCell>{product.productName}</TableCell>
                       <TableCell>{product.quantity}</TableCell>
                       <TableCell>{formatMoney(product.totalAmount)}</TableCell>
@@ -128,7 +166,7 @@ const OrderManagement: React.FC = () => {
   const auth = JSON.parse(loginInfo);
 
   //api
-  const { apiGetOrderById } = ApiOrder();
+  const { apiGetOrderById, apiCancelOrder } = ApiOrder();
 
   const fetchOrders = async () => {
     try {
@@ -145,6 +183,17 @@ const OrderManagement: React.FC = () => {
     }
   };
 
+  const cancelOrder = async (orderId: string, status: string, note: string) => {
+    try {
+      await apiCancelOrder({ orderId, status, note });
+      fetchOrders(); // Fetch orders again to refresh the list
+      toast.success("Đơn hàng đã được hủy thành công");  // Thông báo thành công
+    } catch (error) {
+      toast.error("Có lỗi xảy ra khi hủy đơn hàng");  // Thông báo lỗi
+      console.log(error);
+    }
+  };
+
   useEffect(() => {
     fetchOrders();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -153,37 +202,37 @@ const OrderManagement: React.FC = () => {
   return (
     <Container maxWidth="lg">
       <Typography variant="h4" component="h1" gutterBottom>
-        Đơn hàng
+        Quản lý đơn hàng
       </Typography>
       <TableContainer component={Paper}>
-        <Table aria-label="collapsible table">
+        <Table>
           <TableHead>
             <TableRow>
               <TableCell />
-              <TableCell>Mã hóa đơn</TableCell>
+              <TableCell>Mã đơn hàng</TableCell>
               <TableCell>Ngày tạo</TableCell>
               <TableCell>Ngày hoàn thành</TableCell>
               <TableCell>Tổng tiền</TableCell>
               <TableCell>Trạng thái</TableCell>
+              <TableCell>Hành động</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {orders.map((order) => (
-              <Row key={order.orderId} row={order} />
+            {orders.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((order) => (
+              <Row key={order.orderId} row={order} onCancelOrder={cancelOrder} />
             ))}
           </TableBody>
         </Table>
-        <TablePagination
-          component="div"
-          count={orders.length}
-          page={page}
-          onPageChange={handleChangePage}
-          rowsPerPage={rowsPerPage}
-          onRowsPerPageChange={handleChangeRowsPerPage}
-          rowsPerPageOptions={routePage}
-          labelRowsPerPage="Số dòng mỗi trang"
-        />
       </TableContainer>
+      <TablePagination
+        rowsPerPageOptions={routePage}
+        component="div"
+        count={orders.length}
+        rowsPerPage={rowsPerPage}
+        page={page}
+        onPageChange={handleChangePage}
+        onRowsPerPageChange={handleChangeRowsPerPage}
+      />
     </Container>
   );
 };

@@ -49,5 +49,30 @@ export const ApiOrder = () => {
     }
   };
 
-  return { apiGetOrder, loading, apiGetOrderById };
+  interface CancelOrderProps {
+    orderId: string;
+    status: string;
+    note: string;
+  }
+
+  const apiCancelOrder = async (params: CancelOrderProps) => {
+    setLoading(true);
+    try {
+      const response = await axiosPublic.put(`${ORDER}/${params.orderId}`, {
+        status: params.status,
+        note: params.note,
+      });
+      return response;
+    } catch (error: any) {
+      if (axios.isAxiosError(error) && error.response) {
+        return error.response.data;
+      } else {
+        return { statusCode: 500, Error: "Internal Server Error" };
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return { apiGetOrder, loading, apiGetOrderById, apiCancelOrder };
 };
