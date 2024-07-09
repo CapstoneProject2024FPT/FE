@@ -137,7 +137,11 @@ const SignInForm: React.FC = () => {
               padding: " 12px 45px",
               letterSpacing: "1px",
               textTransform: "uppercase",
-              transition: "transform 80ms ease-in",
+              ":hover": {
+                backgroundColor: "#ff4b2b",
+                transform: "scale(1.2)",
+                transition: "transform 100ms ease-out",
+              },
             }}
           >
             Đăng Nhập
