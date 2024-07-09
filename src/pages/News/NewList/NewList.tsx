@@ -8,14 +8,13 @@ import { ApiNews } from "../../../api/services/apiNews";
 import { PostGetProps } from "../../../models/blog";
 import NewsCard from "./NewsCard";
 import NewsFilteredRow from "../../Filter/News/FilterNews";
-import { LogoutOutlined, RotateLeftOutlined } from "@mui/icons-material";
+import { LogoutOutlined } from "@mui/icons-material";
 
 const ListNews: React.FC = () => {
   const [listNews, setListNews] = useState<PostGetProps[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-  const [resetFilters, setResetFilters] = useState(false); // State for resetting filters
-
+  const [filter, setFilter] = useState<any>({});
   const { apiGetListNews } = ApiNews();
 
   const fetchListNews = async () => {
@@ -49,12 +48,6 @@ const ListNews: React.FC = () => {
     };
   }, []);
 
-  const handleResetFilters = () => {
-    setResetFilters(true); // Trigger reset
-    setListNews([]); // Optionally clear the news list
-    fetchListNews(); // Fetch the news list again if needed
-  };
-
   return (
     <Box
       sx={{
@@ -78,7 +71,11 @@ const ListNews: React.FC = () => {
           top: 0,
         }}
       >
-        <NewsFilteredRow setListNews={setListNews} resetFilters={resetFilters} setResetFilters={setResetFilters} />
+        <NewsFilteredRow
+          setListNews={setListNews}
+          filter={filter}
+          setFilter={setFilter}
+        />
       </Box>
 
       <Box sx={{ display: { xs: "block", md: "none" } }}>
@@ -137,7 +134,11 @@ const ListNews: React.FC = () => {
             }}
           >
             {/* Filter content */}
-            <NewsFilteredRow setListNews={setListNews} resetFilters={resetFilters} setResetFilters={setResetFilters} />
+            <NewsFilteredRow
+              setListNews={setListNews}
+              filter={filter}
+              setFilter={setFilter}
+            />
             <Box>
               {isDrawerOpen && (
                 <Box sx={{ display: "flex", justifyContent: "space-around" }}>
@@ -158,29 +159,6 @@ const ListNews: React.FC = () => {
                       sx={{
                         transform: "scaleX(-1)",
                         marginRight: "5px",
-                        "&:hover": {
-                          color: "#1976d2",
-                          backgroundColor: "white",
-                          borderRadius: "none",
-                        },
-                      }}
-                    />
-                  </Button>
-                  <Button
-                    variant="outlined"
-                    onClick={handleResetFilters} // Reset filters on click
-                    sx={{
-                      backgroundColor: "white",
-                      borderRadius: "5px",
-                      "&:hover": {
-                        borderColor: "#1976d2",
-                        borderRadius: "5px",
-                        backgroundColor: "white",
-                      },
-                    }}
-                  >
-                    <RotateLeftOutlined
-                      sx={{
                         "&:hover": {
                           color: "#1976d2",
                           backgroundColor: "white",

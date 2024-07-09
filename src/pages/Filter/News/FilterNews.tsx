@@ -7,36 +7,42 @@ import {
   FormGroup,
   Checkbox,
   TextField,
-  InputAdornment,
-  IconButton,
+  Button,
+  Autocomplete,
+  Typography,
+  Chip,
 } from "@mui/material";
-import SearchIcon from "@mui/icons-material/Search"; // Import Search Icon
-
+import CloseIcon from "@mui/icons-material/Close";
 import "./FilterNews.scss";
 import { NEWS_FILTER, NEWS_TYPE } from "../../../constants/filter";
 import { useNavigate } from "react-router-dom";
 import { ApiNewsCategories } from "../../../api/services/apiNewsCategories";
 import { ApiNews } from "../../../api/services/apiNews";
 import { PostGetProps } from "../../../models/blog";
+import { Close, CloseOutlined } from "@mui/icons-material";
 
 interface NewFilterProps {
   setListNews?: React.Dispatch<React.SetStateAction<PostGetProps[]>>;
-  resetFilters: boolean;
-  setResetFilters: React.Dispatch<React.SetStateAction<boolean>>;
+  filter?: any;
+  setFilter?: React.Dispatch<any>;
 }
 
 interface ProductFilter {
   [key: string]: string[];
 }
 
-const NewsFilteredRow: React.FC<NewFilterProps> = ({ setListNews, resetFilters, setResetFilters }) => {
+const NewsFilteredRow: React.FC<NewFilterProps> = ({
+  setListNews,
+  filter,
+  setFilter,
+}) => {
   const { getNewsCategories } = ApiNewsCategories();
-  const { apiGetList } = ApiNews();
-  const [filter, setFilter] = useState<any>({});
+  const { apiGetList, apiGetListNews } = ApiNews();
   const [newsListCategory, setNewListCategory] = useState<string[]>([]);
-  const [selectedNewsTypes, setSelectedNewsTypes] = useState<string[]>([]);
+  const [newsListTitle, setNewsListTitle] = useState<string[]>([]);
   const [newsType, setNewsType] = useState<string[]>([]);
-  const [searchTerm, setSearchTerm] = useState<string>(""); // State for search term
+  const [searchTerm, setSearchTerm] = useState<string>("");
+  const [isCheckboxChange, setIsCheckboxChange] = useState<boolean>(false);
   const navigate = useNavigate();
 
   const fetchNewsCategory = async () => {
@@ -48,38 +54,65 @@ const NewsFilteredRow: React.FC<NewFilterProps> = ({ setListNews, resetFilters, 
     setNewListCategory(newsCategory);
   };
 
+  const fetchNewsTitle = async () => {
+    const response = await apiGetListNews();
+    const newsTitle = response.items.map(
+      (newsTitle: { title: any }) => newsTitle.title
+    );
+    setNewsListTitle(newsTitle);
+  };
+
   const fetchNewsType = () => {
     const newsTypeValues = Object.values(NEWS_TYPE);
     setNewsType(newsTypeValues);
   };
 
-  // const handleFilterNews = (
-  //   filterType: NEWS_FILTER,
-  //   value: string,
-  //   checked: boolean
-  // ) => {
-  //   let updatedTypes: string[];
-  //   if (checked) {
-  //     updatedTypes = [...selectedNewsTypes, value];
-  //   } else {
-  //     updatedTypes = selectedNewsTypes.filter((type) => type !== value);
-  //   }
-  //   setSelectedNewsTypes(updatedTypes);
-  //   const updatedFilter = {
-  //     ...filter,
-  //     [filterType]: updatedTypes,
-  //     searchTerm: searchTerm, // Include search term in filter
-  //   };
-  //   console.log("handleFilterNews: ", updatedFilter)
-  //   setFilter(updatedFilter);
-  //   updateURLSearchParams(updatedFilter);
-  //   getNewsFilteredData(updatedFilter);
-  // };
+  const handleClearFilter = (key: string, value: string) => {
+    const updatedFilter = { ...filter };
+    updatedFilter[key] = updatedFilter[key].filter((val: any) => val !== value);
+    if (updatedFilter[key].length === 0) {
+      delete updatedFilter[key];
+    }
+    setFilter && setFilter(updatedFilter);
+    updateURLSearchParams(updatedFilter);
+    getNewsFilteredData(updatedFilter);
+    // Add additional logic to update URL and fetch filtered data if needed
+  };
+
+  const handleAutocompleteChange = (
+    // eslint-disable-next-line @typescript-eslint/ban-types
+    event: React.ChangeEvent<{}>,
+    value: string | null
+  ) => {
+    setIsCheckboxChange(false);
+    if (value !== null) {
+      console.log(value);
+      setSearchTerm(value);
+      const updatedFilter = {
+        ...filter,
+        Title: value,
+      };
+      setFilter && setFilter(updatedFilter);
+      updateURLSearchParams(updatedFilter);
+      getNewsFilteredData(updatedFilter);
+    } else {
+      setSearchTerm("");
+      const updatedFilter = {
+        ...filter,
+        Title: "",
+      };
+      setFilter && setFilter(updatedFilter);
+      updateURLSearchParams(updatedFilter);
+      getNewsFilteredData(updatedFilter);
+    }
+  };
+
   const handleFilterNews = (
     filterType: NEWS_FILTER,
     value: string,
     checked: boolean
   ) => {
+    setIsCheckboxChange(true);
     const item = filter[filterType] || [];
     if (checked) {
       filter[filterType] = [...item, value];
@@ -87,7 +120,7 @@ const NewsFilteredRow: React.FC<NewFilterProps> = ({ setListNews, resetFilters, 
       filter[filterType] = item.filter((val: any) => val !== value);
     }
 
-    setFilter(filter);
+    setFilter && setFilter(filter);
     updateURLSearchParams(filter);
     getNewsFilteredData(filter);
   };
@@ -95,11 +128,12 @@ const NewsFilteredRow: React.FC<NewFilterProps> = ({ setListNews, resetFilters, 
   const updateURLSearchParams = (filter: any) => {
     const params = new URLSearchParams();
     for (const key in filter) {
-      if (filter[key].length > 0) {
+      if (Array.isArray(filter[key]) && filter[key].length > 0) {
         params.set(key, filter[key].join(","));
+      } else if (key === "Title" && filter[key]) {
+        params.set("Title", filter[key]);
       }
     }
-    console.log("updateURLSearchParams: ", params)
     const to = { pathname: location.pathname, search: params.toString() };
     navigate(to, { replace: true });
   };
@@ -107,7 +141,6 @@ const NewsFilteredRow: React.FC<NewFilterProps> = ({ setListNews, resetFilters, 
   const getNewsFilteredData = async (params: any) => {
     try {
       const data = await apiGetList(params);
-      console.log("getNewsFilteredData: ", data)
       setListNews && setListNews(data);
     } catch (error) {
       console.error("Error fetching filtered news:", error);
@@ -124,53 +157,149 @@ const NewsFilteredRow: React.FC<NewFilterProps> = ({ setListNews, resetFilters, 
   };
 
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setIsCheckboxChange(false);
     setSearchTerm(event.target.value);
     const updatedFilter = {
       ...filter,
-      searchTerm: event.target.value,
+      Title: event.target.value,
     };
-    setFilter(updatedFilter);
+    setFilter && setFilter(updatedFilter);
     updateURLSearchParams(updatedFilter);
     getNewsFilteredData(updatedFilter);
   };
 
-  useEffect(() => {
-    const initialFilter = getFilterFromURL();
-    setFilter(initialFilter);
-    fetchNewsCategory();
-    fetchNewsType();
-  }, []);
+  const handleResetFilters = () => {
+    const resetFilter: ProductFilter = {};
+    setFilter && setFilter(resetFilter);
+    setSearchTerm("");
+    updateURLSearchParams(resetFilter);
+    getNewsFilteredData(resetFilter);
+  };
 
   useEffect(() => {
-    if (resetFilters) {
-      setFilter({});
-      setSelectedNewsTypes([]);
-      setSearchTerm("");
-      setResetFilters(false); // Reset the state back to false
-      updateURLSearchParams({});
-      getNewsFilteredData({});
+    const initialFilter = getFilterFromURL();
+    setFilter && setFilter(initialFilter);
+    fetchNewsCategory();
+    fetchNewsType();
+    fetchNewsTitle();
+  }, []);
+
+  const isFilterActive = () => {
+    return Object.keys(filter).some((key) => filter[key].length > 0);
+  };
+
+  const getFilterArray = (filter: { [key: string]: string[] }) => {
+    const filterArray: { key: string; value: string }[] = [];
+    for (const key in filter) {
+      if (key !== "Title") {
+        filter[key]?.forEach((value) => {
+          filterArray.push({ key, value });
+        });
+      }
     }
-  }, [resetFilters, setResetFilters]);
+    return filterArray;
+  };
+
+  const getNewsCategoryName = (categoryId: string, newsListCategory: any[]) => {
+    const category = newsListCategory.find((cat) => cat.id === categoryId);
+    return category ? category.name : "";
+  };
+
+  const filterArray = getFilterArray(filter);
 
   return (
     <Box>
       {/* Search bar */}
       <Box>
-        <TextField
-          label="Tìm kiếm"
+        <Autocomplete
+          disablePortal
+          id="combo-box-demo"
+          options={newsListTitle}
           value={searchTerm}
-          onChange={handleSearchChange}
-          InputProps={{
-            endAdornment: (
-              <InputAdornment position="end">
-                <IconButton>
-                  <SearchIcon />
-                </IconButton>
-              </InputAdornment>
-            ),
-          }}
+          onChange={handleAutocompleteChange}
+          renderInput={(params) => (
+            <TextField
+              {...params}
+              label="Tìm kiếm"
+              sx={{ width: "100%" }}
+              onChange={handleSearchChange}
+            />
+          )}
         />
       </Box>
+      {/* Reset Button */}
+      {isCheckboxChange && isFilterActive() && (
+        <Box>
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              margin: "16px 8px 4px",
+            }}
+          >
+            <Typography
+              sx={{
+                fontSize: "18px",
+                fontWeight: "800",
+                letterSpacing: "-1px",
+                color: "#1976d2",
+              }}
+            >
+              Đã chọn
+            </Typography>
+            <Box
+              sx={{
+                display: "flex",
+                border: "1px solid rgba(25, 118, 210, 0.5)",
+                padding: "4px",
+                color: "#1976d2",
+                borderRadius: "5px",
+                "&:hover": {
+                  cursor: "pointer",
+                  border: "1px solid #1976d2",
+                  backgroundColor: "rgba(25, 118, 210, 0.04)",
+                },
+              }}
+              onClick={handleResetFilters}
+            >
+              <CloseOutlined />
+              <Typography
+                sx={{
+                  fontSize: "18px",
+                  fontWeight: "800",
+                  letterSpacing: "-1px",
+                }}
+              >
+                Xóa tất cả
+              </Typography>
+            </Box>
+          </Box>
+          <Box
+            sx={{
+              display: "flex",
+              gap: 1,
+              flexWrap: "wrap",
+              margin: "4px 8px",
+            }}
+          >
+            {filterArray.map(({ key, value }) => (
+              <Chip
+                key={`${key}-${value}`}
+                label={
+                  key === NEWS_FILTER.NewsCategoryId
+                    ? `Loại tin: ${getNewsCategoryName(
+                        value,
+                        newsListCategory
+                      )}`
+                    : `Mức độ: ${value}`
+                }
+                onDelete={() => handleClearFilter(key, value)}
+              />
+            ))}
+          </Box>
+        </Box>
+      )}
       <FormControl
         component="fieldset"
         sx={{
@@ -190,7 +319,7 @@ const NewsFilteredRow: React.FC<NewFilterProps> = ({ setListNews, resetFilters, 
               color: "black !important",
             }}
           >
-            Loại tin tức
+            Mức độ tin tức
           </FormLabel>
           <Box
             sx={{
@@ -218,7 +347,7 @@ const NewsFilteredRow: React.FC<NewFilterProps> = ({ setListNews, resetFilters, 
                   key={`${type}`}
                   control={
                     <Checkbox
-                      checked={filter[NEWS_FILTER.NewsType]?.includes(type)}
+                      checked={!!filter[NEWS_FILTER.NewsType]?.includes(type)}
                       onChange={(checked) =>
                         handleFilterNews(
                           NEWS_FILTER.NewsType,
@@ -274,9 +403,11 @@ const NewsFilteredRow: React.FC<NewFilterProps> = ({ setListNews, resetFilters, 
                   key={`${newsCategory?.id}`}
                   control={
                     <Checkbox
-                      checked={filter[NEWS_FILTER.NewsCategoryId]?.includes(
-                        newsCategory.id
-                      )}
+                      checked={
+                        !!filter[NEWS_FILTER.NewsCategoryId]?.includes(
+                          newsCategory.id
+                        )
+                      }
                       onChange={(checked) =>
                         handleFilterNews(
                           NEWS_FILTER.NewsCategoryId,

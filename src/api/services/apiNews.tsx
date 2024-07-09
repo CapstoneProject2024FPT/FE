@@ -148,7 +148,6 @@ export const ApiNews = () => {
     setLoading(true);
     try {
       const response = await axiosPublic.get(NEWS_HOME);
-      console.log(response)
       return response.data;
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {

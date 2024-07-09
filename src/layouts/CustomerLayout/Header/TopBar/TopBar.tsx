@@ -149,7 +149,7 @@ const TopBar: React.FC = () => {
         <nav className={cx("main-nav")}>
           {renderMenu(menuData)}
 
-          <a href="#">TIN TỨC</a>
+          <a href="/news#">TIN TỨC</a>
         </nav>
       </header>
     </>
