@@ -12,6 +12,7 @@ import {
   Box,
   Collapse,
   IconButton,
+  TablePagination,
 } from "@mui/material";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
@@ -104,16 +105,41 @@ const Row = (props: { row: OrderProps }) => {
 
 const OrderManagement: React.FC = () => {
   const [orders, setOrders] = useState<OrderProps[]>([]);
+  const [page, setPage] = useState<number>(0);
+  const [rowsPerPage, setRowsPerPage] = useState(15);
+
+  const routePage = [15, 20, 25, 30];
+
+  const handleChangePage = (
+    _event: React.MouseEvent<HTMLButtonElement> | null,
+    newPage: number
+  ) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (
+    event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>
+  ) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
+
+  const loginInfo = localStorage.getItem("loginInfo") || "";
+  const auth = JSON.parse(loginInfo);
 
   //api
-  const { apiGetOrder } = ApiOrder();
+  const { apiGetOrderById } = ApiOrder();
 
   const fetchOrders = async () => {
     try {
-      const apiResponse = await apiGetOrder();
-      const orderList = apiResponse.data;
-      setOrders(orderList.items);
-      console.log(orderList);
+      if (auth) {
+        const params = {
+          AccountId: auth.data.id,
+        };
+        const apiResponse = await apiGetOrderById(params);
+        const orderList = apiResponse.data;
+        setOrders(orderList.items);
+      }
     } catch (error) {
       console.log(error);
     }
@@ -147,6 +173,16 @@ const OrderManagement: React.FC = () => {
             ))}
           </TableBody>
         </Table>
+        <TablePagination
+          component="div"
+          count={orders.length}
+          page={page}
+          onPageChange={handleChangePage}
+          rowsPerPage={rowsPerPage}
+          onRowsPerPageChange={handleChangeRowsPerPage}
+          rowsPerPageOptions={routePage}
+          labelRowsPerPage="Số dòng mỗi trang"
+        />
       </TableContainer>
     </Container>
   );
