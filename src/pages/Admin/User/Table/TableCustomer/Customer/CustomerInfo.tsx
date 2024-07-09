@@ -7,6 +7,8 @@ import { userModel } from "../../../../../../models/UserData";
 import styles from "./userPropfile.module.scss";
 import classNames from "classnames/bind";
 import { useParams } from "react-router-dom";
+import { Button } from "antd";
+import ModalUserAddress from "./PopupCustomer/popupDetailAddress";
 
 const cx = classNames.bind(styles);
 
@@ -25,6 +27,7 @@ const CustomerInfo: React.FC = () => {
   const { id } = useParams<{ id: string }>();
 
   const [userProfile, setUserProfile] = useState<userModel>();
+  const [open, setOpen] = useState<boolean>(false);
 
   const { apiUserProfile } = CutomerApi();
 
@@ -57,6 +60,13 @@ const CustomerInfo: React.FC = () => {
     ? rankImageMap[userProfile.rank.name]
     : defaultclassRank;
 
+  //modal
+  const handleOpen = () => {
+    setOpen(!open);
+  };
+  const handleClose = () => {
+    setOpen(!open);
+  };
   return (
     <>
       <FormGrid xs={12}>
@@ -106,6 +116,13 @@ const CustomerInfo: React.FC = () => {
         />
       </FormGrid>
       <FormGrid xs={12}>
+        <LabelStyle>Địa chỉ</LabelStyle>
+        <Button style={{ maxWidth: "150px" }} onClick={handleOpen}>
+          Địa chỉ
+        </Button>
+      </FormGrid>
+
+      <FormGrid xs={12}>
         <LabelStyle>Địa chỉ email</LabelStyle>
         <TextField
           placeholder="email@gmail.com"
@@ -131,17 +148,15 @@ const CustomerInfo: React.FC = () => {
           }
         />
       </FormGrid>
-
-      <FormGrid xs={12}>
-        <LabelStyle>Địa chỉ</LabelStyle>
-        <TextField
-          placeholder="168 Phan Đình Phùng ..."
-          InputProps={{
-            readOnly: true,
-          }}
-          value={userProfile?.address || ""}
-        />
-      </FormGrid>
+      <>
+        {open && (
+          <ModalUserAddress
+            handleClose={handleClose}
+            open={open}
+            id={userProfile?.id}
+          />
+        )}
+      </>
     </>
   );
 };

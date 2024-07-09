@@ -12,17 +12,18 @@ import {
   Box,
   Collapse,
   IconButton,
+  TablePagination,
 } from "@mui/material";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import { ApiOrder } from "../../../api/services/apiOrder";
 import { OrderProps } from "../../../models/order";
-
+import { formatAddress, formatDateFunc, formatMoney } from "../../../utils/fn";
 
 const statusMapping: { [key: string]: string } = {
-  "Pending": "Đang chờ xử lý",
-  "Completed": "Hoàn thành",
-  "Canceled": "Đã hủy",
+  Pending: "Đang chờ xử lý",
+  Completed: "Hoàn thành",
+  Canceled: "Đã hủy",
   // Add more status mappings as needed
 };
 
@@ -30,24 +31,8 @@ const Row = (props: { row: OrderProps }) => {
   const { row } = props;
   const [open, setOpen] = useState(false);
 
-  const formatTotalAmount = (totalAmount: number) => {
-    return new Intl.NumberFormat("vi-VN", {
-      style: "currency",
-      currency: "VND",
-    }).format(totalAmount);
-  };
-
   const formatStatus = (status: string) => {
     return statusMapping[status] || status;
-  };
-
-
-
-  const formatAddress = (address: any | undefined) => {
-    if (!address) {
-      return "Địa chỉ không xác định";
-    }
-    return ` ${address?.ward?.name}, ${address?.district?.name}, ${address?.city?.name}`;
   };
 
   return (
@@ -64,9 +49,9 @@ const Row = (props: { row: OrderProps }) => {
         </TableCell>
 
         <TableCell>{row.invoiceCode}</TableCell>
-        <TableCell>{new Date(row.createDate).toLocaleDateString()}</TableCell>
-        <TableCell>{new Date(row.completedDate).toLocaleDateString()}</TableCell>
-        <TableCell>{formatTotalAmount(row.finalAmount)}</TableCell>
+        <TableCell>{formatDateFunc.formatDate(row.createDate)}</TableCell>
+        <TableCell>{formatDateFunc.formatDate(row.completedDate)}</TableCell>
+        <TableCell>{formatMoney(row.finalAmount)}</TableCell>
         <TableCell>{formatStatus(row.status)}</TableCell>
       </TableRow>
       <TableRow>
@@ -89,7 +74,7 @@ const Row = (props: { row: OrderProps }) => {
                     <TableRow key={product.productId}>
                       <TableCell>{product.productName}</TableCell>
                       <TableCell>{product.quantity}</TableCell>
-                      <TableCell>{formatTotalAmount(product.totalAmount)}</TableCell>
+                      <TableCell>{formatMoney(product.totalAmount)}</TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
@@ -106,9 +91,7 @@ const Row = (props: { row: OrderProps }) => {
                   </TableRow>
                   <TableRow>
                     <TableCell>Địa chỉ</TableCell>
-                    <TableCell>
-                      {formatAddress(row.address)}
-                    </TableCell>
+                    <TableCell>{formatAddress(row?.address)}</TableCell>
                   </TableRow>
                 </TableBody>
               </Table>
@@ -122,16 +105,41 @@ const Row = (props: { row: OrderProps }) => {
 
 const OrderManagement: React.FC = () => {
   const [orders, setOrders] = useState<OrderProps[]>([]);
+  const [page, setPage] = useState<number>(0);
+  const [rowsPerPage, setRowsPerPage] = useState(15);
+
+  const routePage = [15, 20, 25, 30];
+
+  const handleChangePage = (
+    _event: React.MouseEvent<HTMLButtonElement> | null,
+    newPage: number
+  ) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (
+    event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>
+  ) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
+
+  const loginInfo = localStorage.getItem("loginInfo") || "";
+  const auth = JSON.parse(loginInfo);
 
   //api
-  const { apiGetOrder } = ApiOrder();
+  const { apiGetOrderById } = ApiOrder();
 
   const fetchOrders = async () => {
     try {
-      const apiResponse = await apiGetOrder();
-      const orderList = apiResponse.data;
-      setOrders(orderList.items);
-      console.log(orderList);
+      if (auth) {
+        const params = {
+          AccountId: auth.data.id,
+        };
+        const apiResponse = await apiGetOrderById(params);
+        const orderList = apiResponse.data;
+        setOrders(orderList.items);
+      }
     } catch (error) {
       console.log(error);
     }
@@ -165,6 +173,16 @@ const OrderManagement: React.FC = () => {
             ))}
           </TableBody>
         </Table>
+        <TablePagination
+          component="div"
+          count={orders.length}
+          page={page}
+          onPageChange={handleChangePage}
+          rowsPerPage={rowsPerPage}
+          onRowsPerPageChange={handleChangeRowsPerPage}
+          rowsPerPageOptions={routePage}
+          labelRowsPerPage="Số dòng mỗi trang"
+        />
       </TableContainer>
     </Container>
   );

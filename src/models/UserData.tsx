@@ -20,7 +20,6 @@ export interface userPropUpdate {
   fullName: string;
   email: string;
   phoneNumber: string;
-  address: string;
   image: string | undefined;
   gender: string | undefined;
 }
