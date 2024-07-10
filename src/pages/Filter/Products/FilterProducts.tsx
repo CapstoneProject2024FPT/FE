@@ -7,6 +7,8 @@ import {
   FormLabel,
   FormGroup,
   Checkbox,
+  Autocomplete,
+  TextField,
 } from "@mui/material";
 
 import "./FilterProducts.scss";
@@ -20,18 +22,23 @@ import { ApiOrigin } from "../../../api/services/apiOrigin";
 
 interface ProductFilterProps {
   setProducts?: React.Dispatch<React.SetStateAction<ProductAdmin[]>>;
+  filter?: any;
+  setFilter?: React.Dispatch<any>;
 }
 
 interface ProductFilter {
   [key: string]: string[];
 }
 
-const ProductFilteredRow: React.FC<ProductFilterProps> = ({ setProducts }) => {
-  const { apiGetList } = MachineryApi();
+const ProductFilteredRow: React.FC<ProductFilterProps> = ({
+  setProducts,
+  filter,
+  setFilter,
+}) => {
+  const { apiGetList, apiGetMachine } = MachineryApi();
   const { apiGetOrigin } = ApiOrigin();
   const { getCategoryName } = CategoryApi();
   const { getBrandName } = BrandApi();
-  const [filter, setFilter] = useState<any>({});
   const [productListOriginName, setProductListOriginName] = useState<string[]>(
     []
   );
@@ -41,6 +48,9 @@ const ProductFilteredRow: React.FC<ProductFilterProps> = ({ setProducts }) => {
   const [productListBrandName, setProductListBrandName] = useState<string[]>(
     []
   );
+  const [productListName, setProductListName] = useState<string[]>([]);
+  const [isCheckboxChange, setIsCheckboxChange] = useState<boolean>(false);
+  const [searchTerm, setSearchTerm] = useState<string>();
   const navigate = useNavigate();
 
   // Product - origin
@@ -73,6 +83,14 @@ const ProductFilteredRow: React.FC<ProductFilterProps> = ({ setProducts }) => {
     setProductListBrandName(brandName);
   };
 
+  const fetchProductListName = async () => {
+    const response = await apiGetMachine("Available");
+    const productName = response.data.map(
+      (productName: { name: any }) => productName.name
+    );
+    setProductListName(productName);
+  };
+
   const handleFilterProducts = (
     filterType: ProductsFilterType,
     value: string,
@@ -84,7 +102,8 @@ const ProductFilteredRow: React.FC<ProductFilterProps> = ({ setProducts }) => {
     } else {
       filter[filterType] = item.filter((val: any) => val !== value);
     }
-    setFilter(filter);
+
+    setFilter && setFilter(filter);
     updateURLSearchParams(filter);
     getProductFilteredData(filter);
   };
@@ -92,8 +111,10 @@ const ProductFilteredRow: React.FC<ProductFilterProps> = ({ setProducts }) => {
   const updateURLSearchParams = (filter: any) => {
     const params = new URLSearchParams();
     for (const key in filter) {
-      if (filter[key].length > 0) {
+      if (Array.isArray(filter[key]) && filter[key].length > 0) {
         params.set(key, filter[key].join(","));
+      } else if (key === "name" && filter[key]) {
+        params.set("name", filter[key]);
       }
     }
     const to = { pathname: location.pathname, search: params.toString() };
@@ -119,199 +140,262 @@ const ProductFilteredRow: React.FC<ProductFilterProps> = ({ setProducts }) => {
     return newFilter;
   };
 
+  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setIsCheckboxChange(false);
+    setSearchTerm(event.target.value);
+    const updatedFilter = {
+      ...filter,
+      name: event.target.value,
+    };
+    setFilter && setFilter(updatedFilter);
+    updateURLSearchParams(updatedFilter);
+    getProductFilteredData(updatedFilter);
+  };
+
+  const handleAutocompleteChange = (
+    // eslint-disable-next-line @typescript-eslint/ban-types
+    _event: React.ChangeEvent<{}>,
+    value: string | null
+  ) => {
+    setIsCheckboxChange(false);
+    if (value !== null) {
+      setSearchTerm(value);
+      const updatedFilter = {
+        ...filter,
+        name: value,
+      };
+      setFilter && setFilter(updatedFilter);
+      updateURLSearchParams(updatedFilter);
+      getProductFilteredData(updatedFilter);
+    } else {
+      setSearchTerm("");
+      const updatedFilter = {
+        ...filter,
+        name: null,
+      };
+      setFilter && setFilter(updatedFilter);
+      updateURLSearchParams(updatedFilter);
+      getProductFilteredData(updatedFilter);
+    }
+  };
+
   useEffect(() => {
     const initialFilter = getFilterFromURL();
-    setFilter(initialFilter);
+    setFilter && setFilter(initialFilter);
     getProductFilteredData(initialFilter);
     fetchProductsOriginNames();
     fetchProductsCategoryNames();
     fetchProductsBrandNames();
+    fetchProductListName();
   }, []);
 
   return (
-    <FormControl
-      component="fieldset"
-      sx={{
-        width: "100%",
-        display: "flex",
-        flexDirection: "column",
-        gap: "20px",
-        padding: "12px",
-      }}
-    >
-      {/* showProductsOriginFilter */}
+    <Box>
       <Box>
-        <FormLabel
-          sx={{
-            fontSize: "16px",
-            fontWeight: "bold",
-            color: "black !important",
-          }}
-        >
-          Xuất xứ
-        </FormLabel>
-        <Box
-          sx={{
-            maxHeight: "200px",
-            overflowY: "auto",
-            "&::-webkit-scrollbar": {
-              width: "8px",
-            },
-            "&::-webkit-scrollbar-track": {
-              boxShadow: "inset 0 0 5px grey",
-              borderRadius: "10px",
-            },
-            "&::-webkit-scrollbar-thumb": {
-              backgroundColor: "#888",
-              borderRadius: "10px",
-            },
-            "&::-webkit-scrollbar-thumb:hover": {
-              backgroundColor: "#555",
-            },
-          }}
-        >
-          <FormGroup sx={{ paddingLeft: "20px" }}>
-            {productListOriginName.map((origin: any) => (
-              <FormControlLabel
-                key={`${origin?.id}`}
-                control={
-                  <Checkbox
-                    defaultChecked={filter[ProductsFilterType.OriginId]?.includes(
-                      origin.id
-                    )}
-                    onChange={(checked) =>
-                      handleFilterProducts(
-                        ProductsFilterType.OriginId,
-                        origin.id,
-                        checked.target.checked
-                      )
-                    }
-                    name={`${origin?.name}`}
-                  />
-                }
-                label={`${origin?.name}`}
-                style={{ fontSize: "10px" }}
-              />
-            ))}
-          </FormGroup>
-        </Box>
+        <Autocomplete
+          disablePortal
+          id="combo-box-demo"
+          options={productListName}
+          value={filter.name || null}
+          onChange={handleAutocompleteChange}
+          renderInput={(params) => (
+            <TextField
+              {...params}
+              label="Tìm kiếm"
+              sx={{ width: "100%" }}
+              onChange={handleSearchChange}
+            />
+          )}
+        />
       </Box>
+      <FormControl
+        component="fieldset"
+        sx={{
+          width: "100%",
+          display: "flex",
+          flexDirection: "column",
+          gap: "20px",
+          padding: "12px",
+        }}
+      >
+        {/* showProductsOriginFilter */}
+        <Box>
+          <FormLabel
+            sx={{
+              fontSize: "16px",
+              fontWeight: "bold",
+              color: "black !important",
+            }}
+          >
+            Xuất xứ
+          </FormLabel>
+          <Box
+            sx={{
+              maxHeight: "200px",
+              overflowY: "auto",
+              "&::-webkit-scrollbar": {
+                width: "8px",
+              },
+              "&::-webkit-scrollbar-track": {
+                boxShadow: "inset 0 0 5px grey",
+                borderRadius: "10px",
+              },
+              "&::-webkit-scrollbar-thumb": {
+                backgroundColor: "#888",
+                borderRadius: "10px",
+              },
+              "&::-webkit-scrollbar-thumb:hover": {
+                backgroundColor: "#555",
+              },
+            }}
+          >
+            <FormGroup sx={{ paddingLeft: "20px" }}>
+              {productListOriginName.map((origin: any) => (
+                <FormControlLabel
+                  key={`${origin?.id}`}
+                  control={
+                    <Checkbox
+                      checked={
+                        !!filter[ProductsFilterType.OriginId]?.includes(
+                          origin.id
+                        )
+                      }
+                      onChange={(checked) =>
+                        handleFilterProducts(
+                          ProductsFilterType.OriginId,
+                          origin.id,
+                          checked.target.checked
+                        )
+                      }
+                      name={`${origin?.name}`}
+                    />
+                  }
+                  label={`${origin?.name}`}
+                  style={{ fontSize: "10px" }}
+                />
+              ))}
+            </FormGroup>
+          </Box>
+        </Box>
 
-      {/* showProductsCategoryFilter */}
-      <Box>
-        <FormLabel
-          sx={{
-            fontSize: "16px",
-            fontWeight: "bold",
-            color: "black !important",
-          }}
-        >
-          Loại máy
-        </FormLabel>
-        <Box
-          sx={{
-            maxHeight: "200px",
-            overflowY: "auto",
-            "&::-webkit-scrollbar": {
-              width: "8px",
-            },
-            "&::-webkit-scrollbar-track": {
-              boxShadow: "inset 0 0 5px grey",
-              borderRadius: "10px",
-            },
-            "&::-webkit-scrollbar-thumb": {
-              backgroundColor: "#888",
-              borderRadius: "10px",
-            },
-            "&::-webkit-scrollbar-thumb:hover": {
-              backgroundColor: "#555",
-            },
-          }}
-        >
-          <FormGroup sx={{ paddingLeft: "20px" }}>
-            {productListCategoryName.map((category: any) => (
-              <FormControlLabel
-                key={`${category?.id}`}
-                control={
-                  <Checkbox
-                    defaultChecked={filter[ProductsFilterType.CategoryId]?.includes(
-                      category.id
-                    )}
-                    onChange={(checked) =>
-                      handleFilterProducts(
-                        ProductsFilterType.CategoryId,
-                        category.id,
-                        checked.target.checked
-                      )
-                    }
-                    name={`${category?.name}`}
-                  />
-                }
-                label={`${category?.name}`}
-                style={{ fontSize: "10px" }}
-              />
-            ))}
-          </FormGroup>
+        {/* showProductsCategoryFilter */}
+        <Box>
+          <FormLabel
+            sx={{
+              fontSize: "16px",
+              fontWeight: "bold",
+              color: "black !important",
+            }}
+          >
+            Loại máy
+          </FormLabel>
+          <Box
+            sx={{
+              maxHeight: "200px",
+              overflowY: "auto",
+              "&::-webkit-scrollbar": {
+                width: "8px",
+              },
+              "&::-webkit-scrollbar-track": {
+                boxShadow: "inset 0 0 5px grey",
+                borderRadius: "10px",
+              },
+              "&::-webkit-scrollbar-thumb": {
+                backgroundColor: "#888",
+                borderRadius: "10px",
+              },
+              "&::-webkit-scrollbar-thumb:hover": {
+                backgroundColor: "#555",
+              },
+            }}
+          >
+            <FormGroup sx={{ paddingLeft: "20px" }}>
+              {productListCategoryName.map((category: any) => (
+                <FormControlLabel
+                  key={`${category?.id}`}
+                  control={
+                    <Checkbox
+                      checked={
+                        !!filter[ProductsFilterType.CategoryId]?.includes(
+                          category.id
+                        )
+                      }
+                      onChange={(checked) =>
+                        handleFilterProducts(
+                          ProductsFilterType.CategoryId,
+                          category.id,
+                          checked.target.checked
+                        )
+                      }
+                      name={`${category?.name}`}
+                    />
+                  }
+                  label={`${category?.name}`}
+                  style={{ fontSize: "10px" }}
+                />
+              ))}
+            </FormGroup>
+          </Box>
         </Box>
-      </Box>
 
-      {/* showProductsBrandFilter */}
-      <Box>
-        <FormLabel
-          sx={{
-            fontSize: "16px",
-            fontWeight: "bold",
-            color: "black !important",
-          }}
-        >
-          Thương hiệu
-        </FormLabel>
-        <Box
-          sx={{
-            maxHeight: "200px",
-            overflowY: "auto",
-            "&::-webkit-scrollbar": {
-              width: "8px",
-            },
-            "&::-webkit-scrollbar-track": {
-              boxShadow: "inset 0 0 5px grey",
-              borderRadius: "10px",
-            },
-            "&::-webkit-scrollbar-thumb": {
-              backgroundColor: "#888",
-              borderRadius: "10px",
-            },
-            "&::-webkit-scrollbar-thumb:hover": {
-              backgroundColor: "#555",
-            },
-          }}
-        >
-          <FormGroup sx={{ paddingLeft: "20px" }}>
-            {productListBrandName.map((brand: any) => (
-              <FormControlLabel
-                key={`${brand?.id}`}
-                control={
-                  <Checkbox
-                    defaultChecked={filter[ProductsFilterType.BrandId]?.includes(
-                      brand.id
-                    )}
-                    onChange={(checked) =>
-                      handleFilterProducts(
-                        ProductsFilterType.BrandId,
-                        brand.id,
-                        checked.target.checked
-                      )
-                    }
-                    name={`${brand?.name}`}
-                  />
-                }
-                label={`${brand?.name}`}
-              />
-            ))}
-          </FormGroup>
+        {/* showProductsBrandFilter */}
+        <Box>
+          <FormLabel
+            sx={{
+              fontSize: "16px",
+              fontWeight: "bold",
+              color: "black !important",
+            }}
+          >
+            Thương hiệu
+          </FormLabel>
+          <Box
+            sx={{
+              maxHeight: "200px",
+              overflowY: "auto",
+              "&::-webkit-scrollbar": {
+                width: "8px",
+              },
+              "&::-webkit-scrollbar-track": {
+                boxShadow: "inset 0 0 5px grey",
+                borderRadius: "10px",
+              },
+              "&::-webkit-scrollbar-thumb": {
+                backgroundColor: "#888",
+                borderRadius: "10px",
+              },
+              "&::-webkit-scrollbar-thumb:hover": {
+                backgroundColor: "#555",
+              },
+            }}
+          >
+            <FormGroup sx={{ paddingLeft: "20px" }}>
+              {productListBrandName.map((brand: any) => (
+                <FormControlLabel
+                  key={`${brand?.id}`}
+                  control={
+                    <Checkbox
+                      checked={
+                        !!filter[ProductsFilterType.BrandId]?.includes(brand.id)
+                      }
+                      onChange={(checked) =>
+                        handleFilterProducts(
+                          ProductsFilterType.BrandId,
+                          brand.id,
+                          checked.target.checked
+                        )
+                      }
+                      name={`${brand?.name}`}
+                    />
+                  }
+                  label={`${brand?.name}`}
+                />
+              ))}
+            </FormGroup>
+          </Box>
         </Box>
-      </Box>
-    </FormControl>
+      </FormControl>
+    </Box>
   );
 };
 

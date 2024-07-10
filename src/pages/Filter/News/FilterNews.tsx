@@ -66,18 +66,6 @@ const NewsFilteredRow: React.FC<NewFilterProps> = ({
     setNewsType(newsTypeValues);
   };
 
-  const handleClearFilter = (key: string, value: string) => {
-    const updatedFilter = { ...filter };
-    updatedFilter[key] = updatedFilter[key].filter((val: any) => val !== value);
-    if (updatedFilter[key].length === 0) {
-      delete updatedFilter[key];
-    }
-    setFilter && setFilter(updatedFilter);
-    updateURLSearchParams(updatedFilter);
-    getNewsFilteredData(updatedFilter);
-    // Add additional logic to update URL and fetch filtered data if needed
-  };
-
   const handleAutocompleteChange = (
     // eslint-disable-next-line @typescript-eslint/ban-types
     _event: React.ChangeEvent<{}>,
@@ -85,7 +73,6 @@ const NewsFilteredRow: React.FC<NewFilterProps> = ({
   ) => {
     setIsCheckboxChange(false);
     if (value !== null) {
-      console.log(value);
       setSearchTerm(value);
       const updatedFilter = {
         ...filter,
@@ -98,7 +85,7 @@ const NewsFilteredRow: React.FC<NewFilterProps> = ({
       setSearchTerm("");
       const updatedFilter = {
         ...filter,
-        Title: "",
+        Title: null,
       };
       setFilter && setFilter(updatedFilter);
       updateURLSearchParams(updatedFilter);
@@ -118,7 +105,6 @@ const NewsFilteredRow: React.FC<NewFilterProps> = ({
     } else {
       filter[filterType] = item.filter((val: any) => val !== value);
     }
-
     setFilter && setFilter(filter);
     updateURLSearchParams(filter);
     getNewsFilteredData(filter);
@@ -167,55 +153,22 @@ const NewsFilteredRow: React.FC<NewFilterProps> = ({
     getNewsFilteredData(updatedFilter);
   };
 
-  const handleResetFilters = () => {
-    const resetFilter: ProductFilter = {};
-    setFilter && setFilter(resetFilter);
-    setSearchTerm("");
-    updateURLSearchParams(resetFilter);
-    getNewsFilteredData(resetFilter);
-  };
-
   useEffect(() => {
     const initialFilter = getFilterFromURL();
     setFilter && setFilter(initialFilter);
     fetchNewsCategory();
     fetchNewsType();
     fetchNewsTitle();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  const isFilterActive = () => {
-    return Object.keys(filter).some((key) => filter[key].length > 0);
-  };
-
-  const getFilterArray = (filter: { [key: string]: string[] }) => {
-    const filterArray: { key: string; value: string }[] = [];
-    for (const key in filter) {
-      if (key !== "Title") {
-        filter[key]?.forEach((value) => {
-          filterArray.push({ key, value });
-        });
-      }
-    }
-    return filterArray;
-  };
-
-  const getNewsCategoryName = (categoryId: string, newsListCategory: any[]) => {
-    const category = newsListCategory.find((cat) => cat.id === categoryId);
-    return category ? category.name : "";
-  };
-
-  const filterArray = getFilterArray(filter);
 
   return (
     <Box>
-      {/* Search bar */}
       <Box>
         <Autocomplete
           disablePortal
           id="combo-box-demo"
           options={newsListTitle}
-          value={searchTerm}
+          value={filter.Title || null}
           onChange={handleAutocompleteChange}
           renderInput={(params) => (
             <TextField
@@ -227,80 +180,6 @@ const NewsFilteredRow: React.FC<NewFilterProps> = ({
           )}
         />
       </Box>
-      {/* Reset Button */}
-      {isCheckboxChange && isFilterActive() && (
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: "column",
-              justifyContent: "space-between",
-              margin: "8px",
-              gap: "4px"
-            }}
-          >
-            <Typography
-              sx={{
-                fontSize: "18px",
-                fontWeight: "800",
-                letterSpacing: "-1px",
-                color: "#1976d2",
-              }}
-            >
-              Bạn đã chọn:
-            </Typography>
-            <Box
-            sx={{
-              display: "flex",
-              gap: 1,
-              flexWrap: "wrap",
-              margin: "0 8px",
-            }}
-          >
-            {filterArray.map(({ key, value }) => (
-              <Chip
-                key={`${key}-${value}`}
-                label={
-                  key === NEWS_FILTER.NewsCategoryId
-                    ? `Loại tin: ${getNewsCategoryName(
-                        value,
-                        newsListCategory
-                      )}`
-                    : `Mức độ: ${value}`
-                }
-                onDelete={() => handleClearFilter(key, value)}
-              />
-            ))}
-          </Box>
-            <Box
-              sx={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                border: "1px solid rgba(25, 118, 210, 0.5)",
-                padding: "4px",
-                color: "#1976d2",
-                borderRadius: "5px",
-                "&:hover": {
-                  cursor: "pointer",
-                  border: "1px solid #1976d2",
-                  backgroundColor: "rgba(25, 118, 210, 0.04)",
-                },
-              }}
-              onClick={handleResetFilters}
-            >
-              <CloseOutlined />
-              <Typography
-                sx={{
-                  fontSize: "18px",
-                  fontWeight: "800",
-                  letterSpacing: "-1px",
-                }}
-              >
-                Xóa tất cả
-              </Typography>
-            </Box>
-          </Box>
-      )}
       <FormControl
         component="fieldset"
         sx={{

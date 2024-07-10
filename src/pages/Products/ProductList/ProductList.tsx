@@ -3,16 +3,37 @@ import { toast } from "react-toastify";
 import { MachineryApi } from "../../../api/services/apiMachinery";
 import { ProductAdmin } from "../../../models/products";
 import "./ProductList.scss";
-import { Box, Button, Drawer, Typography } from "@mui/material";
+import { Box, Button, Chip, Drawer, Typography } from "@mui/material";
 import ProductCard from "../../../components/product-card/ProductCard";
 import ProductFilteredRow from "../../Filter/Products/FilterProducts";
 import { GridFilterListIcon } from "@mui/x-data-grid";
 import { Skeleton } from "antd";
+import { ApiOrigin } from "../../../api/services/apiOrigin";
+import { CategoryApi } from "../../../api/services/apiCategories";
+import { BrandApi } from "../../../api/services/apiBrand";
+import { CloseOutlined } from "@mui/icons-material";
+import { ProductsFilterType } from "../../../constants/filter";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const ProductList: React.FC = () => {
   const [products, setProducts] = useState<ProductAdmin[]>([]);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-  const { apiGetMachine, loading } = MachineryApi();
+  const [filter, setFilter] = useState<any>({});
+  const { apiGetList, apiGetMachine, loading } = MachineryApi();
+  const { apiGetOrigin } = ApiOrigin();
+  const { getCategoryName } = CategoryApi();
+  const { getBrandName } = BrandApi();
+  const [productListOriginName, setProductListOriginName] = useState<string[]>(
+    []
+  );
+  const [productListCategoryName, setProductListCategoryName] = useState<
+    string[]
+  >([]);
+  const [productListBrandName, setProductListBrandName] = useState<string[]>(
+    []
+  );
+  const navigate = useNavigate();
+  const location = useLocation();
   const fetchProducts = async () => {
     try {
       const apiResponse = await apiGetMachine("Available");
@@ -23,9 +44,111 @@ const ProductList: React.FC = () => {
     }
   };
 
+  const fetchProductsOriginNames = async () => {
+    const response = await apiGetOrigin();
+    const originName = response.data?.map((origin: any) => ({
+      id: origin.id,
+      name: origin.name,
+    }));
+    setProductListOriginName(originName);
+  };
+
+  const fetchProductsCategoryNames = async () => {
+    const response = await getCategoryName();
+    const categoryName = response?.map((category: any) => ({
+      id: category.id,
+      name: category.name,
+    }));
+    setProductListCategoryName(categoryName);
+  };
+
+  const fetchProductsBrandNames = async () => {
+    const response = await getBrandName();
+    const brandName = response?.map((brand: any) => ({
+      id: brand.id,
+      name: brand.name,
+    }));
+    setProductListBrandName(brandName);
+  };
+
+  const getProductsFilterByID = (
+    categoryId: string,
+    newsListCategory: any[]
+  ) => {
+    const category = newsListCategory.find((cat) => cat.id === categoryId);
+    return category ? category.name : "";
+  };
+
+  const getFilterArray = (filter: { [key: string]: string[] }) => {
+    const filterArray: { key: string; value: string }[] = [];
+    for (const key in filter) {
+      if (key !== "name") {
+        filter[key]?.forEach((value) => {
+          filterArray.push({ key, value });
+        });
+      }
+    }
+    return filterArray;
+  };
+
+  const filterArray = getFilterArray(filter);
+
+  const updateURLSearchParams = (filter: any) => {
+    const searchParams = new URLSearchParams();
+    Object.keys(filter).forEach((key) => {
+      if (filter[key]) {
+        searchParams.set(key, filter[key]);
+      } else {
+        searchParams.delete(key);
+      }
+    });
+    const to = { pathname: location.pathname, search: searchParams.toString() };
+    navigate(to, { replace: true });
+  };
+
+  const getProductFilteredData = async (params: any) => {
+    try {
+      const data = await apiGetList(params);
+      // if(setProducts) setProducts(data);
+      setProducts && setProducts(data);
+    } catch (error) {
+      console.error("lỗi");
+    }
+  };
+
+  const handleResetFilters = () => {
+    const resetFilter = {};
+    setFilter(resetFilter);
+    updateURLSearchParams(resetFilter);
+    getProductFilteredData(resetFilter);
+  };
+
+  const handleClearFilter = (key: string, value: string) => {
+    const updatedFilter = { ...filter };
+    if (
+      key === ProductsFilterType.OriginId ||
+      key === ProductsFilterType.CategoryId ||
+      key === ProductsFilterType.BrandId
+    ) {
+      updatedFilter[key] = updatedFilter[key].filter(
+        (val: any) => val !== value
+      );
+      if (updatedFilter[key].length === 0) {
+        delete updatedFilter[key];
+      }
+    } else if (key === "name") {
+      updatedFilter[key] = ""; // Clear the Autocomplete filter
+    }
+    setFilter && setFilter(updatedFilter);
+    updateURLSearchParams(updatedFilter);
+    getProductFilteredData(updatedFilter);
+  };
+
   useEffect(() => {
     fetchProducts();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    fetchProductsOriginNames();
+    fetchProductsCategoryNames();
+    fetchProductsBrandNames();
   }, []);
 
   const toggleDrawer = (open: boolean) => () => {
@@ -43,6 +166,92 @@ const ProductList: React.FC = () => {
       window.removeEventListener("resize", handleResize);
     };
   }, []);
+
+  const renderChips = () => {
+    return (
+      <>
+        {filterArray.length > 0 && (
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              margin: "8px",
+            }}
+          >
+            <Typography
+              sx={{
+                fontSize: "18px",
+                fontWeight: "800",
+                letterSpacing: "-1px",
+                color: "#1976d2",
+              }}
+            >
+              Đã chọn:
+            </Typography>
+            <Box
+              sx={{
+                display: "flex",
+                flexWrap: "wrap",
+                flex: "3",
+                marginLeft: "4px",
+              }}
+            >
+              {filterArray.map(({ key, value }) => (
+                <Chip
+                  key={key + value}
+                  label={
+                    key === ProductsFilterType.OriginId
+                      ? `Xuất xứ: ${getProductsFilterByID(
+                          value,
+                          productListOriginName
+                        )}`
+                      : key === ProductsFilterType.CategoryId
+                      ? `Loại máy: ${getProductsFilterByID(
+                          value,
+                          productListCategoryName
+                        )}`
+                      : `Thương hiệu: ${getProductsFilterByID(
+                          value,
+                          productListBrandName
+                        )}`
+                  }
+                  onDelete={() => handleClearFilter(key, value)}
+                  sx={{ margin: "5px" }}
+                />
+              ))}
+            </Box>
+            <Box
+              sx={{
+                display: "flex",
+                border: "1px solid rgba(25, 118, 210, 0.5)",
+                padding: "4px",
+                color: "#1976d2",
+                borderRadius: "5px",
+                "&:hover": {
+                  cursor: "pointer",
+                  border: "1px solid #1976d2",
+                  backgroundColor: "rgba(25, 118, 210, 0.04)",
+                },
+              }}
+              onClick={handleResetFilters}
+            >
+              <CloseOutlined />
+              <Typography
+                sx={{
+                  fontSize: "18px",
+                  fontWeight: "800",
+                  letterSpacing: "-1px",
+                }}
+              >
+                Xóa tất cả
+              </Typography>
+            </Box>
+          </Box>
+        )}
+      </>
+    );
+  };
 
   return (
     <Box
@@ -67,7 +276,11 @@ const ProductList: React.FC = () => {
           top: 0,
         }}
       >
-        <ProductFilteredRow setProducts={setProducts} />
+        <ProductFilteredRow
+          setProducts={setProducts}
+          filter={filter}
+          setFilter={setFilter}
+        />
       </Box>
       <Box sx={{ display: { xs: "block", md: "none" } }}>
         <Button
@@ -120,17 +333,17 @@ const ProductList: React.FC = () => {
               },
             }}
           >
-            <ProductFilteredRow setProducts={setProducts} />
+            <ProductFilteredRow
+              setProducts={setProducts}
+              filter={filter}
+              setFilter={setFilter}
+            />
           </Box>
         </Drawer>
       </Box>
       <Box sx={{ width: { xs: "100%", md: "80%" } }}>
         <Box
           sx={{
-            display: "flex",
-            flexDirection: "row",
-            alignItems: "center",
-            justifyContent: "space-around",
             padding: "10px",
             boxShadow:
               "rgba(0, 0, 0, 0.1) 0px 0px 5px 0px, rgba(0, 0, 0, 0.1) 0px 0px 1px 0px",
@@ -142,8 +355,8 @@ const ProductList: React.FC = () => {
             <Typography
               sx={{
                 textTransform: "uppercase",
-                fontSize: "18px",
-                fontWeight: "bold",
+                fontSize: "24px",
+                fontWeight: "800",
               }}
             >
               Các loại máy
@@ -152,6 +365,13 @@ const ProductList: React.FC = () => {
           {/* <Box sx={{ width: "50%", textAlign: "right" }}>
             <SortMenu />
           </Box> */}
+        </Box>
+        <Box
+          sx={{
+            minHeight: "64px",
+          }}
+        >
+          <Box sx={{ display: "flex", flexWrap: "wrap" }}>{renderChips()}</Box>
         </Box>
         {loading ? (
           <Skeleton />

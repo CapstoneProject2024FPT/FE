@@ -27,7 +27,7 @@ export default function NewsCard({ post }: Props) {
           justifyContent: "space-between",
           borderRadius: "5px",
           color: "black",
-          transition: "transform 0.2s ease-in-out",
+          transition: "transform 0.5s ease-in-out",
           "&:hover": {
             transform: "scale(1.05)",
           },
