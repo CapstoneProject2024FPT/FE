@@ -3,18 +3,16 @@ import { toast } from "react-toastify";
 import { MachineryApi } from "../../../api/services/apiMachinery";
 import { ProductAdmin } from "../../../models/products";
 import "./ProductList.scss";
-import { Box, Typography } from "@mui/material";
+import { Box, Button, Drawer, Typography } from "@mui/material";
 import ProductCard from "../../../components/product-card/ProductCard";
-import ProductFilteredRow from "../../Filter/FilterProducts";
-import SortMenu from "../../Sort/SortProducts";
+import ProductFilteredRow from "../../Filter/Products/FilterProducts";
+import { GridFilterListIcon } from "@mui/x-data-grid";
+import { Skeleton } from "antd";
 
 const ProductList: React.FC = () => {
-  const [products, setProducts] = useState<ProductAdmin[]>();
-
-  //api
-  const { apiGetMachine } = MachineryApi();
-
-  //----------------------------------------------------------------------------
+  const [products, setProducts] = useState<ProductAdmin[]>([]);
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const { apiGetMachine, loading } = MachineryApi();
   const fetchProducts = async () => {
     try {
       const apiResponse = await apiGetMachine("Available");
@@ -26,13 +24,25 @@ const ProductList: React.FC = () => {
   };
 
   useEffect(() => {
-    return () => {
-      fetchProducts();
-    };
+    fetchProducts();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const productFiltered = products?.map((item) => item);
+  const toggleDrawer = (open: boolean) => () => {
+    setIsDrawerOpen(open);
+  };
+
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth >= 960) {
+        setIsDrawerOpen(false);
+      }
+    };
+    window.addEventListener("resize", handleResize);
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
 
   return (
     <Box
@@ -46,6 +56,7 @@ const ProductList: React.FC = () => {
     >
       <Box
         sx={{
+          display: { xs: "none", md: "block" },
           boxShadow:
             "rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px",
           borderRadius: "5px",
@@ -56,12 +67,64 @@ const ProductList: React.FC = () => {
           top: 0,
         }}
       >
-        <ProductFilteredRow
-          listProduct={productFiltered}
-          setProducts={setProducts}
-        />
+        <ProductFilteredRow setProducts={setProducts} />
       </Box>
-      <Box sx={{ width: "80%" }}>
+      <Box sx={{ display: { xs: "block", md: "none" } }}>
+        <Button
+          variant="outlined"
+          onClick={toggleDrawer(true)}
+          sx={{
+            borderRadius: "5px",
+            "&:hover": {
+              borderColor: "#1976d2",
+              borderRadius: "5px",
+            },
+          }}
+        >
+          <GridFilterListIcon
+            sx={{
+              "&:hover": {
+                color: "#1976d2",
+                backgroundColor: "unset",
+                borderRadius: "none",
+              },
+            }}
+          />
+          <Typography sx={{ marginLeft: "4px" }} className="hide-text-on-small">
+            Lọc
+          </Typography>
+        </Button>
+        <Drawer anchor="left" open={isDrawerOpen} onClose={toggleDrawer(false)}>
+          <Box
+            sx={{
+              width: "250px",
+              padding: "20px",
+              boxShadow:
+                "rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px",
+              borderRadius: "5px",
+              height: "100%",
+              overflowY: "auto",
+              "&::-webkit-scrollbar": {
+                width: "8px",
+              },
+              "&::-webkit-scrollbar-track": {
+                boxShadow: "inset 0 0 5px grey",
+                borderRadius: "10px",
+              },
+              "&::-webkit-scrollbar-thumb": {
+                backgroundColor: "#888",
+                borderRadius: "10px",
+              },
+              "&::-webkit-scrollbar-thumb:hover": {
+                backgroundColor: "#555",
+              },
+            }}
+          >
+            <ProductFilteredRow setProducts={setProducts} />
+          </Box>
+        </Drawer>
+      </Box>
+      <Box sx={{ width: { xs: "100%", md: "80%" } }}>
         <Box
           sx={{
             display: "flex",
@@ -86,24 +149,28 @@ const ProductList: React.FC = () => {
               Các loại máy
             </Typography>
           </Box>
-          <Box sx={{ width: "50%", textAlign: "right" }}>
+          {/* <Box sx={{ width: "50%", textAlign: "right" }}>
             <SortMenu />
+          </Box> */}
+        </Box>
+        {loading ? (
+          <Skeleton />
+        ) : (
+          <Box
+            sx={{
+              display: "grid",
+              gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))",
+              gap: "25px",
+              justifyContent: "space-between",
+              width: "100%%",
+              padding: "0 20px",
+            }}
+          >
+            {products?.map((product) => (
+              <ProductCard key={product.id} product={product} />
+            ))}
           </Box>
-        </Box>
-        <Box
-          sx={{
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))",
-            gap: "25px",
-            justifyContent: "space-between",
-            width: "100%%",
-            padding: "0 20px",
-          }}
-        >
-          {products?.map((product) => (
-            <ProductCard key={product.id} product={product} />
-          ))}
-        </Box>
+        )}
       </Box>
     </Box>
   );

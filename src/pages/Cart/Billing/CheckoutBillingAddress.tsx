@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 // @mui
 import { Box, Grid, Card, Button, Typography, Container } from "@mui/material";
 
@@ -10,8 +10,12 @@ import Iconify from "../../../components/Iconify";
 //
 import CartSummary from "../CartSection/CartSummary";
 import { useCheckout } from "../../../zustand/useCheckout";
-import { addressUser, addresses } from "./address";
 import { useAddress } from "../../../zustand/useAddress";
+import CheckoutNewAddressForm from "./CheckoutNewAddressForm";
+import { ApiAddress } from "../../../api/services/apiAddress";
+import { addressProps } from "../../../models/address";
+import { toast } from "react-toastify";
+import { formatAddress } from "../../../utils/fn";
 
 // ----------------------------------------------------------------------
 
@@ -24,6 +28,15 @@ const CheckoutBillingAddress: React.FC<checkoutBillingAndAddress> = ({
   handleNextStep,
 }) => {
   const { total } = useCheckout();
+  const { apiGetAddress } = ApiAddress();
+  const [addresses, setAddresses] = useState<addressProps[]>([]);
+
+  //user info
+  const loginInfo = localStorage.getItem("loginInfo");
+
+  const loginInfoString = loginInfo ? JSON.parse(loginInfo) : null;
+
+  const user = loginInfoString?.data;
 
   const [open, setOpen] = useState(false);
 
@@ -35,20 +48,42 @@ const CheckoutBillingAddress: React.FC<checkoutBillingAndAddress> = ({
     setOpen(false);
   };
 
-  console.log(open, handleClose);
+  const fetchListAddress = async () => {
+    if (user) {
+      const params = {
+        AccountId: user.id,
+      };
+      const response = await apiGetAddress(params);
+      if (response.status === 200) {
+        setAddresses(response.data);
+      }
+    }
+  };
 
+  useEffect(() => {
+    fetchListAddress();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const onCreateSuccess = () => {
+    handleClose();
+    toast.success("Tạo địa chỉ mới thành công");
+    fetchListAddress();
+  };
   return (
     <>
       <Container sx={{ background: "#ECF0F1" }} maxWidth="xl">
         <Grid container spacing={3}>
           <Grid item xs={12} md={8}>
-            {addresses.map((address, index) => (
-              <AddressItem
-                key={index}
-                onNextStep={handleNextStep}
-                address={address}
-              />
-            ))}
+            <Box maxHeight={500} sx={{ overflow: "auto" }}>
+              {addresses.map((address, index) => (
+                <AddressItem
+                  key={index}
+                  onNextStep={handleNextStep}
+                  address={address}
+                />
+              ))}
+            </Box>
             <Box sx={{ display: "flex", justifyContent: "space-between" }}>
               <Button
                 size="small"
@@ -74,6 +109,13 @@ const CheckoutBillingAddress: React.FC<checkoutBillingAndAddress> = ({
           </Grid>
         </Grid>
       </Container>
+      {open && (
+        <CheckoutNewAddressForm
+          onClose={handleClose}
+          open={open}
+          onSuccess={onCreateSuccess}
+        />
+      )}
     </>
   );
 };
@@ -82,12 +124,12 @@ export default CheckoutBillingAddress;
 // ----------------------------------------------------------------------
 
 type AddressItemProps = {
-  address: addressUser;
+  address: addressProps;
   onNextStep: VoidFunction;
 };
 
 function AddressItem({ onNextStep, address }: AddressItemProps) {
-  const { addressType, fullAddress, isDefault, phone, receiver } = address;
+  const { account, name } = address;
 
   const { setSelectedAddress } = useAddress();
 
@@ -96,48 +138,36 @@ function AddressItem({ onNextStep, address }: AddressItemProps) {
     onNextStep();
   };
   return (
-    <Card sx={{ p: 3, mb: 3, position: "relative" }}>
-      <Box sx={{ mb: 1, display: "flex", alignItems: "center" }}>
-        <Typography variant="subtitle1">{receiver}</Typography>
-
-        <Typography variant="body2" sx={{ color: "text.secondary" }}>
-          &nbsp;({addressType})
-        </Typography>
-
-        {isDefault && (
-          <Typography color="info" sx={{ ml: 1 }}>
-            Mặc Định
+    <>
+      <Card sx={{ p: 3, mb: 3, position: "relative" }}>
+        <Box
+          sx={{
+            mb: 1,
+            display: "flex",
+            alignItems: "flex-start",
+            flexDirection: "column",
+          }}
+        >
+          <Typography variant="subtitle1">Tên: {account.fullName}</Typography>
+          <Typography variant="subtitle1">Tên địa chỉ: {name}</Typography>
+          <Typography variant="body2" gutterBottom>
+            Địa chỉ: {formatAddress(address)}
           </Typography>
-        )}
-      </Box>
+        </Box>
 
-      <Typography variant="body2" gutterBottom>
-        {fullAddress}
-      </Typography>
-
-      <Typography variant="body2" sx={{ color: "text.secondary" }}>
-        {phone}
-      </Typography>
-
-      <Box
-        sx={{
-          mt: 3,
-          display: "flex",
-          position: { sm: "absolute" },
-          right: { sm: 24 },
-          bottom: { sm: 24 },
-        }}
-      >
-        {!isDefault && (
-          <Button variant="outlined" size="small" color="inherit">
-            Xoá
+        <Box
+          sx={{
+            mt: 3,
+            display: "flex",
+            justifyContent: "flex-end",
+          }}
+        >
+          <Box sx={{ mx: 0.5 }} />
+          <Button variant="outlined" size="small" onClick={handleCreateBilling}>
+            Giao hàng tại Địa Chỉ này
           </Button>
-        )}
-        <Box sx={{ mx: 0.5 }} />
-        <Button variant="outlined" size="small" onClick={handleCreateBilling}>
-          Giao hàng tại Địa Chỉ này
-        </Button>
-      </Box>
-    </Card>
+        </Box>
+      </Card>
+    </>
   );
 }

@@ -1,9 +1,9 @@
 export interface CheckOutProp {
-  accountId: string;
   totalAmount: number;
   finalAmount: number;
   note: string;
   machineryList: machineDetail[];
+  addressId: string;
 }
 
 interface machineDetail {

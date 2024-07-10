@@ -30,10 +30,18 @@ export const ApiSerial = () => {
   interface addProps {
     machineryId: string;
   }
-  const apiAddSerialbyMachineId = async (params: addProps) => {
+  interface quantitySerial {
+    quantity: number;
+  }
+  const apiAddSerialbyMachineId = async (
+    requestBody: addProps,
+    paramsQuantity: quantitySerial
+  ) => {
     setLoading(true);
     try {
-      const response = await axiosPublic.post(SERIALNUMBER, params);
+      const response = await axiosPublic.post(SERIALNUMBER, requestBody, {
+        params: paramsQuantity,
+      });
 
       return response;
 

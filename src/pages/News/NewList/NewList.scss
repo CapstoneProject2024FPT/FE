@@ -1,0 +1,7 @@
+.hide-text-on-small {
+    @media (max-width: 600px) { /* Adjust the breakpoint as needed */
+      display: none;
+    }
+  }
+
+  

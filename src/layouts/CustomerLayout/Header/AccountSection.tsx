@@ -98,6 +98,34 @@ const AccountSection = () => {
           </Link>
         </MenuItem>
         <Divider />
+        <MenuItem>
+          <Link
+            to={config.routes.userChangePassword}
+            style={{ textDecoration: "none", color: "inherit" }}
+          >
+            Đổi mật khẩu
+          </Link>
+        </MenuItem>
+        <Divider />
+        <MenuItem>
+          <Link
+            to={config.routes.userAddress}
+            style={{ textDecoration: "none", color: "inherit" }}
+          >
+            Địa chỉ
+          </Link>
+        </MenuItem>
+        <Divider />
+        <MenuItem>
+          <Link
+            to={config.routes.orderManagement}
+            style={{ textDecoration: "none", color: "inherit" }}
+          >
+            Quản lí đơn hàng
+          </Link>
+        </MenuItem>
+        <Divider />
+
         <MenuItem onClick={handleLogout} sx={{ color: "red" }}>
           <ListItemIcon>
             <Logout fontSize="small" />

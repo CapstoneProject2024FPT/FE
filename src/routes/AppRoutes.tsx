@@ -33,6 +33,8 @@ import ChangePassword from "../pages/UserProfile/ChangePassword";
 import NewsCategories from "../pages/Admin/NewsCategories/NewsCategories";
 import BlogPostDetail from "../pages/Admin/Blog/BlogPostDetail";
 import AccountDetail from "../pages/Admin/User/Table/AccountDetail";
+import Address from "../pages/UserProfile/Address";
+import News from "../pages/News/News";
 
 const AppRoute: React.FC = () => {
   return (
@@ -65,9 +67,19 @@ const AppRoute: React.FC = () => {
           element={<ChangePassword />}
         />
         <Route
+          key="Address"
+          path={config.routes.userAddress}
+          element={<Address />}
+        />
+        <Route
           key="productList"
           path={config.routes.productList}
           element={<Products />}
+        />
+        <Route
+          key="listNews"
+          path={config.routes.news}
+          element={<News />}
         />
         <Route
           key="favoriteProduct"

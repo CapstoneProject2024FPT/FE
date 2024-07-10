@@ -22,7 +22,7 @@ export default function CheckoutBillingInfo({ onBackStep }: Props) {
   return (
     <Card sx={{ mb: 3 }}>
       <CardHeader
-        title="Địa chỉ hoá đơn"
+        title="Địa chỉ giao hàng"
         action={
           <Button
             size="small"
@@ -35,7 +35,7 @@ export default function CheckoutBillingInfo({ onBackStep }: Props) {
       />
       <CardContent>
         <Typography variant="subtitle2" gutterBottom>
-          {address?.receiver}
+          {address?.account.fullName}
           <Typography
             component="span"
             variant="body2"
@@ -43,11 +43,9 @@ export default function CheckoutBillingInfo({ onBackStep }: Props) {
           ></Typography>
         </Typography>
 
-        <Typography variant="body2" gutterBottom>
-          {address?.phone}
-        </Typography>
         <Typography variant="body2" sx={{ color: "text.secondary" }}>
-          {address?.fullAddress}
+          {address?.note}, {address?.ward.name}, {address?.district.name},{" "}
+          {address?.city.name}
         </Typography>
       </CardContent>
     </Card>

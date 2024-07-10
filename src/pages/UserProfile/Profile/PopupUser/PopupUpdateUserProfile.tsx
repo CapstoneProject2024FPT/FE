@@ -64,7 +64,6 @@ const PopupUpdateUserProfile: React.FC<userData> = ({
     email: Yup.string()
       .required("bắt buộc")
       .matches(patternValidate.email, "Phải đúng định dạng email"),
-    address: Yup.string().required("bắt buộc").min(15, "Tối thiểu 15 kí tự"),
     phoneNumber: Yup.string()
       .required("bắt buộc")
       .matches(
@@ -78,7 +77,6 @@ const PopupUpdateUserProfile: React.FC<userData> = ({
   const defaultValues: userPropUpdate = {
     fullName: user?.fullName || "",
     email: user?.email || "",
-    address: user?.address || "",
     phoneNumber: user?.phoneNumber || "",
     image:
       user?.image ||
@@ -205,10 +203,6 @@ const PopupUpdateUserProfile: React.FC<userData> = ({
                   </option>
                 ))}
               </RHFSelect>
-            </Grid>
-            <Grid item xs={12}>
-              <LabelStyle>Địa chỉ</LabelStyle>
-              <RHFTextField name="address" required multiline rows={2} />
             </Grid>
             <Grid item xs={12}>
               <LoadingButton
