@@ -79,7 +79,9 @@ const Row = (props: { row: OrderProps; onCancelOrder: (orderId: string) => void 
         <TableCell>{row.invoiceCode}</TableCell>
         <TableCell>{formatDateFunc.formatDate(row.createDate)}</TableCell>
         <TableCell>
-          {row.completedDate ? formatDateFunc.formatDate(row.completedDate) : "Chưa hoàn thành"}
+          {row.completedDate
+            ? formatDateFunc.formatDate(row.completedDate)
+            : "Chưa hoàn thành"}
         </TableCell>
         <TableCell>{formatMoney(row.finalAmount)}</TableCell>
         <TableCell>

@@ -59,7 +59,7 @@ const BlogAbleModal: React.FC<ModalNews> = ({
   };
   return (
     <Modal
-      title="Hạng Mức"
+      title="Trạng thái bài viết"
       open={open}
       onOk={handleCLose}
       onCancel={handleCLose}

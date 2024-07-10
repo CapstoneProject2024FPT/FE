@@ -8,7 +8,7 @@ import { LoadingButton } from "@mui/lab";
 // components
 import { FormProvider, RHFTextField } from "../../../components/hook-form";
 import { patternValidate } from "../../../utils/pattern";
-import { CutomerApi } from "../../../api/services/apiUser";
+import { CustomerApi } from "../../../api/services/apiUser";
 import { toast } from "react-toastify";
 
 // ----------------------------------------------------------------------
@@ -24,7 +24,7 @@ interface passwordChange {
   newPassword: string;
 }
 export default function AccountChangePassword() {
-  const { ChangePassword } = CutomerApi();
+  const { ChangePassword } = CustomerApi();
 
   const loginInfoString = localStorage.getItem("loginInfo");
   const auth = loginInfoString ? JSON.parse(loginInfoString) : null;

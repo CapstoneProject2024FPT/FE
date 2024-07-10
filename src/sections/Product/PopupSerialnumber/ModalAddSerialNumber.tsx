@@ -80,7 +80,7 @@ const ModalAddSerialPopup: React.FC<ModalSerialNumber> = ({
   };
   return (
     <Modal
-      title="Chi Tiết Loại Máy"
+      title="Thêm máy"
       open={open}
       onOk={handleCLose}
       onCancel={handleCLose}

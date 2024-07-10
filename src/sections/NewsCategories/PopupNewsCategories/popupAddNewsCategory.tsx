@@ -67,7 +67,12 @@ const ModalNewsCategoryPopupAdd: React.FC<ModalCategory> = ({
     }
   };
   return (
-    <Modal title="Loại tin tức" open={open} onCancel={handleClose} footer={[]}>
+    <Modal
+      title="Thêm loại tin tức"
+      open={open}
+      onCancel={handleClose}
+      footer={[]}
+    >
       <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
         <Card sx={{ p: 3 }}>
           <Stack spacing={3}>
