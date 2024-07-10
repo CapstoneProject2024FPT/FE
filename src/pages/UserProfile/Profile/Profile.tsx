@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import Grid from "@mui/material/Unstable_Grid2";
 import { styled } from "@mui/material/styles";
 import { Box, Button, TextField, Typography } from "@mui/material";
-import { CutomerApi } from "../../../api/services/apiUser";
+import { CustomerApi } from "../../../api/services/apiUser";
 import { userModel } from "../../../models/UserData";
 import PopupUpdateUserProfile from "./PopupUser/PopupUpdateUserProfile";
 import { toast } from "react-toastify";
@@ -43,7 +43,7 @@ const Profile: React.FC = () => {
     fetchUserProfile();
     toast.success(response);
   };
-  const { apiUserProfile } = CutomerApi();
+  const { apiUserProfile } = CustomerApi();
 
   const fetchUserProfile = async () => {
     const id: string = auth?.data.id;

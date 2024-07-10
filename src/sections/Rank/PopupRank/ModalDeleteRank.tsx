@@ -36,7 +36,7 @@ const ModalRankDelete: React.FC<ModalRank> = ({
   };
   return (
     <Modal
-      title="Khả Dụng Thương Hiệu"
+      title="Khả Dụng hạng mức"
       open={open}
       onOk={handleClose}
       onCancel={handleClose}
