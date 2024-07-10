@@ -40,7 +40,7 @@ const NewsFilteredRow: React.FC<NewFilterProps> = ({
   const [newsListCategory, setNewListCategory] = useState<string[]>([]);
   const [newsListTitle, setNewsListTitle] = useState<string[]>([]);
   const [newsType, setNewsType] = useState<string[]>([]);
-  const [searchTerm, setSearchTerm] = useState<string>("");
+  const [searchTerm, setSearchTerm] = useState<string>();
   const [isCheckboxChange, setIsCheckboxChange] = useState<boolean>(false);
   const navigate = useNavigate();
 
