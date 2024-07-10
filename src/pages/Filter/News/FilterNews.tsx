@@ -229,13 +229,13 @@ const NewsFilteredRow: React.FC<NewFilterProps> = ({
       </Box>
       {/* Reset Button */}
       {isCheckboxChange && isFilterActive() && (
-        <Box>
           <Box
             sx={{
               display: "flex",
+              flexDirection: "column",
               justifyContent: "space-between",
-              alignItems: "center",
-              margin: "16px 8px 4px",
+              margin: "8px",
+              gap: "4px"
             }}
           >
             <Typography
@@ -246,11 +246,36 @@ const NewsFilteredRow: React.FC<NewFilterProps> = ({
                 color: "#1976d2",
               }}
             >
-              Đã chọn
+              Bạn đã chọn:
             </Typography>
+            <Box
+            sx={{
+              display: "flex",
+              gap: 1,
+              flexWrap: "wrap",
+              margin: "0 8px",
+            }}
+          >
+            {filterArray.map(({ key, value }) => (
+              <Chip
+                key={`${key}-${value}`}
+                label={
+                  key === NEWS_FILTER.NewsCategoryId
+                    ? `Loại tin: ${getNewsCategoryName(
+                        value,
+                        newsListCategory
+                      )}`
+                    : `Mức độ: ${value}`
+                }
+                onDelete={() => handleClearFilter(key, value)}
+              />
+            ))}
+          </Box>
             <Box
               sx={{
                 display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
                 border: "1px solid rgba(25, 118, 210, 0.5)",
                 padding: "4px",
                 color: "#1976d2",
@@ -275,30 +300,6 @@ const NewsFilteredRow: React.FC<NewFilterProps> = ({
               </Typography>
             </Box>
           </Box>
-          <Box
-            sx={{
-              display: "flex",
-              gap: 1,
-              flexWrap: "wrap",
-              margin: "4px 8px",
-            }}
-          >
-            {filterArray.map(({ key, value }) => (
-              <Chip
-                key={`${key}-${value}`}
-                label={
-                  key === NEWS_FILTER.NewsCategoryId
-                    ? `Loại tin: ${getNewsCategoryName(
-                        value,
-                        newsListCategory
-                      )}`
-                    : `Mức độ: ${value}`
-                }
-                onDelete={() => handleClearFilter(key, value)}
-              />
-            ))}
-          </Box>
-        </Box>
       )}
       <FormControl
         component="fieldset"
