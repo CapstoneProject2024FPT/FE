@@ -1,7 +1,7 @@
 import React, { useCallback } from "react";
 import Box from "@mui/material/Box";
 import { Card, Grid, Modal, Typography } from "@mui/material";
-import { CutomerApi } from "../../../../api/services/apiUser";
+import { CustomerApi } from "../../../../api/services/apiUser";
 import { userModel, userPropUpdate } from "../../../../models/UserData";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm } from "react-hook-form";
@@ -95,7 +95,7 @@ const PopupUpdateUserProfile: React.FC<userData> = ({
     formState: { isSubmitting },
   } = methods;
 
-  const { updateProfile } = CutomerApi();
+  const { updateProfile } = CustomerApi();
 
   const onSubmit = async (data: userPropUpdate) => {
     try {

@@ -12,7 +12,7 @@ import {
 //models
 // components
 import { staffProps } from "../../../models/UserData";
-import { CutomerApi } from "../../../api/services/apiUser";
+import { CustomerApi } from "../../../api/services/apiUser";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import UserEditForm from "./Modal/UserEditForm";
@@ -20,7 +20,7 @@ import UserEditForm from "./Modal/UserEditForm";
 // ----------------------------------------------------------------------
 
 export default function AccountGeneral() {
-  const { apiUserProfile } = CutomerApi();
+  const { apiUserProfile } = CustomerApi();
   const [profile, setProfile] = useState<staffProps>();
   const [open, setOpen] = useState<boolean>(false);
 

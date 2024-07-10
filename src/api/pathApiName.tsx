@@ -30,6 +30,7 @@ export const CHECKOUT = "/orders";
 
 //order
 export const ORDER = "/orders";
+export const ORDER_ID = "/orders/:id";
 
 //origin
 export const ORIGIN = "origin";

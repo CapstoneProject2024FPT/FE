@@ -22,7 +22,7 @@ export const statusMapping = [
     id: StatusType.CONFIRMED,
     name: "Đã xác nhận",
   },
-]
+];
 
 export interface OrderProps {
   orderId: string;
@@ -71,7 +71,7 @@ interface WardDetail {
 }
 
 interface UserInfo {
-  userId: string;
+  id: string;
   fullName: string;
   role: string;
 }

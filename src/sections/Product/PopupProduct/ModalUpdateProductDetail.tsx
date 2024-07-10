@@ -145,7 +145,7 @@ const ModalProductDetailPopup: React.FC<ModalProduct> = ({
   };
   return (
     <Modal
-      title="Chi Tiết Máy"
+      title="Cập nhật chi tiết máy"
       open={open}
       onCancel={handleClose}
       footer={[]}

@@ -43,7 +43,7 @@ const ModalProductPopupDelete: React.FC<ModalCategory> = ({
   };
   return (
     <Modal
-      title="Chi Tiết Loại Máy"
+      title="Tạm ngứng bán"
       open={openDeletePopup}
       onOk={handleCLoseDelete}
       onCancel={handleCLoseDelete}

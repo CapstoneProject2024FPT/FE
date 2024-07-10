@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import Grid from "@mui/material/Unstable_Grid2";
 import { styled } from "@mui/material/styles";
 import { Box, TextField, Typography } from "@mui/material";
-import { CutomerApi } from "../../../../../api/services/apiUser";
+import { CustomerApi } from "../../../../../api/services/apiUser";
 import { staffProps } from "../../../../../models/UserData";
 import styles from "./userProfile.module.scss";
 import classNames from "classnames/bind";
@@ -32,7 +32,7 @@ const AccountInfo: React.FC = () => {
   const [userProfile, setUserProfile] = useState<staffProps>();
   const [open, setOpen] = useState<boolean>(false);
 
-  const { apiUserProfile } = CutomerApi();
+  const { apiUserProfile } = CustomerApi();
 
   const handleOpenChangeRole = () => {
     setOpenModalRole(!openModalRole);

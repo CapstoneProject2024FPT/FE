@@ -70,7 +70,7 @@ const ModalRankDetail: React.FC<ModalRank> = ({
   };
   return (
     <Modal
-      title="Chi Tiết Loại Máy"
+      title="Chi tiết hạng mức"
       open={open}
       onCancel={handleClose}
       footer={[]}

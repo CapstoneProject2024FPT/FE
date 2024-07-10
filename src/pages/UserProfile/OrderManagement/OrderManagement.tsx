@@ -23,13 +23,13 @@ import { formatAddress, formatDateFunc, formatMoney } from "../../../utils/fn";
 import { toast } from "react-toastify";
 import EmptyOrder from "../../../components/EmptyOrder";
 
-
-
 const getStatusStyles = (status: string) => {
   switch (status) {
     case "Pending":
       return { backgroundColor: "yellow", color: "black" };
     case "Completed":
+      return { backgroundColor: "green", color: "white" };
+    case "Confirmed":
       return { backgroundColor: "green", color: "white" };
     case "Canceled":
       return { backgroundColor: "red", color: "white" };
@@ -38,10 +38,12 @@ const getStatusStyles = (status: string) => {
   }
 };
 
-const Row = (props: { row: OrderProps, onCancelOrder: (orderId: string, status: string, note: string) => void }) => {
+const Row = (props: {
+  row: OrderProps;
+  onCancelOrder: (orderId: string, status: string, note: string) => void;
+}) => {
   const { row, onCancelOrder } = props;
   const [open, setOpen] = useState(false);
-
 
   const defaultStatus = "Đang chờ xác nhận";
 
@@ -49,15 +51,12 @@ const Row = (props: { row: OrderProps, onCancelOrder: (orderId: string, status: 
     ? statusMapping?.find((status) => status.id === row?.status)?.name
     : defaultStatus;
 
-
   const handleCancelOrder = () => {
     onCancelOrder(row.orderId, "Canceled", "Chú thích");
   };
 
-
   return (
     <React.Fragment>
-
       <TableRow>
         <TableCell>
           <IconButton
@@ -72,7 +71,9 @@ const Row = (props: { row: OrderProps, onCancelOrder: (orderId: string, status: 
         <TableCell>{row.invoiceCode}</TableCell>
         <TableCell>{formatDateFunc.formatDate(row.createDate)}</TableCell>
         <TableCell>
-          {row.completedDate ? formatDateFunc.formatDate(row.completedDate) : "Chưa hoàn thành"}
+          {row.completedDate
+            ? formatDateFunc.formatDate(row.completedDate)
+            : "Chưa hoàn thành"}
         </TableCell>
         <TableCell>{formatMoney(row.finalAmount)}</TableCell>
         <TableCell>
@@ -89,7 +90,11 @@ const Row = (props: { row: OrderProps, onCancelOrder: (orderId: string, status: 
         </TableCell>
         <TableCell>
           {row.status === StatusType.PENDING && (
-            <Button variant="contained" color="secondary" onClick={handleCancelOrder}>
+            <Button
+              variant="contained"
+              color="secondary"
+              onClick={handleCancelOrder}
+            >
               Hủy đơn hàng
             </Button>
           )}
@@ -190,9 +195,9 @@ const OrderManagement: React.FC = () => {
     try {
       await apiCancelOrder({ orderId, status, note });
       fetchOrders(); // Fetch orders again to refresh the list
-      toast.success("Đơn hàng đã được hủy thành công");  // Thông báo thành công
+      toast.success("Đơn hàng đã được hủy thành công"); // Thông báo thành công
     } catch (error) {
-      toast.error("Có lỗi xảy ra khi hủy đơn hàng");  // Thông báo lỗi
+      toast.error("Có lỗi xảy ra khi hủy đơn hàng"); // Thông báo lỗi
       console.log(error);
     }
   };
@@ -203,7 +208,6 @@ const OrderManagement: React.FC = () => {
   }, []);
 
   return (
-
     <Container maxWidth="lg">
       <Typography variant="h4" component="h1" gutterBottom>
         Quản lý đơn hàng
@@ -224,9 +228,15 @@ const OrderManagement: React.FC = () => {
           </TableHead>
           <TableBody>
             {orders.length > 0 ? (
-              orders.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((order) => (
-                <Row key={order.orderId} row={order} onCancelOrder={cancelOrder} />
-              ))
+              orders
+                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                .map((order) => (
+                  <Row
+                    key={order.orderId}
+                    row={order}
+                    onCancelOrder={cancelOrder}
+                  />
+                ))
             ) : (
               <TableRow>
                 <TableCell colSpan={8}>

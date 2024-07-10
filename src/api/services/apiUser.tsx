@@ -4,10 +4,12 @@ import { useState } from "react";
 import axios from "axios";
 import { staffUpdateProps, userPropUpdate } from "../../models/UserData";
 
-export const CutomerApi = () => {
+export const CustomerApi = () => {
   const [loading, setLoading] = useState(false);
 
   const apiUserProfile = async (id: string) => {
+    console.log(id);
+
     setLoading(true);
     try {
       const response = await axiosPublic.get(

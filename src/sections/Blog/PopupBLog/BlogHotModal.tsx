@@ -64,7 +64,7 @@ const BlogHotModal: React.FC<ModalNews> = ({
   };
   return (
     <Modal
-      title="Hạng Mức"
+      title="Chỉnh độ nóng tin tức"
       open={open}
       onOk={handleCLose}
       onCancel={handleCLose}
