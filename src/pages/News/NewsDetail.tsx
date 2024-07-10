@@ -21,6 +21,7 @@ import ProgressBar from "../../components/progressBar/ProgressBar";
 import { useParams } from "react-router-dom";
 import { ApiNews } from "../../api/services/apiNews";
 import Fancybox from "../../components/fancy-box-slide/FancyBox";
+import MetaTags from "../../components/MetaTags";
 
 const NewsDetail: React.FC = () => {
   const [news, setNews] = useState<PostGetProps>();
@@ -143,10 +144,20 @@ function Header({ title, cover, createAt }: HeaderProps) {
   };
 
   useEffect(() => {
-    return () => clearTimeout(timeOutId.current as NodeJS.Timeout);
+    return () => {
+      if (timeOutId.current) {
+        clearTimeout(timeOutId.current);
+      }
+    };
   }, []);
   return (
     <Box>
+      <MetaTags
+        title={title}
+        description={title}
+        image={cover}
+        url={shareUrl}
+      />
       <ProgressBar />
       <Box>
         <Stack
