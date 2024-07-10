@@ -1,4 +1,3 @@
-import React from "react";
 import { Box, Card, Typography, CardContent, Stack } from "@mui/material";
 import { formatDateFunc } from "../../../utils/fn";
 import { PostGetProps } from "../../../models/blog";
@@ -41,7 +40,7 @@ export default function NewsCard({ post }: Props) {
           sx={{
             flex: "1",
             position: "relative",
-            width: { xs: "100%"}, // Full width on smaller screens
+            width: { xs: "100%" }, // Full width on smaller screens
           }}
         >
           <Image
@@ -52,7 +51,7 @@ export default function NewsCard({ post }: Props) {
               height: "auto", // Maintain aspect ratio
               objectFit: "contain",
               padding: "20px",
-            margin: "auto"
+              margin: "auto",
             }}
           />
         </Box>
@@ -61,7 +60,11 @@ export default function NewsCard({ post }: Props) {
             flex: "2",
           }}
         >
-          <PostContent title={title} createdAt={createDate} description={description} />
+          <PostContent
+            title={title}
+            createdAt={createDate}
+            description={description}
+          />
         </Box>
       </Card>
     </Link>
@@ -75,7 +78,12 @@ type PostContentProps = {
   description?: string;
 };
 
-export function PostContent({ createdAt, index, title, description }: PostContentProps) {
+export function PostContent({
+  createdAt,
+  index,
+  title,
+  description,
+}: PostContentProps) {
   const latestPostLarge = index === 0;
   const latestPostSmall = index === 1 || index === 2;
   return (
