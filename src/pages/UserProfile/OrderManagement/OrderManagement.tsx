@@ -21,6 +21,7 @@ import { ApiOrder } from "../../../api/services/apiOrder";
 import { OrderProps, statusMapping, StatusType } from "../../../models/order";
 import { formatAddress, formatDateFunc, formatMoney } from "../../../utils/fn";
 import { toast } from "react-toastify";
+import EmptyOrder from "../../../components/EmptyOrder";
 
 
 
@@ -53,8 +54,10 @@ const Row = (props: { row: OrderProps, onCancelOrder: (orderId: string, status: 
     onCancelOrder(row.orderId, "Canceled", "Chú thích");
   };
 
+
   return (
     <React.Fragment>
+
       <TableRow>
         <TableCell>
           <IconButton
@@ -200,10 +203,12 @@ const OrderManagement: React.FC = () => {
   }, []);
 
   return (
+
     <Container maxWidth="lg">
       <Typography variant="h4" component="h1" gutterBottom>
         Quản lý đơn hàng
       </Typography>
+
       <TableContainer component={Paper}>
         <Table>
           <TableHead>
@@ -218,9 +223,17 @@ const OrderManagement: React.FC = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {orders.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((order) => (
-              <Row key={order.orderId} row={order} onCancelOrder={cancelOrder} />
-            ))}
+            {orders.length > 0 ? (
+              orders.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((order) => (
+                <Row key={order.orderId} row={order} onCancelOrder={cancelOrder} />
+              ))
+            ) : (
+              <TableRow>
+                <TableCell colSpan={8}>
+                  <EmptyOrder title="Hiện tại chưa có đơn hàng" />
+                </TableCell>
+              </TableRow>
+            )}
           </TableBody>
         </Table>
       </TableContainer>

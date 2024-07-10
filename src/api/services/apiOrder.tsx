@@ -62,6 +62,7 @@ export const ApiOrder = () => {
         note: params.note,
       });
       return response;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       if (axios.isAxiosError(error) && error.response) {
         return error.response.data;

@@ -21,7 +21,7 @@ export default function ProductCard({ product }: Props) {
 
   return (
     <Link
-      to={config.routes.productDetail.replace(config.suffix.detailId, id)}
+      to={config.routes.productDetail.replace(":id", id)}
       style={{ textDecoration: "none" }}
     >
       <Card
@@ -49,7 +49,7 @@ export default function ProductCard({ product }: Props) {
         </Box>
 
         <Stack spacing={1} sx={{ p: 1 }}>
-          <Typography variant="subtitle1" sx={{ fontWeight: "bold" }} noWrap>
+          <Typography variant="subtitle1" sx={{ fontWeight: "bold" }}>
             {name}
           </Typography>
           <Typography variant="subtitle1">Xuất xứ: {origin.name}</Typography>

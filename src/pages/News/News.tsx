@@ -1,7 +1,12 @@
 import React from "react";
+import ListNews from "./NewList/NewList";
 
 const News: React.FC = () => {
-  return <div>News</div>;
+  return (
+    <>
+      <ListNews />
+    </>
+  );
 };
 
 export default News;

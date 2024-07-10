@@ -157,6 +157,7 @@ const Home: React.FC = () => {
             "&:hover": {
               color: "blue",
             },
+            marginBottom: "12px",
           }}
           onClick={() => navigate(routes.productList)}
         >
@@ -164,7 +165,14 @@ const Home: React.FC = () => {
         </Button>
         <ShopProductHomePage products={listMachine} loading={loading} />
       </Box>
-      <Box sx={{ width: "100%", mt: 6 }}>
+      <Box
+        sx={{
+          width: "100%",
+          mt: 6,
+          display: "flex",
+          flexDirection: "column",
+        }}
+      >
         <Typography
           component="h2"
           sx={{
@@ -196,6 +204,23 @@ const Home: React.FC = () => {
             Tin Tức
           </span>
         </Typography>
+        <Button
+          sx={{
+            color: "grey",
+            border: "1px solid",
+            borderRadius: "10px",
+            alignSelf: "flex-end",
+            textTransform: "uppercase",
+            "&:hover": {
+              color: "blue",
+            },
+            marginBottom: "12px",
+          }}
+          onClick={() => navigate(routes.news)}
+        >
+          Xem tất cả
+        </Button>
+        {/* <BlogHomePage posts={listNews} loading={!listNews.length} /> */}
         <BlogHomePage posts={listNews} loading={loading} />
       </Box>
     </div>

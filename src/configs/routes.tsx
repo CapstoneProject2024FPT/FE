@@ -14,8 +14,8 @@ export const routes = {
   favoriteProduct: "/favorite-product",
   notFound: "notFound",
   paymentSuccessfull: "/payment-successfull",
-  news: "news",
-  newsDetail: `news/${suffix.detailId}`,
+  news: "/news",
+  newsDetail: `/news/${suffix.detailId}`,
   productList: "/product-list",
   productDetail: `/product-list/product-detail/${suffix.detailId}`,
 };

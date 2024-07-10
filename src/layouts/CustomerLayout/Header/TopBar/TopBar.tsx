@@ -10,6 +10,7 @@ import { CategoryApi } from "../../../../api/services/apiCategories";
 import { GetCategoryProps } from "../../../../models/category";
 import ArrowRightIcon from "@mui/icons-material/ArrowRight";
 import { blue } from "@mui/material/colors";
+import config from "../../../../configs";
 
 const cx = classNames.bind(styles);
 
@@ -33,6 +34,7 @@ const TopBar: React.FC = () => {
 
   useEffect(() => {
     fetchCategory();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleCategoryClick = (categoryId?: string) => {
@@ -53,7 +55,7 @@ const TopBar: React.FC = () => {
           style={{ height: "54px", alignContent: "center" }}
           onClick={(e) => {
             e.preventDefault();
-            e.stopPropagation()
+            e.stopPropagation();
             handleCategoryClick();
           }}
         >
@@ -81,7 +83,7 @@ const TopBar: React.FC = () => {
                       }}
                       onClick={(e) => {
                         e.preventDefault();
-                        e.stopPropagation()
+                        e.stopPropagation();
                         handleCategoryClick(item.id);
                       }}
                     >
@@ -122,7 +124,7 @@ const TopBar: React.FC = () => {
                   }}
                   onClick={(e) => {
                     e.preventDefault();
-                    e.stopPropagation()
+                    e.stopPropagation();
                     handleCategoryClick(child.id);
                   }}
                 >
@@ -149,7 +151,7 @@ const TopBar: React.FC = () => {
         <nav className={cx("main-nav")}>
           {renderMenu(menuData)}
 
-          <a href="#">TIN TỨC</a>
+          <a href={config.routes.news}>TIN TỨC</a>
         </nav>
       </header>
     </>
