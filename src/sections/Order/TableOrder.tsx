@@ -2,85 +2,118 @@ import React, { useEffect, useState } from "react";
 import type { MenuProps } from "antd";
 import type { TableProps } from "antd";
 import { DownOutlined } from "@ant-design/icons";
-import { Table, Input, Space, Dropdown } from "antd";
-import { GetCategoryProps } from "../../models/category";
-import { CategoryApi } from "../../api/services/apiCategories";
+import { Table, Space, Dropdown } from "antd";
+import { OrderProps, statusMapping, StatusType } from "../../models/order";
+import { ApiOrder } from "../../api/services/apiOrder";
+import { toast } from "react-toastify";
+import { formatDateFunc, formatMoney } from "../../utils/fn";
+import ModalDetailOrder from "./OrderModal/ModalDetailOrder";
+import ModalAcceptOrder from "./OrderModal/ModalAcceptOrder";
+import ModalCompleteOrder from "./OrderModal/ModalCompleteOrder";
+import ModalCancelOrder from "./OrderModal/ModalCancelOrder";
 
 type ColumnsType<T> = TableProps<T>["columns"];
-const { Search } = Input;
 
 const pageSize = 20;
 
 const TableOrder: React.FC = () => {
-  const [categories, setCategories] = useState<GetCategoryProps[]>();
+  const [orders, setOrders] = useState<OrderProps[]>();
   const [pagination, setPagination] = useState({
     current: 1,
     pageSize: pageSize,
   });
-  //search
-  const [query, setQuery] = useState<string>("");
 
   //popup
   const [open, setOpen] = useState<boolean>(false);
-  const [openDeletePopup, setOpenDeletePopup] = useState<boolean>(false);
-  const [selectedData, setSelectedData] = useState<GetCategoryProps | null>(
-    null
-  );
-
-  console.log(selectedData);
+  const [openAcceptPopup, setOpenAcceptPopup] = useState<boolean>(false);
+  const [openCompletePopup, setOpenCompletePopup] = useState<boolean>(false);
+  const [openCancelPopup, setOpenCancelPopup] = useState<boolean>(false);
+  const [selectedData, setSelectedData] = useState<OrderProps | null>(null);
 
   //api
-  const { loading } = CategoryApi();
+  const { loading, apiGetOrder } = ApiOrder();
 
   //modal popup
-  const handleActionDetail = (record: GetCategoryProps) => {
+  const handleActionDetail = (record: OrderProps) => {
     setOpen(!open);
     setSelectedData(record);
   };
-  const handleActionDelete = (record: GetCategoryProps) => {
-    setOpenDeletePopup(!openDeletePopup);
+
+  const handleCLose = () => {
+    setOpen(!open);
+  };
+
+  const handleActionAccept = (record: OrderProps) => {
+    setOpenAcceptPopup(!openAcceptPopup);
     setSelectedData(record);
   };
-  //   const handleCLose = () => {
-  //     setOpen(!open);
-  //   };
-  //   const handleCLoseDelete = () => {
-  //     setOpenDeletePopup(!openDeletePopup);
-  //   };
-  //   const handleCloseAdd = () => {
-  //     setOpenAddPopup(!openAddPopup);
-  //   };
 
+  const handleCLoseAccept = () => {
+    setOpenAcceptPopup(!openAcceptPopup);
+  };
+
+  const handleActionComplete = (record: OrderProps) => {
+    setOpenCompletePopup(!openCompletePopup);
+    setSelectedData(record);
+  };
+  const handleCLoseComplete = () => {
+    setOpenCompletePopup(!openCompletePopup);
+  };
+
+  const handleActionCancel = (record: OrderProps) => {
+    setOpenCancelPopup(!openCancelPopup);
+    setSelectedData(record);
+  };
+  const handleCLoseCancel = () => {
+    setOpenCancelPopup(!openCancelPopup);
+  };
+
+  const getStatusStyles = (status: string) => {
+    switch (status) {
+      case "Pending":
+        return { backgroundColor: "yellow", color: "black" };
+      case "Completed":
+        return { backgroundColor: "green", color: "white" };
+      case "Confirmed":
+        return { backgroundColor: "green", color: "white" };
+      case "Canceled":
+        return { backgroundColor: "red", color: "white" };
+      default:
+        return { backgroundColor: "transparent", color: "black" };
+    }
+  };
   //----------------------------------------------------------------------------
-  //   const fetchOrder = async () => {
-  //     try {
-  //       const data = await getCategory();
-  //       setCategories(data);
-  //     } catch (error) {
-  //       toast.error("lỗi");
-  //     }
-  //   };
+  const fetchOrder = async () => {
+    try {
+      const response = await apiGetOrder();
+
+      setOrders(response.data.items);
+    } catch (error) {
+      toast.error("lỗi");
+    }
+  };
 
   useEffect(() => {
+    fetchOrder();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  //   const handleAddCategorySuccess = () => {
-  //     handleCloseAdd();
-  //     fetchCategories();
-  //     toast.success("Thêm loại máy thành công");
-  //   };
+  const handleCancelSuccess = (response: string) => {
+    handleCLoseCancel();
+    fetchOrder();
+    toast.success(response);
+  };
 
-  //   const handleDeleteCategorySuccess = (response: string) => {
-  //     handleCLoseDelete();
-  //     fetchCategories();
-  //     toast.success(response);
-  //   };
-  //   const handleUpdateCategorySuccess = (response: string) => {
-  //     handleCLose();
-  //     fetchCategories();
-  //     toast.success(response);
-  //   };
+  const handleCompleteSuccess = (response: string) => {
+    handleCLoseComplete();
+    fetchOrder();
+    toast.success(response);
+  };
+  const handleAcceptSuccess = (response: string) => {
+    handleCLoseAccept();
+    fetchOrder();
+    toast.success(response);
+  };
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleTableChange = (newPagination: any) => {
     setPagination({
@@ -89,7 +122,7 @@ const TableOrder: React.FC = () => {
     });
 
     if (pagination.pageSize !== pagination?.pageSize) {
-      setCategories([]);
+      setOrders([]);
     }
   };
 
@@ -101,14 +134,6 @@ const TableOrder: React.FC = () => {
     showQuickJumper: false, // Show quick jumper
   };
 
-  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setQuery(e.target.value);
-  };
-
-  const filteredRows = categories?.filter((item) =>
-    item.name.toLowerCase().includes(query)
-  );
-
   const items: MenuProps["items"] = [
     {
       key: "1",
@@ -116,19 +141,65 @@ const TableOrder: React.FC = () => {
     },
     {
       key: "2",
-      label: "Xoá",
+      label: "Chấp nhận đơn hàng",
+    },
+    {
+      key: "3",
+      label: "Hoàn thành đơn hàng",
+    },
+    {
+      key: "4",
+      label: "Huỷ đơn hàng",
     },
   ];
-  const columns: ColumnsType<GetCategoryProps> = [
+  const columns: ColumnsType<OrderProps> = [
     {
-      title: "Loại máy",
-      dataIndex: "name",
-      sorter: (a, b) => a.name.length - b.name.length,
+      title: "Mã đơn hàng",
+      dataIndex: "invoiceCode",
       width: "20%",
     },
     {
-      title: "Cấp",
-      dataIndex: "type",
+      title: "Ngày Tạo",
+      dataIndex: "createDate",
+      render: (createDate) => formatDateFunc.formatDate(createDate),
+    },
+    {
+      title: "Ngày hoàn thành",
+      dataIndex: "completedDate",
+      render: (completedDate) =>
+        completedDate
+          ? formatDateFunc.formatDate(completedDate)
+          : "Chưa hoàn thành",
+    },
+    {
+      title: "Tổng thành tiền",
+      dataIndex: "totalAmount",
+      render: (totalAmount) => formatMoney(totalAmount),
+    },
+    {
+      title: "Trạng Thái",
+      dataIndex: "status",
+      render: (status: string) => {
+        const defaultStatus = "Đang chờ xác nhận";
+
+        const StatusName = status
+          ? statusMapping?.find((s) => s.id === status)?.name
+          : defaultStatus;
+
+        const styles = getStatusStyles(status);
+        return (
+          <div
+            style={{
+              ...styles,
+              padding: "4px 8px",
+              borderRadius: "4px",
+              display: "inline-block",
+            }}
+          >
+            {StatusName}
+          </div>
+        );
+      },
     },
     {
       title: "Hành Động",
@@ -137,14 +208,34 @@ const TableOrder: React.FC = () => {
         <Space size="middle">
           <Dropdown
             menu={{
-              items,
+              items: items.filter((item) => {
+                if (item && item.key) {
+                  if (
+                    record.status === StatusType.COMPLETED ||
+                    record.status === StatusType.CANCELED
+                  ) {
+                    return !["2", "3", "4"].includes(item.key as string);
+                  } else if (record.status === StatusType.CONFIRMED) {
+                    return item.key !== "2";
+                  } else {
+                    return true;
+                  }
+                }
+                return true;
+              }),
               onClick: ({ key }) => {
                 switch (key) {
                   case "1":
                     handleActionDetail(record);
                     break;
                   case "2":
-                    handleActionDelete(record);
+                    handleActionAccept(record);
+                    break;
+                  case "3":
+                    handleActionComplete(record);
+                    break;
+                  case "4":
+                    handleActionCancel(record);
                     break;
                   default:
                     break;
@@ -163,45 +254,48 @@ const TableOrder: React.FC = () => {
 
   return (
     <>
-      <Search
-        placeholder="Nhập từ khoá"
-        onChange={handleSearch}
-        style={{ width: 200, marginBottom: 16 }}
-      />
-
       <Table
         columns={columns}
-        rowKey={(record) => record.id}
-        dataSource={filteredRows}
+        rowKey={(record) => record.orderId}
+        dataSource={orders}
         pagination={customPagination}
         loading={loading}
         onChange={handleTableChange}
       />
-      {/* {open && (
-        <ModalCategoryPopup
-          CategoryData={selectedData}
+      {open && (
+        <ModalDetailOrder
+          OrderData={selectedData}
           open={open}
           handleClose={handleCLose}
-          onUpdateSuccess={handleUpdateCategorySuccess}
         />
-      )} */}
+      )}
 
-      {/* {openDeletePopup && (
-        <ModalCategoryPopupDelete
-          CategoryData={selectedData}
-          openDeletePopup={openDeletePopup}
-          handleCLoseDelete={handleCLoseDelete}
-          onDeleteSuccess={handleDeleteCategorySuccess}
+      {openAcceptPopup && (
+        <ModalAcceptOrder
+          OrderData={selectedData}
+          openAcceptPopup={openAcceptPopup}
+          handleCLoseAccept={handleCLoseAccept}
+          onUpdateSuccess={handleAcceptSuccess}
         />
-      )} */}
+      )}
 
-      {/* {openAddPopup && (
-        <ModalCategoryPopupAdd
-          open={openAddPopup}
-          handleClose={handleCloseAdd}
-          onAddSuccess={handleAddCategorySuccess}
+      {openCompletePopup && (
+        <ModalCompleteOrder
+          openCompletePopup={openCompletePopup}
+          handleCLoseComplete={handleCLoseComplete}
+          onCompleteSuccess={handleCompleteSuccess}
+          OrderData={selectedData}
         />
-      )} */}
+      )}
+
+      {openCancelPopup && (
+        <ModalCancelOrder
+          OrderData={selectedData}
+          handleCloseCancelPopup={handleCLoseCancel}
+          onCancelSuccess={handleCancelSuccess}
+          openCancelPopup={openCancelPopup}
+        />
+      )}
     </>
   );
 };

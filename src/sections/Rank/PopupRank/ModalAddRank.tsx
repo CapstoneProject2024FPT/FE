@@ -64,12 +64,7 @@ const ModalRankAdd: React.FC<ModalRank> = ({
     }
   };
   return (
-    <Modal
-      title="Chi Tiết Loại Máy"
-      open={open}
-      onCancel={handleClose}
-      footer={[]}
-    >
+    <Modal title="Thêm hạng mức" open={open} onCancel={handleClose} footer={[]}>
       <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
         <Card sx={{ p: 3 }}>
           <Stack spacing={3}>

@@ -67,7 +67,7 @@ const ModalProductPopupPriority: React.FC<ModalProduct> = ({
   };
   return (
     <Modal
-      title="Chi Tiết Loại Máy"
+      title="Chỉnh độ ưu tiên"
       open={openPriorityPopup}
       onOk={handleCLosePriority}
       onCancel={handleCLosePriority}
