@@ -63,6 +63,11 @@ const Row = (props: { row: OrderProps; onCancelOrder: (orderId: string) => void 
     setAnchorEl(null);
   };
 
+  const handleDetailOrder = () => {
+    setOpen(!open);
+    handleCloseMenu();
+  };
+
   return (
     <React.Fragment>
       <TableRow>
@@ -112,7 +117,11 @@ const Row = (props: { row: OrderProps; onCancelOrder: (orderId: string) => void 
             {row.status === StatusType.PENDING && (
               <MenuItem onClick={handleCancelOrder}>Hủy đơn hàng</MenuItem>
             )}
-            {/* Add more actions here as needed */}
+            {
+              // Add detail order
+
+              <MenuItem onClick={handleDetailOrder}>Chi tiết đơn hàng</MenuItem>
+            }
           </Menu>
         </TableCell>
       </TableRow>

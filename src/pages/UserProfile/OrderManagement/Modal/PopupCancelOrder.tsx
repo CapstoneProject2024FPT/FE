@@ -60,7 +60,6 @@ const CancelOrderDialog: React.FC<CancelOrderDialogProps> = ({ open, onClose, on
             <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
                 <DialogTitle>Hủy đơn hàng</DialogTitle>
                 <DialogContent>
-
                     <Card sx={{ p: 3 }}>
                         <Stack spacing={3}>
                             <RHFTextField
@@ -71,16 +70,14 @@ const CancelOrderDialog: React.FC<CancelOrderDialogProps> = ({ open, onClose, on
                             />
                         </Stack>
                     </Card>
-
                 </DialogContent>
                 <DialogActions>
                     <div style={{ width: "45%", display: "flex", justifyContent: "space-between" }}>
                         <LoadingButton
-                            loading={isSubmitting}
-                            variant="contained"
                             type="submit"
-                            form="hook-form"
+                            variant="contained"
                             color="error"
+                            loading={isSubmitting}
                         >
                             Xác nhận thay đổi
                         </LoadingButton>
