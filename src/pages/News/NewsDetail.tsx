@@ -43,7 +43,7 @@ const NewsDetail: React.FC = () => {
   }, []);
   return (
     <div>
-      <Box maxWidth="lg" sx={{ mt: 3 }}>
+      <Box maxWidth="lg" sx={{ p: 3 }}>
         <Grid container spacing={2}>
           <Grid item xs={12} md={9}>
             <Paper elevation={0}>
@@ -155,7 +155,7 @@ function Header({ title, cover, createAt }: HeaderProps) {
       <MetaTags
         title={title}
         description={title}
-        image={cover}
+        // image={cover}
         url={shareUrl}
       />
       <ProgressBar />
