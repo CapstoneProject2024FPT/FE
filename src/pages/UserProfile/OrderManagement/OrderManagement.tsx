@@ -13,51 +13,63 @@ import {
   Collapse,
   IconButton,
   TablePagination,
-  Button,
+  Menu,
+  MenuItem,
 } from "@mui/material";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
+import MoreVertIcon from "@mui/icons-material/MoreVert";
 import { ApiOrder } from "../../../api/services/apiOrder";
 import { OrderProps, statusMapping, StatusType } from "../../../models/order";
 import { formatAddress, formatDateFunc, formatMoney } from "../../../utils/fn";
 import { toast } from "react-toastify";
 import EmptyOrder from "../../../components/EmptyOrder";
-
-
+import CancelOrderDialog from "./Modal/PopupCancelOrder";
 
 const getStatusStyles = (status: string) => {
   switch (status) {
     case "Pending":
-      return { backgroundColor: "yellow", color: "black" };
+      return { backgroundColor: "#FFD700", color: "black" }; // vàng
     case "Completed":
-      return { backgroundColor: "green", color: "white" };
+      return { backgroundColor: "#4CAF50", color: "white" }; // xanh lá
     case "Canceled":
-      return { backgroundColor: "red", color: "white" };
+      return { backgroundColor: "#F44336", color: "white" }; // đỏ
     default:
       return { backgroundColor: "transparent", color: "black" };
   }
 };
 
-const Row = (props: { row: OrderProps, onCancelOrder: (orderId: string, status: string, note: string) => void }) => {
+const Row = (props: { row: OrderProps; onCancelOrder: (orderId: string) => void }) => {
   const { row, onCancelOrder } = props;
   const [open, setOpen] = useState(false);
-
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const openMenu = Boolean(anchorEl);
 
   const defaultStatus = "Đang chờ xác nhận";
-
   const StatusName = row?.status
     ? statusMapping?.find((status) => status.id === row?.status)?.name
     : defaultStatus;
 
-
   const handleCancelOrder = () => {
-    onCancelOrder(row.orderId, "Canceled", "Chú thích");
+    onCancelOrder(row.orderId);
+    handleCloseMenu();
   };
 
+  const handleOpenMenu = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleCloseMenu = () => {
+    setAnchorEl(null);
+  };
+
+  const handleDetailOrder = () => {
+    setOpen(!open);
+    handleCloseMenu();
+  };
 
   return (
     <React.Fragment>
-
       <TableRow>
         <TableCell>
           <IconButton
@@ -72,7 +84,9 @@ const Row = (props: { row: OrderProps, onCancelOrder: (orderId: string, status: 
         <TableCell>{row.invoiceCode}</TableCell>
         <TableCell>{formatDateFunc.formatDate(row.createDate)}</TableCell>
         <TableCell>
-          {row.completedDate ? formatDateFunc.formatDate(row.completedDate) : "Chưa hoàn thành"}
+          {row.completedDate
+            ? formatDateFunc.formatDate(row.completedDate)
+            : "Chưa hoàn thành"}
         </TableCell>
         <TableCell>{formatMoney(row.finalAmount)}</TableCell>
         <TableCell>
@@ -88,11 +102,27 @@ const Row = (props: { row: OrderProps, onCancelOrder: (orderId: string, status: 
           </Box>
         </TableCell>
         <TableCell>
-          {row.status === StatusType.PENDING && (
-            <Button variant="contained" color="secondary" onClick={handleCancelOrder}>
-              Hủy đơn hàng
-            </Button>
-          )}
+          <IconButton
+            aria-label="more actions"
+            size="small"
+            onClick={handleOpenMenu}
+          >
+            <MoreVertIcon />
+          </IconButton>
+          <Menu
+            anchorEl={anchorEl}
+            open={openMenu}
+            onClose={handleCloseMenu}
+          >
+            {row.status === StatusType.PENDING && (
+              <MenuItem onClick={handleCancelOrder}>Hủy đơn hàng</MenuItem>
+            )}
+            {
+              // Add detail order
+
+              <MenuItem onClick={handleDetailOrder}>Chi tiết đơn hàng</MenuItem>
+            }
+          </Menu>
         </TableCell>
       </TableRow>
       <TableRow>
@@ -148,6 +178,8 @@ const OrderManagement: React.FC = () => {
   const [orders, setOrders] = useState<OrderProps[]>([]);
   const [page, setPage] = useState<number>(0);
   const [rowsPerPage, setRowsPerPage] = useState(15);
+  const [openDialog, setOpenDialog] = useState(false);
+  const [selectedOrderId, setSelectedOrderId] = useState<string | null>(null);
 
   const routePage = [15, 20, 25, 30];
 
@@ -168,7 +200,6 @@ const OrderManagement: React.FC = () => {
   const loginInfo = localStorage.getItem("loginInfo") || "";
   const auth = JSON.parse(loginInfo);
 
-  //api
   const { apiGetOrderById, apiCancelOrder } = ApiOrder();
 
   const fetchOrders = async () => {
@@ -186,24 +217,36 @@ const OrderManagement: React.FC = () => {
     }
   };
 
-  const cancelOrder = async (orderId: string, status: string, note: string) => {
-    try {
-      await apiCancelOrder({ orderId, status, note });
-      fetchOrders(); // Fetch orders again to refresh the list
-      toast.success("Đơn hàng đã được hủy thành công");  // Thông báo thành công
-    } catch (error) {
-      toast.error("Có lỗi xảy ra khi hủy đơn hàng");  // Thông báo lỗi
-      console.log(error);
+  const handleOpenDialog = (orderId: string) => {
+    setSelectedOrderId(orderId);
+    setOpenDialog(true);
+  };
+
+  const handleCloseDialog = () => {
+    setOpenDialog(false);
+    setSelectedOrderId(null);
+  };
+
+  const handleConfirmCancel = async (note: string) => {
+    if (selectedOrderId) {
+      try {
+        await apiCancelOrder({ orderId: selectedOrderId, status: "Canceled", note });
+        fetchOrders();
+        toast.success("Đơn hàng đã được hủy thành công");
+      } catch (error) {
+        toast.error("Có lỗi xảy ra khi hủy đơn hàng");
+        console.log(error);
+      } finally {
+        handleCloseDialog();
+      }
     }
   };
 
   useEffect(() => {
     fetchOrders();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
-
     <Container maxWidth="lg">
       <Typography variant="h4" component="h1" gutterBottom>
         Quản lý đơn hàng
@@ -225,7 +268,7 @@ const OrderManagement: React.FC = () => {
           <TableBody>
             {orders.length > 0 ? (
               orders.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((order) => (
-                <Row key={order.orderId} row={order} onCancelOrder={cancelOrder} />
+                <Row key={order.orderId} row={order} onCancelOrder={handleOpenDialog} />
               ))
             ) : (
               <TableRow>
@@ -245,6 +288,11 @@ const OrderManagement: React.FC = () => {
         page={page}
         onPageChange={handleChangePage}
         onRowsPerPageChange={handleChangeRowsPerPage}
+      />
+      <CancelOrderDialog
+        open={openDialog}
+        onClose={handleCloseDialog}
+        onConfirm={handleConfirmCancel}
       />
     </Container>
   );

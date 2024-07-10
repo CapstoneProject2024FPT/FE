@@ -229,7 +229,7 @@ const Cart: React.FC<CartProp> = ({ handleNext }) => {
                                 số lượng:{" "}
                                 {item?.quantity?.Available
                                   ? item?.quantity?.Available
-                                  : 2}
+                                  : 0}
                               </Typography>
                             </Box>
                           </TableCell>

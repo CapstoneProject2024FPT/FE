@@ -20,7 +20,7 @@ import { patternValidate } from "../../../../utils/pattern";
 import uploadImageToFirebase from "../../../../firebase/uploadImageToFirebase";
 
 import { toast } from "react-toastify";
-import { CutomerApi } from "../../../../api/services/apiUser";
+import { CustomerApi } from "../../../../api/services/apiUser";
 
 // ----------------------------------------------------------------------
 
@@ -58,7 +58,7 @@ const UserEditForm: React.FC<userModal> = ({
   handleClose,
   onUpdateSuccess,
 }) => {
-  const { updateProfile } = CutomerApi();
+  const { updateProfile } = CustomerApi();
 
   const UpdateUserSchema = Yup.object().shape({
     fullName: Yup.string().required("Bắt buộc"),

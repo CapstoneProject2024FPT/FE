@@ -55,7 +55,7 @@ const ModalSerialNumberDelete: React.FC<ModalSerial> = ({
   };
   return (
     <Modal
-      title="Chi Tiết Loại Máy"
+      title="Tạm ngưng máy"
       open={openDeletePopup}
       onOk={handleCLoseDelete}
       onCancel={handleCLoseDelete}

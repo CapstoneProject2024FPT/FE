@@ -6,21 +6,18 @@ import "./ProductList.scss";
 import { Box, Button, Drawer, Typography } from "@mui/material";
 import ProductCard from "../../../components/product-card/ProductCard";
 import ProductFilteredRow from "../../Filter/Products/FilterProducts";
-import SortMenu from "../../Sort/SortProducts";
 import { GridFilterListIcon } from "@mui/x-data-grid";
 import { Skeleton } from "antd";
 
 const ProductList: React.FC = () => {
   const [products, setProducts] = useState<ProductAdmin[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-  const { apiGetMachine } = MachineryApi();
+  const { apiGetMachine, loading } = MachineryApi();
   const fetchProducts = async () => {
     try {
       const apiResponse = await apiGetMachine("Available");
       const productList = apiResponse.data;
       setProducts(productList);
-      setLoading(false);
     } catch (error) {
       toast.error("lỗi");
     }
@@ -28,6 +25,7 @@ const ProductList: React.FC = () => {
 
   useEffect(() => {
     fetchProducts();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const toggleDrawer = (open: boolean) => () => {
@@ -69,7 +67,7 @@ const ProductList: React.FC = () => {
           top: 0,
         }}
       >
-        <ProductFilteredRow setProducts={setProducts}/>
+        <ProductFilteredRow setProducts={setProducts} />
       </Box>
       <Box sx={{ display: { xs: "block", md: "none" } }}>
         <Button
@@ -92,7 +90,9 @@ const ProductList: React.FC = () => {
               },
             }}
           />
-          <Typography sx={{marginLeft: "4px"}} className="hide-text-on-small">Lọc</Typography>
+          <Typography sx={{ marginLeft: "4px" }} className="hide-text-on-small">
+            Lọc
+          </Typography>
         </Button>
         <Drawer anchor="left" open={isDrawerOpen} onClose={toggleDrawer(false)}>
           <Box
@@ -120,7 +120,7 @@ const ProductList: React.FC = () => {
               },
             }}
           >
-            <ProductFilteredRow setProducts={setProducts}/>
+            <ProductFilteredRow setProducts={setProducts} />
           </Box>
         </Drawer>
       </Box>

@@ -12,17 +12,16 @@ import { LogoutOutlined } from "@mui/icons-material";
 
 const ListNews: React.FC = () => {
   const [listNews, setListNews] = useState<PostGetProps[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [filter, setFilter] = useState<any>({});
-  const { apiGetListNews } = ApiNews();
+  const { loading, apiGetListNews } = ApiNews();
 
   const fetchListNews = async () => {
     try {
       const response = await apiGetListNews();
       const listNews = response.items;
       setListNews(listNews);
-      setLoading(false);
     } catch (error) {
       toast.error("lỗi");
     }
@@ -30,6 +29,7 @@ const ListNews: React.FC = () => {
 
   useEffect(() => {
     fetchListNews();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const toggleDrawer = (open: boolean) => () => {

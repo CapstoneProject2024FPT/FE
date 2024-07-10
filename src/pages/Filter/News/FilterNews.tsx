@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useEffect, useState } from "react";
 import {
   Box,
@@ -7,19 +8,17 @@ import {
   FormGroup,
   Checkbox,
   TextField,
-  Button,
   Autocomplete,
   Typography,
   Chip,
 } from "@mui/material";
-import CloseIcon from "@mui/icons-material/Close";
 import "./FilterNews.scss";
 import { NEWS_FILTER, NEWS_TYPE } from "../../../constants/filter";
 import { useNavigate } from "react-router-dom";
 import { ApiNewsCategories } from "../../../api/services/apiNewsCategories";
 import { ApiNews } from "../../../api/services/apiNews";
 import { PostGetProps } from "../../../models/blog";
-import { Close, CloseOutlined } from "@mui/icons-material";
+import { CloseOutlined } from "@mui/icons-material";
 
 interface NewFilterProps {
   setListNews?: React.Dispatch<React.SetStateAction<PostGetProps[]>>;
@@ -41,7 +40,7 @@ const NewsFilteredRow: React.FC<NewFilterProps> = ({
   const [newsListCategory, setNewListCategory] = useState<string[]>([]);
   const [newsListTitle, setNewsListTitle] = useState<string[]>([]);
   const [newsType, setNewsType] = useState<string[]>([]);
-  const [searchTerm, setSearchTerm] = useState<string>("");
+  const [searchTerm, setSearchTerm] = useState<string>();
   const [isCheckboxChange, setIsCheckboxChange] = useState<boolean>(false);
   const navigate = useNavigate();
 
@@ -81,7 +80,7 @@ const NewsFilteredRow: React.FC<NewFilterProps> = ({
 
   const handleAutocompleteChange = (
     // eslint-disable-next-line @typescript-eslint/ban-types
-    event: React.ChangeEvent<{}>,
+    _event: React.ChangeEvent<{}>,
     value: string | null
   ) => {
     setIsCheckboxChange(false);
@@ -182,6 +181,7 @@ const NewsFilteredRow: React.FC<NewFilterProps> = ({
     fetchNewsCategory();
     fetchNewsType();
     fetchNewsTitle();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const isFilterActive = () => {
