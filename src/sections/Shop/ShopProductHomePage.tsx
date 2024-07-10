@@ -20,13 +20,13 @@ export default function ShopProductHomePage({ products, loading }: Props) {
         width: "100%",
         marginTop: "5px",
         display: "grid",
+        gap: 1,
         gridTemplateColumns: {
           xs: "repeat(1, fr)",
           sm: "repeat(2, 1fr)",
           md: "repeat(3, 1fr)",
           lg: "repeat(4, 1fr)",
         },
-        gap: 1,
       }}
     >
       {(loading ? [...Array(4)] : products)?.map((product, index) =>

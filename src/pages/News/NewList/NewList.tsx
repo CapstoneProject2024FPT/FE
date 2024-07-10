@@ -1,30 +1,34 @@
 import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
-import { MachineryApi } from "../../../api/services/apiMachinery";
-import { ProductAdmin } from "../../../models/products";
-import "./ProductList.scss";
+import "./NewList.scss";
 import { Box, Button, Drawer, Typography } from "@mui/material";
-import ProductCard from "../../../components/product-card/ProductCard";
-import ProductFilteredRow from "../../Filter/Products/FilterProducts";
 import { GridFilterListIcon } from "@mui/x-data-grid";
 import { Skeleton } from "antd";
+import { ApiNews } from "../../../api/services/apiNews";
+import { PostGetProps } from "../../../models/blog";
+import NewsCard from "./NewsCard";
+import NewsFilteredRow from "../../Filter/News/FilterNews";
+import { LogoutOutlined } from "@mui/icons-material";
 
-const ProductList: React.FC = () => {
-  const [products, setProducts] = useState<ProductAdmin[]>([]);
+const ListNews: React.FC = () => {
+  const [listNews, setListNews] = useState<PostGetProps[]>([]);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-  const { apiGetMachine, loading } = MachineryApi();
-  const fetchProducts = async () => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const [filter, setFilter] = useState<any>({});
+  const { loading, apiGetListNews } = ApiNews();
+
+  const fetchListNews = async () => {
     try {
-      const apiResponse = await apiGetMachine("Available");
-      const productList = apiResponse.data;
-      setProducts(productList);
+      const response = await apiGetListNews();
+      const listNews = response.items;
+      setListNews(listNews);
     } catch (error) {
       toast.error("lỗi");
     }
   };
 
   useEffect(() => {
-    fetchProducts();
+    fetchListNews();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -67,8 +71,13 @@ const ProductList: React.FC = () => {
           top: 0,
         }}
       >
-        <ProductFilteredRow setProducts={setProducts} />
+        <NewsFilteredRow
+          setListNews={setListNews}
+          filter={filter}
+          setFilter={setFilter}
+        />
       </Box>
+
       <Box sx={{ display: { xs: "block", md: "none" } }}>
         <Button
           variant="outlined"
@@ -99,11 +108,15 @@ const ProductList: React.FC = () => {
             sx={{
               width: "250px",
               padding: "20px",
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "space-between",
               boxShadow:
                 "rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px",
               borderRadius: "5px",
               height: "100%",
               overflowY: "auto",
+              zIndex: 1100, // Higher z-index for Drawer
               "&::-webkit-scrollbar": {
                 width: "8px",
               },
@@ -120,7 +133,43 @@ const ProductList: React.FC = () => {
               },
             }}
           >
-            <ProductFilteredRow setProducts={setProducts} />
+            {/* Filter content */}
+            <NewsFilteredRow
+              setListNews={setListNews}
+              filter={filter}
+              setFilter={setFilter}
+            />
+            <Box>
+              {isDrawerOpen && (
+                <Box sx={{ display: "flex", justifyContent: "space-around" }}>
+                  <Button
+                    variant="outlined"
+                    onClick={toggleDrawer(false)}
+                    sx={{
+                      backgroundColor: "white",
+                      borderRadius: "5px",
+                      "&:hover": {
+                        borderColor: "#1976d2",
+                        borderRadius: "5px",
+                        backgroundColor: "white",
+                      },
+                    }}
+                  >
+                    <LogoutOutlined
+                      sx={{
+                        transform: "scaleX(-1)",
+                        marginRight: "5px",
+                        "&:hover": {
+                          color: "#1976d2",
+                          backgroundColor: "white",
+                          borderRadius: "none",
+                        },
+                      }}
+                    />
+                  </Button>
+                </Box>
+              )}
+            </Box>
           </Box>
         </Drawer>
       </Box>
@@ -146,12 +195,9 @@ const ProductList: React.FC = () => {
                 fontWeight: "bold",
               }}
             >
-              Các loại máy
+              Tin tức mới
             </Typography>
           </Box>
-          {/* <Box sx={{ width: "50%", textAlign: "right" }}>
-            <SortMenu />
-          </Box> */}
         </Box>
         {loading ? (
           <Skeleton />
@@ -159,15 +205,16 @@ const ProductList: React.FC = () => {
           <Box
             sx={{
               display: "grid",
-              gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))",
               gap: "25px",
               justifyContent: "space-between",
-              width: "100%%",
               padding: "0 20px",
+              gridTemplateColumns: {
+                md: "1fr",
+              },
             }}
           >
-            {products?.map((product) => (
-              <ProductCard key={product.id} product={product} />
+            {listNews?.map((post) => (
+              <NewsCard key={post.id} post={post} />
             ))}
           </Box>
         )}
@@ -176,4 +223,4 @@ const ProductList: React.FC = () => {
   );
 };
 
-export default ProductList;
+export default ListNews;
