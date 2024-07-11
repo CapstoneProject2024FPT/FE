@@ -56,7 +56,6 @@ const TopBar: React.FC = () => {
           onClick={(e) => {
             e.preventDefault();
             e.stopPropagation();
-            handleCategoryClick();
           }}
         >
           <span>LOẠI MÁY</span>
