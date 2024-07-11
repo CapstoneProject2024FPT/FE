@@ -1,6 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { toast } from "react-toastify";
-import { MachineryApi } from "../../../api/services/apiMachinery";
 import { ProductAdmin } from "../../../models/products";
 import "./ProductList.scss";
 import { Box, Button, Drawer, Typography } from "@mui/material";
@@ -12,21 +10,7 @@ import { Skeleton } from "antd";
 const ProductList: React.FC = () => {
   const [products, setProducts] = useState<ProductAdmin[]>([]);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-  const { apiGetMachine, loading } = MachineryApi();
-  const fetchProducts = async () => {
-    try {
-      const apiResponse = await apiGetMachine("Available");
-      const productList = apiResponse.data;
-      setProducts(productList);
-    } catch (error) {
-      toast.error("lỗi");
-    }
-  };
-
-  useEffect(() => {
-    fetchProducts();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  const [loading, setLoading] = useState<boolean>(false);
 
   const toggleDrawer = (open: boolean) => () => {
     setIsDrawerOpen(open);
@@ -67,8 +51,9 @@ const ProductList: React.FC = () => {
           top: 0,
         }}
       >
-        <ProductFilteredRow setProducts={setProducts} />
+        <ProductFilteredRow setProducts={setProducts} setLoading={setLoading} />
       </Box>
+      {/* filter reponsive  */}
       <Box sx={{ display: { xs: "block", md: "none" } }}>
         <Button
           variant="outlined"
@@ -120,10 +105,16 @@ const ProductList: React.FC = () => {
               },
             }}
           >
-            <ProductFilteredRow setProducts={setProducts} />
+            <ProductFilteredRow
+              setProducts={setProducts}
+              setLoading={setLoading}
+            />
           </Box>
         </Drawer>
       </Box>
+
+      {/* ---------------------------------------- */}
+
       <Box sx={{ width: { xs: "100%", md: "80%" } }}>
         <Box
           sx={{
