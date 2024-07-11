@@ -1,3 +1,5 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable no-case-declarations */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useEffect, useState } from "react";
 import {
@@ -13,7 +15,7 @@ import {
 
 import "./FilterProducts.scss";
 import { ProductsFilterType } from "../../../constants/filter";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { MachineryApi } from "../../../api/services/apiMachinery";
 import { ProductAdmin } from "../../../models/products";
 import { CategoryApi } from "../../../api/services/apiCategories";
@@ -21,9 +23,15 @@ import { BrandApi } from "../../../api/services/apiBrand";
 import { ApiOrigin } from "../../../api/services/apiOrigin";
 
 interface ProductFilterProps {
-  setProducts?: React.Dispatch<React.SetStateAction<ProductAdmin[]>>;
-  filter?: any;
-  setFilter?: React.Dispatch<any>;
+  filter: any;
+  setFilter: React.Dispatch<any>;
+  isReset: boolean;
+  setIsReset: (value: React.SetStateAction<boolean>) => void;
+
+  productListOriginName: string[];
+  productListCategoryName: string[];
+  productListBrandName: string[];
+  productListName: string[];
 }
 
 interface ProductFilter {
@@ -31,81 +39,71 @@ interface ProductFilter {
 }
 
 const ProductFilteredRow: React.FC<ProductFilterProps> = ({
-  setProducts,
-  filter,
+  filter = {},
   setFilter,
+  isReset,
+  setIsReset,
+
+  productListOriginName,
+  productListCategoryName,
+  productListBrandName,
+  productListName,
 }) => {
-  const { apiGetList, apiGetMachine } = MachineryApi();
-  const { apiGetOrigin } = ApiOrigin();
-  const { getCategoryName } = CategoryApi();
-  const { getBrandName } = BrandApi();
-  const [productListOriginName, setProductListOriginName] = useState<string[]>(
-    []
+  const [filterOrigin, setFilterOrigin] = useState<string[]>(
+    filter[ProductsFilterType.OriginId] || []
   );
-  const [productListCategoryName, setProductListCategoryName] = useState<
-    string[]
-  >([]);
-  const [productListBrandName, setProductListBrandName] = useState<string[]>(
-    []
+  const [filterCategoty, setFilterCategoty] = useState<string[]>(
+    filter[ProductsFilterType.CategoryId] || []
   );
-  const [productListName, setProductListName] = useState<string[]>([]);
+  const [filterBrand, setFilterBrand] = useState<string[]>(
+    filter[ProductsFilterType.BrandId] || []
+  );
+  const [filterListName, setFilterListName] = useState<string[]>(
+    filter[ProductsFilterType.OriginId] || []
+  );
+
   const [isCheckboxChange, setIsCheckboxChange] = useState<boolean>(false);
+
   const [searchTerm, setSearchTerm] = useState<string>();
   const navigate = useNavigate();
-
-  // Product - origin
-  const fetchProductsOriginNames = async () => {
-    const response = await apiGetOrigin();
-    const originName = response.data?.map((origin: any) => ({
-      id: origin.id,
-      name: origin.name,
-    }));
-    setProductListOriginName(originName);
-  };
-
-  // Product - category
-  const fetchProductsCategoryNames = async () => {
-    const response = await getCategoryName();
-    const categoryName = response?.map((category: any) => ({
-      id: category.id,
-      name: category.name,
-    }));
-    setProductListCategoryName(categoryName);
-  };
-
-  // Product - brand
-  const fetchProductsBrandNames = async () => {
-    const response = await getBrandName();
-    const brandName = response?.map((brand: any) => ({
-      id: brand.id,
-      name: brand.name,
-    }));
-    setProductListBrandName(brandName);
-  };
-
-  const fetchProductListName = async () => {
-    const response = await apiGetMachine("Available");
-    const productName = response.data.map(
-      (productName: { name: any }) => productName.name
-    );
-    setProductListName(productName);
-  };
 
   const handleFilterProducts = (
     filterType: ProductsFilterType,
     value: string,
     checked: boolean
   ) => {
-    const item = filter[filterType] || [];
-    if (checked) {
-      filter[filterType] = [...item, value];
-    } else {
-      filter[filterType] = item.filter((val: any) => val !== value);
-    }
+    switch (filterType) {
+      case ProductsFilterType.BrandId:
+        const brandIds = checked
+          ? [...(filterBrand || []), value]
+          : filterBrand?.filter((item) => item !== value);
 
-    setFilter && setFilter(filter);
-    updateURLSearchParams(filter);
-    getProductFilteredData(filter);
+        setFilterBrand(brandIds);
+        setFilter({ ...filter, BrandId: brandIds });
+
+        break;
+      case ProductsFilterType.OriginId:
+        const originIds = checked
+          ? [...(filterOrigin || []), value]
+          : filterOrigin?.filter((item) => item !== value);
+
+        setFilterOrigin(originIds);
+        setFilter({ ...filter, OriginId: originIds });
+
+        break;
+      case ProductsFilterType.CategoryId:
+        const categoryIds = checked
+          ? [...(filterCategoty || []), value]
+          : filterCategoty?.filter((item) => item !== value);
+
+        setFilterCategoty(categoryIds);
+        setFilter({ ...filter, CategoryId: categoryIds });
+
+        break;
+
+      default:
+        break;
+    }
   };
 
   const updateURLSearchParams = (filter: any) => {
@@ -121,25 +119,6 @@ const ProductFilteredRow: React.FC<ProductFilterProps> = ({
     navigate(to, { replace: true });
   };
 
-  const getProductFilteredData = async (params: any) => {
-    try {
-      const data = await apiGetList(params);
-      // if(setProducts) setProducts(data);
-      setProducts && setProducts(data);
-    } catch (error) {
-      console.error("lỗi");
-    }
-  };
-
-  const getFilterFromURL = (): ProductFilter => {
-    const params = new URLSearchParams(window.location.search);
-    const newFilter: ProductFilter = {};
-    params.forEach((value, key) => {
-      newFilter[key] = value.split(",");
-    });
-    return newFilter;
-  };
-
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setIsCheckboxChange(false);
     setSearchTerm(event.target.value);
@@ -147,9 +126,9 @@ const ProductFilteredRow: React.FC<ProductFilterProps> = ({
       ...filter,
       name: event.target.value,
     };
-    setFilter && setFilter(updatedFilter);
-    updateURLSearchParams(updatedFilter);
-    getProductFilteredData(updatedFilter);
+    setFilter(updatedFilter);
+    // updateURLSearchParams(updatedFilter);
+    // getProductFilteredData(updatedFilter);
   };
 
   const handleAutocompleteChange = (
@@ -164,30 +143,37 @@ const ProductFilteredRow: React.FC<ProductFilterProps> = ({
         ...filter,
         name: value,
       };
-      setFilter && setFilter(updatedFilter);
-      updateURLSearchParams(updatedFilter);
-      getProductFilteredData(updatedFilter);
+      setFilter(updatedFilter);
+      // updateURLSearchParams(updatedFilter);
+      // getProductFilteredData(updatedFilter);
     } else {
       setSearchTerm("");
       const updatedFilter = {
         ...filter,
         name: null,
       };
-      setFilter && setFilter(updatedFilter);
-      updateURLSearchParams(updatedFilter);
-      getProductFilteredData(updatedFilter);
+      setFilter(updatedFilter);
+      // updateURLSearchParams(updatedFilter);
+      // getProductFilteredData(updatedFilter);
     }
   };
 
+  // useEffect(() => {
+  //   const initialFilter = getFilterFromURL();
+  //   setFilter(initialFilter);
+
+  //   getProductFilteredData(initialFilter);
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, []);
+
   useEffect(() => {
-    const initialFilter = getFilterFromURL();
-    setFilter && setFilter(initialFilter);
-    getProductFilteredData(initialFilter);
-    fetchProductsOriginNames();
-    fetchProductsCategoryNames();
-    fetchProductsBrandNames();
-    fetchProductListName();
-  }, []);
+    if (isReset) {
+      setFilterBrand(filter[ProductsFilterType.BrandId]);
+      setFilterCategoty(filter[ProductsFilterType.CategoryId]);
+      setFilterOrigin(filter[ProductsFilterType.OriginId]);
+      setIsReset(false);
+    }
+  }, [isReset]);
 
   return (
     <Box>
@@ -250,16 +236,12 @@ const ProductFilteredRow: React.FC<ProductFilterProps> = ({
             }}
           >
             <FormGroup sx={{ paddingLeft: "20px" }}>
-              {productListOriginName.map((origin: any) => (
+              {productListOriginName?.map((origin: any) => (
                 <FormControlLabel
                   key={`${origin?.id}`}
                   control={
                     <Checkbox
-                      checked={
-                        !!filter[ProductsFilterType.OriginId]?.includes(
-                          origin.id
-                        )
-                      }
+                      checked={!!filterOrigin?.includes(origin.id)}
                       onChange={(checked) =>
                         handleFilterProducts(
                           ProductsFilterType.OriginId,
@@ -310,16 +292,12 @@ const ProductFilteredRow: React.FC<ProductFilterProps> = ({
             }}
           >
             <FormGroup sx={{ paddingLeft: "20px" }}>
-              {productListCategoryName.map((category: any) => (
+              {productListCategoryName?.map((category: any) => (
                 <FormControlLabel
                   key={`${category?.id}`}
                   control={
                     <Checkbox
-                      checked={
-                        !!filter[ProductsFilterType.CategoryId]?.includes(
-                          category.id
-                        )
-                      }
+                      checked={!!filterCategoty?.includes(category.id)}
                       onChange={(checked) =>
                         handleFilterProducts(
                           ProductsFilterType.CategoryId,
@@ -370,14 +348,12 @@ const ProductFilteredRow: React.FC<ProductFilterProps> = ({
             }}
           >
             <FormGroup sx={{ paddingLeft: "20px" }}>
-              {productListBrandName.map((brand: any) => (
+              {productListBrandName?.map((brand: any) => (
                 <FormControlLabel
                   key={`${brand?.id}`}
                   control={
                     <Checkbox
-                      checked={
-                        !!filter[ProductsFilterType.BrandId]?.includes(brand.id)
-                      }
+                      checked={!!filterBrand?.includes(brand.id)}
                       onChange={(checked) =>
                         handleFilterProducts(
                           ProductsFilterType.BrandId,

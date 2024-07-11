@@ -1,3 +1,5 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+
 import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { MachineryApi } from "../../../api/services/apiMachinery";
@@ -13,16 +15,25 @@ import { CategoryApi } from "../../../api/services/apiCategories";
 import { BrandApi } from "../../../api/services/apiBrand";
 import { CloseOutlined } from "@mui/icons-material";
 import { ProductsFilterType } from "../../../constants/filter";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
+import { useFilterContext } from "../../../context/FilterContext";
+
+interface ProductFilter {
+  [key: string]: string[];
+}
 
 const ProductList: React.FC = () => {
+  const [loading, setLoading] = useState(true);
   const [products, setProducts] = useState<ProductAdmin[]>([]);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-  const [filter, setFilter] = useState<any>({});
-  const { apiGetList, apiGetMachine, loading } = MachineryApi();
+  const [filter, setFilter] = useState<ProductFilter>();
+  const { apiGetList, apiGetMachine } = MachineryApi();
   const { apiGetOrigin } = ApiOrigin();
   const { getCategoryName } = CategoryApi();
   const { getBrandName } = BrandApi();
+
+  const { data } = useFilterContext();
+
   const [productListOriginName, setProductListOriginName] = useState<string[]>(
     []
   );
@@ -32,6 +43,9 @@ const ProductList: React.FC = () => {
   const [productListBrandName, setProductListBrandName] = useState<string[]>(
     []
   );
+  const [productListName, setProductListName] = useState<string[]>([]);
+  const [isReset, setIsReset] = useState<boolean>(false);
+
   const navigate = useNavigate();
   const location = useLocation();
   const fetchProducts = async () => {
@@ -44,6 +58,7 @@ const ProductList: React.FC = () => {
     }
   };
 
+  // Product - origin
   const fetchProductsOriginNames = async () => {
     const response = await apiGetOrigin();
     const originName = response.data?.map((origin: any) => ({
@@ -53,6 +68,7 @@ const ProductList: React.FC = () => {
     setProductListOriginName(originName);
   };
 
+  // Product - category
   const fetchProductsCategoryNames = async () => {
     const response = await getCategoryName();
     const categoryName = response?.map((category: any) => ({
@@ -62,6 +78,7 @@ const ProductList: React.FC = () => {
     setProductListCategoryName(categoryName);
   };
 
+  // Product - brand
   const fetchProductsBrandNames = async () => {
     const response = await getBrandName();
     const brandName = response?.map((brand: any) => ({
@@ -70,6 +87,40 @@ const ProductList: React.FC = () => {
     }));
     setProductListBrandName(brandName);
   };
+
+  const fetchProductListName = async () => {
+    const response = await apiGetMachine("Available");
+    const productName = response.data.map(
+      (productName: { name: any }) => productName.name
+    );
+    setProductListName(productName);
+  };
+
+  useEffect(() => {
+    fetchProductsOriginNames();
+    fetchProductsCategoryNames();
+    fetchProductsBrandNames();
+    fetchProductListName();
+
+    setFilter(getFilterFromURL());
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // Get Products
+  const getFilterFromURL = (): ProductFilter => {
+    const params = new URLSearchParams(window.location.search);
+    const newFilter: ProductFilter = {};
+    params.forEach((value, key) => {
+      newFilter[key] = value.split(",");
+    });
+    return newFilter || {};
+  };
+
+  // useEffect(() => {
+  //   getProductFilteredData(filter);
+  //
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [filter]);
 
   const getProductsFilterByID = (
     categoryId: string,
@@ -91,11 +142,11 @@ const ProductList: React.FC = () => {
     return filterArray;
   };
 
-  const filterArray = getFilterArray(filter);
+  const filterArray = getFilterArray(filter as any);
 
-  const updateURLSearchParams = (filter: any) => {
+  const updateURLSearchParams = (filter?: any) => {
     const searchParams = new URLSearchParams();
-    Object.keys(filter).forEach((key) => {
+    Object.keys(filter)?.forEach((key) => {
       if (filter[key]) {
         searchParams.set(key, filter[key]);
       } else {
@@ -109,18 +160,15 @@ const ProductList: React.FC = () => {
   const getProductFilteredData = async (params: any) => {
     try {
       const data = await apiGetList(params);
-      // if(setProducts) setProducts(data);
-      setProducts && setProducts(data);
+      setProducts(data);
     } catch (error) {
       console.error("lỗi");
     }
   };
 
   const handleResetFilters = () => {
-    const resetFilter = {};
-    setFilter(resetFilter);
-    updateURLSearchParams(resetFilter);
-    getProductFilteredData(resetFilter);
+    setFilter({});
+    setIsReset(true);
   };
 
   const handleClearFilter = (key: string, value: string) => {
@@ -137,19 +185,13 @@ const ProductList: React.FC = () => {
         delete updatedFilter[key];
       }
     } else if (key === "name") {
-      updatedFilter[key] = ""; // Clear the Autocomplete filter
+      updatedFilter[key] = "" as any; // Clear the Autocomplete filter
     }
-    setFilter && setFilter(updatedFilter);
+    setFilter({});
+    setIsReset(true);
     updateURLSearchParams(updatedFilter);
     getProductFilteredData(updatedFilter);
   };
-
-  useEffect(() => {
-    fetchProducts();
-    fetchProductsOriginNames();
-    fetchProductsCategoryNames();
-    fetchProductsBrandNames();
-  }, []);
 
   const toggleDrawer = (open: boolean) => () => {
     setIsDrawerOpen(open);
@@ -166,6 +208,23 @@ const ProductList: React.FC = () => {
       window.removeEventListener("resize", handleResize);
     };
   }, []);
+
+  useEffect(() => {
+    // execute on location change
+
+    if (filter !== undefined) {
+      getProductFilteredData(filter);
+      updateURLSearchParams(filter);
+      setLoading(false);
+    }
+  }, [filter]);
+
+  useEffect(() => {
+    const filter = data || getFilterFromURL();
+    getProductFilteredData(filter);
+    setFilter(filter);
+    setIsReset(true);
+  }, [data]);
 
   const renderChips = () => {
     return (
@@ -276,11 +335,20 @@ const ProductList: React.FC = () => {
           top: 0,
         }}
       >
-        <ProductFilteredRow
-          setProducts={setProducts}
-          filter={filter}
-          setFilter={setFilter}
-        />
+        {loading ? (
+          <Skeleton />
+        ) : (
+          <ProductFilteredRow
+            filter={filter}
+            setFilter={setFilter}
+            isReset={isReset}
+            setIsReset={setIsReset}
+            productListOriginName={productListOriginName}
+            productListCategoryName={productListCategoryName}
+            productListBrandName={productListBrandName}
+            productListName={productListName}
+          />
+        )}
       </Box>
       <Box sx={{ display: { xs: "block", md: "none" } }}>
         <Button
@@ -333,11 +401,20 @@ const ProductList: React.FC = () => {
               },
             }}
           >
-            <ProductFilteredRow
-              setProducts={setProducts}
-              filter={filter}
-              setFilter={setFilter}
-            />
+            {loading ? (
+              <Skeleton />
+            ) : (
+              <ProductFilteredRow
+                filter={filter}
+                setFilter={setFilter}
+                isReset={isReset}
+                setIsReset={setIsReset}
+                productListOriginName={productListOriginName}
+                productListCategoryName={productListCategoryName}
+                productListBrandName={productListBrandName}
+                productListName={productListName}
+              />
+            )}
           </Box>
         </Drawer>
       </Box>
