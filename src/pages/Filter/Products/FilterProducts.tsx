@@ -20,14 +20,18 @@ import { ApiOrigin } from "../../../api/services/apiOrigin";
 
 interface ProductFilterProps {
   setProducts?: React.Dispatch<React.SetStateAction<ProductAdmin[]>>;
+  setLoading: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 interface ProductFilter {
   [key: string]: string[];
 }
 
-const ProductFilteredRow: React.FC<ProductFilterProps> = ({ setProducts }) => {
-  const { apiGetList } = MachineryApi();
+const ProductFilteredRow: React.FC<ProductFilterProps> = ({
+  setProducts,
+  setLoading,
+}) => {
+  const { apiGetList, loading } = MachineryApi();
   const { apiGetOrigin } = ApiOrigin();
   const { getCategoryName } = CategoryApi();
   const { getBrandName } = BrandApi();
@@ -105,6 +109,7 @@ const ProductFilteredRow: React.FC<ProductFilterProps> = ({ setProducts }) => {
       const data = await apiGetList(params);
       // if(setProducts) setProducts(data);
       setProducts && setProducts(data);
+      setLoading(loading);
     } catch (error) {
       console.error("lỗi");
     }
@@ -176,9 +181,9 @@ const ProductFilteredRow: React.FC<ProductFilterProps> = ({ setProducts }) => {
                 key={`${origin?.id}`}
                 control={
                   <Checkbox
-                    defaultChecked={filter[ProductsFilterType.OriginId]?.includes(
-                      origin.id
-                    )}
+                    defaultChecked={filter[
+                      ProductsFilterType.OriginId
+                    ]?.includes(origin.id)}
                     onChange={(checked) =>
                       handleFilterProducts(
                         ProductsFilterType.OriginId,
@@ -234,9 +239,9 @@ const ProductFilteredRow: React.FC<ProductFilterProps> = ({ setProducts }) => {
                 key={`${category?.id}`}
                 control={
                   <Checkbox
-                    defaultChecked={filter[ProductsFilterType.CategoryId]?.includes(
-                      category.id
-                    )}
+                    defaultChecked={filter[
+                      ProductsFilterType.CategoryId
+                    ]?.includes(category.id)}
                     onChange={(checked) =>
                       handleFilterProducts(
                         ProductsFilterType.CategoryId,
@@ -292,9 +297,9 @@ const ProductFilteredRow: React.FC<ProductFilterProps> = ({ setProducts }) => {
                 key={`${brand?.id}`}
                 control={
                   <Checkbox
-                    defaultChecked={filter[ProductsFilterType.BrandId]?.includes(
-                      brand.id
-                    )}
+                    defaultChecked={filter[
+                      ProductsFilterType.BrandId
+                    ]?.includes(brand.id)}
                     onChange={(checked) =>
                       handleFilterProducts(
                         ProductsFilterType.BrandId,
