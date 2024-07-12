@@ -11,7 +11,7 @@ import {
 
 import "./FilterProducts.scss";
 import { ProductsFilterType } from "../../../constants/filter";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { MachineryApi } from "../../../api/services/apiMachinery";
 import { ProductAdmin } from "../../../models/products";
 import { CategoryApi } from "../../../api/services/apiCategories";
@@ -46,7 +46,7 @@ const ProductFilteredRow: React.FC<ProductFilterProps> = ({
     []
   );
   const navigate = useNavigate();
-
+  const location = useLocation();
   // Product - origin
   const fetchProductsOriginNames = async () => {
     const response = await apiGetOrigin();
@@ -124,6 +124,7 @@ const ProductFilteredRow: React.FC<ProductFilterProps> = ({
     return newFilter;
   };
 
+  //fix chỗ này dùng useLocation đê trigger lại useEffect
   useEffect(() => {
     const initialFilter = getFilterFromURL();
     setFilter(initialFilter);
@@ -131,7 +132,8 @@ const ProductFilteredRow: React.FC<ProductFilterProps> = ({
     fetchProductsOriginNames();
     fetchProductsCategoryNames();
     fetchProductsBrandNames();
-  }, []);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [location.search]);
 
   return (
     <FormControl
@@ -181,9 +183,9 @@ const ProductFilteredRow: React.FC<ProductFilterProps> = ({
                 key={`${origin?.id}`}
                 control={
                   <Checkbox
-                    defaultChecked={filter[
-                      ProductsFilterType.OriginId
-                    ]?.includes(origin.id)}
+                    checked={filter[ProductsFilterType.OriginId]?.includes(
+                      origin.id
+                    )}
                     onChange={(checked) =>
                       handleFilterProducts(
                         ProductsFilterType.OriginId,
@@ -239,9 +241,9 @@ const ProductFilteredRow: React.FC<ProductFilterProps> = ({
                 key={`${category?.id}`}
                 control={
                   <Checkbox
-                    defaultChecked={filter[
-                      ProductsFilterType.CategoryId
-                    ]?.includes(category.id)}
+                    checked={filter[ProductsFilterType.CategoryId]?.includes(
+                      category.id
+                    )}
                     onChange={(checked) =>
                       handleFilterProducts(
                         ProductsFilterType.CategoryId,
@@ -297,9 +299,9 @@ const ProductFilteredRow: React.FC<ProductFilterProps> = ({
                 key={`${brand?.id}`}
                 control={
                   <Checkbox
-                    defaultChecked={filter[
-                      ProductsFilterType.BrandId
-                    ]?.includes(brand.id)}
+                    checked={filter[ProductsFilterType.BrandId]?.includes(
+                      brand.id
+                    )}
                     onChange={(checked) =>
                       handleFilterProducts(
                         ProductsFilterType.BrandId,
