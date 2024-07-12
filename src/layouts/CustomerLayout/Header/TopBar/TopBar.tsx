@@ -11,6 +11,7 @@ import { GetCategoryProps } from "../../../../models/category";
 import ArrowRightIcon from "@mui/icons-material/ArrowRight";
 import { blue } from "@mui/material/colors";
 import config from "../../../../configs";
+import { useFilterContext } from "../../../../context/FilterContext";
 
 const cx = classNames.bind(styles);
 
@@ -26,6 +27,7 @@ const TopBar: React.FC = () => {
   const navigate = useNavigate();
   const { getCategory } = CategoryApi();
   const [menuData, setMenuData] = useState<GetCategoryProps[]>([]);
+  const { setData } = useFilterContext();
 
   const fetchCategory = async () => {
     const response = await getCategory();
@@ -34,7 +36,6 @@ const TopBar: React.FC = () => {
 
   useEffect(() => {
     fetchCategory();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleCategoryClick = (categoryId?: string) => {
@@ -45,6 +46,7 @@ const TopBar: React.FC = () => {
     } else {
       navigate(targetPath);
     }
+    setData({ CategoryId: [categoryId] });
   };
 
   const renderMenu = (data: GetCategoryProps[]) => {
@@ -53,13 +55,8 @@ const TopBar: React.FC = () => {
         <li
           className={cx("menu-item")}
           style={{ height: "54px", alignContent: "center" }}
-          onClick={(e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            handleCategoryClick();
-          }}
         >
-          <span>LOẠI MÁY</span>
+          <a href={config.routes.productList}>LOẠI MÁY</a>
           <ul className={cx("submenu")}>
             {data
               .filter(
