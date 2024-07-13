@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import {
   Box,
   FormControl,
@@ -6,12 +6,11 @@ import {
   FormLabel,
   FormGroup,
   Checkbox,
-  Autocomplete,
-  TextField,
 } from "@mui/material";
 
 import "./FilterProducts.scss";
 import { ProductsFilterType } from "../../../constants/filter";
+import { debounce } from "../../../utils/debounce";
 
 interface ProductFilterProps {
   filter: any;
@@ -22,7 +21,6 @@ interface ProductFilterProps {
   productListOriginName: string[];
   productListCategoryName: string[];
   productListBrandName: string[];
-  productListName: string[];
 }
 
 const ProductFilteredRow: React.FC<ProductFilterProps> = ({
@@ -34,121 +32,66 @@ const ProductFilteredRow: React.FC<ProductFilterProps> = ({
   productListOriginName,
   productListCategoryName,
   productListBrandName,
-  productListName,
 }) => {
   const [filterOrigin, setFilterOrigin] = useState<string[]>(
     filter[ProductsFilterType.OriginId] || []
   );
-  const [filterCategoty, setFilterCategoty] = useState<string[]>(
+  const [filterCategory, setFilterCategory] = useState<string[]>(
     filter[ProductsFilterType.CategoryId] || []
   );
   const [filterBrand, setFilterBrand] = useState<string[]>(
     filter[ProductsFilterType.BrandId] || []
   );
 
-  const [, setIsCheckboxChange] = useState<boolean>(false);
+  const handleFilterProducts = useCallback(
+    debounce((filterType: ProductsFilterType, value: string, checked: boolean) => {
+      switch (filterType) {
+        case ProductsFilterType.BrandId:
+          const brandIds = checked
+            ? [...(filterBrand || []), value]
+            : filterBrand?.filter((item) => item !== value);
 
-  const [, setSearchTerm] = useState<string>();
+          setFilterBrand(brandIds);
+          setFilter({ ...filter, BrandId: brandIds });
 
-  const handleFilterProducts = (
-    filterType: ProductsFilterType,
-    value: string,
-    checked: boolean
-  ) => {
-    switch (filterType) {
-      case ProductsFilterType.BrandId:
-        const brandIds = checked
-          ? [...(filterBrand || []), value]
-          : filterBrand?.filter((item) => item !== value);
+          break;
+        case ProductsFilterType.OriginId:
+          const originIds = checked
+            ? [...(filterOrigin || []), value]
+            : filterOrigin?.filter((item) => item !== value);
 
-        setFilterBrand(brandIds);
-        setFilter({ ...filter, BrandId: brandIds });
+          setFilterOrigin(originIds);
+          setFilter({ ...filter, OriginId: originIds });
 
-        break;
-      case ProductsFilterType.OriginId:
-        const originIds = checked
-          ? [...(filterOrigin || []), value]
-          : filterOrigin?.filter((item) => item !== value);
+          break;
+        case ProductsFilterType.CategoryId:
+          const categoryIds = checked
+            ? [...(filterCategory || []), value]
+            : filterCategory?.filter((item) => item !== value);
 
-        setFilterOrigin(originIds);
-        setFilter({ ...filter, OriginId: originIds });
+          setFilterCategory(categoryIds);
+          setFilter({ ...filter, CategoryId: categoryIds });
 
-        break;
-      case ProductsFilterType.CategoryId:
-        const categoryIds = checked
-          ? [...(filterCategoty || []), value]
-          : filterCategoty?.filter((item) => item !== value);
+          break;
 
-        setFilterCategoty(categoryIds);
-        setFilter({ ...filter, CategoryId: categoryIds });
-
-        break;
-
-      default:
-        break;
-    }
-  };
-
-  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setIsCheckboxChange(false);
-    setSearchTerm(event.target.value);
-    const updatedFilter = {
-      ...filter,
-      name: event.target.value,
-    };
-    setFilter(updatedFilter);
-  };
-
-  const handleAutocompleteChange = (
-    _event: React.ChangeEvent<{}>,
-    value: string | null
-  ) => {
-    setIsCheckboxChange(false);
-    if (value !== null) {
-      setSearchTerm(value);
-      const updatedFilter = {
-        ...filter,
-        name: value,
-      };
-      setFilter(updatedFilter);
-    } else {
-      setSearchTerm("");
-      const updatedFilter = {
-        ...filter,
-        name: null,
-      };
-      setFilter(updatedFilter);
-    }
-  };
+        default:
+          break;
+      }
+    }, 300), // Set the debounce delay (300ms in this case)
+    [filter, filterBrand, filterCategory, filterOrigin, setFilter]
+  );
 
   useEffect(() => {
     if (isReset) {
       setFilterBrand(filter[ProductsFilterType.BrandId]);
-      setFilterCategoty(filter[ProductsFilterType.CategoryId]);
+      setFilterCategory(filter[ProductsFilterType.CategoryId]);
       setFilterOrigin(filter[ProductsFilterType.OriginId]);
       setIsReset(false);
     }
-  }, [isReset]);
+  }, [isReset, filter, setIsReset]);
 
   return (
     <Box>
-      <Box>
-        <Autocomplete
-          disablePortal
-          id="combo-box-demo"
-          options={productListName}
-          value={filter.name || null}
-          onChange={handleAutocompleteChange}
-          renderInput={(params) => (
-            <TextField
-              {...params}
-              label="Tìm kiếm"
-              sx={{ width: "100%" }}
-              onChange={handleSearchChange}
-            />
-          )}
-        />
-      </Box>
       <FormControl
         component="fieldset"
         sx={{
@@ -252,7 +195,7 @@ const ProductFilteredRow: React.FC<ProductFilterProps> = ({
                   key={`${category?.id}`}
                   control={
                     <Checkbox
-                      checked={!!filterCategoty?.includes(category.id)}
+                      checked={!!filterCategory?.includes(category.id)}
                       onChange={(checked) =>
                         handleFilterProducts(
                           ProductsFilterType.CategoryId,
