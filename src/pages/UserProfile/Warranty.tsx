@@ -39,11 +39,11 @@ const Warranty: React.FC = () => {
                   }}
                 >
                   <Tabs value={tabValue} onChange={handleTabChange}>
+                    <Tab label="Bảo hành định kỳ" />
                     <Tab label="Yêu cầu bảo hành" />
-                    <Tab label="Quản lý bảo hành" />
                   </Tabs>
-                  {tabValue === 0 && <WarrantyRequest />}
-                  {tabValue === 1 && <WarrantyManagement />}
+                  {tabValue === 1 && <WarrantyRequest />}
+                  {tabValue === 0 && <WarrantyManagement />}
                 </Paper>
               </Box>
             </Grid>

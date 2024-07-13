@@ -82,7 +82,7 @@ const SideBarUserProfile: React.FC = () => {
             <ListItemIcon>
               <CachedIcon />
             </ListItemIcon>
-            <ListItemText primary="Quản lý đơn hàng" />
+            <ListItemText primary="Lịch sử mua hàng" />
           </ListItemButton>
           <ListItemButton
             component={Link}
@@ -102,7 +102,7 @@ const SideBarUserProfile: React.FC = () => {
             <ListItemIcon>
               <EngineeringIcon />
             </ListItemIcon>
-            <ListItemText primary="Bảo trì" />
+            <ListItemText primary="Bảo hành" />
           </ListItemButton>
         </div>
       </List>
