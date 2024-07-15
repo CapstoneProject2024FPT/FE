@@ -1,0 +1,16 @@
+.privacy-policy-container {
+  padding: 10px;
+  max-width: 1000px;
+  margin: auto;
+}
+
+.privacy-policy-container h1,
+.privacy-policy-container h2 {
+  text-align: left;
+  margin-bottom: 20px;
+}
+
+.privacy-policy-container p {
+  line-height: 1;
+  margin-bottom: 20px;
+}
