@@ -1,9 +1,9 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import "./NewList.scss";
 import { Box, Button, Chip, Drawer, Typography } from "@mui/material";
 import { GridFilterListIcon } from "@mui/x-data-grid";
-import { Skeleton } from "antd";
 import { ApiNews } from "../../../api/services/apiNews";
 import { PostGetProps } from "../../../models/blog";
 import NewsCard from "./NewsCard";
