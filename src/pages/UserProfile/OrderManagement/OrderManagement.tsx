@@ -15,6 +15,7 @@ import {
   TablePagination,
   Menu,
   MenuItem,
+  Button,
 } from "@mui/material";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
@@ -25,6 +26,8 @@ import { formatAddress, formatDateFunc, formatMoney } from "../../../utils/fn";
 import { toast } from "react-toastify";
 import EmptyOrder from "../../../components/EmptyOrder";
 import CancelOrderDialog from "./Modal/PopupCancelOrder";
+import ExportPDF from "./Exportpdf/ExportPDF";
+import WarrantyPDF from "./Exportpdf/WarrantyPDF";
 
 const getStatusStyles = (status: string) => {
   switch (status) {
@@ -122,6 +125,9 @@ const Row = (props: { row: OrderProps; onCancelOrder: (orderId: string) => void 
 
               <MenuItem onClick={handleDetailOrder}>Chi tiết đơn hàng</MenuItem>
             }
+            {row.status === StatusType.COMPLETED && (
+              <MenuItem onClick={() => ExportPDF({ row })}>Xuất hóa đơn</MenuItem>
+            )}
           </Menu>
         </TableCell>
       </TableRow>
@@ -138,6 +144,11 @@ const Row = (props: { row: OrderProps; onCancelOrder: (orderId: string) => void 
                     <TableCell>Tên sản phẩm</TableCell>
                     <TableCell>Số lượng</TableCell>
                     <TableCell>Giá sản phẩm</TableCell>
+                    {
+                      row.status === StatusType.COMPLETED && (
+                        <TableCell>Hành động</TableCell>
+                      )
+                    }
                   </TableRow>
                 </TableHead>
                 <TableBody>
@@ -146,6 +157,19 @@ const Row = (props: { row: OrderProps; onCancelOrder: (orderId: string) => void 
                       <TableCell>{product.productName}</TableCell>
                       <TableCell>{product.quantity}</TableCell>
                       <TableCell>{formatMoney(product.totalAmount)}</TableCell>
+                      {row.status === StatusType.COMPLETED && (
+                        <TableCell>
+                          <Button
+                            onClick={() => WarrantyPDF({ order: row, product })}
+                            variant="contained"
+                            color="primary"
+                          >
+                            Phiếu bảo hành
+                          </Button>
+                        </TableCell>
+                      )
+
+                      }
                     </TableRow>
                   ))}
                 </TableBody>
