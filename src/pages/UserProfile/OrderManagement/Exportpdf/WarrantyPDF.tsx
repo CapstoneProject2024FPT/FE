@@ -1,5 +1,5 @@
 import pdfMake from 'pdfmake/build/pdfmake';
-import pdfFonts from 'pdfmake/build/vfs_fonts';
+import * as pdfFonts from 'pdfmake/build/vfs_fonts';
 import { OrderProps, ProductProps } from '../../../../models/order';
 import { formatAddress, formatDateFunc } from '../../../../utils/fn';
 
@@ -9,7 +9,7 @@ function WarrantyPDF({ order, product }: { order: OrderProps, product: ProductPr
   // Define the styles with explicit types
   const styles = {
     header: {
-      fontSize:20,
+      fontSize: 20,
       bold: true,
       alignment: 'center' as const,
       margin: [0, 0, 0, 10] as [number, number, number, number]

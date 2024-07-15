@@ -1,6 +1,6 @@
 import htmlToPdfmake from 'html-to-pdfmake';
 import pdfMake from 'pdfmake/build/pdfmake';
-import pdfFonts from 'pdfmake/build/vfs_fonts';
+import * as pdfFonts from 'pdfmake/build/vfs_fonts';
 import { OrderProps } from '../../../../models/order';
 import { formatAddress, formatDateFunc, formatMoney } from '../../../../utils/fn';
 
