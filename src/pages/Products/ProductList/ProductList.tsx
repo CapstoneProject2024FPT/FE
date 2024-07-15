@@ -1,7 +1,6 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable react-hooks/exhaustive-deps */
-
 import React, { useEffect, useState } from "react";
-import { toast } from "react-toastify";
 import { MachineryApi } from "../../../api/services/apiMachinery";
 import { ProductAdmin } from "../../../models/products";
 import "./ProductList.scss";
@@ -15,7 +14,7 @@ import { CategoryApi } from "../../../api/services/apiCategories";
 import { BrandApi } from "../../../api/services/apiBrand";
 import { CloseOutlined } from "@mui/icons-material";
 import { ProductsFilterType } from "../../../constants/filter";
-import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useFilterContext } from "../../../context/FilterContext";
 
 interface ProductFilter {
@@ -44,19 +43,12 @@ const ProductList: React.FC = () => {
     []
   );
   const [productListName, setProductListName] = useState<string[]>([]);
+  console.log(productListName);
+
   const [isReset, setIsReset] = useState<boolean>(false);
 
   const navigate = useNavigate();
   const location = useLocation();
-  const fetchProducts = async () => {
-    try {
-      const apiResponse = await apiGetMachine("Available");
-      const productList = apiResponse.data;
-      setProducts(productList);
-    } catch (error) {
-      toast.error("lỗi");
-    }
-  };
 
   // Product - origin
   const fetchProductsOriginNames = async () => {
@@ -103,7 +95,6 @@ const ProductList: React.FC = () => {
     fetchProductListName();
 
     setFilter(getFilterFromURL());
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Get Products
@@ -115,12 +106,6 @@ const ProductList: React.FC = () => {
     });
     return newFilter || {};
   };
-
-  // useEffect(() => {
-  //   getProductFilteredData(filter);
-  //
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, [filter]);
 
   const getProductsFilterByID = (
     categoryId: string,
@@ -197,6 +182,28 @@ const ProductList: React.FC = () => {
     setIsDrawerOpen(open);
   };
 
+  const getChipLabel = (key: string, value: string) => {
+    switch (key) {
+      case ProductsFilterType.OriginId:
+        return `Xuất xứ: ${getProductsFilterByID(
+          value,
+          productListOriginName
+        )}`;
+      case ProductsFilterType.CategoryId:
+        return `Loại máy: ${getProductsFilterByID(
+          value,
+          productListCategoryName
+        )}`;
+      case ProductsFilterType.BrandId:
+        return `Thương hiệu: ${getProductsFilterByID(
+          value,
+          productListBrandName
+        )}`;
+      default:
+        return value; // Return value directly if no condition matches
+    }
+  };
+
   useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth >= 960) {
@@ -227,6 +234,14 @@ const ProductList: React.FC = () => {
   }, [data]);
 
   const renderChips = () => {
+    const hasSpecialFilters = filterArray.some(({ key }) =>
+      [
+        ProductsFilterType.OriginId,
+        ProductsFilterType.CategoryId,
+        ProductsFilterType.BrandId,
+      ].includes(key as ProductsFilterType)
+    );
+
     return (
       <>
         {filterArray.length > 0 && (
@@ -246,7 +261,7 @@ const ProductList: React.FC = () => {
                 color: "#1976d2",
               }}
             >
-              Đã chọn:
+              {hasSpecialFilters ? "Đã chọn:" : "Đã tìm:"}
             </Typography>
             <Box
               sx={{
@@ -259,22 +274,7 @@ const ProductList: React.FC = () => {
               {filterArray.map(({ key, value }) => (
                 <Chip
                   key={key + value}
-                  label={
-                    key === ProductsFilterType.OriginId
-                      ? `Xuất xứ: ${getProductsFilterByID(
-                          value,
-                          productListOriginName
-                        )}`
-                      : key === ProductsFilterType.CategoryId
-                      ? `Loại máy: ${getProductsFilterByID(
-                          value,
-                          productListCategoryName
-                        )}`
-                      : `Thương hiệu: ${getProductsFilterByID(
-                          value,
-                          productListBrandName
-                        )}`
-                  }
+                  label={getChipLabel(key, value)}
                   onDelete={() => handleClearFilter(key, value)}
                   sx={{ margin: "5px" }}
                 />
@@ -346,7 +346,6 @@ const ProductList: React.FC = () => {
             productListOriginName={productListOriginName}
             productListCategoryName={productListCategoryName}
             productListBrandName={productListBrandName}
-            productListName={productListName}
           />
         )}
       </Box>
@@ -412,7 +411,6 @@ const ProductList: React.FC = () => {
                 productListOriginName={productListOriginName}
                 productListCategoryName={productListCategoryName}
                 productListBrandName={productListBrandName}
-                productListName={productListName}
               />
             )}
           </Box>

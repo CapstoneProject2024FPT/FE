@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import Logo from "../../../../components/Logo/Logo";
-
 import RightMenu from "../RightMenu/RightMenu";
 import { Link, useNavigate } from "react-router-dom";
 import classNames from "classnames/bind";
@@ -11,14 +10,10 @@ import { GetCategoryProps } from "../../../../models/category";
 import ArrowRightIcon from "@mui/icons-material/ArrowRight";
 import { blue } from "@mui/material/colors";
 import config from "../../../../configs";
-import { MachineryApi } from "../../../../api/services/apiMachinery";
-import { ProductAdmin } from "../../../../models/products";
 import { useFilterContext } from "../../../../context/FilterContext";
 
 const cx = classNames.bind(styles);
-interface ProductFilter {
-  [key: string]: string[];
-}
+
 const LogoContainer = () => {
   return (
     <Link to="/">
@@ -30,41 +25,16 @@ const LogoContainer = () => {
 const TopBar: React.FC = () => {
   const navigate = useNavigate();
   const { getCategory } = CategoryApi();
-  const { apiGetList } = MachineryApi();
-  const [filter, setFilter] = useState<any>({});
   const [menuData, setMenuData] = useState<GetCategoryProps[]>([]);
-
-  const { data, setData } = useFilterContext();
+  const { setData } = useFilterContext();
 
   const fetchCategory = async () => {
     const response = await getCategory();
     setMenuData(response);
   };
 
-  const getProductFilteredData = async (params: any) => {
-    try {
-      const data = await apiGetList(params);
-      setFilter(data);
-    } catch (error) {
-      console.error("lỗi");
-    }
-  };
-
-  const getFilterFromURL = (): ProductFilter => {
-    const params = new URLSearchParams(window.location.search);
-    const newFilter: ProductFilter = {};
-    params.forEach((value, key) => {
-      newFilter[key] = value.split(",");
-    });
-    return newFilter;
-  };
-
   useEffect(() => {
-    const initialFilter = getFilterFromURL();
-    setFilter(initialFilter);
-    getProductFilteredData(initialFilter);
     fetchCategory();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleCategoryClick = (categoryId?: string) => {

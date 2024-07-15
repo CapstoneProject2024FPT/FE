@@ -1,7 +1,5 @@
-/* eslint-disable react-hooks/exhaustive-deps */
-/* eslint-disable no-case-declarations */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import {
   Box,
   FormControl,
@@ -9,18 +7,11 @@ import {
   FormLabel,
   FormGroup,
   Checkbox,
-  Autocomplete,
-  TextField,
 } from "@mui/material";
 
 import "./FilterProducts.scss";
 import { ProductsFilterType } from "../../../constants/filter";
-import { useNavigate, useSearchParams } from "react-router-dom";
-import { MachineryApi } from "../../../api/services/apiMachinery";
-import { ProductAdmin } from "../../../models/products";
-import { CategoryApi } from "../../../api/services/apiCategories";
-import { BrandApi } from "../../../api/services/apiBrand";
-import { ApiOrigin } from "../../../api/services/apiOrigin";
+import { debounce } from "../../../utils/debounce";
 
 interface ProductFilterProps {
   filter: any;
@@ -31,11 +22,6 @@ interface ProductFilterProps {
   productListOriginName: string[];
   productListCategoryName: string[];
   productListBrandName: string[];
-  productListName: string[];
-}
-
-interface ProductFilter {
-  [key: string]: string[];
 }
 
 const ProductFilteredRow: React.FC<ProductFilterProps> = ({
@@ -47,153 +33,72 @@ const ProductFilteredRow: React.FC<ProductFilterProps> = ({
   productListOriginName,
   productListCategoryName,
   productListBrandName,
-  productListName,
 }) => {
   const [filterOrigin, setFilterOrigin] = useState<string[]>(
     filter[ProductsFilterType.OriginId] || []
   );
-  const [filterCategoty, setFilterCategoty] = useState<string[]>(
+  const [filterCategory, setFilterCategory] = useState<string[]>(
     filter[ProductsFilterType.CategoryId] || []
   );
   const [filterBrand, setFilterBrand] = useState<string[]>(
     filter[ProductsFilterType.BrandId] || []
   );
-  const [filterListName, setFilterListName] = useState<string[]>(
-    filter[ProductsFilterType.OriginId] || []
+
+  const handleFilterProducts = useCallback(
+    debounce(
+      (filterType: ProductsFilterType, value: string, checked: boolean) => {
+        switch (filterType) {
+          case ProductsFilterType.BrandId:
+            // eslint-disable-next-line no-case-declarations
+            const brandIds = checked
+              ? [...(filterBrand || []), value]
+              : filterBrand?.filter((item) => item !== value);
+
+            setFilterBrand(brandIds);
+            setFilter({ ...filter, BrandId: brandIds });
+
+            break;
+          case ProductsFilterType.OriginId:
+            // eslint-disable-next-line no-case-declarations
+            const originIds = checked
+              ? [...(filterOrigin || []), value]
+              : filterOrigin?.filter((item) => item !== value);
+
+            setFilterOrigin(originIds);
+            setFilter({ ...filter, OriginId: originIds });
+
+            break;
+          case ProductsFilterType.CategoryId:
+            // eslint-disable-next-line no-case-declarations
+            const categoryIds = checked
+              ? [...(filterCategory || []), value]
+              : filterCategory?.filter((item) => item !== value);
+
+            setFilterCategory(categoryIds);
+            setFilter({ ...filter, CategoryId: categoryIds });
+
+            break;
+
+          default:
+            break;
+        }
+      },
+      300
+    ), // Set the debounce delay (300ms in this case)
+    [filter, filterBrand, filterCategory, filterOrigin, setFilter]
   );
-
-  const [isCheckboxChange, setIsCheckboxChange] = useState<boolean>(false);
-
-  const [searchTerm, setSearchTerm] = useState<string>();
-  const navigate = useNavigate();
-
-  const handleFilterProducts = (
-    filterType: ProductsFilterType,
-    value: string,
-    checked: boolean
-  ) => {
-    switch (filterType) {
-      case ProductsFilterType.BrandId:
-        const brandIds = checked
-          ? [...(filterBrand || []), value]
-          : filterBrand?.filter((item) => item !== value);
-
-        setFilterBrand(brandIds);
-        setFilter({ ...filter, BrandId: brandIds });
-
-        break;
-      case ProductsFilterType.OriginId:
-        const originIds = checked
-          ? [...(filterOrigin || []), value]
-          : filterOrigin?.filter((item) => item !== value);
-
-        setFilterOrigin(originIds);
-        setFilter({ ...filter, OriginId: originIds });
-
-        break;
-      case ProductsFilterType.CategoryId:
-        const categoryIds = checked
-          ? [...(filterCategoty || []), value]
-          : filterCategoty?.filter((item) => item !== value);
-
-        setFilterCategoty(categoryIds);
-        setFilter({ ...filter, CategoryId: categoryIds });
-
-        break;
-
-      default:
-        break;
-    }
-  };
-
-  const updateURLSearchParams = (filter: any) => {
-    const params = new URLSearchParams();
-    for (const key in filter) {
-      if (Array.isArray(filter[key]) && filter[key].length > 0) {
-        params.set(key, filter[key].join(","));
-      } else if (key === "name" && filter[key]) {
-        params.set("name", filter[key]);
-      }
-    }
-    const to = { pathname: location.pathname, search: params.toString() };
-    navigate(to, { replace: true });
-  };
-
-  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setIsCheckboxChange(false);
-    setSearchTerm(event.target.value);
-    const updatedFilter = {
-      ...filter,
-      name: event.target.value,
-    };
-    setFilter(updatedFilter);
-    // updateURLSearchParams(updatedFilter);
-    // getProductFilteredData(updatedFilter);
-  };
-
-  const handleAutocompleteChange = (
-    // eslint-disable-next-line @typescript-eslint/ban-types
-    _event: React.ChangeEvent<{}>,
-    value: string | null
-  ) => {
-    setIsCheckboxChange(false);
-    if (value !== null) {
-      setSearchTerm(value);
-      const updatedFilter = {
-        ...filter,
-        name: value,
-      };
-      setFilter(updatedFilter);
-      // updateURLSearchParams(updatedFilter);
-      // getProductFilteredData(updatedFilter);
-    } else {
-      setSearchTerm("");
-      const updatedFilter = {
-        ...filter,
-        name: null,
-      };
-      setFilter(updatedFilter);
-      // updateURLSearchParams(updatedFilter);
-      // getProductFilteredData(updatedFilter);
-    }
-  };
-
-  // useEffect(() => {
-  //   const initialFilter = getFilterFromURL();
-  //   setFilter(initialFilter);
-
-  //   getProductFilteredData(initialFilter);
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, []);
 
   useEffect(() => {
     if (isReset) {
       setFilterBrand(filter[ProductsFilterType.BrandId]);
-      setFilterCategoty(filter[ProductsFilterType.CategoryId]);
+      setFilterCategory(filter[ProductsFilterType.CategoryId]);
       setFilterOrigin(filter[ProductsFilterType.OriginId]);
       setIsReset(false);
     }
-  }, [isReset]);
+  }, [isReset, filter, setIsReset]);
 
   return (
     <Box>
-      <Box>
-        <Autocomplete
-          disablePortal
-          id="combo-box-demo"
-          options={productListName}
-          value={filter.name || null}
-          onChange={handleAutocompleteChange}
-          renderInput={(params) => (
-            <TextField
-              {...params}
-              label="Tìm kiếm"
-              sx={{ width: "100%" }}
-              onChange={handleSearchChange}
-            />
-          )}
-        />
-      </Box>
       <FormControl
         component="fieldset"
         sx={{
@@ -297,7 +202,7 @@ const ProductFilteredRow: React.FC<ProductFilterProps> = ({
                   key={`${category?.id}`}
                   control={
                     <Checkbox
-                      checked={!!filterCategoty?.includes(category.id)}
+                      checked={!!filterCategory?.includes(category.id)}
                       onChange={(checked) =>
                         handleFilterProducts(
                           ProductsFilterType.CategoryId,

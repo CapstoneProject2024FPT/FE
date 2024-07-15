@@ -25,6 +25,7 @@ interface GetListProps {
   sellingPrice?: number;
   priority?: number;
   categoryId?: string;
+  Name?: string[]; // mấy hôm trước nhớ sài name thường mà nay nó báo lỗi.. check lại
 }
 
 export const MachineryApi = () => {

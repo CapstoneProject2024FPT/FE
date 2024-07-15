@@ -1,48 +1,81 @@
-import React, { KeyboardEvent, useState } from "react";
-import { InputAdornment, InputBase } from "@mui/material";
-import { Search } from "@mui/icons-material";
+import React, { KeyboardEvent, useState, useRef } from "react";
+import { Box, InputBase } from "@mui/material";
+import { KeyboardAlt, Search } from "@mui/icons-material";
 import { MachineryApi } from "../../../../api/services/apiMachinery";
 import { LoadingButton } from "@mui/lab";
+import { useFilterContext } from "../../../../context/FilterContext";
+import { useNavigate } from "react-router-dom";
 
 const SearchBar: React.FC = () => {
   const [search, setSearch] = useState("");
-  const { apiGetList, loading } = MachineryApi();
+  const { apiGetList } = MachineryApi(); // assuming `loading` isn't used directly
+  const { setData } = useFilterContext();
+  const navigate = useNavigate();
+  const inputRef = useRef<HTMLInputElement>(null); // Reference for InputBase
 
   const handleSearch = async (
     event: KeyboardEvent<HTMLInputElement | HTMLTextAreaElement>
   ): Promise<void> => {
     if (event.key === "Enter") {
-      await apiGetList({ name: [search] });
+      await performSearch();
     }
   };
 
+  const performSearch = async () => {
+    await apiGetList({ Name: [search] });
+    const query = search ? `?Name=${search}` : "";
+    const targetPath = `/product-list${query}`;
+    if (location.pathname === targetPath) {
+      window.location.href = targetPath;
+    } else {
+      navigate(targetPath);
+    }
+    console.log("name: ", { Name: [search] });
+    setData({ Name: [search] });
+  };
+
+  const handleKeyboardAltClick = () => {
+    if (inputRef.current) {
+      inputRef.current.focus();
+    }
+  };
+
+  const handleSearchButtonClick = () => {
+    performSearch();
+  };
+
   return (
-    <InputBase
-      placeholder="Nhập nội dung tìm kiếm..."
-      startAdornment={
-        <InputAdornment position="start">
-          <Search />
-        </InputAdornment>
-      }
-      endAdornment={
-        <LoadingButton
-          variant="outlined"
-          startIcon={<Search />}
-          sx={{ textTransform: "capitalize", width: "200px" }}
-          loading={loading}
-        >
-          Tìm Kiếm
+    <Box sx={{ display: "flex", alignItems: "center" }}>
+      <InputBase
+        placeholder="Nhập nội dung tìm kiếm..."
+        endAdornment={
+          <LoadingButton onClick={handleKeyboardAltClick}>
+            <KeyboardAlt sx={{ color: "rgba(0, 0, 0, 0.55)" }} />
+          </LoadingButton>
+        }
+        inputRef={inputRef} // Assign the inputRef to the InputBase
+        sx={{
+          border: "1px solid rgba(0, 0, 0, 0.55)",
+          padding: "5px 5px 5px 20px",
+          borderRadius: "50px 0 0 50px",
+          width: "500px",
+        }}
+        value={search}
+        onChange={(e) => setSearch(e.target.value)}
+        onKeyDown={handleSearch}
+      />
+      <Box
+        sx={{
+          border: "1px solid rgba(0, 0, 0, 0.55)",
+          borderRadius: "0 50px 50px 0",
+          padding: "5px",
+        }}
+      >
+        <LoadingButton onClick={handleSearchButtonClick}>
+          <Search sx={{ color: "rgba(0, 0, 0, 0.55)" }} />
         </LoadingButton>
-      }
-      sx={{
-        border: "1px solid",
-        padding: "5px",
-        borderRadius: "7px",
-        width: "500px",
-      }}
-      onChange={(e) => setSearch(e.target.value)}
-      onKeyDown={handleSearch}
-    />
+      </Box>
+    </Box>
   );
 };
 

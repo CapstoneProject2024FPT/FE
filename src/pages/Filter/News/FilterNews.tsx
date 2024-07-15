@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import {
   Box,
   FormControl,
@@ -9,8 +9,6 @@ import {
   Checkbox,
   TextField,
   Autocomplete,
-  Typography,
-  Chip,
 } from "@mui/material";
 import "./FilterNews.scss";
 import { NEWS_FILTER, NEWS_TYPE } from "../../../constants/filter";
@@ -18,7 +16,7 @@ import { useNavigate } from "react-router-dom";
 import { ApiNewsCategories } from "../../../api/services/apiNewsCategories";
 import { ApiNews } from "../../../api/services/apiNews";
 import { PostGetProps } from "../../../models/blog";
-import { CloseOutlined } from "@mui/icons-material";
+import { debounce } from "../../../utils/debounce";
 
 interface NewFilterProps {
   setListNews?: React.Dispatch<React.SetStateAction<PostGetProps[]>>;
@@ -44,6 +42,8 @@ const NewsFilteredRow: React.FC<NewFilterProps> = ({
   const [isCheckboxChange, setIsCheckboxChange] = useState<boolean>(false);
   const navigate = useNavigate();
 
+  console.log(searchTerm, isCheckboxChange);
+
   const fetchNewsCategory = async () => {
     const response = await getNewsCategories();
     const newsCategory = response?.map((newsCategory: any) => ({
@@ -66,49 +66,47 @@ const NewsFilteredRow: React.FC<NewFilterProps> = ({
     setNewsType(newsTypeValues);
   };
 
-  const handleAutocompleteChange = (
-    // eslint-disable-next-line @typescript-eslint/ban-types
-    _event: React.ChangeEvent<{}>,
-    value: string | null
-  ) => {
-    setIsCheckboxChange(false);
-    if (value !== null) {
-      setSearchTerm(value);
-      const updatedFilter = {
-        ...filter,
-        Title: value,
-      };
-      setFilter && setFilter(updatedFilter);
-      updateURLSearchParams(updatedFilter);
-      getNewsFilteredData(updatedFilter);
-    } else {
-      setSearchTerm("");
-      const updatedFilter = {
-        ...filter,
-        Title: null,
-      };
-      setFilter && setFilter(updatedFilter);
-      updateURLSearchParams(updatedFilter);
-      getNewsFilteredData(updatedFilter);
-    }
-  };
+  const handleAutocompleteChange = useCallback(
+    debounce((value: string | null) => {
+      setIsCheckboxChange(false);
+      if (value !== null) {
+        setSearchTerm(value);
+        const updatedFilter = {
+          ...filter,
+          Title: value,
+        };
+        setFilter && setFilter(updatedFilter);
+        updateURLSearchParams(updatedFilter);
+        getNewsFilteredData(updatedFilter);
+      } else {
+        setSearchTerm("");
+        const updatedFilter = {
+          ...filter,
+          Title: null,
+        };
+        setFilter && setFilter(updatedFilter);
+        updateURLSearchParams(updatedFilter);
+        getNewsFilteredData(updatedFilter);
+      }
+    }, 300),
+    [filter, setFilter]
+  );
 
-  const handleFilterNews = (
-    filterType: NEWS_FILTER,
-    value: string,
-    checked: boolean
-  ) => {
-    setIsCheckboxChange(true);
-    const item = filter[filterType] || [];
-    if (checked) {
-      filter[filterType] = [...item, value];
-    } else {
-      filter[filterType] = item.filter((val: any) => val !== value);
-    }
-    setFilter && setFilter(filter);
-    updateURLSearchParams(filter);
-    getNewsFilteredData(filter);
-  };
+  const handleFilterNews = useCallback(
+    debounce((filterType: NEWS_FILTER, value: string, checked: boolean) => {
+      setIsCheckboxChange(true);
+      const item = filter[filterType] || [];
+      if (checked) {
+        filter[filterType] = [...item, value];
+      } else {
+        filter[filterType] = item.filter((val: any) => val !== value);
+      }
+      setFilter && setFilter(filter);
+      updateURLSearchParams(filter);
+      getNewsFilteredData(filter);
+    }, 300),
+    [filter, setFilter]
+  );
 
   const updateURLSearchParams = (filter: any) => {
     const params = new URLSearchParams();
@@ -169,7 +167,7 @@ const NewsFilteredRow: React.FC<NewFilterProps> = ({
           id="combo-box-demo"
           options={newsListTitle}
           value={filter.Title || null}
-          onChange={handleAutocompleteChange}
+          onChange={(_event, value) => handleAutocompleteChange(value)}
           renderInput={(params) => (
             <TextField
               {...params}

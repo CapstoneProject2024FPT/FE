@@ -30,6 +30,8 @@ import { ProductDetailProps } from "../../../models/products";
 import { formatMoney } from "../../../utils/fn";
 import { useAuthContext } from "../../../context/AuthContext";
 import config from "../../../configs";
+import { CustomerApi } from "../../../api/services/apiUser";
+import { staffProps } from "../../../models/UserData";
 
 const Detail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -38,17 +40,24 @@ const Detail: React.FC = () => {
   const [isActive, setActive] = useState(false);
   const [isRed, setIsRed] = useState(false);
   const [product, setProduct] = useState<ProductDetailProps>();
+  const [selectProductQuantity, setSelectProductQuantity] = useState<number>();
   const { apiGetMachineryID } = MachineryApi();
   const navigate = useNavigate();
   const location = useLocation();
-
   const { authUser } = useAuthContext();
+  const { apiUserProfile } = CustomerApi();
+  const [userInfo, setUserInfo] = useState<staffProps>();
+
+  const loginInfoString = localStorage.getItem("loginInfo");
+  const auth = loginInfoString ? JSON.parse(loginInfoString) : null;
+
   const fetchProducts = async () => {
     try {
       if (id) {
         const response = await apiGetMachineryID(id);
         if (response.status === 200) {
           setProduct(response.data);
+          setSelectProductQuantity(response.data.quantity?.Available || 0);
         } else {
           toast.error("Có lỗi trong quá trình lấy");
         }
@@ -60,8 +69,21 @@ const Detail: React.FC = () => {
     }
   };
 
+  const fetchProfile = async () => {
+    const id = auth?.data.id;
+    if (id) {
+      const response = await apiUserProfile(id);
+      if (response.status === 200) {
+        setUserInfo(response.data);
+      } else {
+        toast.error(response.Error);
+      }
+    }
+  };
+
   useEffect(() => {
     fetchProducts();
+    fetchProfile();
     //scroll to top
     window.scrollTo(0, 0);
 
@@ -112,15 +134,18 @@ const Detail: React.FC = () => {
   };
   const onChangeQuantities = (e: React.ChangeEvent<HTMLInputElement>) => {
     const re = /^[0-9\b]+$/;
-
-    // if value is not blank, then test the regex
-
-    if (e.target.value === "" || re.test(e.target.value)) {
-      setCurrentQuantities(Number(e.target.value));
+    const value = e.target.value;
+    if (value === "" || re.test(value)) {
+      const newValue = Number(value);
+      setCurrentQuantities(newValue);
+      if (newValue <= 1) {
+        setCurrentQuantities(1);
+      }
     }
   };
 
   const increaseQuantity = () => {
+    if (currentQuantities === selectProductQuantity) return;
     setCurrentQuantities(currentQuantities + 1);
   };
 
@@ -359,14 +384,21 @@ const Detail: React.FC = () => {
                         borderBottomLeftRadius: 0,
 
                         "&:hover": { backgroundColor: "lightgrey" },
+                        "&.disabled:hover": {
+                          cursor: "not-allowed",
+                        },
                       }}
                       onClick={() => increaseQuantity()}
+                      className={`${
+                        currentQuantities >= (selectProductQuantity ?? 0) &&
+                        "disabled"
+                      }`}
                     >
                       +
                     </Button>
                   </Box>
                 </Box>
-                Hiện có: {product?.quantity?.Available}
+                Hiện có: {selectProductQuantity}
               </Box>
 
               <Button
@@ -429,22 +461,10 @@ const Detail: React.FC = () => {
                       marginRight: "8px",
                     }}
                   />
-                  <Typography>Chưa chọn địa chỉ giao hàng</Typography>
-                  <Box sx={{ marginLeft: "10px" }}>
-                    <Button
-                      variant="outlined"
-                      sx={{
-                        textTransform: "inherit",
-                        boxShadow: "rgba(99, 99, 99, 0.2) 0px 2px 8px 0px",
-                        "&:hover": {
-                          color: "blue",
-                        },
-                      }}
-                    >
-                      {" "}
-                      Đổi{" "}
-                    </Button>
-                  </Box>
+                  <Typography>
+                    {userInfo?.address ? userInfo.address : "Chưa có địa chỉ"}
+                    {/* Hiện chưa có acc nào có địa chỉ.. swagger đang không update được địa chỉ */}
+                  </Typography>
                 </Box>
                 <Box
                   sx={{

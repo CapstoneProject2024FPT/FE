@@ -1,14 +1,15 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { createContext, useState, useContext } from "react";
 
 interface FilterContext {
-  data: any; // Replace 'any' with the actual data type
+  data: any;
   setData: (newData: any) => void;
 }
 
 const FilterContext = createContext<FilterContext | null>(null);
 
 export const FitlerProvider = ({ children }: { children: React.ReactNode }) => {
-  const [data, setData] = useState(/* initial data */);
+  const [data, setData] = useState();
 
   return (
     <FilterContext.Provider value={{ data, setData }}>
