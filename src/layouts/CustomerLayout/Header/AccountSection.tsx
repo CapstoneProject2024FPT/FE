@@ -121,7 +121,7 @@ const AccountSection = () => {
             to={config.routes.orderManagement}
             style={{ textDecoration: "none", color: "inherit" }}
           >
-            Quản lí đơn hàng
+            Lịch sử mua hàng
           </Link>
         </MenuItem>
         <Divider />

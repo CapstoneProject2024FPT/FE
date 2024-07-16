@@ -35,6 +35,9 @@ import BlogPostDetail from "../pages/Admin/Blog/BlogPostDetail";
 import AccountDetail from "../pages/Admin/User/Table/AccountDetail";
 import Address from "../pages/UserProfile/Address";
 import News from "../pages/News/News";
+import AboutUs from "../layouts/CustomerLayout/Footer/FooterPage/AboutUs/AboutUs";
+import PrivacyPolicy from "../layouts/CustomerLayout/Footer/FooterPage/PrivacyPolicy/PrivacyPolicy";
+import TermsOfService from "../layouts/CustomerLayout/Footer/FooterPage/TermsOfService/TermsOfService";
 
 const AppRoute: React.FC = () => {
   return (
@@ -100,6 +103,21 @@ const AppRoute: React.FC = () => {
           key="newDetail"
           path={config.routes.newsDetail}
           element={<NewsDetail />}
+        />
+        <Route
+          key="aboutUs"
+          path={config.routes.aboutUs}
+          element={<AboutUs />}
+        />
+        <Route
+          key="privacyPolicy"
+          path={config.routes.privacyPolicy}
+          element={<PrivacyPolicy />}
+        />
+        <Route
+          key="termsOfService"
+          path={config.routes.termsOfService}
+          element={<TermsOfService />}
         />
       </Route>
 

@@ -82,7 +82,7 @@ function Row(props: { row: ReturnType<typeof createData> }) {
                       color="primary"
                       style={{ marginRight: "10px" }}
                     >
-                      Yêu cầu bảo hành
+                      Hủy yêu cầu
                     </Button>
                   </div>
                 </TableBody>

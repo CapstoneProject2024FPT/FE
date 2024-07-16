@@ -98,8 +98,8 @@ function Row(props: { row: WarrantyProps }) {
                                     <TableRow>
                                         <TableCell>Ngày bắt đầu</TableCell>
                                         <TableCell align="right">Mô tả</TableCell>
-                                        <TableCell align="right">Nhân viên</TableCell>
                                         <TableCell align="right">Trạng thái</TableCell>
+                                        <TableCell align="right">Hành động</TableCell>
                                     </TableRow>
                                 </TableHead>
                                 <TableBody>
@@ -110,7 +110,6 @@ function Row(props: { row: WarrantyProps }) {
                                                 {formatDateFunc.formatDate(detail.startDate)}
                                             </TableCell>
                                             <TableCell align="right">{detail.description}</TableCell>
-                                            <TableCell align="right">Tài</TableCell>
                                             <TableCell align="right">
                                                 <Box
                                                     sx={{
@@ -123,6 +122,15 @@ function Row(props: { row: WarrantyProps }) {
                                                     {StatusName}
                                                 </Box>
                                             </TableCell>
+                                            <TableCell align="right">
+                                                <Button
+                                                    variant="contained"
+                                                    color="primary"
+                                                    style={{ marginRight: "10px" }}
+                                                >
+                                                    Hủy
+                                                </Button>
+                                            </TableCell>
                                         </TableRow>
                                     ))}
                                     <div>
@@ -131,7 +139,7 @@ function Row(props: { row: WarrantyProps }) {
                                             color="primary"
                                             style={{ marginRight: "10px" }}
                                         >
-                                            Hủy yêu cầu
+                                            Tạo yêu cầu
                                         </Button>
                                     </div>
                                 </TableBody>

@@ -38,6 +38,13 @@ export interface OrderProps {
   address: AddressDetail;
 }
 
+export interface ProductProps {
+  productId: string;
+  productName: string;
+  quantity: number;
+  totalAmount: number;
+}
+
 export interface AddressDetail {
   name: string;
   status: string;
