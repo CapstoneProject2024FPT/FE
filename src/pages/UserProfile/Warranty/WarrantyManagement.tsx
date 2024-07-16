@@ -21,10 +21,10 @@ const getStatusStyles = (status: string) => {
     switch (status) {
         case "Process":
             return { backgroundColor: "#FFD700", color: "black" }; // vàng
-        case "AwaitingAssignment":
-            return { backgroundColor: "#FFD700", color: "black" }; // vàng
         case "Complete":
             return { backgroundColor: "#4CAF50", color: "white" }; // xanh lá
+        case "AwaitingAssignment":
+            return { backgroundColor: "#FFD700", color: "black" }; // vàng
         case "Cancele":
             return { backgroundColor: "#F44336", color: "white" }; // đỏ
         default:
@@ -32,18 +32,12 @@ const getStatusStyles = (status: string) => {
     }
 };
 
-function Row(props: { row: WarrantyProps }) {
+function Row(props: { row: WarrantyProps; }) {
     const { row } = props;
     const [open, setOpen] = useState(false);
     const date = new Date(row.createDate);
     const [warrantyDetail, setWarrantyDetail] = useState<WarrantyPropsById>()
     const { apiGetWarrantyById } = ApiWarranty();
-
-
-    const defaultStatus = "Đang chờ xác nhận";
-    const StatusName = row?.status
-        ? warrantyStatusMapping?.find((status) => status.id === row?.status)?.name
-        : defaultStatus;
 
     const fetchWarrantyById = async () => {
         if (row) {
@@ -57,6 +51,7 @@ function Row(props: { row: WarrantyProps }) {
         setOpen(!open)
         fetchWarrantyById()
     }
+
 
     return (
         <React.Fragment>
@@ -91,7 +86,6 @@ function Row(props: { row: WarrantyProps }) {
                                     </TableRow>
                                 </TableHead>
                                 <TableBody>
-                                    {/* Uncomment and adjust as needed */}
                                     {warrantyDetail?.warrantyDetail.map((detail) => (
                                         <TableRow key={detail.id}>
                                             <TableCell component="th" scope="row">
@@ -107,7 +101,7 @@ function Row(props: { row: WarrantyProps }) {
                                                         display: "inline-block",
                                                     }}
                                                 >
-                                                    {StatusName}
+                                                    {warrantyStatusMapping.find((status) => status.id === detail.status)?.name}
                                                 </Box>
                                             </TableCell>
                                             <TableCell align="right">
@@ -121,15 +115,18 @@ function Row(props: { row: WarrantyProps }) {
                                             </TableCell>
                                         </TableRow>
                                     ))}
-                                    <div>
-                                        <Button
-                                            variant="contained"
-                                            color="primary"
-                                            style={{ marginRight: "10px" }}
-                                        >
-                                            Tạo yêu cầu
-                                        </Button>
-                                    </div>
+                                    <TableRow>
+                                        <TableCell>
+                                            <Button
+                                                variant="contained"
+                                                color="primary"
+                                                style={{ marginRight: "10px", width: "100%" }}
+                                            >
+                                                Yêu cầu bảo hành
+                                            </Button>
+                                        </TableCell>
+                                    </TableRow>
+
                                 </TableBody>
                             </Table>
                         </Box>
@@ -172,7 +169,7 @@ const WarrantyManagement: React.FC = () => {
     }, []);
 
     return (
-        <Container maxWidth="lg">
+        <Container >
             <TableContainer component={Paper}>
                 <Table sx={{ minWidth: 650 }}>
                     <TableHead>

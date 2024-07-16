@@ -24,7 +24,7 @@ const Warranty: React.FC = () => {
           backgroundColor: "#ECF0F1",
         }}
       >
-        <Box sx={{ flexGrow: 1, margin: "2%", padding: "20px" }}>
+        <Box sx={{ flexGrow: 1, margin: "2%" }}>
           <Grid container spacing={1}>
             <Grid xs={12} md={3}>
               <SideBarUserProfile />
@@ -36,14 +36,16 @@ const Warranty: React.FC = () => {
                     borderStyle: "none",
                     padding: "20px",
                     border: "1px solid ",
+                    borderRadius: "10px",
                   }}
                 >
-                  <Tabs value={tabValue} onChange={handleTabChange}>
+                  <Tabs value={tabValue} style={{ marginLeft: "2rem" }} onChange={handleTabChange}>
                     <Tab label="Bảo hành định kỳ" />
                     <Tab label="Yêu cầu bảo hành" />
                   </Tabs>
-                  {tabValue === 1 && <WarrantyRequest />}
+
                   {tabValue === 0 && <WarrantyManagement />}
+                  {tabValue === 1 && <WarrantyRequest />}
                 </Paper>
               </Box>
             </Grid>

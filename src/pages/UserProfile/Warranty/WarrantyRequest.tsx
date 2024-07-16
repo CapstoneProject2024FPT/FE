@@ -14,7 +14,7 @@ import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import axios from "axios";
 import { useState, useEffect } from "react";
-import { Button } from "@mui/material";
+import { Button, Container } from "@mui/material";
 
 function createData(
   id: number,
@@ -105,24 +105,27 @@ export default function WarrantyRequest() {
   }, []);
 
   return (
-    <TableContainer component={Paper} >
-      <Table aria-label="collapsible table">
-        <TableHead>
-          <TableRow>
-            <TableCell />
-            <TableCell align="right">Trạng thái</TableCell>
-            <TableCell align="right">Tên sản phẩm</TableCell>
-            <TableCell align="right">Số serial</TableCell>
+    <Container>
+      <TableContainer component={Paper} >
+        <Table aria-label="collapsible table">
+          <TableHead>
+            <TableRow>
+              <TableCell />
+              <TableCell align="right">Trạng thái</TableCell>
+              <TableCell align="right">Tên sản phẩm</TableCell>
+              <TableCell align="right">Số serial</TableCell>
 
-            <TableCell align="right">Ngày hết hạn</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {warranty.map((row: any) => (
-            <Row key={row.id} row={row} />
-          ))}
-        </TableBody>
-      </Table>
-    </TableContainer>
+              <TableCell align="right">Ngày hết hạn</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {warranty.map((row: any) => (
+              <Row key={row.id} row={row} />
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+    </Container>
+
   );
 }
