@@ -70,14 +70,16 @@ const TableOrder: React.FC = () => {
 
   const getStatusStyles = (status: string) => {
     switch (status) {
-      case "Pending":
+      case "Unpaid":
         return { backgroundColor: "yellow", color: "black" };
       case "Completed":
         return { backgroundColor: "green", color: "white" };
-      case "Confirmed":
+      case "Paid":
         return { backgroundColor: "green", color: "white" };
       case "Canceled":
         return { backgroundColor: "red", color: "white" };
+      case "Delivery":
+        return { backgroundColor: "yellow", color: "white" };
       default:
         return { backgroundColor: "transparent", color: "black" };
     }
@@ -215,7 +217,7 @@ const TableOrder: React.FC = () => {
                     record.status === StatusType.CANCELED
                   ) {
                     return !["2", "3", "4"].includes(item.key as string);
-                  } else if (record.status === StatusType.CONFIRMED) {
+                  } else if (record.status === StatusType.DELIVERY) {
                     return item.key !== "2";
                   } else {
                     return true;

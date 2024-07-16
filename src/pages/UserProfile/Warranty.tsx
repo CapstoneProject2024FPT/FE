@@ -5,7 +5,7 @@ import Grid from "@mui/material/Unstable_Grid2";
 import { Container, Tabs, Tab } from "@mui/material";
 import SideBarUserProfile from "./SideBar/SideBarUserProfile";
 import WarrantyManagement from "./Warranty/WarrantyManagement";
-import WarrantyRequests from "./Warranty/WarrantyRequests";
+import WarrantyRequest from "./Warranty/WarrantyRequest";
 
 const Warranty: React.FC = () => {
   const [tabValue, setTabValue] = useState(0);
@@ -39,11 +39,11 @@ const Warranty: React.FC = () => {
                   }}
                 >
                   <Tabs value={tabValue} onChange={handleTabChange}>
+                    <Tab label="Bảo hành định kỳ" />
                     <Tab label="Yêu cầu bảo hành" />
-                    <Tab label="Quản lý bảo hành" />
                   </Tabs>
+                  {tabValue === 1 && <WarrantyRequest />}
                   {tabValue === 0 && <WarrantyManagement />}
-                  {tabValue === 1 && <WarrantyRequests />}
                 </Paper>
               </Box>
             </Grid>

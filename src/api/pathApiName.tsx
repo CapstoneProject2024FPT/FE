@@ -68,3 +68,11 @@ export const GET_CITY = "city";
 export const GET_DISTRICT = "district";
 export const GET_WARD = "ward";
 export const GET_ADDRESS = "address";
+
+//warranty
+export const WARRANTY = "warranty";
+export const WARRANTY_ID = "warranty/:id";
+
+//payments
+export const PAYMENTS = "payments";
+export const PAYMENTS_ID = "payments/:id";

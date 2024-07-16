@@ -81,6 +81,7 @@ const ProductFilteredRow: React.FC<ProductFilterProps> = ({
     [filter, filterBrand, filterCategory, filterOrigin, setFilter]
   );
 
+  //fix chỗ này dùng useLocation đê trigger lại useEffect
   useEffect(() => {
     if (isReset) {
       setFilterBrand(filter[ProductsFilterType.BrandId]);

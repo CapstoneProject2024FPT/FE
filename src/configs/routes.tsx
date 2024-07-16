@@ -18,6 +18,9 @@ export const routes = {
   newsDetail: `/news/${suffix.detailId}`,
   productList: "/product-list",
   productDetail: `/product-list/product-detail/${suffix.detailId}`,
+  aboutUs: "/about-us",
+  privacyPolicy: "/privacy-policy",
+  termsOfService: "/terms-of-service",
 };
 
 export const adminRoutes = {
