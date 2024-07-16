@@ -71,8 +71,8 @@ const PaymentSuccessfull: React.FC = () => {
         }}
       />
 
-      <StyledButton onClick={() => navigate(routes.login)}>
-        Back to site
+      <StyledButton onClick={() => navigate(routes.home)}>
+        Trở về trang chủ
       </StyledButton>
     </Box>
   );
