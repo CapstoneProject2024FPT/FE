@@ -21,22 +21,28 @@ import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import { ApiOrder } from "../../../api/services/apiOrder";
-import { OrderProps, statusMapping, StatusType } from "../../../models/order";
+import { GetOrderProps, OrderProps, statusMapping, StatusType } from "../../../models/order";
 import { formatAddress, formatDateFunc, formatMoney } from "../../../utils/fn";
 import { toast } from "react-toastify";
 import EmptyOrder from "../../../components/EmptyOrder";
 import CancelOrderDialog from "./Modal/PopupCancelOrder";
 import ExportPDF from "./Exportpdf/ExportPDF";
 import WarrantyPDF from "./Exportpdf/WarrantyPDF";
+import { Link } from "react-router-dom";
+import config from "../../../configs";
 
 const getStatusStyles = (status: string) => {
   switch (status) {
-    case "Pending":
+    case "Unpaid":
       return { backgroundColor: "#FFD700", color: "black" }; // vàng
+    case "Paid":
+      return { backgroundColor: "#4CAF50", color: "white" }; // xanh lá
     case "Completed":
       return { backgroundColor: "#4CAF50", color: "white" }; // xanh lá
     case "Canceled":
       return { backgroundColor: "#F44336", color: "white" }; // đỏ
+    case "Delivery":
+      return { backgroundColor: "#FFD700", color: "white" }; // vàng
     default:
       return { backgroundColor: "transparent", color: "black" };
   }
@@ -117,7 +123,7 @@ const Row = (props: { row: OrderProps; onCancelOrder: (orderId: string) => void 
             open={openMenu}
             onClose={handleCloseMenu}
           >
-            {row.status === StatusType.PENDING && (
+            {row.status === StatusType.UNPAID && (
               <MenuItem onClick={handleCancelOrder}>Hủy đơn hàng</MenuItem>
             )}
             {
@@ -154,7 +160,17 @@ const Row = (props: { row: OrderProps; onCancelOrder: (orderId: string) => void 
                 <TableBody>
                   {row.productList.map((product) => (
                     <TableRow key={product.orderDetailId}>
-                      <TableCell>{product.productName}</TableCell>
+                      <TableCell>
+                        <Link
+                          to={config.routes.productDetail.replace(
+                            ":id",
+                            product.productId
+                          )}
+                          style={{ textDecoration: "none" }}
+                        >
+                          {product.productName}
+                        </Link>
+                      </TableCell>
                       <TableCell>{product.quantity}</TableCell>
                       <TableCell>{formatMoney(product.totalAmount)}</TableCell>
                       {row.status === StatusType.COMPLETED && (
@@ -199,7 +215,7 @@ const Row = (props: { row: OrderProps; onCancelOrder: (orderId: string) => void 
 };
 
 const OrderManagement: React.FC = () => {
-  const [orders, setOrders] = useState<OrderProps[]>([]);
+  const [orders, setOrders] = useState<GetOrderProps>();
   const [page, setPage] = useState<number>(0);
   const [rowsPerPage, setRowsPerPage] = useState(15);
   const [openDialog, setOpenDialog] = useState(false);
@@ -231,10 +247,12 @@ const OrderManagement: React.FC = () => {
       if (auth) {
         const params = {
           AccountId: auth.data.id,
+          page: page + 1,
+          size: rowsPerPage,
         };
         const apiResponse = await apiGetOrderById(params);
         const orderList = apiResponse.data;
-        setOrders(orderList.items);
+        setOrders(orderList);
       }
     } catch (error) {
       console.log(error);
@@ -268,12 +286,12 @@ const OrderManagement: React.FC = () => {
 
   useEffect(() => {
     fetchOrders();
-  }, []);
+  }, [page, rowsPerPage]);
 
   return (
     <Container maxWidth="lg">
       <Typography variant="h4" component="h1" gutterBottom>
-        Quản lý đơn hàng
+        Lịch sử mua hàng
       </Typography>
 
       <TableContainer component={Paper}>
@@ -290,8 +308,8 @@ const OrderManagement: React.FC = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {orders.length > 0 ? (
-              orders.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((order) => (
+            {(orders?.items ?? []).length > 0 ? (
+              orders?.items.map((order) => (
                 <Row key={order.orderId} row={order} onCancelOrder={handleOpenDialog} />
               ))
             ) : (
@@ -307,11 +325,13 @@ const OrderManagement: React.FC = () => {
       <TablePagination
         rowsPerPageOptions={routePage}
         component="div"
-        count={orders.length}
-        rowsPerPage={rowsPerPage}
+        count={orders?.total ? orders?.total : 0}
+        rowsPerPage={orders?.size ?? 0}
         page={page}
         onPageChange={handleChangePage}
         onRowsPerPageChange={handleChangeRowsPerPage}
+        labelRowsPerPage="Số hàng mỗi trang"
+
       />
       <CancelOrderDialog
         open={openDialog}

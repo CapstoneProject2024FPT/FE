@@ -27,6 +27,8 @@ export const ApiOrder = () => {
 
   interface GetOrderProps {
     AccountId: string;
+    page: number;
+    size: number;
   }
   const apiGetOrderById = async (params: GetOrderProps) => {
     setLoading(true);
