@@ -442,50 +442,7 @@ const Detail: React.FC = () => {
                 justifyContent: "space-around",
               }}
             >
-              <Box>
-                <Typography sx={{ fontWeight: 600 }}>
-                  Địa chỉ giao hàng
-                </Typography>
-                <Box
-                  sx={{
-                    display: "flex",
-                    alignItems: "center",
-                    marginBottom: "8px",
-                  }}
-                >
-                  <FmdGood
-                    sx={{
-                      padding: "4px",
-                      fontSize: "28px",
-                      color: "rgba(0, 0, 0, 0.54)",
-                      marginRight: "8px",
-                    }}
-                  />
-                  <Typography>
-                    {userInfo?.address ? userInfo.address : "Chưa có địa chỉ"}
-                    {/* Hiện chưa có acc nào có địa chỉ.. swagger đang không update được địa chỉ */}
-                  </Typography>
-                </Box>
-                <Box
-                  sx={{
-                    display: "flex",
-                    alignItems: "center",
-                    marginBottom: "8px",
-                  }}
-                >
-                  <LocalAtm
-                    sx={{
-                      padding: "4px",
-                      fontSize: "28px",
-                      color: "rgba(0, 0, 0, 0.54)",
-                      marginRight: "8px",
-                    }}
-                  />
-                  <Typography>Thanh toán tiền mặt/Online</Typography>
-                </Box>
-              </Box>
-              <Divider sx={{ borderBottomWidth: "1px", margin: "0 20px" }} />
-              <Box>
+              <Box sx={{ margin: "auto" }}>
                 <Typography sx={{ fontWeight: 600 }}>
                   Đổi trả & bảo hành
                 </Typography>
@@ -556,8 +513,8 @@ const Detail: React.FC = () => {
                   <Typography>Bảo hành định kỳ</Typography>
                 </Box>
               </Box>
-              <Divider sx={{ borderBottomWidth: "1px", margin: "0 20px" }} />
-              <Box>
+              <Divider sx={{ borderBottomWidth: "1px", margin: "0 10px" }} />
+              <Box sx={{ margin: "auto" }}>
                 <Typography sx={{ fontWeight: 600 }}>Được bán bởi</Typography>
                 <Typography
                   sx={{ fontWeight: 600, color: "orange", marginTop: "8px" }}
@@ -565,7 +522,7 @@ const Detail: React.FC = () => {
                   SMMMS Corporation
                 </Typography>
               </Box>
-              <Divider sx={{ borderBottomWidth: "1px", margin: "0 20px" }} />
+              <Divider sx={{ borderBottomWidth: "1px", margin: "0 10px" }} />
             </Box>
           </Box>
         </Box>
