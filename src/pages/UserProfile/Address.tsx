@@ -15,8 +15,8 @@ const Address: React.FC = () => {
           backgroundColor: "#ECF0F1",
         }}
       >
-        <Box sx={{ flexGrow: 1, margin: "2%", padding: "20px" }}>
-          <Grid container spacing={2}>
+        <Box sx={{ flexGrow: 1, margin: "2%" }}>
+          <Grid container spacing={1}>
             <Grid xs={12} md={3}>
               <SideBarUserProfile />
             </Grid>
@@ -27,6 +27,7 @@ const Address: React.FC = () => {
                     borderStyle: "none",
                     padding: "20px",
                     border: "1px solid ",
+                    borderRadius: "10px",
                   }}
                 >
                   <UserAddress />

@@ -28,6 +28,7 @@ const OrderCustomer: React.FC = () => {
                     borderStyle: "none",
                     padding: "20px",
                     border: "1px solid ",
+                    borderRadius: "10px",
                   }}
                 >
                   <OrderManagement />
