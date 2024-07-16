@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useCallback, useEffect, useState } from "react";
 import {
   Box,
@@ -44,40 +45,46 @@ const ProductFilteredRow: React.FC<ProductFilterProps> = ({
   );
 
   const handleFilterProducts = useCallback(
-    debounce((filterType: ProductsFilterType, value: string, checked: boolean) => {
-      switch (filterType) {
-        case ProductsFilterType.BrandId:
-          const brandIds = checked
-            ? [...(filterBrand || []), value]
-            : filterBrand?.filter((item) => item !== value);
+    debounce(
+      (filterType: ProductsFilterType, value: string, checked: boolean) => {
+        switch (filterType) {
+          case ProductsFilterType.BrandId:
+            // eslint-disable-next-line no-case-declarations
+            const brandIds = checked
+              ? [...(filterBrand || []), value]
+              : filterBrand?.filter((item) => item !== value);
 
-          setFilterBrand(brandIds);
-          setFilter({ ...filter, BrandId: brandIds });
+            setFilterBrand(brandIds);
+            setFilter({ ...filter, BrandId: brandIds });
 
-          break;
-        case ProductsFilterType.OriginId:
-          const originIds = checked
-            ? [...(filterOrigin || []), value]
-            : filterOrigin?.filter((item) => item !== value);
+            break;
+          case ProductsFilterType.OriginId:
+            // eslint-disable-next-line no-case-declarations
+            const originIds = checked
+              ? [...(filterOrigin || []), value]
+              : filterOrigin?.filter((item) => item !== value);
 
-          setFilterOrigin(originIds);
-          setFilter({ ...filter, OriginId: originIds });
+            setFilterOrigin(originIds);
+            setFilter({ ...filter, OriginId: originIds });
 
-          break;
-        case ProductsFilterType.CategoryId:
-          const categoryIds = checked
-            ? [...(filterCategory || []), value]
-            : filterCategory?.filter((item) => item !== value);
+            break;
+          case ProductsFilterType.CategoryId:
+            // eslint-disable-next-line no-case-declarations
+            const categoryIds = checked
+              ? [...(filterCategory || []), value]
+              : filterCategory?.filter((item) => item !== value);
 
-          setFilterCategory(categoryIds);
-          setFilter({ ...filter, CategoryId: categoryIds });
+            setFilterCategory(categoryIds);
+            setFilter({ ...filter, CategoryId: categoryIds });
 
-          break;
+            break;
 
-        default:
-          break;
-      }
-    }, 300), // Set the debounce delay (300ms in this case)
+          default:
+            break;
+        }
+      },
+      300
+    ), // Set the debounce delay (300ms in this case)
     [filter, filterBrand, filterCategory, filterOrigin, setFilter]
   );
 

@@ -1,6 +1,7 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable react-hooks/exhaustive-deps */
-
 import React, { useEffect, useState } from "react";
+import { MachineryApi } from "../../../api/services/apiMachinery";
 import { ProductAdmin } from "../../../models/products";
 import "./ProductList.scss";
 import { Box, Button, Chip, Drawer, Typography } from "@mui/material";
@@ -15,7 +16,6 @@ import { CloseOutlined } from "@mui/icons-material";
 import { ProductsFilterType } from "../../../constants/filter";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useFilterContext } from "../../../context/FilterContext";
-import { MachineryApi } from "../../../api/services/apiMachinery";
 
 interface ProductFilter {
   [key: string]: string[];
@@ -43,6 +43,8 @@ const ProductList: React.FC = () => {
     []
   );
   const [productListName, setProductListName] = useState<string[]>([]);
+  console.log(productListName);
+
   const [isReset, setIsReset] = useState<boolean>(false);
 
   const navigate = useNavigate();

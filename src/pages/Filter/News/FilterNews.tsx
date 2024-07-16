@@ -9,8 +9,6 @@ import {
   Checkbox,
   TextField,
   Autocomplete,
-  Typography,
-  Chip,
 } from "@mui/material";
 import "./FilterNews.scss";
 import { NEWS_FILTER, NEWS_TYPE } from "../../../constants/filter";
@@ -18,7 +16,6 @@ import { useNavigate } from "react-router-dom";
 import { ApiNewsCategories } from "../../../api/services/apiNewsCategories";
 import { ApiNews } from "../../../api/services/apiNews";
 import { PostGetProps } from "../../../models/blog";
-import { CloseOutlined } from "@mui/icons-material";
 import { debounce } from "../../../utils/debounce";
 
 interface NewFilterProps {
@@ -44,6 +41,8 @@ const NewsFilteredRow: React.FC<NewFilterProps> = ({
   const [searchTerm, setSearchTerm] = useState<string>();
   const [isCheckboxChange, setIsCheckboxChange] = useState<boolean>(false);
   const navigate = useNavigate();
+
+  console.log(searchTerm, isCheckboxChange);
 
   const fetchNewsCategory = async () => {
     const response = await getNewsCategories();
