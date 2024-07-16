@@ -1,10 +1,9 @@
 export enum StatusType {
-  UNPAID = "Unpaid",
+  UNPAID = "UnPaid",
   PAID = "Paid",
   COMPLETED = "Completed",
   CANCELED = "Canceled",
   DELIVERY = "Delivery",
-
 }
 
 export const statusMapping = [
@@ -31,11 +30,11 @@ export const statusMapping = [
 ];
 
 export interface GetOrderProps {
-  size: number,
-  page: number,
-  total: number,
-  totalPages: number,
-  items: OrderProps[]
+  size: number;
+  page: number;
+  total: number;
+  totalPages: number;
+  items: OrderProps[];
 }
 
 export interface OrderProps {

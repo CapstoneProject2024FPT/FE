@@ -65,7 +65,6 @@ type checkoutPaymentProps = {
 };
 const CheckoutPayment: React.FC<checkoutPaymentProps> = ({
   handleBack,
-  handleNext,
   handleGoToStep,
 }) => {
   const { total } = useCheckout();
@@ -86,27 +85,27 @@ const CheckoutPayment: React.FC<checkoutPaymentProps> = ({
     sellingPrice: cart.sellingPrice,
   }));
 
-  // const params: QueryParams = {};
-
-  // queryParams.forEach((value, key) => {
-  //   params[key] = value;
-  // });
-
-  // console.log("All Query Params:", params);
-
   //vnreturn
   useEffect(() => {
     const queryParams = new URLSearchParams(location.search);
-
     const transactionId = queryParams.get("vnp_TransactionStatus");
-    console.log(transactionId);
 
     const handleTransactionStatus = async () => {
-      const id = sessionStorage.getItem("paymentID");
-      console.log(id);
+      const id = sessionStorage.getItem("paymmentID");
 
       if (transactionId === "00" && id) {
         const params = { status: "SUCCESS" };
+        try {
+          const response = await apiPaymentUpdate(params, id);
+          console.log(response);
+          if (response.status === 200) {
+            navigate(config.routes.paymentSuccessfull);
+          }
+        } catch (error) {
+          console.error("Error updating payment status:", error);
+        }
+      } else if (id) {
+        const params = { status: "FAILED" };
         try {
           const response = await apiPaymentUpdate(params, id);
           console.log(response);
