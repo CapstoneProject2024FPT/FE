@@ -12,7 +12,7 @@ import Typography from "@mui/material/Typography";
 import Paper from "@mui/material/Paper";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
-import { Button } from "@mui/material";
+import { Button, Container, TablePagination } from "@mui/material";
 import { ApiWarranty } from "../../../api/services/apiWarranty";
 import { WarrantyProps, WarrantyPropsById, warrantyStatusMapping } from "../../../models/warranty";
 import { formatDateFunc } from "../../../utils/fn";
@@ -72,18 +72,6 @@ function Row(props: { row: WarrantyProps }) {
                 </TableCell>
                 <TableCell align="right">{row.inventory.serialNumber}</TableCell>
                 <TableCell align="right">{row.inventory.machinery.name}</TableCell>
-                <TableCell align="right">
-                    <Box
-                        sx={{
-                            ...getStatusStyles(row.status),
-                            padding: "8px 16px",
-                            borderRadius: "8px",
-                            display: "inline-block",
-                        }}
-                    >
-                        {StatusName}
-                    </Box>
-                </TableCell>
                 <TableCell align="right">{`${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`}</TableCell>
             </TableRow>
             <TableRow>
@@ -154,6 +142,23 @@ function Row(props: { row: WarrantyProps }) {
 
 const WarrantyManagement: React.FC = () => {
     const [requests, setRequests] = useState<WarrantyProps[]>([]);
+    const [page, setPage] = useState<number>(0);
+    const [rowsPerPage, setRowsPerPage] = useState(15);
+    const routePage = [15, 20, 25, 30];
+
+    const handleChangePage = (
+        _event: React.MouseEvent<HTMLButtonElement> | null,
+        newPage: number
+    ) => {
+        setPage(newPage);
+    };
+
+    const handleChangeRowsPerPage = (
+        event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>
+    ) => {
+        setRowsPerPage(parseInt(event.target.value, 10));
+        setPage(0);
+    };
 
     const { apiGetWarranty } = ApiWarranty();
 
@@ -167,24 +172,35 @@ const WarrantyManagement: React.FC = () => {
     }, []);
 
     return (
-        <TableContainer component={Paper}>
-            <Table sx={{ minWidth: 650 }}>
-                <TableHead>
-                    <TableRow>
-                        <TableCell />
-                        <TableCell align="right">Số serial</TableCell>
-                        <TableCell align="right">Tên sản phẩm</TableCell>
-                        <TableCell align="right">Trạng thái</TableCell>
-                        <TableCell align="right">Ngày tạo phiếu</TableCell>
-                    </TableRow>
-                </TableHead>
-                <TableBody>
-                    {requests.map((row: WarrantyProps) => (
-                        <Row key={row.id} row={row} />
-                    ))}
-                </TableBody>
-            </Table>
-        </TableContainer>
+        <Container maxWidth="lg">
+            <TableContainer component={Paper}>
+                <Table sx={{ minWidth: 650 }}>
+                    <TableHead>
+                        <TableRow>
+                            <TableCell />
+                            <TableCell align="right">Số serial</TableCell>
+                            <TableCell align="right">Tên sản phẩm</TableCell>
+                            <TableCell align="right">Ngày tạo phiếu</TableCell>
+                        </TableRow>
+                    </TableHead>
+                    <TableBody>
+                        {requests.map((row: WarrantyProps) => (
+                            <Row key={row.id} row={row} />
+                        ))}
+                    </TableBody>
+                </Table>
+            </TableContainer>
+            <TablePagination
+                rowsPerPageOptions={routePage}
+                component="div"
+                count={requests.length}
+                rowsPerPage={rowsPerPage}
+                page={page}
+                onPageChange={handleChangePage}
+                onRowsPerPageChange={handleChangeRowsPerPage}
+                labelRowsPerPage="Số hàng mỗi trang"
+            />
+        </Container>
     );
 };
 

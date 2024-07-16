@@ -27,7 +27,7 @@ export const warrantyStatusMapping = [
     },
     {
         id: StatusType.AWAITINGASSIGNMENT,
-        name: "Đang chờ cử nhân viên",
+        name: "Đang cử nhân viên",
     }
 ];
 
