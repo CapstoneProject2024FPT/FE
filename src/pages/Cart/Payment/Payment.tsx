@@ -60,7 +60,6 @@ type FormValuesProps = {
 
 type checkoutPaymentProps = {
   handleBack: () => void;
-  handleNext: () => void;
   handleGoToStep: (step: number) => void;
 };
 const CheckoutPayment: React.FC<checkoutPaymentProps> = ({
