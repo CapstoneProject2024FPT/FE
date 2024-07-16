@@ -79,11 +79,7 @@ const AppRoute: React.FC = () => {
           path={config.routes.productList}
           element={<Products />}
         />
-        <Route
-          key="listNews"
-          path={config.routes.news}
-          element={<News />}
-        />
+        <Route key="listNews" path={config.routes.news} element={<News />} />
         <Route
           key="favoriteProduct"
           path={config.routes.favoriteProduct}

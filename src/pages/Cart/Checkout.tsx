@@ -148,7 +148,6 @@ const Checkout: React.FC = () => {
             {activeStep === 2 && (
               <CheckoutPayment
                 handleBack={handleBack}
-                handleNext={handleNext}
                 handleGoToStep={handleGotoStep}
               />
             )}
