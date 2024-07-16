@@ -26,7 +26,7 @@ const ModalAcceptOrder: React.FC<ModalOrder> = ({
     try {
       if (OrderData) {
         const params = {
-          status: StatusType.CONFIRMED,
+          status: StatusType.DELIVERY,
           note: "",
         };
         const response = await apiAcceptOrder(OrderData?.orderId, params);
