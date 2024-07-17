@@ -10,7 +10,7 @@ import Account from "../pages/Admin/User/Account";
 import Layout from "../layouts/CustomerLayout/Layout";
 import UserProfile from "../pages/UserProfile/UserProfile";
 import BlogNewPost from "../pages/Admin/Blog/BlogNewPost";
-import PaymentSuccessfull from "../pages/PaymentSuccessfull";
+import PaymentSuccessfull from "../pages/Payment/successful";
 import CreateProduct from "../pages/Admin/Product/CreateProduct";
 import Product from "../pages/Admin/Product/Product";
 import BlogPosts from "../pages/Admin/Blog/BlogPosts";
@@ -38,6 +38,7 @@ import News from "../pages/News/News";
 import AboutUs from "../layouts/CustomerLayout/Footer/FooterPage/AboutUs/AboutUs";
 import PrivacyPolicy from "../layouts/CustomerLayout/Footer/FooterPage/PrivacyPolicy/PrivacyPolicy";
 import TermsOfService from "../layouts/CustomerLayout/Footer/FooterPage/TermsOfService/TermsOfService";
+import PaymentFailure from "../pages/Payment/failure";
 
 const AppRoute: React.FC = () => {
   return (
@@ -54,9 +55,14 @@ const AppRoute: React.FC = () => {
           element={<Detail />}
         />
         <Route
-          key="payment-successfull"
-          path={config.routes.paymentSuccessfull}
+          key="payment-successful"
+          path={config.routes.paymentSuccessful}
           element={<PaymentSuccessfull />}
+        ></Route>
+        <Route
+          key="payment-failure"
+          path={config.routes.paymentFailure}
+          element={<PaymentFailure />}
         ></Route>
         <Route key="cart" path={config.routes.cart} element={<Checkout />} />
         <Route

@@ -98,7 +98,7 @@ const CheckoutPayment: React.FC<checkoutPaymentProps> = ({
           const response = await apiPaymentUpdate(params, id);
           console.log(response);
           if (response.status === 200) {
-            navigate(config.routes.paymentSuccessfull);
+            navigate(config.routes.paymentSuccessful);
           }
         } catch (error) {
           console.error("Error updating payment status:", error);
@@ -109,7 +109,7 @@ const CheckoutPayment: React.FC<checkoutPaymentProps> = ({
           const response = await apiPaymentUpdate(params, id);
           console.log(response);
           if (response.status === 200) {
-            navigate(config.routes.paymentSuccessfull);
+            navigate(config.routes.paymentFailure);
           }
         } catch (error) {
           console.error("Error updating payment status:", error);

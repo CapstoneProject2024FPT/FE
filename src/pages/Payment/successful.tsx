@@ -1,6 +1,6 @@
 import React from "react";
 
-import SuccessfullGif from "../../assets/gif/success-you-ve-done-it.gif";
+import SuccessfullGif from "../../assets/gif/success.gif";
 import { Box, Button, Typography, styled } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { routes } from "../../configs/routes";
@@ -42,7 +42,6 @@ const PaymentSuccessfull: React.FC = () => {
         boxShadow: "rgba(0, 0, 0, 0.24) 0px 3px 8px",
         padding: "50px 35px",
         margin: "auto",
-        transform: "translateY(50%)",
         textAlign: "center",
       }}
     >
@@ -55,7 +54,7 @@ const PaymentSuccessfull: React.FC = () => {
           display: "block",
         }}
       >
-        Payment Successfull
+        Payment Successful
       </Typography>
       <img
         src={SuccessfullGif}
@@ -64,10 +63,10 @@ const PaymentSuccessfull: React.FC = () => {
           filter: "brightness(1.1) hue-rotate(-70deg)",
           height: "255px",
           objectFit: "none",
-          zoom: "0.5",
+          zoom: "0.6",
           display: "block",
-          margin: "auto",
-          marginBottom: "50px",
+          margin: "0 auto 50px",
+
         }}
       />
 
