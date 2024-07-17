@@ -30,10 +30,11 @@ import ExportPDF from "./Exportpdf/ExportPDF";
 import WarrantyPDF from "./Exportpdf/WarrantyPDF";
 import { Link } from "react-router-dom";
 import config from "../../../configs";
+import moment from "moment";
 
 const getStatusStyles = (status: string) => {
   switch (status) {
-    case "Unpaid":
+    case "UnPaid":
       return { backgroundColor: "#FFD700", color: "black" }; // vàng
     case "Paid":
       return { backgroundColor: "#4CAF50", color: "white" }; // xanh lá
@@ -48,7 +49,7 @@ const getStatusStyles = (status: string) => {
   }
 };
 
-const Row = (props: { row: OrderProps; onCancelOrder: (orderId: string) => void }) => {
+const Row = (props: { row: OrderProps; onCancelOrder: (orderId: string, note?: string) => void }) => {
   const { row, onCancelOrder } = props;
   const [open, setOpen] = useState(false);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -60,7 +61,7 @@ const Row = (props: { row: OrderProps; onCancelOrder: (orderId: string) => void 
     : defaultStatus;
 
   const handleCancelOrder = () => {
-    onCancelOrder(row.orderId);
+    onCancelOrder(row.orderId, "Đơn hàng đã bị hủy do quá hạn thời gian thanh toán");
     handleCloseMenu();
   };
 
@@ -166,7 +167,7 @@ const Row = (props: { row: OrderProps; onCancelOrder: (orderId: string) => void 
                             ":id",
                             product.productId
                           )}
-                          style={{ textDecoration: "none" }}
+                          style={{ textDecoration: "none", color: "black" }}
                         >
                           {product.productName}
                         </Link>
@@ -253,6 +254,7 @@ const OrderManagement: React.FC = () => {
         const apiResponse = await apiGetOrderById(params);
         const orderList = apiResponse.data;
         setOrders(orderList);
+        handleAutoCancel(orderList.items);
       }
     } catch (error) {
       console.log(error);
@@ -282,6 +284,42 @@ const OrderManagement: React.FC = () => {
         handleCloseDialog();
       }
     }
+  };
+
+  const handleAutoCancel = (orders: OrderProps[]) => {
+    orders.forEach(order => {
+      if (order.status === "UnPaid") {
+        const createTime = moment(order.createDate);
+        const now = moment();
+        const diff = moment.duration(now.diff(createTime));
+        const minutes = diff.asMinutes();
+
+        if (minutes >= 30) {
+          apiCancelOrder({ orderId: order.orderId, status: "Canceled", note: "Đơn hàng đã bị hủy do quá hạn thời gian thanh toán" })
+            .then(() => {
+              toast.success(`Đơn hàng ${order.invoiceCode} đã bị hủy do quá hạn thời gian thanh toán`);
+              fetchOrders();
+            })
+            .catch((error) => {
+              toast.error("Có lỗi xảy ra khi hủy đơn hàng");
+              console.log(error);
+            });
+        } else {
+          const remainingTime = 30 * 60 * 1000 - diff.asMilliseconds();
+          setTimeout(() => {
+            apiCancelOrder({ orderId: order.orderId, status: "Canceled", note: "Đơn hàng đã bị hủy do quá hạn thời gian thanh toán" })
+              .then(() => {
+                toast.success(`Đơn hàng ${order.invoiceCode} đã bị hủy do quá hạn thời gian thanh toán`);
+                fetchOrders();
+              })
+              .catch((error) => {
+                toast.error("Có lỗi xảy ra khi hủy đơn hàng");
+                console.log(error);
+              });
+          }, remainingTime);
+        }
+      }
+    });
   };
 
   useEffect(() => {
