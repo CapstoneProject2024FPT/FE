@@ -48,14 +48,16 @@ function Row(props: { row: WarrantyProps; }) {
     };
 
     const handleClick = () => {
-        setOpen(!open)
-        fetchWarrantyById()
+        if (!open) {
+            fetchWarrantyById();
+        }
+        setOpen(!open);
     }
 
 
     return (
         <React.Fragment>
-            <TableRow sx={{ '& > *': { borderBottom: 'unset' } }}>
+            <TableRow>
                 <TableCell>
                     <IconButton
                         aria-label="expand row"
