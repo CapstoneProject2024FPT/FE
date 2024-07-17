@@ -115,6 +115,10 @@ const CheckoutPayment: React.FC<checkoutPaymentProps> = ({
           console.error("Error updating payment status:", error);
         }
       }
+      sessionStorage.removeItem("paymmentID");
+      sessionStorage.removeItem("checkoutTotal");
+      localStorage.removeItem("cart");
+      sessionStorage.removeItem("address");
     };
 
     if (transactionId) {
@@ -122,11 +126,6 @@ const CheckoutPayment: React.FC<checkoutPaymentProps> = ({
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [location, navigate]);
-
-  // handleNext();
-  // sessionStorage.removeItem("checkoutTotal");
-  // localStorage.removeItem("cart");
-  // sessionStorage.removeItem("address");
 
   //payment
   const [note, setNote] = useState<string>("");

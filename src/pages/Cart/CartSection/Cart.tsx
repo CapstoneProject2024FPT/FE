@@ -25,6 +25,7 @@ import CartSummary from "./CartSummary";
 import { Link } from "react-router-dom";
 import config from "../../../configs";
 import { useCheckout } from "../../../zustand/useCheckout";
+import { MachineryApi } from "../../../api/services/apiMachinery";
 
 const IncrementerStyle = styled("div")(({ theme }) => ({
   display: "flex",
@@ -53,8 +54,32 @@ const getCartItems = (): cartProps => {
 
 const Cart: React.FC<CartProp> = ({ handleNext }) => {
   const [CartItems, setCartItems] = useState<cartProps>(getCartItems());
+  const { apiGetDetailMachine } = MachineryApi();
 
   const { setTotal, total } = useCheckout();
+
+  useEffect(() => {
+    const fetchCorrectQuantities = async () => {
+      try {
+        const updatedCart = await Promise.all(
+          CartItems.map(async (item) => {
+            const response = await apiGetDetailMachine(item.id);
+            return {
+              ...item,
+              quantity: response.data.quantity,
+            };
+          })
+        );
+        setCartItems(updatedCart);
+      } catch (error) {
+        console.error("Error fetching product quantities", error);
+      }
+    };
+
+    fetchCorrectQuantities();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   useEffect(() => {
     // Update localStorage whenever CartItems state changes
     localStorage.setItem("cart", JSON.stringify(CartItems));
