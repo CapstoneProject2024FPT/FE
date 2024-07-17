@@ -14,8 +14,6 @@ import {
   ArrowForwardIos,
   ShoppingCart,
   Unarchive,
-  FmdGood,
-  LocalAtm,
   Refresh,
   Verified,
   LocalPolice,
@@ -23,15 +21,11 @@ import {
 } from "@mui/icons-material";
 import "./ProductDetail.scss";
 import { toast } from "react-toastify";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { MachineryApi } from "../../../api/services/apiMachinery";
 import Zoom from "../../../components/zoomImageHover";
 import { ProductDetailProps } from "../../../models/products";
 import { formatMoney } from "../../../utils/fn";
-import { useAuthContext } from "../../../context/AuthContext";
-import config from "../../../configs";
-import { CustomerApi } from "../../../api/services/apiUser";
-import { staffProps } from "../../../models/UserData";
 
 const Detail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -40,16 +34,8 @@ const Detail: React.FC = () => {
   const [isActive, setActive] = useState(false);
   const [isRed, setIsRed] = useState(false);
   const [product, setProduct] = useState<ProductDetailProps>();
-  const [selectProductQuantity, setSelectProductQuantity] = useState<number>();
+  const [selectProductQuantity, setSelectProductQuantity] = useState<number>(0);
   const { apiGetMachineryID } = MachineryApi();
-  const navigate = useNavigate();
-  const location = useLocation();
-  const { authUser } = useAuthContext();
-  const { apiUserProfile } = CustomerApi();
-  const [userInfo, setUserInfo] = useState<staffProps>();
-
-  const loginInfoString = localStorage.getItem("loginInfo");
-  const auth = loginInfoString ? JSON.parse(loginInfoString) : null;
 
   const fetchProducts = async () => {
     try {
@@ -69,24 +55,10 @@ const Detail: React.FC = () => {
     }
   };
 
-  const fetchProfile = async () => {
-    const id = auth?.data.id;
-    if (id) {
-      const response = await apiUserProfile(id);
-      if (response.status === 200) {
-        setUserInfo(response.data);
-      } else {
-        toast.error(response.Error);
-      }
-    }
-  };
-
   useEffect(() => {
     fetchProducts();
-    fetchProfile();
     //scroll to top
     window.scrollTo(0, 0);
-
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -95,31 +67,26 @@ const Detail: React.FC = () => {
   };
 
   const addToCart = () => {
-    if (authUser) {
-      if (isActive) return;
-      setActive(!isActive);
-      const existCart = localStorage.getItem("cart");
-      const productQuantity = { ...product, currentQuantities, id: id };
-      if (existCart) {
-        const parseProduct = JSON.parse(existCart);
-        const existProduct = parseProduct.findIndex(
-          (p: { id: string | undefined }) => p.id === productQuantity.id
-        );
-        if (existProduct !== -1) {
-          parseProduct[existProduct].currentQuantities = +currentQuantities;
-          toast.success("Thêm sản phẩm thành công");
-        } else {
-          parseProduct.push(productQuantity);
-          toast.success("Thêm sản phẩm thành công");
-        }
-        localStorage.setItem("cart", JSON.stringify(parseProduct));
+    if (isActive) return;
+    setActive(!isActive);
+    const existCart = localStorage.getItem("cart");
+    const productQuantity = { ...product, currentQuantities, id: id };
+    if (existCart) {
+      const parseProduct = JSON.parse(existCart);
+      const existProduct = parseProduct.findIndex(
+        (p: { id: string | undefined }) => p.id === productQuantity.id
+      );
+      if (existProduct !== -1) {
+        parseProduct[existProduct].currentQuantities = +currentQuantities;
+        toast.success("Thêm sản phẩm thành công");
       } else {
-        localStorage.setItem("cart", JSON.stringify([productQuantity]));
+        parseProduct.push(productQuantity);
         toast.success("Thêm sản phẩm thành công");
       }
+      localStorage.setItem("cart", JSON.stringify(parseProduct));
     } else {
-      localStorage.setItem("historyPath", location.pathname);
-      navigate(config.routes.login);
+      localStorage.setItem("cart", JSON.stringify([productQuantity]));
+      toast.success("Thêm sản phẩm thành công");
     }
   };
 
@@ -136,11 +103,14 @@ const Detail: React.FC = () => {
     const re = /^[0-9\b]+$/;
     const value = e.target.value;
     if (value === "" || re.test(value)) {
-      const newValue = Number(value);
+      let newValue = Number(value);
       setCurrentQuantities(newValue);
       if (newValue <= 1) {
         setCurrentQuantities(1);
+      } else if (newValue > selectProductQuantity) {
+        newValue = selectProductQuantity;
       }
+      setCurrentQuantities(newValue);
     }
   };
 
