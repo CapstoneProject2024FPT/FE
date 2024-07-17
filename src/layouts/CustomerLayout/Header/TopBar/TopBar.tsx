@@ -35,6 +35,7 @@ const TopBar: React.FC = () => {
 
   useEffect(() => {
     fetchCategory();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleCategoryClick = (categoryId?: string) => {
@@ -75,7 +76,7 @@ const TopBar: React.FC = () => {
                     }}
                   >
                     <Link
-                      to={`#${item.id}`}
+                      to={`${item.id}`}
                       style={{
                         textDecoration: "none",
                         color: "inherit",
@@ -104,19 +105,23 @@ const TopBar: React.FC = () => {
 
   const renderChildren = (parentId: string) => {
     const children = menuData.filter(
-      (item) =>
-        item.masterCategoryId === parentId &&
-        item.type === "Child" &&
-        item.status === "Active"
+      (item) => item.masterCategoryId === parentId && item.status === "Active"
     );
+
     if (children.length > 0) {
       return (
         <ul className={cx("submenu")}>
           {children.map((child) => (
             <li key={child.id} className={cx("submenu-item")}>
-              <span style={{ color: "black" }}>
+              <span
+                style={{
+                  color: "black",
+                  display: "flex",
+                  justifyContent: "space-between",
+                }}
+              >
                 <Link
-                  to={`#${child.id}`}
+                  to={`${child.id}`}
                   style={{
                     textDecoration: "none",
                     color: "inherit",
@@ -130,12 +135,17 @@ const TopBar: React.FC = () => {
                 >
                   {child.name}
                 </Link>
+                {renderChildren(child.id) && (
+                  <ArrowRightIcon sx={{ color: blue[500] }} />
+                )}
               </span>
+              {renderChildren(child.id)}
             </li>
           ))}
         </ul>
       );
     }
+
     return null;
   };
   return (

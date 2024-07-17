@@ -1,6 +1,5 @@
 import React from "react";
 import "./AboutUs.scss";
-// import Image from "../../../components/Image";
 import images from "../../../constants/images";
 const AboutUs: React.FC = () => {
   return (
@@ -13,6 +12,7 @@ const AboutUs: React.FC = () => {
         chúng tôi luôn đặt khách hàng lên hàng đầu và nỗ lực không ngừng để mang
         lại giá trị tốt nhất.
       </p>
+
       <img src={images.logo} className="img_logo" />
 
       <p>

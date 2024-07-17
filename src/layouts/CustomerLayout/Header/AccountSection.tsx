@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import Box from "@mui/material/Box";
 import Avatar from "@mui/material/Avatar";
 import Menu from "@mui/material/Menu";
@@ -12,6 +12,7 @@ import config from "../../../configs";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import { Button } from "@mui/material";
 import { useAuthContext } from "../../../context/AuthContext";
+import Iconify from "../../../components/Iconify";
 
 const AccountSection = () => {
   const jsonString = localStorage.getItem("loginInfo");
@@ -20,6 +21,12 @@ const AccountSection = () => {
   const [name, setName] = React.useState(user?.fullName ? user.fullName : "U");
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const navigate = useNavigate();
+  const location = useLocation();
+
+  const getActiveStyle = (path: string) => ({
+    backgroundColor:
+      location.pathname === path ? "rgba(0, 0, 0, 0.08)" : "inherit",
+  });
 
   const open = Boolean(anchorEl);
 
@@ -89,7 +96,13 @@ const AccountSection = () => {
         transformOrigin={{ horizontal: "right", vertical: "top" }}
         anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
       >
-        <MenuItem>
+        <MenuItem
+          sx={getActiveStyle(config.routes.userProfile)}
+          onClick={handleClose}
+        >
+          <ListItemIcon>
+            <Iconify icon={"gg:profile"} width={20} height={20} />
+          </ListItemIcon>
           <Link
             to={config.routes.userProfile}
             style={{ textDecoration: "none", color: "inherit" }}
@@ -97,8 +110,13 @@ const AccountSection = () => {
             Thông tin cá nhân
           </Link>
         </MenuItem>
-        <Divider />
-        <MenuItem>
+        <MenuItem
+          sx={getActiveStyle(config.routes.userChangePassword)}
+          onClick={handleClose}
+        >
+          <ListItemIcon>
+            <Iconify icon={"ic:round-vpn-key"} width={20} height={20} />
+          </ListItemIcon>
           <Link
             to={config.routes.userChangePassword}
             style={{ textDecoration: "none", color: "inherit" }}
@@ -106,8 +124,13 @@ const AccountSection = () => {
             Đổi mật khẩu
           </Link>
         </MenuItem>
-        <Divider />
-        <MenuItem>
+        <MenuItem
+          sx={getActiveStyle(config.routes.userAddress)}
+          onClick={handleClose}
+        >
+          <ListItemIcon>
+            <Iconify icon={"mdi:address-marker"} width={20} height={20} />
+          </ListItemIcon>
           <Link
             to={config.routes.userAddress}
             style={{ textDecoration: "none", color: "inherit" }}
@@ -115,8 +138,13 @@ const AccountSection = () => {
             Địa chỉ
           </Link>
         </MenuItem>
-        <Divider />
-        <MenuItem>
+        <MenuItem
+          sx={getActiveStyle(config.routes.orderManagement)}
+          onClick={handleClose}
+        >
+          <ListItemIcon>
+            <Iconify icon={"lets-icons:order-duotone"} width={20} height={20} />
+          </ListItemIcon>
           <Link
             to={config.routes.orderManagement}
             style={{ textDecoration: "none", color: "inherit" }}
