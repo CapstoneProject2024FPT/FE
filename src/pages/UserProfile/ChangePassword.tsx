@@ -26,7 +26,7 @@ const ChangePassword: React.FC = () => {
                   sx={{
                     borderStyle: "none",
                     padding: "20px",
-                    border: "1px solid ",
+                    boxShadow: " rgba(0, 0, 0, 0.24) 0px 3px 8px",
                     borderRadius: "10px",
                   }}
                 >

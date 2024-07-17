@@ -18,6 +18,7 @@ import { CreateProductFormSchema, Specification } from "../../models/products";
 // form
 import {
   FormProvider,
+  RHFAutoComplete,
   RHFTextField,
   RHFUploadMultiFile,
 } from "../../components/hook-form";
@@ -42,7 +43,7 @@ const LabelStyle = styled(Typography)(({ theme }) => ({
 
 export default function ProductNewEditForm() {
   const { apiAddMachinery } = MachineryApi();
-  const { getCategory } = CategoryApi();
+  const { getCategoryChild } = CategoryApi();
   const { getBrand } = BrandApi();
   const { apiGetOrigin } = ApiOrigin();
 
@@ -125,7 +126,7 @@ export default function ProductNewEditForm() {
   const fetchData = async () => {
     try {
       const [category, brand, origin] = await Promise.allSettled([
-        getCategory(),
+        getCategoryChild(),
         getBrand(),
         apiGetOrigin(),
       ]);
@@ -297,77 +298,25 @@ export default function ProductNewEditForm() {
           <Stack spacing={3}>
             <Card sx={{ p: 3 }}>
               <Stack spacing={3} mt={2}>
-                <RHFTextField
-                  select
+                <RHFAutoComplete
                   name="brandId"
-                  label="Chọn thương hiệu máy "
-                  SelectProps={{ native: true }}
-                  InputLabelProps={{
-                    shrink: true,
-                  }}
-                >
-                  <option value="">Chọn Thương hiệu</option>
-                  {brands && brands?.length > 0 ? (
-                    brands?.map((brand) => (
-                      <option key={brand.id} value={brand.id}>
-                        {brand.name}
-                      </option>
-                    ))
-                  ) : (
-                    <option value="" disabled>
-                      không có thương hiệu
-                    </option>
-                  )}
-                </RHFTextField>
+                  options={brands || []}
+                  label="Chọn Thương hiệu máy"
+                />
 
-                <RHFTextField
-                  select
+                <RHFAutoComplete
                   name="originId"
-                  label="Chọn xuất xứ "
-                  SelectProps={{ native: true }}
-                  InputLabelProps={{
-                    shrink: true,
-                  }}
-                >
-                  <option value="">Chọn xuất xứ</option>
-                  {origins && origins?.length > 0 ? (
-                    origins?.map((origin) => (
-                      <option key={origin.id} value={origin.id}>
-                        {origin.name}
-                      </option>
-                    ))
-                  ) : (
-                    <option value="" disabled>
-                      không có xuất xứ
-                    </option>
-                  )}
-                </RHFTextField>
+                  options={origins || []}
+                  label="Chọn xuất xứ"
+                />
 
                 <RHFTextField required name="model" label="Mẫu sản phẩm" />
 
-                <RHFTextField
-                  select
+                <RHFAutoComplete
                   name="categoryId"
-                  label="Chọn Loại máy"
-                  SelectProps={{ native: true }}
-                  InputLabelProps={{
-                    shrink: true,
-                  }}
-                >
-                  <option value="">Chọn Loại Máy</option>
-                  {categories && categories?.length > 0 ? (
-                    categories?.map((category) => (
-                      <option key={category.id} value={category.id}>
-                        {category.name}
-                      </option>
-                    ))
-                  ) : (
-                    <option value="" disabled>
-                      Loại máy không khả dụng
-                    </option>
-                  )}
-                </RHFTextField>
-
+                  options={categories || []}
+                  label="Chọn loại máy"
+                />
                 <RHFTextField
                   required
                   name="timeWarranty"

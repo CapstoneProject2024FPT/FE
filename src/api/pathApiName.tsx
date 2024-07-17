@@ -12,11 +12,23 @@ export const MACHINERY_ID = "/Machinery/:id";
 export const MACHINERY_DETAIL = "Machinery/Detail";
 export const MACHINERY_HOME_PRIORITY = "Machinery?Priority=1&size=4";
 
-//Category
-export const GET_CATEGORY = "categories?status=Active";
+//Category Machinery
+export const GET_CATEGORY = "categories?status=Active&kind=Machinery";
 export const CATEGORY_ID = "categories/:id";
 export const CATEGORY = "categories";
-export const GET_CATEGORY_PARENT = "categories?status=Active&type=Parent";
+export const GET_CATEGORY_PARENT = "categories?status=Active&kind=Machinery";
+export const GET_CATEGORY_CHILD =
+  "categories?status=Active&type=Child&kind=Machinery";
+
+//Machinery Component
+export const MACHINERY_COMPONENT = "machineryComponent";
+
+//Category Component
+export const GET_CATEGORY_COMPONENT = "categories?status=Active&kind=Material";
+export const CATEGORY_ID_COMPONENT = "categories/:id";
+export const CATEGORY_COMPONENT = "categories";
+export const MACHINERY_COMPONENT_CHILD =
+  "categories?status=Active&type=Child&kind=Material";
 
 //brand
 export const GET_BRAND = "brand?status=Active";

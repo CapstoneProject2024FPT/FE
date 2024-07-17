@@ -6,24 +6,27 @@ import { Container } from "@mui/material";
 
 import HeaderBreadcrumbs from "../../../components/HeaderBreadcrumbs";
 // sections
-import FormNewProduct from "../../../sections/Product/FormNewProduct";
+import ProductNewComponent from "../../../sections/MachineComponent/FormNewComponent";
 
 import config from "../../../configs";
 
 // ----------------------------------------------------------------------
 
-export default function CreateProduct() {
+export default function CreateMachineComponent() {
   return (
     <Container>
       <HeaderBreadcrumbs
-        heading="Thêm mới máy"
+        heading="Thêm mới chi tiết máy"
         links={[
           { name: "Thống kê", href: config.adminRoutes.dashboard },
-          { name: "Sản phẩm", href: config.adminRoutes.product },
-          { name: "Thêm mới máy" },
+          {
+            name: "Tất cả chi tiết máy",
+            href: config.adminRoutes.viewMachineComponent,
+          },
+          { name: "Thêm mới chi tiết máy" },
         ]}
       />
-      <FormNewProduct />
+      <ProductNewComponent />
     </Container>
   );
 }

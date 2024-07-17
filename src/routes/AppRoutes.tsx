@@ -39,6 +39,8 @@ import AboutUs from "../sections/About/AboutUs/AboutUs";
 import PrivacyPolicy from "../sections/About/PrivacyPolicy/PrivacyPolicy";
 import TermsOfService from "../sections/About/TermsOfService/TermsOfService";
 import PaymentFailure from "../pages/Payment/failure";
+import CreateMachineComponent from "../pages/Admin/MachineComponent/CreateMachineComponent";
+import MachineComponent from "../pages/Admin/MachineComponent/MachineComponent";
 
 const AppRoute: React.FC = () => {
   return (
@@ -158,7 +160,7 @@ const AppRoute: React.FC = () => {
           element={<BlogPosts />}
         />
         <Route
-          key="createNew"
+          key="createNews"
           path={config.adminRoutes.createNew}
           element={<BlogNewPost />}
         />
@@ -195,7 +197,16 @@ const AppRoute: React.FC = () => {
           path={config.adminRoutes.viewSerialProduct}
           element={<SerialNumberPropductDetail />}
         />
-
+        <Route
+          key="ProductComponent"
+          path={config.adminRoutes.createMachineComponent}
+          element={<CreateMachineComponent />}
+        />
+        <Route
+          key="viewComponent"
+          path={config.adminRoutes.viewMachineComponent}
+          element={<MachineComponent />}
+        />
         {/* category */}
         <Route
           key="category"

@@ -26,6 +26,7 @@ const HeaderAdmin: React.FC<HeaderProps> = ({
         display: "flex",
         alignItems: "center",
         justifyContent: "space-between",
+        height: "85px",
       }}
     >
       <LeftMenu isCollapse={isCollapse} handleCollapsed={handleCollapsed} />

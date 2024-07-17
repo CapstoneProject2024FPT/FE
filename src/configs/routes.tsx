@@ -38,6 +38,8 @@ export const adminRoutes = {
   createProduct: "/dashboard/create/product",
   viewDetailProduct: "/dashboard/product/:id",
   viewSerialProduct: "/dashboard/product/serial/:id",
+  viewMachineComponent: "/dashboard/product/component",
+  createMachineComponent: "/dashboard/create/component",
   profile: "/dashboard/user/account",
   category: "/dashboard/categories",
   brand: "/dashboard/brand",

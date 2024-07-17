@@ -5,6 +5,7 @@ import {
   CATEGORY,
   CATEGORY_ID,
   GET_CATEGORY,
+  GET_CATEGORY_CHILD,
   GET_CATEGORY_PARENT,
 } from "../pathApiName";
 import { CategoryProps } from "../../models/category";
@@ -28,7 +29,7 @@ export const CategoryApi = () => {
   const getCategoryName = async () => {
     try {
       setLoading(true);
-      const response = await axiosPublic.get(CATEGORY);
+      const response = await axiosPublic.get(GET_CATEGORY_CHILD);
       setLoading(false);
       return response.data;
     } catch (error: any) {
@@ -48,7 +49,27 @@ export const CategoryApi = () => {
       const response = await axiosPublic.get(GET_CATEGORY_PARENT);
 
       setLoading(false);
-      return response.data.items;
+
+      return response.data;
+    } catch (error: any) {
+      if (axios.isAxiosError(error) && error.response) {
+        return error.response.data;
+      } else {
+        return { statusCode: 500, Error: "Internal Server Error" };
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const getCategoryChild = async () => {
+    try {
+      setLoading(true);
+      const response = await axiosPublic.get(GET_CATEGORY_CHILD);
+
+      setLoading(false);
+
+      return response.data;
     } catch (error: any) {
       if (axios.isAxiosError(error) && error.response) {
         return error.response.data;
@@ -82,7 +103,7 @@ export const CategoryApi = () => {
       setLoading(true);
       const response = await axiosPublic.post(CATEGORY, params);
       setLoading(false);
-      return response.data;
+      return response;
     } catch (error: any) {
       if (axios.isAxiosError(error) && error.response) {
         return error.response.data;
@@ -121,5 +142,6 @@ export const CategoryApi = () => {
     addCategory,
     updateCategory,
     getCategoryParent,
+    getCategoryChild,
   };
 };

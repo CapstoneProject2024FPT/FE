@@ -28,12 +28,28 @@ const MenuSideBars: MenuSideBar[] = [
     icon: <ShoppingOutlined />,
     children: [
       {
-        label: <Link to={config.adminRoutes.product}>Tất cả sản phẩm</Link>,
+        label: <Link to={config.adminRoutes.product}>Tất cả máy</Link>,
         key: config.adminRoutes.product,
       },
       {
         label: <Link to={config.adminRoutes.createProduct}>Thêm sản phẩm</Link>,
         key: config.adminRoutes.createProduct,
+      },
+      {
+        label: (
+          <Link to={config.adminRoutes.viewMachineComponent}>
+            Tất cả chi tiết máy
+          </Link>
+        ),
+        key: config.adminRoutes.viewMachineComponent,
+      },
+      {
+        label: (
+          <Link to={config.adminRoutes.createMachineComponent}>
+            Tạo mới chi tiết máy
+          </Link>
+        ),
+        key: config.adminRoutes.createMachineComponent,
       },
       {
         label: <Link to={config.adminRoutes.category}>Loại máy</Link>,

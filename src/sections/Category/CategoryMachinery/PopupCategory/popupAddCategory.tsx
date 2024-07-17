@@ -1,15 +1,16 @@
 import React, { useEffect, useState } from "react";
 import { Modal } from "antd";
-import { FormProvider, RHFTextField } from "../../../components/hook-form";
+import { FormProvider, RHFTextField } from "../../../../components/hook-form";
 // form
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm } from "react-hook-form";
 import * as Yup from "yup";
 import { LoadingButton } from "@mui/lab";
 import { Card, Stack, TextField } from "@mui/material";
-import { CategoryApi } from "../../../api/services/apiCategories";
-import { GetCategoryProps } from "../../../models/category";
+import { CategoryApi } from "../../../../api/services/apiCategories";
+import { GetCategoryProps } from "../../../../models/category";
 import { toast } from "react-toastify";
+import Autocomplete from "@mui/material/Autocomplete";
 
 interface ModalCategory {
   open: boolean;
@@ -73,11 +74,16 @@ const ModalCategoryPopupAdd: React.FC<ModalCategory> = ({
       const dataSend = {
         ...data,
         masterCategoryId: selectCategory,
+        kind: "Machinery",
       };
 
-      await addCategory(dataSend);
-      if (onAddSuccess) {
-        onAddSuccess();
+      const response = await addCategory(dataSend);
+      if (response.status === 200) {
+        if (onAddSuccess) {
+          onAddSuccess();
+        }
+      } else {
+        toast.error(response.Error);
       }
 
       reset();
@@ -98,30 +104,22 @@ const ModalCategoryPopupAdd: React.FC<ModalCategory> = ({
               multiline
               rows={5}
             />
-            <TextField
-              select
-              label="Chọn Loại máy"
-              SelectProps={{ native: true }}
-              InputLabelProps={{
-                shrink: true,
+            <Autocomplete
+              options={categories}
+              getOptionLabel={(category) => category.name}
+              onChange={(_e, newValue) => {
+                setSelectCategory(newValue ? newValue.id : "");
               }}
-              onChange={(e) => {
-                setSelectCategory(e.target.value);
-              }}
-            >
-              <option value="">Chọn loại máy</option>
-              {categories && categories?.length > 0 ? (
-                categories?.map((category) => (
-                  <option key={category.id} value={category.id}>
-                    {category.name}
-                  </option>
-                ))
-              ) : (
-                <option value="" disabled>
-                  Không có loại máy
-                </option>
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  label="Chọn Loại máy"
+                  InputLabelProps={{
+                    shrink: true,
+                  }}
+                />
               )}
-            </TextField>
+            />
           </Stack>
           <div
             style={{
