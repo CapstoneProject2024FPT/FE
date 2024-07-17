@@ -26,7 +26,7 @@ const RightMenu: React.FC = () => {
                 </Button>
               </Link>
               <Link
-                to={config.routes.register}
+                to={config.routes.login}
                 style={{ textDecoration: "none", color: "inherit" }}
               >
                 <Button variant="outlined">Đăng nhập/Đăng kí</Button>

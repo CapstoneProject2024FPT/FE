@@ -35,9 +35,9 @@ import BlogPostDetail from "../pages/Admin/Blog/BlogPostDetail";
 import AccountDetail from "../pages/Admin/User/Table/AccountDetail";
 import Address from "../pages/UserProfile/Address";
 import News from "../pages/News/News";
-import AboutUs from "../layouts/CustomerLayout/Footer/FooterPage/AboutUs/AboutUs";
-import PrivacyPolicy from "../layouts/CustomerLayout/Footer/FooterPage/PrivacyPolicy/PrivacyPolicy";
-import TermsOfService from "../layouts/CustomerLayout/Footer/FooterPage/TermsOfService/TermsOfService";
+import AboutUs from "../sections/About/AboutUs/AboutUs";
+import PrivacyPolicy from "../sections/About/PrivacyPolicy/PrivacyPolicy";
+import TermsOfService from "../sections/About/TermsOfService/TermsOfService";
 import PaymentFailure from "../pages/Payment/failure";
 
 const AppRoute: React.FC = () => {
