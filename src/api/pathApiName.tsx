@@ -89,6 +89,9 @@ export const GET_ADDRESS = "address";
 export const WARRANTY = "warranty";
 export const WARRANTY_ID = "warranty/:id";
 
+//warranty detail
+export const WARRANTY_DETAIL = "/warrantyDetail";
+export const WARRANTY_DETAIL_ID = "/warrantyDetail/:id";
 //payments
 export const PAYMENTS = "payments";
 export const PAYMENTS_ID = "payments/:id";

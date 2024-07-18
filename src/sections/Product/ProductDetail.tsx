@@ -240,7 +240,7 @@ const ProductDetail = () => {
                       InputLabelProps={{ shrink: true }}
                       InputProps={{
                         endAdornment: (
-                          <InputAdornment position="end">Tháng</InputAdornment>
+                          <InputAdornment position="end">Năm</InputAdornment>
                         ),
                         type: "number",
                         readOnly: true,

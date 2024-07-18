@@ -37,8 +37,8 @@ export default function ProductNewComponent() {
   const { getBrand } = BrandApi();
   const { apiGetOrigin } = ApiOrigin();
 
-  const minTimeWarranty = 12;
-  const maxTimeWarranty = 36;
+  const minTimeWarranty = 1;
+  const maxTimeWarranty = 3;
 
   const [categories, setCategories] = useState<GetCategoryProps[]>();
   const [brands, setBrands] = useState<brandTable[]>();
@@ -216,7 +216,7 @@ export default function ProductNewComponent() {
                   InputLabelProps={{ shrink: true }}
                   InputProps={{
                     endAdornment: (
-                      <InputAdornment position="end">Tháng</InputAdornment>
+                      <InputAdornment position="end">Năm</InputAdornment>
                     ),
                     type: "number",
                     inputProps: { min: 0, max: maxTimeWarranty },
