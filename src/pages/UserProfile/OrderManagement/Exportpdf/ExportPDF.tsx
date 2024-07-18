@@ -4,9 +4,9 @@ import * as pdfFonts from 'pdfmake/build/vfs_fonts';
 import { OrderProps } from '../../../../models/order';
 import { formatAddress, formatDateFunc, formatMoney } from '../../../../utils/fn';
 
-function ExportPDF({ row }: { row: OrderProps }) {
-  pdfMake.vfs = pdfFonts?.pdfMake?.vfs;
+pdfMake.vfs = pdfFonts?.pdfMake?.vfs;
 
+function ExportPDF({ row }: { row: OrderProps }) {
   // Tính tổng tiền của 3 sản phẩm
   const totalAmount = row.productList.reduce((sum, product) => sum + product.totalAmount, 0);
 

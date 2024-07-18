@@ -3,9 +3,10 @@ import * as pdfFonts from 'pdfmake/build/vfs_fonts';
 import { OrderProps, ProductProps } from '../../../../models/order';
 import { formatAddress, formatDateFunc } from '../../../../utils/fn';
 
-function WarrantyPDF({ order, product }: { order: OrderProps, product: ProductProps }) {
-  pdfMake.vfs = pdfFonts?.pdfMake?.vfs;
+// Set the fonts for pdfMake
+pdfMake.vfs = pdfFonts?.pdfMake?.vfs;
 
+function WarrantyPDF({ order, product }: { order: OrderProps, product: ProductProps }) {
   // Define the styles with explicit types
   const styles = {
     header: {
