@@ -9,3 +9,4 @@ export { default as RHFEditor } from './RHFEditor';
 export { default as RHFTextField } from './RHFTextField';
 export { default as RHFRadioGroup } from './RHFRadioGroup';
 export { default as RHFAutoComplete } from './RHFAutoComplete';
+export { default as RHFAutoCompleteUser } from './RHFAutoCompleteUser';

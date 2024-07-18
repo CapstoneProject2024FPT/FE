@@ -41,3 +41,14 @@ export interface GetMachineComponents {
   };
   image: [];
 }
+
+export interface UpdateProductComponent {
+  name: string;
+  originId: string;
+  description: string;
+  sellingPrice: number;
+  brandId: string;
+  timeWarranty: number;
+  status: string;
+  categoryId: string;
+}

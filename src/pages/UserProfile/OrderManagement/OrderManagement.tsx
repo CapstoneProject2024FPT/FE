@@ -21,7 +21,12 @@ import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import { ApiOrder } from "../../../api/services/apiOrder";
-import { GetOrderProps, OrderProps, statusMapping, StatusType } from "../../../models/order";
+import {
+  GetOrderProps,
+  OrderProps,
+  statusMapping,
+  StatusType,
+} from "../../../models/order";
 import { formatAddress, formatDateFunc, formatMoney } from "../../../utils/fn";
 import { toast } from "react-toastify";
 import EmptyOrder from "../../../components/EmptyOrder";
@@ -49,7 +54,10 @@ const getStatusStyles = (status: string) => {
   }
 };
 
-const Row = (props: { row: OrderProps; onCancelOrder: (orderId: string, note?: string) => void }) => {
+const Row = (props: {
+  row: OrderProps;
+  onCancelOrder: (orderId: string, note?: string) => void;
+}) => {
   const { row, onCancelOrder } = props;
   const [open, setOpen] = useState(false);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -61,7 +69,10 @@ const Row = (props: { row: OrderProps; onCancelOrder: (orderId: string, note?: s
     : defaultStatus;
 
   const handleCancelOrder = () => {
-    onCancelOrder(row.orderId, "Đơn hàng đã bị hủy do quá hạn thời gian thanh toán");
+    onCancelOrder(
+      row.orderId,
+      "Đơn hàng đã bị hủy do quá hạn thời gian thanh toán"
+    );
     handleCloseMenu();
   };
 
@@ -119,11 +130,7 @@ const Row = (props: { row: OrderProps; onCancelOrder: (orderId: string, note?: s
           >
             <MoreVertIcon />
           </IconButton>
-          <Menu
-            anchorEl={anchorEl}
-            open={openMenu}
-            onClose={handleCloseMenu}
-          >
+          <Menu anchorEl={anchorEl} open={openMenu} onClose={handleCloseMenu}>
             {row.status === StatusType.UNPAID && (
               <MenuItem onClick={handleCancelOrder}>Hủy đơn hàng</MenuItem>
             )}
@@ -133,7 +140,9 @@ const Row = (props: { row: OrderProps; onCancelOrder: (orderId: string, note?: s
               <MenuItem onClick={handleDetailOrder}>Chi tiết đơn hàng</MenuItem>
             }
             {row.status === StatusType.COMPLETED && (
-              <MenuItem onClick={() => ExportPDF({ row })}>Xuất hóa đơn</MenuItem>
+              <MenuItem onClick={() => ExportPDF({ row })}>
+                Xuất hóa đơn
+              </MenuItem>
             )}
           </Menu>
         </TableCell>
@@ -151,11 +160,9 @@ const Row = (props: { row: OrderProps; onCancelOrder: (orderId: string, note?: s
                     <TableCell>Tên sản phẩm</TableCell>
                     <TableCell>Số lượng</TableCell>
                     <TableCell>Giá sản phẩm</TableCell>
-                    {
-                      row.status === StatusType.COMPLETED && (
-                        <TableCell>Hành động</TableCell>
-                      )
-                    }
+                    {row.status === StatusType.COMPLETED && (
+                      <TableCell>Hành động</TableCell>
+                    )}
                   </TableRow>
                 </TableHead>
                 <TableBody>
@@ -184,9 +191,7 @@ const Row = (props: { row: OrderProps; onCancelOrder: (orderId: string, note?: s
                             Phiếu bảo hành
                           </Button>
                         </TableCell>
-                      )
-
-                      }
+                      )}
                     </TableRow>
                   ))}
                 </TableBody>
@@ -274,7 +279,11 @@ const OrderManagement: React.FC = () => {
   const handleConfirmCancel = async (note: string) => {
     if (selectedOrderId) {
       try {
-        await apiCancelOrder({ orderId: selectedOrderId, status: "Canceled", note });
+        await apiCancelOrder({
+          orderId: selectedOrderId,
+          status: "Canceled",
+          note,
+        });
         fetchOrders();
         toast.success("Đơn hàng đã được hủy thành công");
       } catch (error) {
@@ -287,17 +296,23 @@ const OrderManagement: React.FC = () => {
   };
 
   const handleAutoCancel = (orders: OrderProps[]) => {
-    orders.forEach(order => {
+    orders.forEach((order) => {
       if (order.status === "UnPaid") {
         const createTime = moment(order.createDate);
         const now = moment();
         const diff = moment.duration(now.diff(createTime));
         const minutes = diff.asMinutes();
-
-        if (minutes >= 30) {
-          apiCancelOrder({ orderId: order.orderId, status: "Canceled", note: "Đơn hàng đã bị hủy do quá hạn thời gian thanh toán" })
+        const minuteToCancelOrder = 30; // 30 minutes
+        if (minutes >= minuteToCancelOrder) {
+          apiCancelOrder({
+            orderId: order.orderId,
+            status: "Canceled",
+            note: "Đơn hàng đã bị hủy do quá hạn thời gian thanh toán",
+          })
             .then(() => {
-              toast.success(`Đơn hàng ${order.invoiceCode} đã bị hủy do quá hạn thời gian thanh toán`);
+              toast.success(
+                `Đơn hàng ${order.invoiceCode} đã bị hủy do quá hạn thời gian thanh toán`
+              );
               fetchOrders();
             })
             .catch((error) => {
@@ -307,9 +322,15 @@ const OrderManagement: React.FC = () => {
         } else {
           const remainingTime = 30 * 60 * 1000 - diff.asMilliseconds();
           setTimeout(() => {
-            apiCancelOrder({ orderId: order.orderId, status: "Canceled", note: "Đơn hàng đã bị hủy do quá hạn thời gian thanh toán" })
+            apiCancelOrder({
+              orderId: order.orderId,
+              status: "Canceled",
+              note: "Đơn hàng đã bị hủy do quá hạn thời gian thanh toán",
+            })
               .then(() => {
-                toast.success(`Đơn hàng ${order.invoiceCode} đã bị hủy do quá hạn thời gian thanh toán`);
+                toast.success(
+                  `Đơn hàng ${order.invoiceCode} đã bị hủy do quá hạn thời gian thanh toán`
+                );
                 fetchOrders();
               })
               .catch((error) => {
@@ -348,7 +369,11 @@ const OrderManagement: React.FC = () => {
           <TableBody>
             {(orders?.items ?? []).length > 0 ? (
               orders?.items.map((order) => (
-                <Row key={order.orderId} row={order} onCancelOrder={handleOpenDialog} />
+                <Row
+                  key={order.orderId}
+                  row={order}
+                  onCancelOrder={handleOpenDialog}
+                />
               ))
             ) : (
               <TableRow>
@@ -369,7 +394,6 @@ const OrderManagement: React.FC = () => {
         onPageChange={handleChangePage}
         onRowsPerPageChange={handleChangeRowsPerPage}
         labelRowsPerPage="Số hàng mỗi trang"
-
       />
       <CancelOrderDialog
         open={openDialog}

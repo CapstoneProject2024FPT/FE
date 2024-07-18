@@ -8,9 +8,9 @@ import { ApiOrder } from "../../api/services/apiOrder";
 import { toast } from "react-toastify";
 import { formatDateFunc, formatMoney } from "../../utils/fn";
 import ModalDetailOrder from "./OrderModal/ModalDetailOrder";
-import ModalAcceptOrder from "./OrderModal/ModalAcceptOrder";
 import ModalCompleteOrder from "./OrderModal/ModalCompleteOrder";
 import ModalCancelOrder from "./OrderModal/ModalCancelOrder";
+import ModalDeliveryTask from "./OrderModal/ModalDeliveryTask";
 
 type ColumnsType<T> = TableProps<T>["columns"];
 
@@ -25,9 +25,9 @@ const TableOrder: React.FC = () => {
 
   //popup
   const [open, setOpen] = useState<boolean>(false);
-  const [openAcceptPopup, setOpenAcceptPopup] = useState<boolean>(false);
   const [openCompletePopup, setOpenCompletePopup] = useState<boolean>(false);
   const [openCancelPopup, setOpenCancelPopup] = useState<boolean>(false);
+  const [openTaskPopup, setOpenTaskPopup] = useState<boolean>(false);
   const [selectedData, setSelectedData] = useState<OrderProps | null>(null);
 
   //api
@@ -43,13 +43,13 @@ const TableOrder: React.FC = () => {
     setOpen(!open);
   };
 
-  const handleActionAccept = (record: OrderProps) => {
-    setOpenAcceptPopup(!openAcceptPopup);
+  const handleActionTask = (record: OrderProps) => {
+    setOpenTaskPopup(!openTaskPopup);
     setSelectedData(record);
   };
 
-  const handleCLoseAccept = () => {
-    setOpenAcceptPopup(!openAcceptPopup);
+  const handleCLoseTask = () => {
+    setOpenTaskPopup(!openTaskPopup);
   };
 
   const handleActionComplete = (record: OrderProps) => {
@@ -111,8 +111,9 @@ const TableOrder: React.FC = () => {
     fetchOrder();
     toast.success(response);
   };
-  const handleAcceptSuccess = (response: string) => {
-    handleCLoseAccept();
+
+  const handleTaskSuccess = (response: string) => {
+    handleCLoseTask();
     fetchOrder();
     toast.success(response);
   };
@@ -143,7 +144,7 @@ const TableOrder: React.FC = () => {
     },
     {
       key: "2",
-      label: "Chấp nhận đơn hàng",
+      label: "Tạo giao hàng",
     },
     {
       key: "3",
@@ -231,7 +232,7 @@ const TableOrder: React.FC = () => {
                     handleActionDetail(record);
                     break;
                   case "2":
-                    handleActionAccept(record);
+                    handleActionTask(record);
                     break;
                   case "3":
                     handleActionComplete(record);
@@ -272,15 +273,6 @@ const TableOrder: React.FC = () => {
         />
       )}
 
-      {openAcceptPopup && (
-        <ModalAcceptOrder
-          OrderData={selectedData}
-          openAcceptPopup={openAcceptPopup}
-          handleCLoseAccept={handleCLoseAccept}
-          onUpdateSuccess={handleAcceptSuccess}
-        />
-      )}
-
       {openCompletePopup && (
         <ModalCompleteOrder
           openCompletePopup={openCompletePopup}
@@ -296,6 +288,15 @@ const TableOrder: React.FC = () => {
           handleCloseCancelPopup={handleCLoseCancel}
           onCancelSuccess={handleCancelSuccess}
           openCancelPopup={openCancelPopup}
+        />
+      )}
+
+      {openTaskPopup && (
+        <ModalDeliveryTask
+          OrderData={selectedData}
+          handleCLose={handleCLoseTask}
+          onCreateSuccess={handleTaskSuccess}
+          openTaskPopup={openTaskPopup}
         />
       )}
     </>
