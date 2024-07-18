@@ -1,7 +1,7 @@
 export interface CheckOutProp {
   totalAmount: number;
   finalAmount: number;
-  note: string;
+  description: string;
   machineryList: machineDetail[];
   addressId: string;
 }
