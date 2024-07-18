@@ -62,44 +62,13 @@ const Row = (props: {
   const [open, setOpen] = useState(false);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const openMenu = Boolean(anchorEl);
-  const [remainingTime, setRemainingTime] = useState(0);
-  const timeremain = 2;
+  const [remainingTime, setRemainingTime] = useState<number | null>(null);
 
   const defaultStatus = "Đang chờ xác nhận";
   const StatusName = row?.status
     ? statusMapping?.find((status) => status.id === row?.status)?.name
     : defaultStatus;
 
-  useEffect(() => {
-    if (row.status === "UnPaid") {
-      const createTime = moment(row.createDate);
-      const now = moment();
-      const diff = moment.duration(now.diff(createTime));
-      const minutes = diff.asMinutes();
-
-      if (minutes >= timeremain) {
-        onCancelOrder(row.orderId);
-      } else {
-        setRemainingTime((timeremain * 60 * 1000 - diff.asMilliseconds()) / 1000);
-      }
-    }
-  }, [row, onCancelOrder]);
-
-  useEffect(() => {
-    if (remainingTime > 0) {
-      const timerId = setInterval(() => {
-        setRemainingTime((prev) => {
-          if (prev <= 1) {
-            onCancelOrder(row.orderId);
-            return 0;
-          }
-          return prev - 1;
-        });
-      }, 1000);
-
-      return () => clearInterval(timerId);
-    }
-  }, [remainingTime, onCancelOrder, row.orderId]);
 
   const handleCancelOrder = () => {
     onCancelOrder(
@@ -122,11 +91,38 @@ const Row = (props: {
     handleCloseMenu();
   };
 
+  useEffect(() => {
+    if (row.status === StatusType.UNPAID) {
+      const createTime = moment(row.createDate);
+      const now = moment();
+      const diff = moment.duration(now.diff(createTime));
+      const initialRemainingTime = 30 * 60 - diff.asSeconds(); // 30 minutes in seconds
+
+      if (initialRemainingTime > 0) {
+        setRemainingTime(initialRemainingTime);
+      }
+
+      const timer = setInterval(() => {
+        setRemainingTime((prev) => {
+          if (prev !== null && prev > 0) {
+            return prev - 1;
+          } else {
+            clearInterval(timer);
+            return null;
+          }
+        });
+      }, 1000);
+
+      return () => clearInterval(timer);
+    }
+  }, [row]);
+
   const formatRemainingTime = (seconds: number) => {
     const mins = Math.floor(seconds / 60);
     const secs = Math.floor(seconds % 60);
     return `${mins}:${secs < 10 ? "0" : ""}${secs}`;
   };
+
 
   return (
     <React.Fragment>
@@ -172,7 +168,7 @@ const Row = (props: {
           </Menu>
         </TableCell>
         <TableCell>
-          {row.status === "UnPaid" && (
+          {row.status === StatusType.UNPAID && remainingTime !== null && (
             <Box
               sx={{
                 padding: "8px 16px",
