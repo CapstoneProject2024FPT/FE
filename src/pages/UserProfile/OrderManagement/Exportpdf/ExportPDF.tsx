@@ -4,7 +4,7 @@ import * as pdfFonts from 'pdfmake/build/vfs_fonts';
 import { OrderProps } from '../../../../models/order';
 import { formatAddress, formatDateFunc, formatMoney } from '../../../../utils/fn';
 
-pdfMake.vfs = pdfFonts?.pdfMake?.vfs;
+pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
 function ExportPDF({ row }: { row: OrderProps }) {
   // Tính tổng tiền của 3 sản phẩm
