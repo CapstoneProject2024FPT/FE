@@ -44,8 +44,8 @@ const ModalProductDetailPopup: React.FC<ModalProduct> = ({
   handleClose,
   onUpdateSuccess,
 }) => {
-  const minTimeWarranty = 12;
-  const maxTimeWarranty = 36;
+  const minTimeWarranty = 1;
+  const maxTimeWarranty = 3;
   const { apiUpdateMachineryDetail } = MachineryApi();
   const { getBrand } = BrandApi();
   const { apiGetOrigin } = ApiOrigin();
@@ -219,7 +219,7 @@ const ModalProductDetailPopup: React.FC<ModalProduct> = ({
                     autoFocus
                     InputProps={{
                       endAdornment: (
-                        <InputAdornment position="end">Tháng</InputAdornment>
+                        <InputAdornment position="end">Năm</InputAdornment>
                       ),
                       type: "number",
                       inputProps: {

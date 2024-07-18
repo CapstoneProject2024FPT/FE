@@ -44,6 +44,7 @@ import MachineComponent from "../pages/Admin/MachineComponent/MachineComponent";
 import MachineComponentDetail from "../pages/Admin/MachineComponent/MachineComponentDetail";
 import SerialNumberComponent from "../pages/Admin/MachineComponent/SerialNumberComponent";
 import KanBan from "../pages/Admin/Task/Task";
+import WarrantyManagent from "../pages/Admin/Warranty/WarrantyManagement";
 
 const AppRoute: React.FC = () => {
   return (
@@ -254,6 +255,13 @@ const AppRoute: React.FC = () => {
           key="orders"
           path={config.adminRoutes.order}
           element={<Order />}
+        />
+
+        {/* maintenance */}
+        <Route
+          key="maintanance"
+          path={config.adminRoutes.maintenance}
+          element={<WarrantyManagent />}
         />
       </Route>
 

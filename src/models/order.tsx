@@ -48,6 +48,7 @@ export interface OrderProps {
   note: string;
   status: string;
   userInfo: UserInfo;
+  description: string;
   address: AddressDetail;
 }
 
