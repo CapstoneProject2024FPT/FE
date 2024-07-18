@@ -10,6 +10,7 @@ import {
 import ReceiptLongIcon from "@mui/icons-material/ReceiptLong";
 import EngineeringIcon from "@mui/icons-material/Engineering";
 import config from "../../../../configs";
+import Iconify from "../../../../components/Iconify";
 
 const MenuSideBars: MenuSideBar[] = [
   {
@@ -28,12 +29,28 @@ const MenuSideBars: MenuSideBar[] = [
     icon: <ShoppingOutlined />,
     children: [
       {
-        label: <Link to={config.adminRoutes.product}>Tất cả sản phẩm</Link>,
+        label: <Link to={config.adminRoutes.product}>Tất cả máy</Link>,
         key: config.adminRoutes.product,
       },
       {
         label: <Link to={config.adminRoutes.createProduct}>Thêm sản phẩm</Link>,
         key: config.adminRoutes.createProduct,
+      },
+      {
+        label: (
+          <Link to={config.adminRoutes.viewMachineComponent}>
+            Tất cả chi tiết máy
+          </Link>
+        ),
+        key: config.adminRoutes.viewMachineComponent,
+      },
+      {
+        label: (
+          <Link to={config.adminRoutes.createMachineComponent}>
+            Tạo mới chi tiết máy
+          </Link>
+        ),
+        key: config.adminRoutes.createMachineComponent,
       },
       {
         label: <Link to={config.adminRoutes.category}>Loại máy</Link>,
@@ -93,6 +110,11 @@ const MenuSideBars: MenuSideBar[] = [
     label: <Link to={config.adminRoutes.rank}>Hạng mức</Link>,
     key: "rank",
     icon: <TransactionOutlined />,
+  },
+  {
+    label: <Link to={config.adminRoutes.task}>Nhiệm vụ</Link>,
+    key: "task",
+    icon: <Iconify icon={"mingcute:task-2-fill"} />,
   },
 ];
 

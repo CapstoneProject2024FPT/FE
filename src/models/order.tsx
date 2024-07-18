@@ -25,7 +25,7 @@ export const statusMapping = [
   },
   {
     id: StatusType.DELIVERY,
-    name: "Đã vận chuyển",
+    name: "Đang vận chuyển",
   },
 ];
 
@@ -48,6 +48,7 @@ export interface OrderProps {
   note: string;
   status: string;
   userInfo: UserInfo;
+  description: string;
   address: AddressDetail;
 }
 

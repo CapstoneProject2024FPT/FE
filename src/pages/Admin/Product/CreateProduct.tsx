@@ -16,11 +16,11 @@ export default function CreateProduct() {
   return (
     <Container>
       <HeaderBreadcrumbs
-        heading="Thêm mới sản phẩm"
+        heading="Thêm mới máy"
         links={[
           { name: "Thống kê", href: config.adminRoutes.dashboard },
           { name: "Sản phẩm", href: config.adminRoutes.product },
-          { name: "Thêm mới sản phẩm" },
+          { name: "Thêm mới máy" },
         ]}
       />
       <FormNewProduct />

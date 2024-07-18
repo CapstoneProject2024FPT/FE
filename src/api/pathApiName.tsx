@@ -12,11 +12,24 @@ export const MACHINERY_ID = "/Machinery/:id";
 export const MACHINERY_DETAIL = "Machinery/Detail";
 export const MACHINERY_HOME_PRIORITY = "Machinery?Priority=1&size=4";
 
-//Category
-export const GET_CATEGORY = "categories?status=Active";
+//Category Machinery
+export const GET_CATEGORY = "categories?status=Active&kind=Machinery";
 export const CATEGORY_ID = "categories/:id";
 export const CATEGORY = "categories";
-export const GET_CATEGORY_PARENT = "categories?status=Active&type=Parent";
+export const GET_CATEGORY_PARENT = "categories?status=Active&kind=Machinery";
+export const GET_CATEGORY_CHILD =
+  "categories?status=Active&type=Child&kind=Machinery";
+
+//Machinery Component
+export const MACHINERY_COMPONENT = "machineryComponent";
+export const MACHINERY_COMPONENT_ID = "machineryComponent/:id";
+
+//Category Component
+export const GET_CATEGORY_COMPONENT = "categories?status=Active&kind=Material";
+export const CATEGORY_ID_COMPONENT = "categories/:id";
+export const CATEGORY_COMPONENT = "categories";
+export const MACHINERY_COMPONENT_CHILD =
+  "categories?status=Active&type=Child&kind=Material";
 
 //brand
 export const GET_BRAND = "brand?status=Active";
@@ -49,7 +62,7 @@ export const SERIALNUMBER_ID = "inventories/:id";
 export const RANK = "rank";
 export const RANK_ID = "rank/:id";
 
-//accont
+//account
 export const USER_BY_ROLE = "users";
 export const USER_ID = "users/:id";
 
@@ -58,6 +71,9 @@ export const NEWS_HOME = "news";
 export const NEWS_ID = "news/:id";
 export const NEWS_ADMIN = "news/noPaginate";
 
+//task
+export const TASK = "task";
+export const TASK_ID = "task/:id";
 //newsCategories
 export const NEWS_CATEGORIES = "/newsCategory";
 export const NEWS_CATEGORIES_ID = "/newsCategory/:id";
@@ -75,6 +91,9 @@ export const GET_ADDRESS = "address";
 export const WARRANTY = "warranty";
 export const WARRANTY_ID = "warranty/:id";
 
+//warranty detail
+export const WARRANTY_DETAIL = "/warrantyDetail";
+export const WARRANTY_DETAIL_ID = "/warrantyDetail/:id";
 //payments
 export const PAYMENTS = "payments";
 export const PAYMENTS_ID = "payments/:id";

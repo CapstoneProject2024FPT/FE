@@ -10,7 +10,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { ApiSerial } from "../../../api/services/apiSerialNumber";
 import { useForm } from "react-hook-form";
 import { RHFTextField, FormProvider } from "../../../components/hook-form";
-import { Card } from "@mui/material";
+import { Card, TextField } from "@mui/material";
 import { LoadingButton } from "@mui/lab";
 
 interface ModalSerialNumber {
@@ -22,6 +22,7 @@ interface ModalSerialNumber {
 
 interface addProps {
   machineryId: string;
+  type: string;
 }
 interface quantitySerial {
   quantity: number;
@@ -55,12 +56,10 @@ const ModalAddSerialPopup: React.FC<ModalSerialNumber> = ({
 
   const onSubmit = async (data: quantitySerial) => {
     try {
-      console.log(data);
-      console.log(productData);
-
       if (productData) {
         const params: addProps = {
           machineryId: productData.id,
+          type: "Machinery",
         };
         const response = await apiAddSerialbyMachineId(params, data);
 
@@ -88,6 +87,12 @@ const ModalAddSerialPopup: React.FC<ModalSerialNumber> = ({
     >
       <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
         <Card sx={{ p: 3 }}>
+          <TextField
+            value={productData?.name || ""}
+            sx={{ mb: 2 }}
+            InputProps={{ readOnly: true }}
+            label="Tên máy"
+          />
           <RHFTextField name="quantity" type="number" label="Số lượng" />
           <div
             style={{

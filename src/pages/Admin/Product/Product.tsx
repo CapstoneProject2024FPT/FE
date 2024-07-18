@@ -8,11 +8,11 @@ const Product: React.FC = () => {
   return (
     <Container>
       <HeaderBreadcrumbs
-        heading="Tất cả sản phẩm"
+        heading="Tất cả máy"
         links={[
           { name: "Thống kê", href: config.adminRoutes.dashboard },
           { name: "Sản phẩm" },
-          { name: "Tất cả sản phẩm" },
+          { name: "Tất cả máy" },
         ]}
       />
       <TableProduct />

@@ -21,20 +21,28 @@ import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import { ApiOrder } from "../../../api/services/apiOrder";
-import { GetOrderProps, OrderProps, statusMapping, StatusType } from "../../../models/order";
+import {
+  GetOrderProps,
+  OrderProps,
+  statusMapping,
+  StatusType,
+} from "../../../models/order";
 import { formatAddress, formatDateFunc, formatMoney } from "../../../utils/fn";
 import { toast } from "react-toastify";
 import EmptyOrder from "../../../components/EmptyOrder";
 import CancelOrderDialog from "./Modal/PopupCancelOrder";
 import ExportPDF from "./Exportpdf/ExportPDF";
 import WarrantyPDF from "./Exportpdf/WarrantyPDF";
-import { Link } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import config from "../../../configs";
 import emailjs from "@emailjs/browser";
+import moment from "moment";
+import { ApiCheckout } from "../../../api/services/apiCheckout";
+import { paymentProps } from "../../../models/payment";
 
 const getStatusStyles = (status: string) => {
   switch (status) {
-    case "Unpaid":
+    case "UnPaid":
       return { backgroundColor: "#FFD700", color: "black" }; // vàng
     case "Paid":
       return { backgroundColor: "#4CAF50", color: "white" }; // xanh lá
@@ -43,35 +51,43 @@ const getStatusStyles = (status: string) => {
     case "Canceled":
       return { backgroundColor: "#F44336", color: "white" }; // đỏ
     case "Delivery":
-      return { backgroundColor: "#FFD700", color: "white" }; // vàng
+      return { backgroundColor: "#FFD700", color: "black" }; // vàng
     default:
       return { backgroundColor: "transparent", color: "black" };
   }
 };
 
-const Row = (props: { row: OrderProps; onCancelOrder: (orderId: string) => void }) => {
+const Row = (props: {
+  row: OrderProps;
+  onCancelOrder: (orderId: string, note?: string) => void;
+}) => {
   const { row, onCancelOrder } = props;
   const [open, setOpen] = useState(false);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const openMenu = Boolean(anchorEl);
   let  email: string
   let username: string
+  const [remainingTime, setRemainingTime] = useState<number | null>(null);
+
+  const { apiPayment, apiPaymentUpdate } = ApiCheckout();
+  const location = useLocation();
+  const navigate = useNavigate();
   const defaultStatus = "Đang chờ xác nhận";
   const StatusName = row?.status
     ? statusMapping?.find((status) => status.id === row?.status)?.name
     : defaultStatus;
 
+
   const handleCancelOrder = () => {
     const getUserInfoString = localStorage.getItem("getUserInfo");
     if (getUserInfoString) {
       const userInfo = JSON.parse(getUserInfoString);
-      console.log(userInfo)
     email = userInfo?.email
     username = userInfo?.username
     } else {
       console.error("No user info found in localStorage");
     }
-    // onCancelOrder(row.orderId);
+    onCancelOrder(row.orderId);
     handleCloseMenu();
   };
 
@@ -107,15 +123,100 @@ const Row = (props: { row: OrderProps; onCancelOrder: (orderId: string) => void 
     )
   };
 
+  useEffect(() => {
+    if (row.status === StatusType.UNPAID) {
+      const createTime = moment(row.createDate);
+      const now = moment();
+      const diff = moment.duration(now.diff(createTime));
+      const initialRemainingTime = 30 * 60 - diff.asSeconds(); // 30 minutes in seconds
+
+      if (initialRemainingTime > 0) {
+        setRemainingTime(initialRemainingTime);
+      }
+
+      const timer = setInterval(() => {
+        setRemainingTime((prev) => {
+          if (prev !== null && prev > 0) {
+            return prev - 1;
+          } else {
+            clearInterval(timer);
+            return null;
+          }
+        });
+      }, 1000);
+
+      return () => clearInterval(timer);
+    }
+  }, [row]);
+
+  const formatRemainingTime = (seconds: number) => {
+    const mins = Math.floor(seconds / 60);
+    const secs = Math.floor(seconds % 60);
+    return `${mins}:${secs < 10 ? "0" : ""}${secs}`;
+  };
+
+
+  //vnreturn
+  useEffect(() => {
+    const queryParams = new URLSearchParams(location.search);
+    const transactionId = queryParams.get("vnp_TransactionStatus");
+
+    const handleTransactionStatus = async () => {
+      const id = sessionStorage.getItem("paymmentID");
+
+      if (transactionId === "00" && id) {
+        const params = { status: "SUCCESS" };
+        try {
+          const response = await apiPaymentUpdate(params, id);
+          console.log(response);
+          if (response.status === 200) {
+            toast.success("Thanh toán thành công");
+          }
+        } catch (error) {
+          console.error("Error updating payment status:", error);
+        }
+      } else if (id) {
+        const params = { status: "FAILED" };
+        try {
+          const response = await apiPaymentUpdate(params, id);
+          if (response.status === 200) {
+            toast.error("Thanh toán thất bại");
+          }
+        } catch (error) {
+          console.error("Error updating payment status:", error);
+        }
+      }
+      sessionStorage.removeItem("paymmentID");
+    };
+
+    if (transactionId) {
+      handleTransactionStatus();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [location, navigate]);
+
+  const handlePayment = async (row: OrderProps) => {
+    const paramPayment: paymentProps = {
+      orderId: row.orderId,
+      amount: row.finalAmount,
+      callbackUrl: window.location.href,
+      paymentType: "VNPAY",
+    };
+
+    const responsePayment = await apiPayment(paramPayment);
+    sessionStorage.setItem("paymmentID", responsePayment.data.paymentId);
+
+    if (responsePayment.status === 200) {
+      window.location.href = responsePayment.data.url;
+    } else {
+      console.error("Khởi tạo vnpay lỗi", responsePayment);
+    }
+  };
   return (
     <React.Fragment>
       <TableRow>
         <TableCell>
-          <IconButton
-            aria-label="expand row"
-            size="small"
-            onClick={() => setOpen(!open)}
-          >
+          <IconButton aria-label="expand row" size="small" onClick={() => setOpen(!open)}>
             {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
           </IconButton>
         </TableCell>
@@ -123,9 +224,7 @@ const Row = (props: { row: OrderProps; onCancelOrder: (orderId: string) => void 
         <TableCell>{row.invoiceCode}</TableCell>
         <TableCell>{formatDateFunc.formatDate(row.createDate)}</TableCell>
         <TableCell>
-          {row.completedDate
-            ? formatDateFunc.formatDate(row.completedDate)
-            : "Chưa hoàn thành"}
+          {row.completedDate ? formatDateFunc.formatDate(row.completedDate) : "Chưa hoàn thành"}
         </TableCell>
         <TableCell>{formatMoney(row.finalAmount)}</TableCell>
         <TableCell>
@@ -140,31 +239,43 @@ const Row = (props: { row: OrderProps; onCancelOrder: (orderId: string) => void 
             {StatusName}
           </Box>
         </TableCell>
+        {row.status === StatusType.UNPAID && (
+          <TableCell>
+            <Button variant="outlined" onClick={() => handlePayment(row)}>
+              Thanh Toán
+            </Button>
+          </TableCell>
+        )}
         <TableCell>
-          <IconButton
-            aria-label="more actions"
-            size="small"
-            onClick={handleOpenMenu}
-          >
+          <IconButton aria-label="more actions" size="small" onClick={handleOpenMenu}>
             <MoreVertIcon />
           </IconButton>
-          <Menu
-            anchorEl={anchorEl}
-            open={openMenu}
-            onClose={handleCloseMenu}
-          >
+          <Menu anchorEl={anchorEl} open={openMenu} onClose={handleCloseMenu}>
             {row.status === StatusType.UNPAID && (
               <MenuItem onClick={handleCancelOrder}>Hủy đơn hàng</MenuItem>
             )}
-            {
-              // Add detail order
-
-              <MenuItem onClick={handleDetailOrder}>Chi tiết đơn hàng</MenuItem>
-            }
+            <MenuItem onClick={handleDetailOrder}>Chi tiết đơn hàng</MenuItem>
             {row.status === StatusType.COMPLETED && (
-              <MenuItem onClick={() => ExportPDF({ row })}>Xuất hóa đơn</MenuItem>
+              <MenuItem onClick={() => ExportPDF({ row })}>
+                Xuất hóa đơn
+              </MenuItem>
             )}
           </Menu>
+        </TableCell>
+        <TableCell>
+          {row.status === StatusType.UNPAID && remainingTime !== null && (
+            <Box
+              sx={{
+                padding: "8px 16px",
+                borderRadius: "8px",
+                display: "inline-block",
+                backgroundColor: "#FFD700",
+                color: "black",
+              }}
+            >
+              {formatRemainingTime(remainingTime)}
+            </Box>
+          )}
         </TableCell>
       </TableRow>
       <TableRow>
@@ -180,11 +291,9 @@ const Row = (props: { row: OrderProps; onCancelOrder: (orderId: string) => void 
                     <TableCell>Tên sản phẩm</TableCell>
                     <TableCell>Số lượng</TableCell>
                     <TableCell>Giá sản phẩm</TableCell>
-                    {
-                      row.status === StatusType.COMPLETED && (
-                        <TableCell>Hành động</TableCell>
-                      )
-                    }
+                    {row.status === StatusType.COMPLETED && (
+                      <TableCell>Hành động</TableCell>
+                    )}
                   </TableRow>
                 </TableHead>
                 <TableBody>
@@ -192,11 +301,8 @@ const Row = (props: { row: OrderProps; onCancelOrder: (orderId: string) => void 
                     <TableRow key={product.orderDetailId}>
                       <TableCell>
                         <Link
-                          to={config.routes.productDetail.replace(
-                            ":id",
-                            product.productId
-                          )}
-                          style={{ textDecoration: "none" }}
+                          to={config.routes.productDetail.replace(":id", product.productId)}
+                          style={{ textDecoration: "none", color: "black" }}
                         >
                           {product.productName}
                         </Link>
@@ -213,9 +319,7 @@ const Row = (props: { row: OrderProps; onCancelOrder: (orderId: string) => void 
                             Phiếu bảo hành
                           </Button>
                         </TableCell>
-                      )
-
-                      }
+                      )}
                     </TableRow>
                   ))}
                 </TableBody>
@@ -283,6 +387,7 @@ const OrderManagement: React.FC = () => {
         const apiResponse = await apiGetOrderById(params);
         const orderList = apiResponse.data;
         setOrders(orderList);
+        handleAutoCancel(orderList.items);
       }
     } catch (error) {
       console.log(error);
@@ -302,7 +407,11 @@ const OrderManagement: React.FC = () => {
   const handleConfirmCancel = async (note: string) => {
     if (selectedOrderId) {
       try {
-        await apiCancelOrder({ orderId: selectedOrderId, status: "Canceled", note });
+        await apiCancelOrder({
+          orderId: selectedOrderId,
+          status: "Canceled",
+          note,
+        });
         fetchOrders();
         toast.success("Đơn hàng đã được hủy thành công");
       } catch (error) {
@@ -314,8 +423,38 @@ const OrderManagement: React.FC = () => {
     }
   };
 
+  const handleAutoCancel = (orders: OrderProps[]) => {
+    orders.forEach((order) => {
+      if (order.status === "UnPaid") {
+        const createTime = moment(order.createDate);
+        const now = moment();
+        const diff = moment.duration(now.diff(createTime));
+        const minutes = diff.asMinutes();
+        const minuteToCancelOrder = 30; // 30 minutes
+        if (minutes >= minuteToCancelOrder) {
+          apiCancelOrder({
+            orderId: order.orderId,
+            status: "Canceled",
+            note: "Đơn hàng đã bị hủy do quá hạn thời gian thanh toán",
+          })
+            .then(() => {
+              toast.success(
+                `Đơn hàng ${order.invoiceCode} đã bị hủy do quá hạn thời gian thanh toán`
+              );
+              fetchOrders();
+            })
+            .catch((error) => {
+              toast.error("Có lỗi xảy ra khi hủy đơn hàng");
+              console.log(error);
+            });
+        }
+      }
+    });
+  };
+
   useEffect(() => {
     fetchOrders();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [page, rowsPerPage]);
 
   return (
@@ -335,12 +474,18 @@ const OrderManagement: React.FC = () => {
               <TableCell>Tổng tiền</TableCell>
               <TableCell>Trạng thái</TableCell>
               <TableCell>Hành động</TableCell>
+              <TableCell></TableCell>
+              <TableCell></TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
             {(orders?.items ?? []).length > 0 ? (
               orders?.items.map((order) => (
-                <Row key={order.orderId} row={order} onCancelOrder={handleOpenDialog} />
+                <Row
+                  key={order.orderId}
+                  row={order}
+                  onCancelOrder={handleOpenDialog}
+                />
               ))
             ) : (
               <TableRow>
@@ -361,7 +506,6 @@ const OrderManagement: React.FC = () => {
         onPageChange={handleChangePage}
         onRowsPerPageChange={handleChangeRowsPerPage}
         labelRowsPerPage="Số hàng mỗi trang"
-
       />
       <CancelOrderDialog
         open={openDialog}

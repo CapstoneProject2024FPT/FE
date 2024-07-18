@@ -44,11 +44,6 @@ const PAYMENT_OPTIONS: PaymentOption[] = [
     title: "Thanh toán qua cộng Vnpay",
     description: "Bạn sẽ được chuyển đi đến cổng thanh toán Vnpay.",
   },
-  {
-    value: "COD",
-    title: "Thanh toán khi nhận hàng",
-    description: "Khi bạn nhận được hàng sẽ thanh toán.",
-  },
 ];
 
 // interface QueryParams {
@@ -115,6 +110,10 @@ const CheckoutPayment: React.FC<checkoutPaymentProps> = ({
           console.error("Error updating payment status:", error);
         }
       }
+      sessionStorage.removeItem("paymmentID");
+      sessionStorage.removeItem("checkoutTotal");
+      localStorage.removeItem("cart");
+      sessionStorage.removeItem("address");
     };
 
     if (transactionId) {
@@ -122,11 +121,6 @@ const CheckoutPayment: React.FC<checkoutPaymentProps> = ({
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [location, navigate]);
-
-  // handleNext();
-  // sessionStorage.removeItem("checkoutTotal");
-  // localStorage.removeItem("cart");
-  // sessionStorage.removeItem("address");
 
   //payment
   const [note, setNote] = useState<string>("");
@@ -155,7 +149,7 @@ const CheckoutPayment: React.FC<checkoutPaymentProps> = ({
         const params = {
           totalAmount: total,
           finalAmount: total,
-          note: note,
+          description: note,
           machineryList: machineList,
           addressId: address.id,
         };
@@ -172,8 +166,6 @@ const CheckoutPayment: React.FC<checkoutPaymentProps> = ({
             };
 
             const responsePayment = await apiPayment(paramPayment);
-
-            console.log(responsePayment, "payment");
             sessionStorage.setItem(
               "paymmentID",
               responsePayment.data.paymentId

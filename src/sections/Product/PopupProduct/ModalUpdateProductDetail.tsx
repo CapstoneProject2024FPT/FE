@@ -1,7 +1,11 @@
 import React, { useEffect, useState } from "react";
 
 import { Modal } from "antd";
-import { FormProvider, RHFTextField } from "../../../components/hook-form";
+import {
+  FormProvider,
+  RHFTextField,
+  RHFAutoComplete,
+} from "../../../components/hook-form";
 // form
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm } from "react-hook-form";
@@ -40,8 +44,8 @@ const ModalProductDetailPopup: React.FC<ModalProduct> = ({
   handleClose,
   onUpdateSuccess,
 }) => {
-  const minTimeWarranty = 12;
-  const maxTimeWarranty = 36;
+  const minTimeWarranty = 1;
+  const maxTimeWarranty = 3;
   const { apiUpdateMachineryDetail } = MachineryApi();
   const { getBrand } = BrandApi();
   const { apiGetOrigin } = ApiOrigin();
@@ -143,6 +147,7 @@ const ModalProductDetailPopup: React.FC<ModalProduct> = ({
       console.error(error);
     }
   };
+
   return (
     <Modal
       title="Cập nhật chi tiết máy"
@@ -164,28 +169,11 @@ const ModalProductDetailPopup: React.FC<ModalProduct> = ({
             <Grid container spacing={1}>
               <Grid item xs={6}>
                 <Stack direction="column" display="flex" spacing={2}>
-                  <RHFTextField
-                    select
+                  <RHFAutoComplete
                     name="brandId"
-                    label="Chọn thương hiệu máy "
-                    SelectProps={{ native: true }}
-                    InputLabelProps={{
-                      shrink: true,
-                    }}
-                  >
-                    <option value="">Chọn Thương hiệu</option>
-                    {brands && brands?.length > 0 ? (
-                      brands?.map((brand) => (
-                        <option key={brand.id} value={brand.id}>
-                          {brand.name}
-                        </option>
-                      ))
-                    ) : (
-                      <option value="" disabled>
-                        không có thương hiệu
-                      </option>
-                    )}
-                  </RHFTextField>
+                    options={brands || []}
+                    label="Thương hiệu máy"
+                  />
                   <RHFTextField name="model" label="Mẫu sản phẩm" autoFocus />
                   <RHFTextField
                     select
@@ -231,7 +219,7 @@ const ModalProductDetailPopup: React.FC<ModalProduct> = ({
                     autoFocus
                     InputProps={{
                       endAdornment: (
-                        <InputAdornment position="end">Tháng</InputAdornment>
+                        <InputAdornment position="end">Năm</InputAdornment>
                       ),
                       type: "number",
                       inputProps: {
