@@ -8,13 +8,9 @@ import {
   formatMoney,
 } from "../../../../utils/fn";
 
-pdfMake.vfs = pdfFonts.pdfMake.vfs;
-
 function ExportPDF({ row }: { row: OrderProps }) {
-  if (!pdfMake || !pdfMake.vfs) {
-    console.error("pdfMake or its vfs is not loaded correctly.");
-    return;
-  }
+  pdfMake.vfs = pdfFonts.pdfMake.vfs;
+
   // Tính tổng tiền của 3 sản phẩm
   const totalAmount = row.productList.reduce(
     (sum, product) => sum + product.totalAmount,

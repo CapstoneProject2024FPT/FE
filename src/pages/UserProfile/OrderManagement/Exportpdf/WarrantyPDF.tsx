@@ -3,7 +3,6 @@ import * as pdfFonts from "pdfmake/build/vfs_fonts";
 import { OrderProps, ProductProps } from "../../../../models/order";
 import { formatAddress, formatDateFunc } from "../../../../utils/fn";
 
-pdfMake.vfs = pdfFonts.pdfMake.vfs;
 function WarrantyPDF({
   order,
   product,
@@ -11,10 +10,7 @@ function WarrantyPDF({
   order: OrderProps;
   product: ProductProps;
 }) {
-  if (!pdfMake || !pdfMake.vfs) {
-    console.error("pdfMake or its vfs is not loaded correctly.");
-    return;
-  }
+  pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
   // Define the styles with explicit types
   const styles = {
