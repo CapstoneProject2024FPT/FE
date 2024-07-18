@@ -2,7 +2,7 @@ import { ProductAdmin } from "./products"
 
 export enum StatusType {
     PENDING = "Pending",
-    COMPLETED = "Complete",
+    COMPLETED = "Completed",
     CANCELED = "Cancel",
     PROCESS = "Process",
     AWAITINGASSIGNMENT = "AwaitingAssignment"
