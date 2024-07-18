@@ -31,7 +31,7 @@ export default function ProductCard({ product }: Props) {
           width: "100%",
           height: "100%",
           color: "black",
-          transition: "transform 0.2s ease-in-out",
+          transition: "transform 0.5s ease-in-out",
           "&:hover": {
             transform: "scale(1.05)",
           },

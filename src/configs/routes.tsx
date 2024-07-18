@@ -13,11 +13,15 @@ export const routes = {
   orderManagement: "/order-management",
   favoriteProduct: "/favorite-product",
   notFound: "notFound",
-  paymentSuccessfull: "/payment-successfull",
+  paymentSuccessful: "/payment-successful",
+  paymentFailure: "/payment-failure",
   news: "/news",
   newsDetail: `/news/${suffix.detailId}`,
   productList: "/product-list",
   productDetail: `/product-list/product-detail/${suffix.detailId}`,
+  aboutUs: "/about-us",
+  privacyPolicy: "/privacy-policy",
+  termsOfService: "/terms-of-service",
 };
 
 export const adminRoutes = {
@@ -34,10 +38,15 @@ export const adminRoutes = {
   createProduct: "/dashboard/create/product",
   viewDetailProduct: "/dashboard/product/:id",
   viewSerialProduct: "/dashboard/product/serial/:id",
+  viewMachineComponent: "/dashboard/product/component",
+  createMachineComponent: "/dashboard/create/component",
+  viewDetailMachineComponent: "/dashboard/product/component/:id",
+  viewDetailMachineComponentSerial: "/dashboard/product/component/:id/serial",
   profile: "/dashboard/user/account",
   category: "/dashboard/categories",
   brand: "/dashboard/brand",
   order: "/dashboard/orders",
   rank: "/dashboard/ranks",
   maintenance: "/dashboard/maintenance",
+  task: "/dashboard/kanban",
 };

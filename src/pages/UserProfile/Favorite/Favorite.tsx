@@ -1,10 +1,11 @@
 import React from "react";
-import { Typography } from "@mui/material";
+import { Typography, Container } from "@mui/material";
+
 
 const Favorite: React.FC = () => {
   return (
-    <>
-      <Typography variant="h5" component="h2">
+    <Container maxWidth="lg">
+      <Typography variant="h4" component="h1" gutterBottom>
         Sản phẩm yêu thích
       </Typography>
       <Typography variant="h6" component="h2">
@@ -19,7 +20,7 @@ const Favorite: React.FC = () => {
       <Typography variant="h6" component="h2">
         Sản phẩm 4
       </Typography>
-    </>
+    </Container>
   );
 };
 

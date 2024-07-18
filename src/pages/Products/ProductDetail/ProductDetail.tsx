@@ -14,8 +14,6 @@ import {
   ArrowForwardIos,
   ShoppingCart,
   Unarchive,
-  FmdGood,
-  LocalAtm,
   Refresh,
   Verified,
   LocalPolice,
@@ -23,13 +21,11 @@ import {
 } from "@mui/icons-material";
 import "./ProductDetail.scss";
 import { toast } from "react-toastify";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { MachineryApi } from "../../../api/services/apiMachinery";
 import Zoom from "../../../components/zoomImageHover";
 import { ProductDetailProps } from "../../../models/products";
 import { formatMoney } from "../../../utils/fn";
-import { useAuthContext } from "../../../context/AuthContext";
-import config from "../../../configs";
 
 const Detail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -38,17 +34,16 @@ const Detail: React.FC = () => {
   const [isActive, setActive] = useState(false);
   const [isRed, setIsRed] = useState(false);
   const [product, setProduct] = useState<ProductDetailProps>();
+  const [selectProductQuantity, setSelectProductQuantity] = useState<number>(0);
   const { apiGetMachineryID } = MachineryApi();
-  const navigate = useNavigate();
-  const location = useLocation();
 
-  const { authUser } = useAuthContext();
   const fetchProducts = async () => {
     try {
       if (id) {
         const response = await apiGetMachineryID(id);
         if (response.status === 200) {
           setProduct(response.data);
+          setSelectProductQuantity(response.data.quantity?.Available || 0);
         } else {
           toast.error("Có lỗi trong quá trình lấy");
         }
@@ -64,7 +59,6 @@ const Detail: React.FC = () => {
     fetchProducts();
     //scroll to top
     window.scrollTo(0, 0);
-
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -73,31 +67,26 @@ const Detail: React.FC = () => {
   };
 
   const addToCart = () => {
-    if (authUser) {
-      if (isActive) return;
-      setActive(!isActive);
-      const existCart = localStorage.getItem("cart");
-      const productQuantity = { ...product, currentQuantities, id: id };
-      if (existCart) {
-        const parseProduct = JSON.parse(existCart);
-        const existProduct = parseProduct.findIndex(
-          (p: { id: string | undefined }) => p.id === productQuantity.id
-        );
-        if (existProduct !== -1) {
-          parseProduct[existProduct].currentQuantities = +currentQuantities;
-          toast.success("Thêm sản phẩm thành công");
-        } else {
-          parseProduct.push(productQuantity);
-          toast.success("Thêm sản phẩm thành công");
-        }
-        localStorage.setItem("cart", JSON.stringify(parseProduct));
+    if (isActive) return;
+    setActive(!isActive);
+    const existCart = localStorage.getItem("cart");
+    const productQuantity = { ...product, currentQuantities, id: id };
+    if (existCart) {
+      const parseProduct = JSON.parse(existCart);
+      const existProduct = parseProduct.findIndex(
+        (p: { id: string | undefined }) => p.id === productQuantity.id
+      );
+      if (existProduct !== -1) {
+        parseProduct[existProduct].currentQuantities = +currentQuantities;
+        toast.success("Thêm sản phẩm thành công");
       } else {
-        localStorage.setItem("cart", JSON.stringify([productQuantity]));
+        parseProduct.push(productQuantity);
         toast.success("Thêm sản phẩm thành công");
       }
+      localStorage.setItem("cart", JSON.stringify(parseProduct));
     } else {
-      localStorage.setItem("historyPath", location.pathname);
-      navigate(config.routes.login);
+      localStorage.setItem("cart", JSON.stringify([productQuantity]));
+      toast.success("Thêm sản phẩm thành công");
     }
   };
 
@@ -112,15 +101,21 @@ const Detail: React.FC = () => {
   };
   const onChangeQuantities = (e: React.ChangeEvent<HTMLInputElement>) => {
     const re = /^[0-9\b]+$/;
-
-    // if value is not blank, then test the regex
-
-    if (e.target.value === "" || re.test(e.target.value)) {
-      setCurrentQuantities(Number(e.target.value));
+    const value = e.target.value;
+    if (value === "" || re.test(value)) {
+      let newValue = Number(value);
+      setCurrentQuantities(newValue);
+      if (newValue <= 1) {
+        setCurrentQuantities(1);
+      } else if (newValue > selectProductQuantity) {
+        newValue = selectProductQuantity;
+      }
+      setCurrentQuantities(newValue);
     }
   };
 
   const increaseQuantity = () => {
+    if (currentQuantities === selectProductQuantity) return;
     setCurrentQuantities(currentQuantities + 1);
   };
 
@@ -359,14 +354,21 @@ const Detail: React.FC = () => {
                         borderBottomLeftRadius: 0,
 
                         "&:hover": { backgroundColor: "lightgrey" },
+                        "&.disabled:hover": {
+                          cursor: "not-allowed",
+                        },
                       }}
                       onClick={() => increaseQuantity()}
+                      className={`${
+                        currentQuantities >= (selectProductQuantity ?? 0) &&
+                        "disabled"
+                      }`}
                     >
                       +
                     </Button>
                   </Box>
                 </Box>
-                Hiện có: {product?.quantity?.Available}
+                Hiện có: {selectProductQuantity}
               </Box>
 
               <Button
@@ -410,62 +412,7 @@ const Detail: React.FC = () => {
                 justifyContent: "space-around",
               }}
             >
-              <Box>
-                <Typography sx={{ fontWeight: 600 }}>
-                  Địa chỉ giao hàng
-                </Typography>
-                <Box
-                  sx={{
-                    display: "flex",
-                    alignItems: "center",
-                    marginBottom: "8px",
-                  }}
-                >
-                  <FmdGood
-                    sx={{
-                      padding: "4px",
-                      fontSize: "28px",
-                      color: "rgba(0, 0, 0, 0.54)",
-                      marginRight: "8px",
-                    }}
-                  />
-                  <Typography>Chưa chọn địa chỉ giao hàng</Typography>
-                  <Box sx={{ marginLeft: "10px" }}>
-                    <Button
-                      variant="outlined"
-                      sx={{
-                        textTransform: "inherit",
-                        boxShadow: "rgba(99, 99, 99, 0.2) 0px 2px 8px 0px",
-                        "&:hover": {
-                          color: "blue",
-                        },
-                      }}
-                    >
-                      {" "}
-                      Đổi{" "}
-                    </Button>
-                  </Box>
-                </Box>
-                <Box
-                  sx={{
-                    display: "flex",
-                    alignItems: "center",
-                    marginBottom: "8px",
-                  }}
-                >
-                  <LocalAtm
-                    sx={{
-                      padding: "4px",
-                      fontSize: "28px",
-                      color: "rgba(0, 0, 0, 0.54)",
-                      marginRight: "8px",
-                    }}
-                  />
-                  <Typography>Thanh toán tiền mặt/Online</Typography>
-                </Box>
-              </Box>
-              <Divider sx={{ borderBottomWidth: "1px", margin: "0 20px" }} />
-              <Box>
+              <Box sx={{ margin: "auto" }}>
                 <Typography sx={{ fontWeight: 600 }}>
                   Đổi trả & bảo hành
                 </Typography>
@@ -536,8 +483,8 @@ const Detail: React.FC = () => {
                   <Typography>Bảo hành định kỳ</Typography>
                 </Box>
               </Box>
-              <Divider sx={{ borderBottomWidth: "1px", margin: "0 20px" }} />
-              <Box>
+              <Divider sx={{ borderBottomWidth: "1px", margin: "0 10px" }} />
+              <Box sx={{ margin: "auto" }}>
                 <Typography sx={{ fontWeight: 600 }}>Được bán bởi</Typography>
                 <Typography
                   sx={{ fontWeight: 600, color: "orange", marginTop: "8px" }}
@@ -545,7 +492,7 @@ const Detail: React.FC = () => {
                   SMMMS Corporation
                 </Typography>
               </Box>
-              <Divider sx={{ borderBottomWidth: "1px", margin: "0 20px" }} />
+              <Divider sx={{ borderBottomWidth: "1px", margin: "0 10px" }} />
             </Box>
           </Box>
         </Box>

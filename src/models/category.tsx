@@ -2,6 +2,7 @@ export interface CategoryProps {
   name: string;
   description: string;
   masterCategoryId?: string | null | undefined;
+  kind: string;
 }
 
 export interface GetCategoryProps extends CategoryProps {
@@ -19,3 +20,8 @@ export type CategoryMachineDetail = Omit<CategoryProps, "description"> & {
   id: string;
   type: string;
 };
+
+export enum CategoryType {
+  MACHINERY = "Machinery",
+  COMPONENT = "Material",
+}

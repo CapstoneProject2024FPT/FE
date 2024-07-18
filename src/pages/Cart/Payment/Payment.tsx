@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import * as Yup from "yup";
 // form
 import { useForm } from "react-hook-form";
@@ -15,7 +15,11 @@ import {
 } from "@mui/material";
 import { LoadingButton } from "@mui/lab";
 // @types
-import { PaymentOption } from "../../../models/payment";
+import {
+  PaymentOption,
+  paymentProps,
+  PaymentTypeProps,
+} from "../../../models/payment";
 
 // components
 import Iconify from "../../../components/Iconify";
@@ -29,40 +33,40 @@ import { CartItem } from "../../../models/cart";
 import { ApiCheckout } from "../../../api/services/apiCheckout";
 import { toast } from "react-toastify";
 import { useAddress } from "../../../zustand/useAddress";
+import config from "../../../configs";
+import { useLocation, useNavigate } from "react-router-dom";
 
 // ----------------------------------------------------------------------
 
 const PAYMENT_OPTIONS: PaymentOption[] = [
   {
-    value: "Vnpay",
+    value: "VNPAY",
     title: "Thanh toán qua cộng Vnpay",
     description: "Bạn sẽ được chuyển đi đến cổng thanh toán Vnpay.",
   },
-  {
-    value: "COD",
-    title: "Thanh toán khi nhận hàng",
-    description: "Khi bạn nhận được hàng sẽ thanh toán.",
-  },
 ];
 
+// interface QueryParams {
+//   [key: string]: string;
+// }
 type FormValuesProps = {
   payment: string;
 };
 
 type checkoutPaymentProps = {
   handleBack: () => void;
-  handleNext: () => void;
   handleGoToStep: (step: number) => void;
 };
 const CheckoutPayment: React.FC<checkoutPaymentProps> = ({
   handleBack,
-  handleNext,
   handleGoToStep,
 }) => {
   const { total } = useCheckout();
   const { address } = useAddress();
+  const location = useLocation();
+  const navigate = useNavigate();
   //api
-  const { apiCheckout } = ApiCheckout();
+  const { apiCheckout, apiPayment, apiPaymentUpdate } = ApiCheckout();
 
   //cart item
   const cart = localStorage.getItem("cart");
@@ -75,6 +79,50 @@ const CheckoutPayment: React.FC<checkoutPaymentProps> = ({
     sellingPrice: cart.sellingPrice,
   }));
 
+  //vnreturn
+  useEffect(() => {
+    const queryParams = new URLSearchParams(location.search);
+    const transactionId = queryParams.get("vnp_TransactionStatus");
+
+    const handleTransactionStatus = async () => {
+      const id = sessionStorage.getItem("paymmentID");
+
+      if (transactionId === "00" && id) {
+        const params = { status: "SUCCESS" };
+        try {
+          const response = await apiPaymentUpdate(params, id);
+          console.log(response);
+          if (response.status === 200) {
+            navigate(config.routes.paymentSuccessful);
+          }
+        } catch (error) {
+          console.error("Error updating payment status:", error);
+        }
+      } else if (id) {
+        const params = { status: "FAILED" };
+        try {
+          const response = await apiPaymentUpdate(params, id);
+          console.log(response);
+          if (response.status === 200) {
+            navigate(config.routes.paymentFailure);
+          }
+        } catch (error) {
+          console.error("Error updating payment status:", error);
+        }
+      }
+      sessionStorage.removeItem("paymmentID");
+      sessionStorage.removeItem("checkoutTotal");
+      localStorage.removeItem("cart");
+      sessionStorage.removeItem("address");
+    };
+
+    if (transactionId) {
+      handleTransactionStatus();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [location, navigate]);
+
+  //payment
   const [note, setNote] = useState<string>("");
 
   const PaymentSchema = Yup.object().shape({
@@ -95,27 +143,43 @@ const CheckoutPayment: React.FC<checkoutPaymentProps> = ({
     formState: { isSubmitting },
   } = methods;
 
-  const onSubmit = async () => {
+  const onSubmit = async (data: FormValuesProps) => {
     try {
       if (address) {
         const params = {
           totalAmount: total,
           finalAmount: total,
-          note: note,
+          description: note,
           machineryList: machineList,
           addressId: address.id,
         };
-
-        console.log(params);
-
         const response = await apiCheckout(params);
 
         if (response.status === 200) {
-          toast.success("Tạo đơn hàng thành công");
-          handleNext();
-          sessionStorage.removeItem("checkoutTotal");
-          localStorage.removeItem("cart");
-          sessionStorage.removeItem("address");
+          //api vnpay
+          if (data.payment === PaymentTypeProps.VNPAY) {
+            const paramPayment: paymentProps = {
+              orderId: response.data,
+              amount: total,
+              callbackUrl: window.location.href,
+              paymentType: "VNPAY",
+            };
+
+            const responsePayment = await apiPayment(paramPayment);
+            sessionStorage.setItem(
+              "paymmentID",
+              responsePayment.data.paymentId
+            );
+
+            if (responsePayment.status === 200) {
+              window.location.href = responsePayment.data.url;
+            } else {
+              console.error("Khởi tạo vnpay lỗi", responsePayment);
+            }
+          } else {
+            navigate(config.routes.home);
+          }
+          //create order failed
         } else {
           toast.error(response.Error);
         }

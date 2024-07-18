@@ -10,8 +10,6 @@ import WarrantyRequest from "./Warranty/WarrantyRequest";
 const Warranty: React.FC = () => {
   const [tabValue, setTabValue] = useState(0);
 
-
-
   const handleTabChange = (_event: React.SyntheticEvent, newValue: number) => {
     setTabValue(newValue);
   };
@@ -24,7 +22,7 @@ const Warranty: React.FC = () => {
           backgroundColor: "#ECF0F1",
         }}
       >
-        <Box sx={{ flexGrow: 1, margin: "2%", padding: "20px" }}>
+        <Box sx={{ flexGrow: 1, margin: "2%" }}>
           <Grid container spacing={1}>
             <Grid xs={12} md={3}>
               <SideBarUserProfile />
@@ -35,15 +33,21 @@ const Warranty: React.FC = () => {
                   sx={{
                     borderStyle: "none",
                     padding: "20px",
-                    border: "1px solid ",
+                    boxShadow: " rgba(0, 0, 0, 0.24) 0px 3px 8px",
+                    borderRadius: "10px",
                   }}
                 >
-                  <Tabs value={tabValue} onChange={handleTabChange}>
+                  <Tabs
+                    value={tabValue}
+                    style={{ marginLeft: "2rem" }}
+                    onChange={handleTabChange}
+                  >
+                    <Tab label="Bảo hành định kỳ" />
                     <Tab label="Yêu cầu bảo hành" />
-                    <Tab label="Quản lý bảo hành" />
                   </Tabs>
-                  {tabValue === 0 && <WarrantyRequest />}
-                  {tabValue === 1 && <WarrantyManagement />}
+
+                  {tabValue === 0 && <WarrantyManagement />}
+                  {tabValue === 1 && <WarrantyRequest />}
                 </Paper>
               </Box>
             </Grid>

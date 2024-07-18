@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import Logo from "../../../../components/Logo/Logo";
-
 import RightMenu from "../RightMenu/RightMenu";
 import { Link, useNavigate } from "react-router-dom";
 import classNames from "classnames/bind";
@@ -11,6 +10,7 @@ import { GetCategoryProps } from "../../../../models/category";
 import ArrowRightIcon from "@mui/icons-material/ArrowRight";
 import { blue } from "@mui/material/colors";
 import config from "../../../../configs";
+import { useFilterContext } from "../../../../context/FilterContext";
 
 const cx = classNames.bind(styles);
 
@@ -26,6 +26,7 @@ const TopBar: React.FC = () => {
   const navigate = useNavigate();
   const { getCategory } = CategoryApi();
   const [menuData, setMenuData] = useState<GetCategoryProps[]>([]);
+  const { setData } = useFilterContext();
 
   const fetchCategory = async () => {
     const response = await getCategory();
@@ -45,6 +46,7 @@ const TopBar: React.FC = () => {
     } else {
       navigate(targetPath);
     }
+    setData({ CategoryId: [categoryId] });
   };
 
   const renderMenu = (data: GetCategoryProps[]) => {
@@ -58,7 +60,7 @@ const TopBar: React.FC = () => {
             e.stopPropagation();
           }}
         >
-          <span>LOẠI MÁY</span>
+          <a href={config.routes.productList}>LOẠI MÁY</a>
           <ul className={cx("submenu")}>
             {data
               .filter(
@@ -74,7 +76,7 @@ const TopBar: React.FC = () => {
                     }}
                   >
                     <Link
-                      to={`#${item.id}`}
+                      to={`${item.id}`}
                       style={{
                         textDecoration: "none",
                         color: "inherit",
@@ -103,19 +105,23 @@ const TopBar: React.FC = () => {
 
   const renderChildren = (parentId: string) => {
     const children = menuData.filter(
-      (item) =>
-        item.masterCategoryId === parentId &&
-        item.type === "Child" &&
-        item.status === "Active"
+      (item) => item.masterCategoryId === parentId && item.status === "Active"
     );
+
     if (children.length > 0) {
       return (
         <ul className={cx("submenu")}>
           {children.map((child) => (
             <li key={child.id} className={cx("submenu-item")}>
-              <span style={{ color: "black" }}>
+              <span
+                style={{
+                  color: "black",
+                  display: "flex",
+                  justifyContent: "space-between",
+                }}
+              >
                 <Link
-                  to={`#${child.id}`}
+                  to={`${child.id}`}
                   style={{
                     textDecoration: "none",
                     color: "inherit",
@@ -129,12 +135,17 @@ const TopBar: React.FC = () => {
                 >
                   {child.name}
                 </Link>
+                {renderChildren(child.id) && (
+                  <ArrowRightIcon sx={{ color: blue[500] }} />
+                )}
               </span>
+              {renderChildren(child.id)}
             </li>
           ))}
         </ul>
       );
     }
+
     return null;
   };
   return (

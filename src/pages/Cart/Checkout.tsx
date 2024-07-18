@@ -15,6 +15,7 @@ import CheckoutBillingAddress from "./Billing/CheckoutBillingAddress";
 import CheckoutPayment from "./Payment/Payment";
 import { useLocation, useNavigate } from "react-router-dom";
 import config from "../../configs";
+import { useAuthContext } from "../../context/AuthContext";
 
 const STEPS = ["Giỏ hàng", "Hoá đơn và địa chỉ", "Thanh Toán"];
 
@@ -76,13 +77,14 @@ const Checkout: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const minActiveStep = 0;
-  const maxActiveStep = 4;
+  const maxActiveStep = 3;
   //make url
   const urlParams = new URLSearchParams(location.search);
 
   //take step at url (10 is decimal type)
   const initialStep = parseInt(urlParams.get("step") || "0", 10);
   const [activeStep, setActiveStep] = useState(initialStep);
+  const { authUser } = useAuthContext();
 
   useEffect(() => {
     if (activeStep < maxActiveStep && activeStep >= minActiveStep) {
@@ -94,7 +96,12 @@ const Checkout: React.FC = () => {
 
   //handle step
   const handleNext = () => {
-    setActiveStep((prevActiveStep) => prevActiveStep + 1);
+    if (authUser) {
+      setActiveStep((prevActiveStep) => prevActiveStep + 1);
+    } else {
+      localStorage.setItem("historyPath", location.pathname);
+      navigate(config.routes.login);
+    }
   };
 
   const handleBack = () => {
@@ -148,7 +155,6 @@ const Checkout: React.FC = () => {
             {activeStep === 2 && (
               <CheckoutPayment
                 handleBack={handleBack}
-                handleNext={handleNext}
                 handleGoToStep={handleGotoStep}
               />
             )}

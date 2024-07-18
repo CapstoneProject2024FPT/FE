@@ -5,6 +5,7 @@ import AccountSection from "../AccountSection";
 import config from "../../../../configs";
 import { useAuthContext } from "../../../../context/AuthContext";
 import { Button } from "@mui/material";
+import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 
 const RightMenu: React.FC = () => {
   const { authUser } = useAuthContext();
@@ -19,17 +20,16 @@ const RightMenu: React.FC = () => {
             </>
           ) : (
             <>
+              <Link to={config.routes.cart}>
+                <Button startIcon={<ShoppingCartIcon />} variant="outlined">
+                  Giỏ hàng
+                </Button>
+              </Link>
               <Link
                 to={config.routes.login}
                 style={{ textDecoration: "none", color: "inherit" }}
               >
-                <Button variant="outlined">Đăng nhập</Button>
-              </Link>
-              <Link
-                to={config.routes.register}
-                style={{ textDecoration: "none", color: "inherit" }}
-              >
-                <Button variant="outlined">Đăng kí</Button>
+                <Button variant="outlined">Đăng nhập/Đăng kí</Button>
               </Link>
             </>
           )}

@@ -9,15 +9,14 @@ import Profile from "./Profile/Profile";
 const UserProfile: React.FC = () => {
   return (
     <>
-
       <Container
         maxWidth={false}
         style={{
           backgroundColor: "#ECF0F1",
         }}
       >
-        <Box sx={{ flexGrow: 1, margin: "2%", padding: "20px" }}>
-          <Grid container spacing={2}>
+        <Box sx={{ flexGrow: 1, margin: "2%" }}>
+          <Grid container spacing={1}>
             <Grid xs={12} md={3}>
               <SideBarUserProfile />
             </Grid>
@@ -27,7 +26,8 @@ const UserProfile: React.FC = () => {
                   sx={{
                     borderStyle: "none",
                     padding: "20px",
-                    border: "1px solid ",
+                    boxShadow: " rgba(0, 0, 0, 0.24) 0px 3px 8px",
+                    borderRadius: "10px",
                   }}
                 >
                   <Grid container spacing={2}>

@@ -1,11 +1,11 @@
 import React from "react";
 //model
-import { GetCategoryProps } from "../../../models/category";
+import { GetCategoryProps } from "../../../../models/category";
 // form
 import { Button, Modal, Typography } from "antd";
 import { toast } from "react-toastify";
 //api
-import { CategoryApi } from "../../../api/services/apiCategories";
+import { CategoryApi } from "../../../../api/services/apiCategories";
 
 interface ModalCategory {
   CategoryData: GetCategoryProps | null;
@@ -14,7 +14,7 @@ interface ModalCategory {
   onDeleteSuccess: (response: string) => void;
 }
 
-const ModalCategoryPopupDelete: React.FC<ModalCategory> = ({
+const ModalCategoryPopupDeleteComponent: React.FC<ModalCategory> = ({
   CategoryData,
   openDeletePopup,
   handleCLoseDelete,
@@ -66,4 +66,4 @@ const ModalCategoryPopupDelete: React.FC<ModalCategory> = ({
   );
 };
 
-export default ModalCategoryPopupDelete;
+export default ModalCategoryPopupDeleteComponent;

@@ -10,7 +10,7 @@ import Account from "../pages/Admin/User/Account";
 import Layout from "../layouts/CustomerLayout/Layout";
 import UserProfile from "../pages/UserProfile/UserProfile";
 import BlogNewPost from "../pages/Admin/Blog/BlogNewPost";
-import PaymentSuccessfull from "../pages/PaymentSuccessfull";
+import PaymentSuccessfull from "../pages/Payment/successful";
 import CreateProduct from "../pages/Admin/Product/CreateProduct";
 import Product from "../pages/Admin/Product/Product";
 import BlogPosts from "../pages/Admin/Blog/BlogPosts";
@@ -35,6 +35,16 @@ import BlogPostDetail from "../pages/Admin/Blog/BlogPostDetail";
 import AccountDetail from "../pages/Admin/User/Table/AccountDetail";
 import Address from "../pages/UserProfile/Address";
 import News from "../pages/News/News";
+import AboutUs from "../sections/About/AboutUs/AboutUs";
+import PrivacyPolicy from "../sections/About/PrivacyPolicy/PrivacyPolicy";
+import TermsOfService from "../sections/About/TermsOfService/TermsOfService";
+import PaymentFailure from "../pages/Payment/failure";
+import CreateMachineComponent from "../pages/Admin/MachineComponent/CreateMachineComponent";
+import MachineComponent from "../pages/Admin/MachineComponent/MachineComponent";
+import MachineComponentDetail from "../pages/Admin/MachineComponent/MachineComponentDetail";
+import SerialNumberComponent from "../pages/Admin/MachineComponent/SerialNumberComponent";
+import KanBan from "../pages/Admin/Task/Task";
+import WarrantyManagent from "../pages/Admin/Warranty/WarrantyManagement";
 
 const AppRoute: React.FC = () => {
   return (
@@ -51,9 +61,14 @@ const AppRoute: React.FC = () => {
           element={<Detail />}
         />
         <Route
-          key="payment-successfull"
-          path={config.routes.paymentSuccessfull}
+          key="payment-successful"
+          path={config.routes.paymentSuccessful}
           element={<PaymentSuccessfull />}
+        ></Route>
+        <Route
+          key="payment-failure"
+          path={config.routes.paymentFailure}
+          element={<PaymentFailure />}
         ></Route>
         <Route key="cart" path={config.routes.cart} element={<Checkout />} />
         <Route
@@ -76,11 +91,7 @@ const AppRoute: React.FC = () => {
           path={config.routes.productList}
           element={<Products />}
         />
-        <Route
-          key="listNews"
-          path={config.routes.news}
-          element={<News />}
-        />
+        <Route key="listNews" path={config.routes.news} element={<News />} />
         <Route
           key="favoriteProduct"
           path={config.routes.favoriteProduct}
@@ -100,6 +111,21 @@ const AppRoute: React.FC = () => {
           key="newDetail"
           path={config.routes.newsDetail}
           element={<NewsDetail />}
+        />
+        <Route
+          key="aboutUs"
+          path={config.routes.aboutUs}
+          element={<AboutUs />}
+        />
+        <Route
+          key="privacyPolicy"
+          path={config.routes.privacyPolicy}
+          element={<PrivacyPolicy />}
+        />
+        <Route
+          key="termsOfService"
+          path={config.routes.termsOfService}
+          element={<TermsOfService />}
         />
       </Route>
 
@@ -138,7 +164,7 @@ const AppRoute: React.FC = () => {
           element={<BlogPosts />}
         />
         <Route
-          key="createNew"
+          key="createNews"
           path={config.adminRoutes.createNew}
           element={<BlogNewPost />}
         />
@@ -176,6 +202,27 @@ const AppRoute: React.FC = () => {
           element={<SerialNumberPropductDetail />}
         />
 
+        {/* component  */}
+        <Route
+          key="ProductComponent"
+          path={config.adminRoutes.createMachineComponent}
+          element={<CreateMachineComponent />}
+        />
+        <Route
+          key="viewComponent"
+          path={config.adminRoutes.viewMachineComponent}
+          element={<MachineComponent />}
+        />
+        <Route
+          key="viewComponentDetail"
+          path={config.adminRoutes.viewDetailMachineComponent}
+          element={<MachineComponentDetail />}
+        />
+        <Route
+          key="viewComponentDetailSerial"
+          path={config.adminRoutes.viewDetailMachineComponentSerial}
+          element={<SerialNumberComponent />}
+        />
         {/* category */}
         <Route
           key="category"
@@ -193,6 +240,9 @@ const AppRoute: React.FC = () => {
         {/* rank  */}
         <Route key="rank" path={config.adminRoutes.rank} element={<Rank />} />
 
+        {/* task  */}
+        <Route key="task" path={config.adminRoutes.task} element={<KanBan />} />
+
         {/* profile */}
         <Route
           key="profile"
@@ -205,6 +255,13 @@ const AppRoute: React.FC = () => {
           key="orders"
           path={config.adminRoutes.order}
           element={<Order />}
+        />
+
+        {/* maintenance */}
+        <Route
+          key="maintanance"
+          path={config.adminRoutes.maintenance}
+          element={<WarrantyManagent />}
         />
       </Route>
 
