@@ -32,7 +32,7 @@ const getStatusStyles = (status: string) => {
   switch (status) {
     case "Process":
       return { backgroundColor: "#FFD700", color: "black" }; // vàng
-    case "Complete":
+    case "Completed":
       return { backgroundColor: "#4CAF50", color: "white" }; // xanh lá
     case "AwaitingAssignment":
       return { backgroundColor: "#FFD700", color: "black" }; // vàng
