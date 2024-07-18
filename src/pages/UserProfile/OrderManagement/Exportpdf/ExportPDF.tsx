@@ -6,7 +6,6 @@ import { formatAddress, formatDateFunc, formatMoney } from '../../../../utils/fn
 
 function ExportPDF({ row }: { row: OrderProps }) {
   pdfMake.vfs = pdfFonts.pdfMake.vfs;
-
   // Tính tổng tiền của 3 sản phẩm
   const totalAmount = row.productList.reduce((sum, product) => sum + product.totalAmount, 0);
 
@@ -52,12 +51,12 @@ function ExportPDF({ row }: { row: OrderProps }) {
     </div>
   </div>
   `;
-  
+
   const pdfmakeContent = htmlToPdfmake(billHTMLTemplate);
   const docDefinition = {
-      content: pdfmakeContent
-    };
-  
+    content: pdfmakeContent
+  };
+
   return pdfMake.createPdf(docDefinition).open();
 }
 
