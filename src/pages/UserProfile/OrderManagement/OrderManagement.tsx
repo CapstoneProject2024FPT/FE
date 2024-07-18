@@ -43,25 +43,58 @@ const getStatusStyles = (status: string) => {
     case "Canceled":
       return { backgroundColor: "#F44336", color: "white" }; // đỏ
     case "Delivery":
-      return { backgroundColor: "#FFD700", color: "white" }; // vàng
+      return { backgroundColor: "#FFD700", color: "black" }; // vàng
     default:
       return { backgroundColor: "transparent", color: "black" };
   }
 };
 
-const Row = (props: { row: OrderProps; onCancelOrder: (orderId: string, note?: string) => void }) => {
+const Row = (props: { row: OrderProps; onCancelOrder: (orderId: string) => void }) => {
   const { row, onCancelOrder } = props;
   const [open, setOpen] = useState(false);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const openMenu = Boolean(anchorEl);
+  const [remainingTime, setRemainingTime] = useState(0);
+  const timeremain = 2;
 
   const defaultStatus = "Đang chờ xác nhận";
   const StatusName = row?.status
     ? statusMapping?.find((status) => status.id === row?.status)?.name
     : defaultStatus;
 
+  useEffect(() => {
+    if (row.status === "UnPaid") {
+      const createTime = moment(row.createDate);
+      const now = moment();
+      const diff = moment.duration(now.diff(createTime));
+      const minutes = diff.asMinutes();
+
+      if (minutes >= timeremain) {
+        onCancelOrder(row.orderId);
+      } else {
+        setRemainingTime((timeremain * 60 * 1000 - diff.asMilliseconds()) / 1000);
+      }
+    }
+  }, [row, onCancelOrder]);
+
+  useEffect(() => {
+    if (remainingTime > 0) {
+      const timerId = setInterval(() => {
+        setRemainingTime((prev) => {
+          if (prev <= 1) {
+            onCancelOrder(row.orderId);
+            return 0;
+          }
+          return prev - 1;
+        });
+      }, 1000);
+
+      return () => clearInterval(timerId);
+    }
+  }, [remainingTime, onCancelOrder, row.orderId]);
+
   const handleCancelOrder = () => {
-    onCancelOrder(row.orderId, "Đơn hàng đã bị hủy do quá hạn thời gian thanh toán");
+    onCancelOrder(row.orderId);
     handleCloseMenu();
   };
 
@@ -78,15 +111,17 @@ const Row = (props: { row: OrderProps; onCancelOrder: (orderId: string, note?: s
     handleCloseMenu();
   };
 
+  const formatRemainingTime = (seconds: number) => {
+    const mins = Math.floor(seconds / 60);
+    const secs = Math.floor(seconds % 60);
+    return `${mins}:${secs < 10 ? "0" : ""}${secs}`;
+  };
+
   return (
     <React.Fragment>
       <TableRow>
         <TableCell>
-          <IconButton
-            aria-label="expand row"
-            size="small"
-            onClick={() => setOpen(!open)}
-          >
+          <IconButton aria-label="expand row" size="small" onClick={() => setOpen(!open)}>
             {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
           </IconButton>
         </TableCell>
@@ -94,9 +129,7 @@ const Row = (props: { row: OrderProps; onCancelOrder: (orderId: string, note?: s
         <TableCell>{row.invoiceCode}</TableCell>
         <TableCell>{formatDateFunc.formatDate(row.createDate)}</TableCell>
         <TableCell>
-          {row.completedDate
-            ? formatDateFunc.formatDate(row.completedDate)
-            : "Chưa hoàn thành"}
+          {row.completedDate ? formatDateFunc.formatDate(row.completedDate) : "Chưa hoàn thành"}
         </TableCell>
         <TableCell>{formatMoney(row.finalAmount)}</TableCell>
         <TableCell>
@@ -112,30 +145,33 @@ const Row = (props: { row: OrderProps; onCancelOrder: (orderId: string, note?: s
           </Box>
         </TableCell>
         <TableCell>
-          <IconButton
-            aria-label="more actions"
-            size="small"
-            onClick={handleOpenMenu}
-          >
+          <IconButton aria-label="more actions" size="small" onClick={handleOpenMenu}>
             <MoreVertIcon />
           </IconButton>
-          <Menu
-            anchorEl={anchorEl}
-            open={openMenu}
-            onClose={handleCloseMenu}
-          >
+          <Menu anchorEl={anchorEl} open={openMenu} onClose={handleCloseMenu}>
             {row.status === StatusType.UNPAID && (
               <MenuItem onClick={handleCancelOrder}>Hủy đơn hàng</MenuItem>
             )}
-            {
-              // Add detail order
-
-              <MenuItem onClick={handleDetailOrder}>Chi tiết đơn hàng</MenuItem>
-            }
+            <MenuItem onClick={handleDetailOrder}>Chi tiết đơn hàng</MenuItem>
             {row.status === StatusType.COMPLETED && (
               <MenuItem onClick={() => ExportPDF({ row })}>Xuất hóa đơn</MenuItem>
             )}
           </Menu>
+        </TableCell>
+        <TableCell>
+          {row.status === "UnPaid" && (
+            <Box
+              sx={{
+                padding: "8px 16px",
+                borderRadius: "8px",
+                display: "inline-block",
+                backgroundColor: "#FFD700",
+                color: "black",
+              }}
+            >
+              {formatRemainingTime(remainingTime)}
+            </Box>
+          )}
         </TableCell>
       </TableRow>
       <TableRow>
@@ -151,11 +187,9 @@ const Row = (props: { row: OrderProps; onCancelOrder: (orderId: string, note?: s
                     <TableCell>Tên sản phẩm</TableCell>
                     <TableCell>Số lượng</TableCell>
                     <TableCell>Giá sản phẩm</TableCell>
-                    {
-                      row.status === StatusType.COMPLETED && (
-                        <TableCell>Hành động</TableCell>
-                      )
-                    }
+                    {row.status === StatusType.COMPLETED && (
+                      <TableCell>Hành động</TableCell>
+                    )}
                   </TableRow>
                 </TableHead>
                 <TableBody>
@@ -163,10 +197,7 @@ const Row = (props: { row: OrderProps; onCancelOrder: (orderId: string, note?: s
                     <TableRow key={product.orderDetailId}>
                       <TableCell>
                         <Link
-                          to={config.routes.productDetail.replace(
-                            ":id",
-                            product.productId
-                          )}
+                          to={config.routes.productDetail.replace(":id", product.productId)}
                           style={{ textDecoration: "none", color: "black" }}
                         >
                           {product.productName}
@@ -184,9 +215,7 @@ const Row = (props: { row: OrderProps; onCancelOrder: (orderId: string, note?: s
                             Phiếu bảo hành
                           </Button>
                         </TableCell>
-                      )
-
-                      }
+                      )}
                     </TableRow>
                   ))}
                 </TableBody>
@@ -295,7 +324,10 @@ const OrderManagement: React.FC = () => {
         const minutes = diff.asMinutes();
 
         if (minutes >= 30) {
-          apiCancelOrder({ orderId: order.orderId, status: "Canceled", note: "Đơn hàng đã bị hủy do quá hạn thời gian thanh toán" })
+          apiCancelOrder({
+            orderId: order.orderId, status: "Canceled",
+            note: ""
+          })
             .then(() => {
               toast.success(`Đơn hàng ${order.invoiceCode} đã bị hủy do quá hạn thời gian thanh toán`);
               fetchOrders();
@@ -304,19 +336,6 @@ const OrderManagement: React.FC = () => {
               toast.error("Có lỗi xảy ra khi hủy đơn hàng");
               console.log(error);
             });
-        } else {
-          const remainingTime = 30 * 60 * 1000 - diff.asMilliseconds();
-          setTimeout(() => {
-            apiCancelOrder({ orderId: order.orderId, status: "Canceled", note: "Đơn hàng đã bị hủy do quá hạn thời gian thanh toán" })
-              .then(() => {
-                toast.success(`Đơn hàng ${order.invoiceCode} đã bị hủy do quá hạn thời gian thanh toán`);
-                fetchOrders();
-              })
-              .catch((error) => {
-                toast.error("Có lỗi xảy ra khi hủy đơn hàng");
-                console.log(error);
-              });
-          }, remainingTime);
         }
       }
     });
@@ -343,6 +362,7 @@ const OrderManagement: React.FC = () => {
               <TableCell>Tổng tiền</TableCell>
               <TableCell>Trạng thái</TableCell>
               <TableCell>Hành động</TableCell>
+              <TableCell></TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -369,7 +389,6 @@ const OrderManagement: React.FC = () => {
         onPageChange={handleChangePage}
         onRowsPerPageChange={handleChangeRowsPerPage}
         labelRowsPerPage="Số hàng mỗi trang"
-
       />
       <CancelOrderDialog
         open={openDialog}

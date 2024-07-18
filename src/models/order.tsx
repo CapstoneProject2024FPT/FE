@@ -25,7 +25,7 @@ export const statusMapping = [
   },
   {
     id: StatusType.DELIVERY,
-    name: "Đã vận chuyển",
+    name: "Đang vận chuyển",
   },
 ];
 
