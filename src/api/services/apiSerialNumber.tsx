@@ -29,6 +29,7 @@ export const ApiSerial = () => {
 
   interface addProps {
     machineryId: string;
+    type: string;
   }
   interface quantitySerial {
     quantity: number;
@@ -85,10 +86,43 @@ export const ApiSerial = () => {
       setLoading(false);
     }
   };
+
+  interface addPropsSerial {
+    machineryId: string;
+    type: string;
+  }
+  interface quantitySerialComponent {
+    quantity: number;
+  }
+  const apiAddSerialbyComponentId = async (
+    requestBody: addPropsSerial,
+    paramsQuantity: quantitySerialComponent
+  ) => {
+    setLoading(true);
+    try {
+      const response = await axiosPublic.post(SERIALNUMBER, requestBody, {
+        params: paramsQuantity,
+      });
+
+      return response;
+
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+      if (axios.isAxiosError(error) && error.response) {
+        return error.response.data;
+      } else {
+        return { statusCode: 500, Error: "Internal Server Error" };
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return {
     apiGetSerialbyMachineId,
     loading,
     apiAddSerialbyMachineId,
     apiDeleteSerialbyMachineId,
+    apiAddSerialbyComponentId,
   };
 };

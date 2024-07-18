@@ -22,6 +22,7 @@ export const GET_CATEGORY_CHILD =
 
 //Machinery Component
 export const MACHINERY_COMPONENT = "machineryComponent";
+export const MACHINERY_COMPONENT_ID = "machineryComponent/:id";
 
 //Category Component
 export const GET_CATEGORY_COMPONENT = "categories?status=Active&kind=Material";
@@ -60,7 +61,7 @@ export const SERIALNUMBER_ID = "inventories/:id";
 export const RANK = "rank";
 export const RANK_ID = "rank/:id";
 
-//accont
+//account
 export const USER_BY_ROLE = "users";
 export const USER_ID = "users/:id";
 //news
@@ -68,6 +69,9 @@ export const NEWS_HOME = "news";
 export const NEWS_ID = "news/:id";
 export const NEWS_ADMIN = "news/noPaginate";
 
+//task
+export const TASK = "task";
+export const TASK_ID = "task/:id";
 //newsCategories
 export const NEWS_CATEGORIES = "/newsCategory";
 export const NEWS_CATEGORIES_ID = "/newsCategory/:id";

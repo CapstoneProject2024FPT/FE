@@ -41,6 +41,9 @@ import TermsOfService from "../sections/About/TermsOfService/TermsOfService";
 import PaymentFailure from "../pages/Payment/failure";
 import CreateMachineComponent from "../pages/Admin/MachineComponent/CreateMachineComponent";
 import MachineComponent from "../pages/Admin/MachineComponent/MachineComponent";
+import MachineComponentDetail from "../pages/Admin/MachineComponent/MachineComponentDetail";
+import SerialNumberComponent from "../pages/Admin/MachineComponent/SerialNumberComponent";
+import KanBan from "../pages/Admin/Task/Task";
 
 const AppRoute: React.FC = () => {
   return (
@@ -197,6 +200,8 @@ const AppRoute: React.FC = () => {
           path={config.adminRoutes.viewSerialProduct}
           element={<SerialNumberPropductDetail />}
         />
+
+        {/* component  */}
         <Route
           key="ProductComponent"
           path={config.adminRoutes.createMachineComponent}
@@ -206,6 +211,16 @@ const AppRoute: React.FC = () => {
           key="viewComponent"
           path={config.adminRoutes.viewMachineComponent}
           element={<MachineComponent />}
+        />
+        <Route
+          key="viewComponentDetail"
+          path={config.adminRoutes.viewDetailMachineComponent}
+          element={<MachineComponentDetail />}
+        />
+        <Route
+          key="viewComponentDetailSerial"
+          path={config.adminRoutes.viewDetailMachineComponentSerial}
+          element={<SerialNumberComponent />}
         />
         {/* category */}
         <Route
@@ -223,6 +238,9 @@ const AppRoute: React.FC = () => {
 
         {/* rank  */}
         <Route key="rank" path={config.adminRoutes.rank} element={<Rank />} />
+
+        {/* task  */}
+        <Route key="task" path={config.adminRoutes.task} element={<KanBan />} />
 
         {/* profile */}
         <Route

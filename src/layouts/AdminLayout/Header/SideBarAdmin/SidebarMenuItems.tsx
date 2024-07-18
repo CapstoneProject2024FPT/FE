@@ -10,6 +10,7 @@ import {
 import ReceiptLongIcon from "@mui/icons-material/ReceiptLong";
 import EngineeringIcon from "@mui/icons-material/Engineering";
 import config from "../../../../configs";
+import Iconify from "../../../../components/Iconify";
 
 const MenuSideBars: MenuSideBar[] = [
   {
@@ -109,6 +110,11 @@ const MenuSideBars: MenuSideBar[] = [
     label: <Link to={config.adminRoutes.rank}>Hạng mức</Link>,
     key: "rank",
     icon: <TransactionOutlined />,
+  },
+  {
+    label: <Link to={config.adminRoutes.task}>Nhiệm vụ</Link>,
+    key: "task",
+    icon: <Iconify icon={"mingcute:task-2-fill"} />,
   },
 ];
 

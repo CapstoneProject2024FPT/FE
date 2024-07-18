@@ -1,6 +1,6 @@
 import React from "react";
 //model
-import { ProductAdmin } from "../../../models/products";
+
 // form
 import { Modal } from "antd";
 import { toast } from "react-toastify";
@@ -12,9 +12,10 @@ import { useForm } from "react-hook-form";
 import { RHFTextField, FormProvider } from "../../../components/hook-form";
 import { Card, TextField } from "@mui/material";
 import { LoadingButton } from "@mui/lab";
+import { GetMachineComponents } from "../../../models/machineComponent";
 
 interface ModalSerialNumber {
-  productData: ProductAdmin | undefined;
+  productData: GetMachineComponents | undefined;
   open: boolean;
   handleCLose: () => void;
   onSuccess: (response: string) => void;
@@ -27,13 +28,13 @@ interface addProps {
 interface quantitySerial {
   quantity: number;
 }
-const ModalAddSerialPopup: React.FC<ModalSerialNumber> = ({
+const ModalAddSerialComponent: React.FC<ModalSerialNumber> = ({
   productData,
   open,
   handleCLose,
   onSuccess,
 }) => {
-  const { apiAddSerialbyMachineId } = ApiSerial();
+  const { apiAddSerialbyComponentId } = ApiSerial();
 
   const defaultValues = {
     quantity: 0,
@@ -59,9 +60,9 @@ const ModalAddSerialPopup: React.FC<ModalSerialNumber> = ({
       if (productData) {
         const params: addProps = {
           machineryId: productData.id,
-          type: "Machinery",
+          type: "Material",
         };
-        const response = await apiAddSerialbyMachineId(params, data);
+        const response = await apiAddSerialbyComponentId(params, data);
 
         if (response.status === 200) {
           if (onSuccess) {
@@ -79,7 +80,7 @@ const ModalAddSerialPopup: React.FC<ModalSerialNumber> = ({
   };
   return (
     <Modal
-      title="Thêm máy"
+      title="Thêm bộ phận máy"
       open={open}
       onOk={handleCLose}
       onCancel={handleCLose}
@@ -88,12 +89,18 @@ const ModalAddSerialPopup: React.FC<ModalSerialNumber> = ({
       <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
         <Card sx={{ p: 3 }}>
           <TextField
-            value={productData?.name || ""}
-            sx={{ mb: 2 }}
-            InputProps={{ readOnly: true }}
-            label="Tên máy"
+            value={productData?.name}
+            InputProps={{
+              readOnly: true,
+            }}
+            label="Tên bộ phân"
           />
-          <RHFTextField name="quantity" type="number" label="Số lượng" />
+          <RHFTextField
+            name="quantity"
+            type="number"
+            label="Số lượng"
+            sx={{ mt: 2 }}
+          />
           <div
             style={{
               display: " flex",
@@ -115,4 +122,4 @@ const ModalAddSerialPopup: React.FC<ModalSerialNumber> = ({
   );
 };
 
-export default ModalAddSerialPopup;
+export default ModalAddSerialComponent;
