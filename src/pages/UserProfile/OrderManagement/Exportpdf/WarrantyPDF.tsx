@@ -4,7 +4,7 @@ import { OrderProps, ProductProps } from '../../../../models/order';
 import { formatAddress, formatDateFunc } from '../../../../utils/fn';
 
 function WarrantyPDF({ order, product }: { order: OrderProps, product: ProductProps }) {
-  pdfMake.vfs = pdfFonts.pdfMake.vfs;
+  pdfMake.vfs = pdfFonts?.pdfMake?.vfs;
 
   // Define the styles with explicit types
   const styles = {
