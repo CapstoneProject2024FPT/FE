@@ -2,67 +2,83 @@ import React, { useEffect, useState } from "react";
 import type { MenuProps } from "antd";
 import type { TableProps } from "antd";
 import { DownOutlined } from "@ant-design/icons";
-import { Table, Input, Space, Dropdown, Button } from "antd";
+import { Table, Input, Space, Dropdown, Button, Typography } from "antd";
+
+import { serialProps } from "../../models/serialNumber";
+import { ApiSerial } from "../../api/services/apiSerialNumber";
 import { toast } from "react-toastify";
-import { useNavigate } from "react-router-dom";
-import config from "../../configs";
 import { formatDateFunc } from "../../utils/fn";
+import { useParams } from "react-router-dom";
 import { PlusOutlined } from "@ant-design/icons";
+
+import ModalAddSerialComponent from "./PopupSerialComponent/ModalAddSerialNumberComponent";
+import ModalSerialNumberComponentDelete from "./PopupSerialComponent/ModalDeleteSerialNumberComponent";
 import { GetMachineComponents } from "../../models/machineComponent";
 import { MachineryComponentApi } from "../../api/services/apiMachineComponent";
-import ModalDeleteComponent from "./Popup/ModalDeleteComponent";
 
 type ColumnsType<T> = TableProps<T>["columns"];
 const { Search } = Input;
 
 const pageSize = 20;
 
-const TableComponent: React.FC = () => {
-  const navigate = useNavigate();
-  const [products, setProducts] = useState<GetMachineComponents[]>();
+interface TableSerial {
+  handleSetName: (text: string) => void;
+}
+const TableSerialComponent: React.FC<TableSerial> = ({ handleSetName }) => {
+  const [serialNumbers, setSerialNumbers] = useState<serialProps[]>();
   const [pagination, setPagination] = useState({
     current: 1,
     pageSize: pageSize,
   });
+  const [component, SetComponent] = useState<GetMachineComponents>();
+  //url
+  const { id } = useParams<{ id: string }>();
   //search
   const [query, setQuery] = useState<string>("");
 
   //popup
+  const [openAdd, setOpenAdd] = useState<boolean>(false);
   const [openDeletePopup, setOpenDeletePopup] = useState<boolean>(false);
-  const [selectedData, setSelectedData] = useState<GetMachineComponents | null>(
-    null
-  );
+  const [selectedData, setSelectedData] = useState<serialProps | null>(null);
 
   //api
-  const { apiGetListComponent, loading } = MachineryComponentApi();
-
+  const { apiGetSerialbyMachineId, loading } = ApiSerial();
+  const { apiGetMachineryComponentDetail } = MachineryComponentApi();
   //modal popup
-  const handleActionDetail = (record: GetMachineComponents) => {
-    navigate(
-      config.adminRoutes.viewDetailMachineComponent.replace(":id", record.id)
-    );
-  };
-
-  //delete
-  const handleActionDelete = (record: GetMachineComponents) => {
+  const handleActionDelete = (record: serialProps) => {
     setOpenDeletePopup(!openDeletePopup);
     setSelectedData(record);
   };
 
+  const handleOpen = () => {
+    setOpenAdd(!openAdd);
+  };
+
+  const handleCLose = () => {
+    setOpenAdd(!openAdd);
+  };
   const handleCLoseDelete = () => {
     setOpenDeletePopup(!openDeletePopup);
   };
 
+  const fetchMachineComponentDetail = async () => {
+    if (id) {
+      const response = await apiGetMachineryComponentDetail(id);
+      SetComponent(response.data);
+      handleSetName(response.data.name);
+    }
+  };
   //----------------------------------------------------------------------------
-  const fetchProducts = async () => {
+  const fetchSerialMachine = async () => {
     try {
-      const response = await apiGetListComponent();
+      if (id) {
+        const response = await apiGetSerialbyMachineId(id);
 
-      if (response && response.status === 200) {
-        setProducts(response.data.items);
+        setSerialNumbers(response.data);
+        setSelectedData(response.data[0]);
       } else {
-        //lỗi show thông báo lỗi
-        toast.error(response.Error);
+        setSerialNumbers([]);
+        setSelectedData(null);
       }
     } catch (error) {
       toast.error("lỗi");
@@ -70,13 +86,20 @@ const TableComponent: React.FC = () => {
   };
 
   useEffect(() => {
-    fetchProducts();
+    fetchSerialMachine();
+    fetchMachineComponentDetail();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const handleDeleteCategorySuccess = (response: string) => {
+  const handleAddSuccess = () => {
+    handleCLose();
+    fetchSerialMachine();
+    toast.success("Thêm thành công");
+  };
+
+  const handleDeleteSerialSuccess = (response: string) => {
     handleCLoseDelete();
-    fetchProducts();
+    fetchSerialMachine();
     toast.success(response);
   };
 
@@ -88,7 +111,7 @@ const TableComponent: React.FC = () => {
     });
 
     if (pagination.pageSize !== pagination?.pageSize) {
-      setProducts([]);
+      setSerialNumbers([]);
     }
   };
 
@@ -104,43 +127,40 @@ const TableComponent: React.FC = () => {
     setQuery(e.target.value);
   };
 
-  const filteredRows = products?.filter((item) =>
-    item.name?.toLowerCase().includes(query)
+  const filteredRows = serialNumbers?.filter((item) =>
+    item.serialNumber.toLowerCase().includes(query)
   );
 
   const items: MenuProps["items"] = [
     {
       key: "1",
-      label: "Chi tiết",
-    },
-    {
-      key: "2",
       label: "Xoá",
     },
   ];
-  const columns: ColumnsType<GetMachineComponents> = [
+  const columns: ColumnsType<serialProps> = [
     {
-      title: "Tên máy",
-      dataIndex: "name",
-      sorter: (a, b) => a.name.length - b.name.length,
+      title: "Số seri",
+      dataIndex: "serialNumber",
+      sorter: (a, b) => a.serialNumber.length - b.serialNumber.length,
       width: "20%",
     },
     {
-      title: "Thương hiệu",
-      dataIndex: "brand",
-      render: (brand) => {
-        return brand.name;
+      title: "Trạng thái",
+      dataIndex: "status",
+      render: (status) => {
+        return status === "Available"
+          ? "Còn"
+          : status === "Sold"
+          ? "Đã bán"
+          : "Tạm dừng";
       },
-    },
-    {
-      title: "Số lượng",
-      dataIndex: "quantity",
-      render: (quantity) => quantity.Available || 0,
     },
     {
       title: "Ngày tạo",
       dataIndex: "createDate",
-      render: (createDate) => formatDateFunc.formatDate(createDate),
+      render: (createDate) => {
+        return formatDateFunc.formatDate(createDate);
+      },
     },
     {
       title: "Hành Động",
@@ -153,9 +173,6 @@ const TableComponent: React.FC = () => {
               onClick: ({ key }) => {
                 switch (key) {
                   case "1":
-                    handleActionDetail(record);
-                    break;
-                  case "2":
                     handleActionDelete(record);
                     break;
                   default:
@@ -175,19 +192,15 @@ const TableComponent: React.FC = () => {
 
   return (
     <>
+      <Typography.Text>Tên máy: {component?.name}</Typography.Text>
       <div style={{ display: "flex", justifyContent: "space-between" }}>
         <Search
           placeholder="Nhập từ khoá"
           onChange={handleSearch}
           style={{ width: 200, marginBottom: 16 }}
         />
-        <Button
-          icon={<PlusOutlined />}
-          onClick={() => {
-            navigate(config.adminRoutes.createMachineComponent);
-          }}
-        >
-          Thêm máy chi tiết máy
+        <Button onClick={handleOpen} icon={<PlusOutlined />}>
+          Thêm máy
         </Button>
       </div>
 
@@ -196,7 +209,6 @@ const TableComponent: React.FC = () => {
         rowKey={(record) => record.id}
         dataSource={filteredRows}
         pagination={customPagination}
-        bordered
         loading={loading}
         onChange={handleTableChange}
         locale={{
@@ -205,17 +217,25 @@ const TableComponent: React.FC = () => {
           cancelSort: "Huỷ sắp xếp",
         }}
       />
+      {openAdd && (
+        <ModalAddSerialComponent
+          productData={component}
+          open={openAdd}
+          handleCLose={handleCLose}
+          onSuccess={handleAddSuccess}
+        />
+      )}
 
       {openDeletePopup && (
-        <ModalDeleteComponent
+        <ModalSerialNumberComponentDelete
           ProductData={selectedData}
-          handleCLoseDelete={handleCLoseDelete}
-          onDeleteSuccess={handleDeleteCategorySuccess}
           openDeletePopup={openDeletePopup}
+          handleCLoseDelete={handleCLoseDelete}
+          onDeleteSuccess={handleDeleteSerialSuccess}
         />
       )}
     </>
   );
 };
 
-export default TableComponent;
+export default TableSerialComponent;

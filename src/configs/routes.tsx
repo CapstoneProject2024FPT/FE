@@ -40,10 +40,13 @@ export const adminRoutes = {
   viewSerialProduct: "/dashboard/product/serial/:id",
   viewMachineComponent: "/dashboard/product/component",
   createMachineComponent: "/dashboard/create/component",
+  viewDetailMachineComponent: "/dashboard/product/component/:id",
+  viewDetailMachineComponentSerial: "/dashboard/product/component/:id/serial",
   profile: "/dashboard/user/account",
   category: "/dashboard/categories",
   brand: "/dashboard/brand",
   order: "/dashboard/orders",
   rank: "/dashboard/ranks",
   maintenance: "/dashboard/maintenance",
+  task: "/dashboard/kanban",
 };

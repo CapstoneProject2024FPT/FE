@@ -1,0 +1,69 @@
+export interface DeliveryPropsPost {
+  type: string;
+  status: string;
+  warrantyDetailId?: string;
+  orderId: string;
+  accountId: string;
+}
+
+export interface GetTaskProps {
+  id: string;
+  type: string;
+  createDate: Date;
+  status: string;
+  completedDate: Date;
+  warrantyDetail: string;
+  order: {
+    id: string;
+    invoiceCode: string;
+    note: string;
+    finalAmount: number;
+  };
+  staff: {
+    id: string;
+    fullName: string;
+    role: string;
+  };
+  address: {
+    id: string;
+    name: string;
+    status: string;
+    note: string;
+    city: {
+      id: string;
+      unitId: number;
+      name: string;
+    };
+    district: {
+      id: string;
+      unitId: number;
+      name: string;
+    };
+    ward: {
+      id: string;
+      unitId: number;
+      name: string;
+    };
+    account: {
+      id: string;
+      fullName: string;
+      role: string;
+    };
+  };
+}
+
+export enum StatusTaskType {
+  PROCESS = "Process",
+  COMPLETED = "Completed",
+}
+
+export const statusTaskMapping = [
+  {
+    id: StatusTaskType.PROCESS,
+    name: "Đang Tiến hành",
+  },
+  {
+    id: StatusTaskType.COMPLETED,
+    name: "Hoàn thành",
+  },
+];
