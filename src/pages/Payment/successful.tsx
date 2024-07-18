@@ -54,7 +54,7 @@ const PaymentSuccessfull: React.FC = () => {
           display: "block",
         }}
       >
-        Payment Successful
+        Thanh Toán Thành Công
       </Typography>
       <img
         src={SuccessfullGif}
@@ -66,7 +66,6 @@ const PaymentSuccessfull: React.FC = () => {
           zoom: "0.6",
           display: "block",
           margin: "0 auto 50px",
-
         }}
       />
 

@@ -33,9 +33,11 @@ import EmptyOrder from "../../../components/EmptyOrder";
 import CancelOrderDialog from "./Modal/PopupCancelOrder";
 import ExportPDF from "./Exportpdf/ExportPDF";
 import WarrantyPDF from "./Exportpdf/WarrantyPDF";
-import { Link } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import config from "../../../configs";
 import moment from "moment";
+import { ApiCheckout } from "../../../api/services/apiCheckout";
+import { paymentProps } from "../../../models/payment";
 
 const getStatusStyles = (status: string) => {
   switch (status) {
@@ -63,6 +65,9 @@ const Row = (props: {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const openMenu = Boolean(anchorEl);
 
+  const { apiPayment, apiPaymentUpdate } = ApiCheckout();
+  const location = useLocation();
+  const navigate = useNavigate();
   const defaultStatus = "Đang chờ xác nhận";
   const StatusName = row?.status
     ? statusMapping?.find((status) => status.id === row?.status)?.name
@@ -89,6 +94,62 @@ const Row = (props: {
     handleCloseMenu();
   };
 
+  //vnreturn
+  useEffect(() => {
+    const queryParams = new URLSearchParams(location.search);
+    const transactionId = queryParams.get("vnp_TransactionStatus");
+
+    const handleTransactionStatus = async () => {
+      const id = sessionStorage.getItem("paymmentID");
+
+      if (transactionId === "00" && id) {
+        const params = { status: "SUCCESS" };
+        try {
+          const response = await apiPaymentUpdate(params, id);
+          console.log(response);
+          if (response.status === 200) {
+            toast.success("Thanh toán thành công");
+          }
+        } catch (error) {
+          console.error("Error updating payment status:", error);
+        }
+      } else if (id) {
+        const params = { status: "FAILED" };
+        try {
+          const response = await apiPaymentUpdate(params, id);
+          if (response.status === 200) {
+            toast.error("Thanh toán thất bại");
+          }
+        } catch (error) {
+          console.error("Error updating payment status:", error);
+        }
+      }
+      sessionStorage.removeItem("paymmentID");
+    };
+
+    if (transactionId) {
+      handleTransactionStatus();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [location, navigate]);
+
+  const handlePayment = async (row: OrderProps) => {
+    const paramPayment: paymentProps = {
+      orderId: row.orderId,
+      amount: row.finalAmount,
+      callbackUrl: window.location.href,
+      paymentType: "VNPAY",
+    };
+
+    const responsePayment = await apiPayment(paramPayment);
+    sessionStorage.setItem("paymmentID", responsePayment.data.paymentId);
+
+    if (responsePayment.status === 200) {
+      window.location.href = responsePayment.data.url;
+    } else {
+      console.error("Khởi tạo vnpay lỗi", responsePayment);
+    }
+  };
   return (
     <React.Fragment>
       <TableRow>
@@ -122,6 +183,13 @@ const Row = (props: {
             {StatusName}
           </Box>
         </TableCell>
+        {row.status === StatusType.UNPAID && (
+          <TableCell>
+            <Button variant="outlined" onClick={() => handlePayment(row)}>
+              Thanh Toán
+            </Button>
+          </TableCell>
+        )}
         <TableCell>
           <IconButton
             aria-label="more actions"
@@ -345,6 +413,7 @@ const OrderManagement: React.FC = () => {
 
   useEffect(() => {
     fetchOrders();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [page, rowsPerPage]);
 
   return (

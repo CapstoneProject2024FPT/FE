@@ -23,13 +23,12 @@ const StyledButton = styled(Button)({
   userSelect: "none",
   WebkitUserSelect: "none",
   touchAction: "manipulation",
-  
+
   "&:hover": {
     boxShadow:
       "rgba(255, 0, 0, .35) 0 -25px 18px -14px inset,rgba(255, 0, 0, .25) 0 1px 2px,rgba(255, 0, 0, .25) 0 2px 4px,rgba(255, 0, 0, .25) 0 4px 8px,rgba(255, 0, 0, .25) 0 8px 16px,rgba(255, 0, 0, .25) 0 16px 32px",
     transform: "scale(1.05) rotate(-1deg)",
-  }
-  
+  },
 });
 
 const PaymentFailure: React.FC = () => {
@@ -55,7 +54,7 @@ const PaymentFailure: React.FC = () => {
           display: "block",
         }}
       >
-        Payment Failure
+        Thanh Toán Thất Bại
       </Typography>
       <img
         src={SuccessfullGif}
