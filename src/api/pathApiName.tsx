@@ -7,7 +7,7 @@ export const CHANGE_PASSWORD = "/users/:id/password";
 export const GET_MACHINERY = "/machinery/noPaginate";
 export const ADD_MACHINERY = "/Machinery";
 export const MACHINERY = "/Machinery";
-export const MACHINERY_LIST = "Machinery/noPaginate";
+export const MACHINERY_LIST = "machinery";
 export const MACHINERY_ID = "/Machinery/:id";
 export const MACHINERY_DETAIL = "Machinery/Detail";
 export const MACHINERY_HOME_PRIORITY = "Machinery?Priority=1&size=4";
@@ -22,6 +22,7 @@ export const GET_CATEGORY_PARENT = "categories?status=Active&type=Parent";
 export const GET_BRAND = "brand?status=Active";
 export const BRAND_ID = "brand/:id";
 export const BRAND = "brand";
+
 //Customer
 export const CUSTOMER_PROFILE = "/users/:id";
 
@@ -51,6 +52,7 @@ export const RANK_ID = "rank/:id";
 //accont
 export const USER_BY_ROLE = "users";
 export const USER_ID = "users/:id";
+
 //news
 export const NEWS_HOME = "news";
 export const NEWS_ID = "news/:id";

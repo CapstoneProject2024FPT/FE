@@ -20,6 +20,14 @@ interface QuantityProps {
 }
 export type ProductProps = Product[];
 
+export interface GetProductProps {
+  size: number;
+  page: number;
+  total: number;
+  totalPages: number;
+  items: ProductAdmin[];
+}
+
 //productTable
 export interface ProductAdmin {
   category: {

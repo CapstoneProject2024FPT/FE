@@ -30,6 +30,7 @@ import ExportPDF from "./Exportpdf/ExportPDF";
 import WarrantyPDF from "./Exportpdf/WarrantyPDF";
 import { Link } from "react-router-dom";
 import config from "../../../configs";
+import emailjs from "@emailjs/browser";
 
 const getStatusStyles = (status: string) => {
   switch (status) {
@@ -53,14 +54,24 @@ const Row = (props: { row: OrderProps; onCancelOrder: (orderId: string) => void 
   const [open, setOpen] = useState(false);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const openMenu = Boolean(anchorEl);
-
+  let  email: string
+  let username: string
   const defaultStatus = "Đang chờ xác nhận";
   const StatusName = row?.status
     ? statusMapping?.find((status) => status.id === row?.status)?.name
     : defaultStatus;
 
   const handleCancelOrder = () => {
-    onCancelOrder(row.orderId);
+    const getUserInfoString = localStorage.getItem("getUserInfo");
+    if (getUserInfoString) {
+      const userInfo = JSON.parse(getUserInfoString);
+      console.log(userInfo)
+    email = userInfo?.email
+    username = userInfo?.username
+    } else {
+      console.error("No user info found in localStorage");
+    }
+    // onCancelOrder(row.orderId);
     handleCloseMenu();
   };
 
@@ -70,11 +81,30 @@ const Row = (props: { row: OrderProps; onCancelOrder: (orderId: string) => void 
 
   const handleCloseMenu = () => {
     setAnchorEl(null);
+    sendEmail(email);
   };
 
   const handleDetailOrder = () => {
     setOpen(!open);
     handleCloseMenu();
+  };
+
+  const sendEmail = (userEmail: string) => {
+    const templateParams = {
+      from_name: 'Admin SMMMS', // You can customize this field
+      from_email: 'ad.smmms.gsu24se44@gmail.com',
+      to_email: userEmail,
+      message: `Chào, ${username} bạn đã hủy đơn hàng thành công!`,
+      reply_to: 'NoReply',
+      user_name: username
+    };
+
+    emailjs.send(
+      'service_gm8vuij', // Replace with your EmailJS service ID
+      'template_x9vsymt', // Replace with your EmailJS template ID
+      templateParams,
+      'plAq1eN98XuLLSYlh' // Replace with your EmailJS user ID
+    )
   };
 
   return (

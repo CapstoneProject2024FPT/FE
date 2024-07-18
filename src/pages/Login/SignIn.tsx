@@ -15,6 +15,7 @@ import { localStorageFunc } from "../../utils/localStoragefn";
 import { useNavigate } from "react-router-dom";
 import { useAuthContext } from "../../context/AuthContext";
 import config from "../../configs";
+import { CustomerApi } from "../../api/services/apiUser";
 
 const cx = classNames.bind(styles);
 
@@ -23,6 +24,7 @@ const SignInForm: React.FC = () => {
   const returnUrl = localStorage.getItem("historyPath");
   const { setAuthUser } = useAuthContext();
   const { apiLogin } = AuthApi();
+  const { apiUserProfile } = CustomerApi();
   const LoginSchema = Yup.object().shape({
     username: Yup.string().required("bắt buộc").min(5, "Tối thiểu 5 kí tự"),
     password: Yup.string().required("bắt buộc").min(8, "Tối thiểu 8 kí tự"),
@@ -52,6 +54,8 @@ const SignInForm: React.FC = () => {
       if (response.status === 200) {
         localStorageFunc.setLocalStorage("loginInfo", JSON.stringify(response));
         setAuthUser(response.data);
+        const userInfo = await apiUserProfile(response.data.id);
+        localStorage.setItem("getUserInfo", JSON.stringify(userInfo.data));
         toast.success("Đăng nhập thành công");
         if (response?.data.role === "User") {
           if (returnUrl) {

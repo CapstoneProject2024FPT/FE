@@ -67,7 +67,7 @@ const TableProduct: React.FC = () => {
       const response = await apiGetMachine("Available");
 
       if (response && response.status === 200) {
-        setProducts(response.data);
+        setProducts(response.data.items);
       } else {
         //lỗi show thông báo lỗi
         toast.error(response.Error);
