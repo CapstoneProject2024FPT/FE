@@ -97,7 +97,7 @@ const Row = (props: {
 
   const handleCloseMenu = () => {
     setAnchorEl(null);
-    sendEmail(email);
+    sendCancelEmail();
   };
 
   const handleDetailOrder = () => {
@@ -105,12 +105,30 @@ const Row = (props: {
     handleCloseMenu();
   };
 
-  const sendEmail = (userEmail: string) => {
+  const sendCancelEmail = () => {
     const templateParams = {
       from_name: 'Admin SMMMS', // You can customize this field
       from_email: 'ad.smmms.gsu24se44@gmail.com',
-      to_email: userEmail,
+      to_email: email,
       message: `Chào, ${username} bạn đã hủy đơn hàng thành công!`,
+      reply_to: 'NoReply',
+      user_name: username
+    };
+
+    emailjs.send(
+      'service_gm8vuij', // Replace with your EmailJS service ID
+      'template_x9vsymt', // Replace with your EmailJS template ID
+      templateParams,
+      'plAq1eN98XuLLSYlh' // Replace with your EmailJS user ID
+    )
+  };
+
+  const sendSuccessEmail = () => {
+    const templateParams = {
+      from_name: 'Admin SMMMS', // You can customize this field
+      from_email: 'ad.smmms.gsu24se44@gmail.com',
+      to_email: email,
+      message: `Chào, ${username} bạn đã thanh toán đơn hàng thành công!`,
       reply_to: 'NoReply',
       user_name: username
     };
@@ -171,6 +189,8 @@ const Row = (props: {
           console.log(response);
           if (response.status === 200) {
             toast.success("Thanh toán thành công");
+            // send mail for payment success
+            sendSuccessEmail()
           }
         } catch (error) {
           console.error("Error updating payment status:", error);
