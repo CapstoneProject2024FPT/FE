@@ -77,8 +77,7 @@ const Row = (props: {
 
   const handleCancelOrder = () => {
     onCancelOrder(
-      row.orderId,
-      "Đơn hàng đã bị hủy do quá hạn thời gian thanh toán"
+      row.orderId
     );
     handleCloseMenu();
   };
@@ -447,6 +446,7 @@ const OrderManagement: React.FC = () => {
               <TableCell>Tổng tiền</TableCell>
               <TableCell>Trạng thái</TableCell>
               <TableCell>Hành động</TableCell>
+              <TableCell></TableCell>
               <TableCell></TableCell>
             </TableRow>
           </TableHead>

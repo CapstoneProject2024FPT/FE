@@ -21,7 +21,7 @@ const getStatusStyles = (status: string) => {
     switch (status) {
         case "Process":
             return { backgroundColor: "#FFD700", color: "black" }; // vàng
-        case "Complete":
+        case "Completed":
             return { backgroundColor: "#4CAF50", color: "white" }; // xanh lá
         case "AwaitingAssignment":
             return { backgroundColor: "#FFD700", color: "black" }; // vàng
@@ -53,7 +53,6 @@ function Row(props: { row: WarrantyProps; }) {
         }
         setOpen(!open);
     }
-
 
     return (
         <React.Fragment>
@@ -107,13 +106,15 @@ function Row(props: { row: WarrantyProps; }) {
                                                 </Box>
                                             </TableCell>
                                             <TableCell align="right">
-                                                <Button
-                                                    variant="contained"
-                                                    color="primary"
-                                                    style={{ marginRight: "10px" }}
-                                                >
-                                                    Hủy
-                                                </Button>
+                                                {detail.status === "Process" && (
+                                                    <Button
+                                                        variant="contained"
+                                                        color="primary"
+                                                        style={{ marginRight: "10px" }}
+                                                    >
+                                                        Hủy
+                                                    </Button>
+                                                )}
                                             </TableCell>
                                         </TableRow>
                                     ))}
