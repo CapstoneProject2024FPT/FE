@@ -12,7 +12,7 @@ import {
   TableRow,
   Typography,
 } from "@mui/material";
-import { OrderProps } from "../../../models/order";
+import { OrderProps, statusMapping } from "../../../models/order";
 import { formatAddress, formatMoney } from "../../../utils/fn";
 import { userProps } from "../../../models/UserData";
 import { CustomerApi } from "../../../api/services/apiUser";
@@ -51,6 +51,29 @@ const ModalDetailOrder: React.FC<ModalBrand> = ({
     fetchCustomerData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  const getStatusStyles = (status: string) => {
+    switch (status) {
+      case "UnPaid":
+        return { backgroundColor: "#FFD700", color: "black" }; // vàng
+      case "Paid":
+        return { backgroundColor: "#4CAF50", color: "white" }; // xanh lá
+      case "Completed":
+        return { backgroundColor: "#4CAF50", color: "white" }; // xanh lá
+      case "Canceled":
+        return { backgroundColor: "#F44336", color: "white" }; // đỏ
+      case "Delivery":
+        return { backgroundColor: "#FFD700", color: "white" }; // vàng
+      default:
+        return { backgroundColor: "transparent", color: "black" };
+    }
+  };
+
+  const defaultStatus = "Đang chờ xác nhận";
+  const StatusName = OrderData?.status
+    ? statusMapping?.find((status) => status.id === OrderData?.status)?.name
+    : defaultStatus;
+
   return (
     <Modal
       title={`Chi Tiết đơn hàng mã ${OrderData?.invoiceCode ?? ""}`}
@@ -98,12 +121,38 @@ const ModalDetailOrder: React.FC<ModalBrand> = ({
                 <TableCell>{customer?.phoneNumber}</TableCell>
               </TableRow>
               <TableRow>
-                <TableCell>Ghi chú</TableCell>
-                <TableCell>{OrderData?.note}</TableCell>
+                <TableCell>Ghi chú đơn hàng</TableCell>
+                <TableCell>{OrderData?.description}</TableCell>
               </TableRow>
               <TableRow>
                 <TableCell>Địa chỉ</TableCell>
                 <TableCell>{formatAddress(OrderData?.address)}</TableCell>
+              </TableRow>
+            </TableBody>
+          </Table>
+          <Typography variant="h6" gutterBottom component="div">
+            Trạng thái đơn
+          </Typography>
+          <Table size="small" aria-label="additional-info">
+            <TableBody>
+              <TableRow>
+                <TableCell sx={{ width: "30%" }}>Trạng thái</TableCell>
+                <TableCell>
+                  <Box
+                    sx={{
+                      ...getStatusStyles(OrderData?.status),
+                      padding: "8px 16px",
+                      borderRadius: "8px",
+                      display: "inline-block",
+                    }}
+                  >
+                    {StatusName}
+                  </Box>
+                </TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell sx={{ width: "30%" }}>Ghi chú </TableCell>
+                <TableCell>{OrderData?.note}</TableCell>
               </TableRow>
             </TableBody>
           </Table>
