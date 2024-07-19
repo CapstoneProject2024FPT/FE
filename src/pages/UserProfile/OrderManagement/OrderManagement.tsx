@@ -35,6 +35,7 @@ import ExportPDF from "./Exportpdf/ExportPDF";
 import WarrantyPDF from "./Exportpdf/WarrantyPDF";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import config from "../../../configs";
+import emailjs from "@emailjs/browser";
 import moment from "moment";
 import { ApiCheckout } from "../../../api/services/apiCheckout";
 import { paymentProps } from "../../../models/payment";
@@ -64,6 +65,8 @@ const Row = (props: {
   const [open, setOpen] = useState(false);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const openMenu = Boolean(anchorEl);
+  let  email: string
+  let username: string
   const [remainingTime, setRemainingTime] = useState<number | null>(null);
 
   const { apiPayment, apiPaymentUpdate } = ApiCheckout();
@@ -76,9 +79,15 @@ const Row = (props: {
 
 
   const handleCancelOrder = () => {
-    onCancelOrder(
-      row.orderId
-    );
+    const getUserInfoString = localStorage.getItem("getUserInfo");
+    if (getUserInfoString) {
+      const userInfo = JSON.parse(getUserInfoString);
+    email = userInfo?.email
+    username = userInfo?.username
+    } else {
+      console.error("No user info found in localStorage");
+    }
+    onCancelOrder(row.orderId);
     handleCloseMenu();
   };
 
@@ -88,11 +97,48 @@ const Row = (props: {
 
   const handleCloseMenu = () => {
     setAnchorEl(null);
+    sendCancelEmail();
   };
 
   const handleDetailOrder = () => {
     setOpen(!open);
     handleCloseMenu();
+  };
+
+  const sendCancelEmail = () => {
+    const templateParams = {
+      from_name: 'Admin SMMMS', // You can customize this field
+      from_email: 'ad.smmms.gsu24se44@gmail.com',
+      to_email: email,
+      message: `Chào, ${username} bạn đã hủy đơn hàng thành công!`,
+      reply_to: 'NoReply',
+      user_name: username
+    };
+
+    emailjs.send(
+      'service_gm8vuij', // Replace with your EmailJS service ID
+      'template_x9vsymt', // Replace with your EmailJS template ID
+      templateParams,
+      'plAq1eN98XuLLSYlh' // Replace with your EmailJS user ID
+    )
+  };
+
+  const sendSuccessEmail = () => {
+    const templateParams = {
+      from_name: 'Admin SMMMS', // You can customize this field
+      from_email: 'ad.smmms.gsu24se44@gmail.com',
+      to_email: email,
+      message: `Chào, ${username} bạn đã thanh toán đơn hàng thành công!`,
+      reply_to: 'NoReply',
+      user_name: username
+    };
+
+    emailjs.send(
+      'service_gm8vuij', // Replace with your EmailJS service ID
+      'template_x9vsymt', // Replace with your EmailJS template ID
+      templateParams,
+      'plAq1eN98XuLLSYlh' // Replace with your EmailJS user ID
+    )
   };
 
   useEffect(() => {
@@ -143,6 +189,8 @@ const Row = (props: {
           console.log(response);
           if (response.status === 200) {
             toast.success("Thanh toán thành công");
+            // send mail for payment success
+            sendSuccessEmail()
           }
         } catch (error) {
           console.error("Error updating payment status:", error);

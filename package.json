@@ -10,6 +10,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@emailjs/browser": "^4.4.1",
     "@emotion/react": "^11.11.4",
     "@emotion/styled": "^11.11.5",
     "@fancyapps/ui": "^5.0.36",
@@ -30,6 +31,7 @@
     "axios": "^1.6.8",
     "chart.js": "^4.4.2",
     "classnames": "^2.3.2",
+    "emailjs-com": "^3.2.0",
     "firebase": "^10.9.0",
     "formik": "^2.4.6",
     "framer-motion": "^11.2.6",
