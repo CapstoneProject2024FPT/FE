@@ -1,12 +1,17 @@
-import htmlToPdfmake from 'html-to-pdfmake';
-import pdfMake from 'pdfmake/build/pdfmake';
-import * as pdfFonts from 'pdfmake/build/vfs_fonts';
-import { OrderProps, ProductProps } from '../../../../models/order';
-import { formatAddress, formatDateFunc } from '../../../../utils/fn';
+import htmlToPdfmake from "html-to-pdfmake";
+import * as pdfMake from "pdfmake/build/pdfmake";
+import * as pdfFonts from "pdfmake/build/vfs_fonts";
+import { OrderProps, ProductProps } from "../../../../models/order";
+import { formatAddress, formatDateFunc } from "../../../../utils/fn";
 
-pdfMake.vfs = pdfFonts.pdfMake.vfs;
-
-function WarrantyPDF({ order, product }: { order: OrderProps, product: ProductProps }) {
+function WarrantyPDF({
+  order,
+  product,
+}: {
+  order: OrderProps;
+  product: ProductProps;
+}) {
+  (pdfMake as any).vfs = pdfFonts.pdfMake.vfs;
   // Tạo HTML template cho phiếu bảo hành
   const warrantyHTMLTemplate = `
   <div>
@@ -14,10 +19,18 @@ function WarrantyPDF({ order, product }: { order: OrderProps, product: ProductPr
       <h1>Phiếu bảo hành</h1>
     </div>
     <div>
-      <p>Khách hàng: <span id="customerName">${order.userInfo.fullName || ''}</span></p>
-      <p>Địa chỉ: <span id="address">${formatAddress(order.address) || ''}</span></p>
-      <p>Sản phẩm: <span id="productName">${product.productName || ''}</span></p>
-      <p>Ngày mua: <span id="createDate">${formatDateFunc.formatDate(order.createDate) || ''}</span></p>
+      <p>Khách hàng: <span id="customerName">${
+        order.userInfo.fullName || ""
+      }</span></p>
+      <p>Địa chỉ: <span id="address">${
+        formatAddress(order.address) || ""
+      }</span></p>
+      <p>Sản phẩm: <span id="productName">${
+        product.productName || ""
+      }</span></p>
+      <p>Ngày mua: <span id="createDate">${
+        formatDateFunc.formatDate(order.createDate) || ""
+      }</span></p>
       <p>Thời gian bảo hành: <span>3 năm</span></p>
     </div>
   </div>
@@ -28,7 +41,7 @@ function WarrantyPDF({ order, product }: { order: OrderProps, product: ProductPr
 
   // Định nghĩa document definition
   const docDefinition = {
-    content: pdfmakeContent
+    content: pdfmakeContent,
   };
 
   // Tạo và mở PDF
