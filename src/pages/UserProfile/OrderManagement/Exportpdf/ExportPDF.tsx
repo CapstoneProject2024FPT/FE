@@ -1,63 +1,139 @@
-import htmlToPdfmake from 'html-to-pdfmake';
-import pdfMake from 'pdfmake/build/pdfmake';
-import * as pdfFonts from 'pdfmake/build/vfs_fonts';
+import { Page, Text, View, Document, StyleSheet, pdf, Image } from '@react-pdf/renderer';
 import { OrderProps } from '../../../../models/order';
 import { formatAddress, formatDateFunc, formatMoney } from '../../../../utils/fn';
+import { useEffect, useState } from 'react';
+import { Font } from '@react-pdf/renderer';
+import loraRegular from '../../../../assets/fonts/static/Lora-Regular.ttf';
+import logo from '../../../../assets/images/logo-SMMMS.png'; // Adjust path as needed
 
-function ExportPDF({ row }: { row: OrderProps }) {
-  pdfMake.vfs = pdfFonts.pdfMake.vfs;
-  // Tính tổng tiền của 3 sản phẩm
+
+// Define styles
+Font.register({
+  family: 'Lora',
+  src: loraRegular,
+});
+
+const styles = StyleSheet.create({
+  page: {
+    padding: 30,
+    fontFamily: 'Lora',
+  },
+  header: {
+    textAlign: 'center',
+    fontSize: 24,
+    marginBottom: 20,
+  },
+  section: {
+    marginBottom: 10,
+  },
+  table: {
+    width: '100%',
+    borderStyle: 'solid',
+    borderWidth: 1,
+    borderColor: '#ddd',
+    marginBottom: 20,
+    borderCollapse: 'collapse',
+  },
+  tableRow: {
+    flexDirection: 'row',
+  },
+  tableColHeader: {
+    borderStyle: 'solid',
+    borderWidth: 1,
+    borderColor: '#ddd',
+    padding: 8,
+    fontWeight: 'bold',
+    flex: 1,
+    textAlign: 'center',
+  },
+  tableCol: {
+    borderStyle: 'solid',
+    borderWidth: 1,
+    borderColor: '#ddd',
+    padding: 8,
+    flex: 1,
+    textAlign: 'center',
+  },
+  watermark: {
+    position: 'absolute',
+    top: '25%',
+    left: '25%',
+    transform: 'translate(-50%, -50%)',
+    opacity: 0.2, // Adjust opacity to make the logo faded
+    width: '80%', // Adjust size as needed
+    height: 'auto',
+    zIndex: 0,
+  },
+});
+
+const ExportPDFDocument = ({ row }: { row: OrderProps }) => {
+  // Calculate total amount
   const totalAmount = row.productList.reduce((sum, product) => sum + product.totalAmount, 0);
 
-  const billHTMLTemplate = `
-  <div>
-    <div style="text-align: center">
-      <h1>Hóa đơn</h1>
-    </div>
-    <div>
-      <p>Mã hóa đơn: <span id="warrantyId">${row.invoiceCode || ''}</span></p>
-      <p>Khách hàng: <span id="customerName">${row.userInfo.fullName || ''}</span></p>
-      <p>Địa chỉ: <span id="address">${formatAddress(row.address) || ''}</span></p>
-      <p>Ngày mua: <span id="createDate">${formatDateFunc.formatDate(row.createDate) || ''}</span></p>
-      <p>Ngày hoàn thành: <span id="completeDate">${formatDateFunc.formatDate(row.completedDate) || ''}</span></p>
-    </div>
-  
-    <div>
-      <h2>Thông tin đơn hàng</h2>
-      <table class="table" style="width: 100%; border-collapse: collapse; margin-bottom: 20px;">
-        <thead>
-          <tr>
-            <th style="border: 1px solid #ddd; padding: 8px;">Tên sản phẩm</th>
-            <th style="border: 1px solid #ddd; padding: 8px;">Số lượng</th>
-            <th style="border: 1px solid #ddd; padding: 8px;">Thành tiền</th>
-          </tr>
-        </thead>
-        <tbody id="productList">
-          ${row.productList.map(product => `
-            <tr>
-              <td style="border: 1px solid #ddd; padding: 8px;">${product.productName || ''}</td>
-              <td style="border: 1px solid #ddd; padding: 8px;">${product.quantity || ''}</td>
-              <td style="border: 1px solid #ddd; padding: 8px;">${formatMoney(product.totalAmount) || ''}</td>
-            </tr>
-          `).join('')}
-        </tbody>
-        <tfoot>
-          <tr>
-            <td style="border: 1px solid #ddd; padding: 8px; font-weight: bold;" colspan="2">Tổng tiền</td>
-            <td style="border: 1px solid #ddd; padding: 8px;">${formatMoney(totalAmount) || ''}</td>
-          </tr>
-        </tfoot>
-      </table>
-    </div>
-  </div>
-  `;
+  return (
+    <Document>
+      <Page style={styles.page}>
+        <Image src={logo} style={styles.watermark} />
+        <View style={styles.header}>
+          <Text>Hóa đơn</Text>
+        </View>
+        <View style={styles.section}>
+          <Text>Mã hóa đơn: {row.invoiceCode || ''}</Text>
+          <Text>Khách hàng: {row.userInfo.fullName || ''}</Text>
+          <Text>Địa chỉ: {formatAddress(row.address) || ''}</Text>
+          <Text>Ngày mua: {formatDateFunc.formatDate(row.createDate) || ''}</Text>
+          <Text>Ngày hoàn thành: {formatDateFunc.formatDate(row.completedDate) || ''}</Text>
+        </View>
+        <View style={styles.section}>
+          <Text>Thông tin đơn hàng</Text>
+          <View style={styles.table}>
+            <View style={styles.tableRow}>
+              <Text style={styles.tableColHeader}>Tên sản phẩm</Text>
+              <Text style={styles.tableColHeader}>Số lượng</Text>
+              <Text style={styles.tableColHeader}>Thành tiền</Text>
+            </View>
+            {row.productList.map((product, index) => (
+              <View style={styles.tableRow} key={index}>
+                <Text style={styles.tableCol}>{product.productName || ''}</Text>
+                <Text style={styles.tableCol}>{product.quantity || ''}</Text>
+                <Text style={styles.tableCol}>{formatMoney(product.totalAmount) || ''}</Text>
+              </View>
+            ))}
+            <View style={styles.tableRow}>
+              <Text style={styles.tableCol}>Tổng tiền</Text>
+              <Text style={styles.tableCol}>{formatMoney(totalAmount) || ''}</Text>
+            </View>
+          </View>
+        </View>
+      </Page>
+    </Document>
+  );
+};
 
-  const pdfmakeContent = htmlToPdfmake(billHTMLTemplate);
-  const docDefinition = {
-    content: pdfmakeContent
+const ExportPDF = ({ row }: { row: OrderProps }) => {
+  const [pdfUrl, setPdfUrl] = useState<string | null>(null);
+
+  useEffect(() => {
+    const generatePdf = async () => {
+      const blob = await pdf(<ExportPDFDocument row={row} />).toBlob();
+      const url = URL.createObjectURL(blob);
+      setPdfUrl(url);
+    };
+
+    generatePdf();
+  }, [row]);
+
+  const handleOpenPdf = () => {
+    if (pdfUrl) {
+      window.open(pdfUrl);
+    }
   };
 
-  return pdfMake.createPdf(docDefinition).open();
-}
+  return (
+    <div onClick={handleOpenPdf}>
+      Xuất hóa đơn
+    </div>
+  );
+};
 
 export default ExportPDF;
