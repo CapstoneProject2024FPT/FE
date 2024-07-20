@@ -2,9 +2,9 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useState } from "react";
 import { MachineryApi } from "../../../api/services/apiMachinery";
-import { ProductAdmin } from "../../../models/products";
+import { GetProductProps, ProductAdmin } from "../../../models/products";
 import "./ProductList.scss";
-import { Box, Button, Chip, Drawer, Typography } from "@mui/material";
+import { Box, Button, Chip, Container, Drawer, Paper, TableContainer, TablePagination, Typography } from "@mui/material";
 import ProductCard from "../../../components/product-card/ProductCard";
 import ProductFilteredRow from "../../Filter/Products/FilterProducts";
 import { GridFilterListIcon } from "@mui/x-data-grid";
@@ -32,6 +32,25 @@ const ProductList: React.FC = () => {
   const { getBrandName } = BrandApi();
 
   const { data } = useFilterContext();
+  const [productQuantity, setProductQuantity] = useState<GetProductProps>();
+  const [page, setPage] = useState<number>(0);
+  const [, setRowsPerPage] = useState(15);
+  const routePage = [15, 20, 25, 30];
+
+  const handleChangePage = (
+    _event: React.MouseEvent<HTMLButtonElement> | null,
+    newPage: number
+  ) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (
+    event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>
+  ) => {
+    console.log(event.target.value);
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
 
   const [productListOriginName, setProductListOriginName] = useState<string[]>(
     []
@@ -82,10 +101,12 @@ const ProductList: React.FC = () => {
 
   const fetchProductListName = async () => {
     const response = await apiGetMachine("Available");
-    const productName = response.data.map(
+    const productName = response.data.items.map(
       (productName: { name: any }) => productName.name
     );
+    const productQuantity = response.data;
     setProductListName(productName);
+    setProductQuantity(productQuantity);
   };
 
   useEffect(() => {
@@ -313,92 +334,28 @@ const ProductList: React.FC = () => {
   };
 
   return (
-    <Box
-      sx={{
-        width: "90%",
-        display: "flex",
-        flexDirection: "row",
-        margin: "20px auto auto auto",
-        gap: "40px",
-      }}
-    >
-      <Box
-        sx={{
-          display: { xs: "none", md: "block" },
-          boxShadow:
-            "rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px",
-          borderRadius: "5px",
-          width: "20%",
-          minWidth: "200px",
-          height: "100%",
-          position: "sticky",
-          top: 0,
-        }}
-      >
-        {loading ? (
-          <Skeleton />
-        ) : (
-          <ProductFilteredRow
-            filter={filter}
-            setFilter={setFilter}
-            isReset={isReset}
-            setIsReset={setIsReset}
-            productListOriginName={productListOriginName}
-            productListCategoryName={productListCategoryName}
-            productListBrandName={productListBrandName}
-          />
-        )}
-      </Box>
-      {/* filter reponsive  */}
-      <Box sx={{ display: { xs: "block", md: "none" } }}>
-        <Button
-          variant="outlined"
-          onClick={toggleDrawer(true)}
+    <Container maxWidth="xl">
+      <TableContainer component={Paper} sx={{ overflow: "hidden" }}>
+        <Box
           sx={{
-            borderRadius: "5px",
-            "&:hover": {
-              borderColor: "#1976d2",
-              borderRadius: "5px",
-            },
+            width: "90%",
+            display: "flex",
+            flexDirection: "row",
+            margin: "20px",
+            gap: "60px",
           }}
         >
-          <GridFilterListIcon
-            sx={{
-              "&:hover": {
-                color: "#1976d2",
-                backgroundColor: "unset",
-                borderRadius: "none",
-              },
-            }}
-          />
-          <Typography sx={{ marginLeft: "4px" }} className="hide-text-on-small">
-            Lọc
-          </Typography>
-        </Button>
-        <Drawer anchor="left" open={isDrawerOpen} onClose={toggleDrawer(false)}>
           <Box
             sx={{
-              width: "250px",
-              padding: "20px",
+              display: { xs: "none", md: "block" },
               boxShadow:
                 "rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px",
               borderRadius: "5px",
+              width: "20%",
+              minWidth: "200px",
               height: "100%",
-              overflowY: "auto",
-              "&::-webkit-scrollbar": {
-                width: "8px",
-              },
-              "&::-webkit-scrollbar-track": {
-                boxShadow: "inset 0 0 5px grey",
-                borderRadius: "10px",
-              },
-              "&::-webkit-scrollbar-thumb": {
-                backgroundColor: "#888",
-                borderRadius: "10px",
-              },
-              "&::-webkit-scrollbar-thumb:hover": {
-                backgroundColor: "#555",
-              },
+              position: "sticky",
+              top: 0,
             }}
           >
             {loading ? (
@@ -415,63 +372,150 @@ const ProductList: React.FC = () => {
               />
             )}
           </Box>
-        </Drawer>
-      </Box>
-
-      {/* ---------------------------------------- */}
-
-      <Box sx={{ width: { xs: "100%", md: "80%" } }}>
-        <Box
-          sx={{
-            padding: "10px",
-            boxShadow:
-              "rgba(0, 0, 0, 0.1) 0px 0px 5px 0px, rgba(0, 0, 0, 0.1) 0px 0px 1px 0px",
-            borderRadius: "5px",
-            marginBottom: "10px",
-          }}
-        >
-          <Box sx={{ width: "50%" }}>
-            <Typography
+          {/* filter reponsive  */}
+          <Box sx={{ display: { xs: "block", md: "none" } }}>
+            <Button
+              variant="outlined"
+              onClick={toggleDrawer(true)}
               sx={{
-                textTransform: "uppercase",
-                fontSize: "24px",
-                fontWeight: "800",
+                borderRadius: "5px",
+                "&:hover": {
+                  borderColor: "#1976d2",
+                  borderRadius: "5px",
+                },
               }}
             >
-              Các loại máy
-            </Typography>
+              <GridFilterListIcon
+                sx={{
+                  "&:hover": {
+                    color: "#1976d2",
+                    backgroundColor: "unset",
+                    borderRadius: "none",
+                  },
+                }}
+              />
+              <Typography
+                sx={{ marginLeft: "4px" }}
+                className="hide-text-on-small"
+              >
+                Lọc
+              </Typography>
+            </Button>
+            <Drawer
+              anchor="left"
+              open={isDrawerOpen}
+              onClose={toggleDrawer(false)}
+            >
+              <Box
+                sx={{
+                  width: "250px",
+                  padding: "20px",
+                  boxShadow:
+                    "rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px",
+                  borderRadius: "5px",
+                  height: "100%",
+                  overflowY: "auto",
+                  "&::-webkit-scrollbar": {
+                    width: "8px",
+                  },
+                  "&::-webkit-scrollbar-track": {
+                    boxShadow: "inset 0 0 5px grey",
+                    borderRadius: "10px",
+                  },
+                  "&::-webkit-scrollbar-thumb": {
+                    backgroundColor: "#888",
+                    borderRadius: "10px",
+                  },
+                  "&::-webkit-scrollbar-thumb:hover": {
+                    backgroundColor: "#555",
+                  },
+                }}
+              >
+                {loading ? (
+                  <Skeleton />
+                ) : (
+                  <ProductFilteredRow
+                    filter={filter}
+                    setFilter={setFilter}
+                    isReset={isReset}
+                    setIsReset={setIsReset}
+                    productListOriginName={productListOriginName}
+                    productListCategoryName={productListCategoryName}
+                    productListBrandName={productListBrandName}
+                  />
+                )}
+              </Box>
+            </Drawer>
           </Box>
-          {/* <Box sx={{ width: "50%", textAlign: "right" }}>
+
+          {/* ---------------------------------------- */}
+
+          <Box sx={{ width: { xs: "100%", md: "80%" } }}>
+            <Box
+              sx={{
+                padding: "10px",
+                boxShadow:
+                  "rgba(0, 0, 0, 0.1) 0px 0px 5px 0px, rgba(0, 0, 0, 0.1) 0px 0px 1px 0px",
+                borderRadius: "5px",
+                marginBottom: "10px",
+              }}
+            >
+              <Box sx={{ width: "50%" }}>
+                <Typography
+                  sx={{
+                    textTransform: "uppercase",
+                    fontSize: "24px",
+                    fontWeight: "800",
+                  }}
+                >
+                  Các loại máy
+                </Typography>
+              </Box>
+              {/* <Box sx={{ width: "50%", textAlign: "right" }}>
             <SortMenu />
           </Box> */}
-        </Box>
-        <Box
-          sx={{
-            minHeight: "64px",
-          }}
-        >
-          <Box sx={{ display: "flex", flexWrap: "wrap" }}>{renderChips()}</Box>
-        </Box>
-        {loading ? (
-          <Skeleton />
-        ) : (
-          <Box
-            sx={{
-              display: "grid",
-              gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))",
-              gap: "25px",
-              justifyContent: "space-between",
-              width: "100%%",
-              padding: "0 20px",
-            }}
-          >
-            {products?.map((product) => (
-              <ProductCard key={product.id} product={product} />
-            ))}
+            </Box>
+            <Box
+              sx={{
+                minHeight: "64px",
+              }}
+            >
+              <Box sx={{ display: "flex", flexWrap: "wrap" }}>
+                {renderChips()}
+              </Box>
+            </Box>
+            {loading ? (
+              <Skeleton />
+            ) : (
+              <Box
+                sx={{
+                  display: "grid",
+                  gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))",
+                  gap: "25px",
+                  justifyContent: "space-between",
+                  width: "100%%",
+                  padding: "0 20px",
+                }}
+              >
+                {products?.map((product) => (
+                  <ProductCard key={product.id} product={product} />
+                ))}
+              </Box>
+            )}
           </Box>
-        )}
-      </Box>
-    </Box>
+        </Box>
+      </TableContainer>
+      <TablePagination
+        rowsPerPageOptions={routePage}
+        component="div"
+        count={productQuantity?.total ? productQuantity?.total : 0}
+        rowsPerPage={productQuantity?.size ?? 0}
+        page={page}
+        onPageChange={handleChangePage}
+        onRowsPerPageChange={handleChangeRowsPerPage}
+        labelRowsPerPage="Số hàng mỗi trang"
+      ></TablePagination>
+    </Container>
   );
 };
 

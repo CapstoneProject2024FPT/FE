@@ -396,8 +396,13 @@ const Detail: React.FC = () => {
                     transform: "scale(0.9)",
                   },
                 }}
+                disabled={selectProductQuantity === 0}
               >
-                <span className="add-to-cart">Thêm vào giỏ</span>
+                <span className="add-to-cart">
+                  {selectProductQuantity === 0
+                    ? "Tạm hết hàng"
+                    : "Thêm vào giỏ"}
+                </span>
                 <span className="added">Đã thêm</span>
                 <ShoppingCart className="fas fa-shopping-cart" />
                 <Unarchive className="fas fa-box" />
