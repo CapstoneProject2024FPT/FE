@@ -45,6 +45,8 @@ import MachineComponentDetail from "../pages/Admin/MachineComponent/MachineCompo
 import SerialNumberComponent from "../pages/Admin/MachineComponent/SerialNumberComponent";
 import KanBan from "../pages/Admin/Task/Task";
 import WarrantyManagent from "../pages/Admin/Warranty/WarrantyManagement";
+import ComponentOfMachine from "../pages/Admin/Product/ComponentOfMachine";
+import AddComponentOfMachine from "../pages/Admin/Product/AddComponentOfMachine";
 
 const AppRoute: React.FC = () => {
   return (
@@ -201,7 +203,16 @@ const AppRoute: React.FC = () => {
           path={config.adminRoutes.viewSerialProduct}
           element={<SerialNumberPropductDetail />}
         />
-
+        <Route
+          key="componentMachine"
+          path={config.adminRoutes.viewDetailMachineOfComponent}
+          element={<ComponentOfMachine />}
+        />
+        <Route
+          key="addComponentMachine"
+          path={config.adminRoutes.AddComponentOfMachine}
+          element={<AddComponentOfMachine />}
+        />
         {/* component  */}
         <Route
           key="ProductComponent"
