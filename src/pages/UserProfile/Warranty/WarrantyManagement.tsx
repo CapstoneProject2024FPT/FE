@@ -22,6 +22,7 @@ import {
 import { ApiWarranty } from "../../../api/services/apiWarranty";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import {
+  StatusType,
   WarrantyProps,
   WarrantyPropsById,
   warrantyStatusMapping,
@@ -86,10 +87,9 @@ function Row(props: { row: WarrantyProps }) {
         </TableCell>
         <TableCell align="right">{row.inventory.serialNumber}</TableCell>
         <TableCell align="right">{row.inventory.machinery.name}</TableCell>
-        <TableCell align="right">{`${date.getDate()}/${
-          date.getMonth() + 1
-        }/${date.getFullYear()}`}</TableCell>
-        <TableCell>
+        <TableCell align="right">{`${date.getDate()}/${date.getMonth() + 1
+          }/${date.getFullYear()}`}</TableCell>
+        <TableCell align="center">
           <IconButton
             aria-label="more actions"
             size="small"
@@ -98,7 +98,7 @@ function Row(props: { row: WarrantyProps }) {
             <MoreVertIcon />
           </IconButton>
           <Menu anchorEl={anchorEl} open={openMenu} onClose={handleCloseMenu}>
-            <MenuItem onClick={() => {}}>Yêu cầu bảo hành</MenuItem>
+            <MenuItem onClick={() => { }}>Yêu cầu bảo hành</MenuItem>
           </Menu>
         </TableCell>
       </TableRow>
@@ -125,6 +125,7 @@ function Row(props: { row: WarrantyProps }) {
                         {formatDateFunc.formatDate(detail.startDate)}
                       </TableCell>
                       <TableCell align="right">{detail.description}</TableCell>
+
                       <TableCell align="right">
                         <Box
                           sx={{
@@ -142,13 +143,16 @@ function Row(props: { row: WarrantyProps }) {
                         </Box>
                       </TableCell>
                       <TableCell align="right">
-                        <Button
-                          variant="contained"
-                          color="primary"
-                          style={{ marginRight: "10px" }}
-                        >
-                          Hủy
-                        </Button>
+                        {detail.status === StatusType.PROCESS && (
+
+                          <Button
+                            variant="contained"
+                            color="primary"
+                            style={{ marginRight: "10px" }}
+                          >
+                            Hủy
+                          </Button>
+                        )}
                       </TableCell>
                     </TableRow>
                   ))}
