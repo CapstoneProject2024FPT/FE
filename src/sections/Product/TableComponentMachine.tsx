@@ -1,19 +1,12 @@
 import React, { useEffect, useState } from "react";
-import type { MenuProps } from "antd";
 import type { TableProps } from "antd";
-import { DownOutlined } from "@ant-design/icons";
-import { Table, Input, Space, Dropdown, Button, Typography } from "antd";
-
-import { serialProps } from "../../models/serialNumber";
-import { ApiSerial } from "../../api/services/apiSerialNumber";
-import { toast } from "react-toastify";
-import { formatDateFunc } from "../../utils/fn";
+import { Table, Input, Button, Typography } from "antd";
 import { useNavigate, useParams } from "react-router-dom";
-import ModalSerialNumberDelete from "./PopupSerialnumber/ModalDeleteSerialNumber";
 import { PlusOutlined } from "@ant-design/icons";
 import { MachineryApi } from "../../api/services/apiMachinery";
 import { ProductAdmin } from "../../models/products";
 import config from "../../configs";
+import { ComponentMachine } from "../../models/machineComponent";
 
 type ColumnsType<T> = TableProps<T>["columns"];
 const { Search } = Input;
@@ -26,7 +19,8 @@ interface TableComponentMachine {
 const TableComponentMachine: React.FC<TableComponentMachine> = ({
   handleSetName,
 }) => {
-  const [serialNumbers, setSerialNumbers] = useState<serialProps[]>();
+  const [componentsMachine, setComponentsMachine] =
+    useState<ComponentMachine[]>();
   const [pagination, setPagination] = useState({
     current: 1,
     pageSize: pageSize,
@@ -38,18 +32,9 @@ const TableComponentMachine: React.FC<TableComponentMachine> = ({
   //search
   const [query, setQuery] = useState<string>("");
 
-  //popup
-  const [openDeletePopup, setOpenDeletePopup] = useState<boolean>(false);
-  const [selectedData, setSelectedData] = useState<serialProps | null>(null);
-
   //api
-  const { apiGetSerialbyMachineId, loading } = ApiSerial();
-  const { apiGetDetailMachine } = MachineryApi();
+  const { apiGetDetailMachine, loading } = MachineryApi();
   //modal popup
-  const handleActionDelete = (record: serialProps) => {
-    setOpenDeletePopup(!openDeletePopup);
-    setSelectedData(record);
-  };
 
   const handleOpenAdd = () => {
     if (id) {
@@ -57,46 +42,21 @@ const TableComponentMachine: React.FC<TableComponentMachine> = ({
     }
   };
 
-  const handleCLoseDelete = () => {
-    setOpenDeletePopup(!openDeletePopup);
-  };
+  //----------------------------------------------------------------------------
 
   const fetchMachineDetail = async () => {
     if (id) {
       const response = await apiGetDetailMachine(id);
       SetMachinery(response.data);
+      setComponentsMachine(response.data.component);
       handleSetName(response.data.name);
-    }
-  };
-  //----------------------------------------------------------------------------
-  const fetchSerialMachine = async () => {
-    try {
-      if (id) {
-        const response = await apiGetSerialbyMachineId(id);
-
-        setSerialNumbers(response.data);
-        setSelectedData(response.data[0]);
-      } else {
-        setSerialNumbers([]);
-        setSelectedData(null);
-      }
-    } catch (error) {
-      toast.error("lỗi");
     }
   };
 
   useEffect(() => {
-    fetchSerialMachine();
     fetchMachineDetail();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  const handleDeleteSerialSuccess = (response: string) => {
-    handleCLoseDelete();
-    fetchSerialMachine();
-    toast.success(response);
-  };
-
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleTableChange = (newPagination: any) => {
     setPagination({
@@ -105,7 +65,7 @@ const TableComponentMachine: React.FC<TableComponentMachine> = ({
     });
 
     if (pagination.pageSize !== pagination?.pageSize) {
-      setSerialNumbers([]);
+      setComponentsMachine([]);
     }
   };
 
@@ -121,66 +81,16 @@ const TableComponentMachine: React.FC<TableComponentMachine> = ({
     setQuery(e.target.value);
   };
 
-  const filteredRows = serialNumbers?.filter((item) =>
-    item.serialNumber.toLowerCase().includes(query)
+  const filteredRows = componentsMachine?.filter((item) =>
+    item.name.toLowerCase().includes(query)
   );
 
-  const items: MenuProps["items"] = [
+  const columns: ColumnsType<ComponentMachine> = [
     {
-      key: "1",
-      label: "Xoá",
-    },
-  ];
-  const columns: ColumnsType<serialProps> = [
-    {
-      title: "Số seri",
-      dataIndex: "serialNumber",
-      sorter: (a, b) => a.serialNumber.length - b.serialNumber.length,
+      title: "Tên bộ phận",
+      dataIndex: "name",
+      sorter: (a, b) => a.name.length - b.name.length,
       width: "20%",
-    },
-    {
-      title: "Trạng thái",
-      dataIndex: "status",
-      render: (status) => {
-        return status === "Available"
-          ? "Còn"
-          : status === "Sold"
-          ? "Đã bán"
-          : "Tạm dừng";
-      },
-    },
-    {
-      title: "Ngày tạo",
-      dataIndex: "createDate",
-      render: (createDate) => {
-        return formatDateFunc.formatDate(createDate);
-      },
-    },
-    {
-      title: "Hành Động",
-      key: "operation",
-      render: (record) => (
-        <Space size="middle">
-          <Dropdown
-            menu={{
-              items,
-              onClick: ({ key }) => {
-                switch (key) {
-                  case "1":
-                    handleActionDelete(record);
-                    break;
-                  default:
-                    break;
-                }
-              },
-            }}
-          >
-            <a>
-              Thêm <DownOutlined />
-            </a>
-          </Dropdown>
-        </Space>
-      ),
     },
   ];
 
@@ -211,15 +121,6 @@ const TableComponentMachine: React.FC<TableComponentMachine> = ({
           cancelSort: "Huỷ sắp xếp",
         }}
       />
-
-      {openDeletePopup && (
-        <ModalSerialNumberDelete
-          ProductData={selectedData}
-          openDeletePopup={openDeletePopup}
-          handleCLoseDelete={handleCLoseDelete}
-          onDeleteSuccess={handleDeleteSerialSuccess}
-        />
-      )}
     </>
   );
 };

@@ -1,5 +1,9 @@
 import { axiosPublic } from "../axiosInstance";
-import { MACHINERY_COMPONENT, MACHINERY_COMPONENT_ID } from "../pathApiName";
+import {
+  GET_MACHINERY_COMPONENT,
+  MACHINERY_COMPONENT,
+  MACHINERY_COMPONENT_ID,
+} from "../pathApiName";
 import { useState } from "react";
 import axios from "axios";
 import {
@@ -12,7 +16,7 @@ export const MachineryComponentApi = () => {
   const apiGetListComponent = async () => {
     setLoading(true);
     try {
-      const response = await axiosPublic.get(MACHINERY_COMPONENT);
+      const response = await axiosPublic.get(GET_MACHINERY_COMPONENT);
       return response;
     } catch (error) {
       console.error(error);

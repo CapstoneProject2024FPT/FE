@@ -29,7 +29,6 @@ export const ApiSerial = () => {
 
   interface addProps {
     machineryId: string;
-    type: string;
   }
   interface quantitySerial {
     quantity: number;
@@ -88,8 +87,7 @@ export const ApiSerial = () => {
   };
 
   interface addPropsSerial {
-    machineryId: string;
-    type: string;
+    machineComponentId?: string;
   }
   interface quantitySerialComponent {
     quantity: number;
@@ -118,11 +116,54 @@ export const ApiSerial = () => {
     }
   };
 
+  const apiGetSerialbyMachineComponentId = async (query: string) => {
+    setLoading(true);
+    try {
+      const response = await axiosPublic.get(
+        `${SERIALNUMBER}?MachinerycomponentId=${query}`
+      );
+
+      return response;
+
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+      if (axios.isAxiosError(error) && error.response) {
+        return error.response.data;
+      } else {
+        return { statusCode: 500, Error: "Internal Server Error" };
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const apiGetByMasterCategoryId = async (id: string) => {
+    setLoading(true);
+    try {
+      const response = await axiosPublic.get(
+        SERIALNUMBER_ID.replace(":id", id)
+      );
+
+      return response;
+
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+      if (axios.isAxiosError(error) && error.response) {
+        return error.response.data;
+      } else {
+        return { statusCode: 500, Error: "Internal Server Error" };
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
   return {
     apiGetSerialbyMachineId,
     loading,
     apiAddSerialbyMachineId,
     apiDeleteSerialbyMachineId,
     apiAddSerialbyComponentId,
+    apiGetSerialbyMachineComponentId,
+    apiGetByMasterCategoryId,
   };
 };

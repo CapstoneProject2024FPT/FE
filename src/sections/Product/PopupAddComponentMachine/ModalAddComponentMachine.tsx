@@ -12,8 +12,9 @@ import {
 } from "@mui/material";
 import { useParams } from "react-router-dom";
 import { GetMachineComponents } from "../../../models/machineComponent";
-import { MachineryComponentApi } from "../../../api/services/apiMachineComponent";
 import EmptyData from "../../../components/EmptyData";
+import { toast } from "react-toastify";
+import { MachineryApi } from "../../../api/services/apiMachinery";
 
 interface ModalProduct {
   productData: GetMachineComponents[] | [];
@@ -30,8 +31,7 @@ const ModalViewBeforeAddComponent: React.FC<ModalProduct> = ({
 }) => {
   const { id } = useParams<{ id: string }>();
 
-  const { loading } = MachineryComponentApi();
-  console.log(onAddSuccess);
+  const { loading, apiPostMachineComponent } = MachineryApi();
 
   const onSubmit = async () => {
     try {
@@ -39,15 +39,15 @@ const ModalViewBeforeAddComponent: React.FC<ModalProduct> = ({
         const params = productData.map((item) => {
           return item.id;
         });
-        console.log(params);
-
         if (id) {
-          //   const response = await ;
-          //   if (response && response.status === 200) {
-          //     onAddSuccess(response.data);
-          //   } else {
-          //     toast.error(response.Error);
-          //   }
+          const response = await apiPostMachineComponent(params, id);
+          console.log(response);
+
+          if (response && response.status === 200) {
+            onAddSuccess();
+          } else {
+            toast.error(response.Error);
+          }
         }
       }
     } catch (error) {
@@ -61,8 +61,11 @@ const ModalViewBeforeAddComponent: React.FC<ModalProduct> = ({
       open={open}
       onCancel={handleClose}
       footer={[
-        <Button onClick={handleClose}>Huỷ</Button>,
+        <Button key="cancel" onClick={handleClose}>
+          Huỷ
+        </Button>,
         <Button
+          key="submit"
           loading={loading}
           onClick={onSubmit}
           disabled={productData?.length <= 0}
@@ -76,8 +79,8 @@ const ModalViewBeforeAddComponent: React.FC<ModalProduct> = ({
         <Table size="small" aria-label="products">
           <TableHead>
             <TableRow>
-              <TableCell>Tên sản phẩm</TableCell>
-              <TableCell>Số lượng</TableCell>
+              <TableCell>Thứ tự</TableCell>
+              <TableCell>Tên bộ phận</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -85,7 +88,7 @@ const ModalViewBeforeAddComponent: React.FC<ModalProduct> = ({
               <>
                 {productData?.map((product, idx) => (
                   <TableRow key={product.id}>
-                    <TableCell>{idx}</TableCell>
+                    <TableCell>{idx + 1}</TableCell>
                     <TableCell>{product.name}</TableCell>
                   </TableRow>
                 ))}

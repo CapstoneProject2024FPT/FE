@@ -12,6 +12,7 @@ import { GetMachineComponents } from "../../models/machineComponent";
 import { CheckboxChangeEvent } from "antd/es/checkbox";
 import ModalViewBeforeAddComponent from "./PopupAddComponentMachine/ModalAddComponentMachine";
 import { toast } from "react-toastify";
+import useDebounce from "../../hooks/useDebounce";
 
 type ColumnsType<T> = TableProps<T>["columns"];
 const { Search } = Input;
@@ -37,7 +38,7 @@ const AddComponentOfMachineTable: React.FC<AddComponentOfMachineTable> = ({
   const { id } = useParams<{ id: string }>();
   //search
   const [query, setQuery] = useState<string>("");
-
+  const debounceQuery = useDebounce({ value: query, delay: 300 });
   //popup
   const [openAdd, setOpenAdd] = useState<boolean>(false);
 
@@ -58,6 +59,7 @@ const AddComponentOfMachineTable: React.FC<AddComponentOfMachineTable> = ({
       const response = await apiGetDetailMachine(id);
       if (response && response.data) {
         SetMachinery(response.data);
+        setChooseComponents(response.data.component);
         handleSetName(response.data.name);
       }
     }
@@ -66,7 +68,7 @@ const AddComponentOfMachineTable: React.FC<AddComponentOfMachineTable> = ({
   const fetchComponent = async () => {
     const response = await apiGetListComponent();
     if (response.status === 200 && response.data) {
-      setComponents(response.data.items || []);
+      setComponents(response.data || []);
     }
   };
 
@@ -116,7 +118,7 @@ const AddComponentOfMachineTable: React.FC<AddComponentOfMachineTable> = ({
   };
 
   const filteredRows = components?.filter((item) =>
-    item.name.toLowerCase().includes(query.toLowerCase())
+    item.name.toLowerCase().includes(debounceQuery.toLowerCase())
   );
 
   const columns: ColumnsType<GetMachineComponents> = [
