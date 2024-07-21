@@ -22,8 +22,7 @@ interface ModalSerialNumber {
 }
 
 interface addProps {
-  machineryId: string;
-  type: string;
+  machineComponentId: string;
 }
 interface quantitySerial {
   quantity: number;
@@ -59,9 +58,10 @@ const ModalAddSerialComponent: React.FC<ModalSerialNumber> = ({
     try {
       if (productData) {
         const params: addProps = {
-          machineryId: productData.id,
-          type: "Material",
+          machineComponentId: productData.id,
         };
+        console.log(params);
+
         const response = await apiAddSerialbyComponentId(params, data);
 
         if (response.status === 200) {

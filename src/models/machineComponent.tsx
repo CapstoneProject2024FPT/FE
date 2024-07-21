@@ -52,3 +52,12 @@ export interface UpdateProductComponent {
   status: string;
   categoryId: string;
 }
+
+export interface ComponentMachine {
+  id: string;
+  name: string;
+  description: string;
+  status: string;
+  stockPrice: number;
+  sellingPrice: number;
+}
