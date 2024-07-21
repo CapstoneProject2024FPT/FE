@@ -1,25 +1,36 @@
-import { Page, Text, View, Document, StyleSheet, pdf, Image } from '@react-pdf/renderer';
-import { OrderProps } from '../../../../models/order';
-import { formatAddress, formatDateFunc, formatMoney } from '../../../../utils/fn';
-import { useEffect, useState } from 'react';
-import { Font } from '@react-pdf/renderer';
-import loraRegular from '../../../../assets/fonts/static/Lora-Regular.ttf';
-import logo from '../../../../assets/images/logo-SMMMS.png'; // Adjust path as needed
-
+import {
+  Page,
+  Text,
+  View,
+  Document,
+  StyleSheet,
+  pdf,
+  Image,
+} from "@react-pdf/renderer";
+import { OrderProps } from "../../../../models/order";
+import {
+  formatAddress,
+  formatDateFunc,
+  formatMoney,
+} from "../../../../utils/fn";
+import { useEffect, useState } from "react";
+import { Font } from "@react-pdf/renderer";
+import loraRegular from "../../../../assets/fonts/static/Lora-Regular.ttf";
+import logo from "../../../../assets/images/logo-SMMMS.png"; // Adjust path as needed
 
 // Define styles
 Font.register({
-  family: 'Lora',
+  family: "Lora",
   src: loraRegular,
 });
 
 const styles = StyleSheet.create({
   page: {
     padding: 30,
-    fontFamily: 'Lora',
+    fontFamily: "Lora",
   },
   header: {
-    textAlign: 'center',
+    textAlign: "center",
     fontSize: 24,
     marginBottom: 20,
   },
@@ -27,48 +38,51 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   table: {
-    width: '100%',
-    borderStyle: 'solid',
+    width: "100%",
+    borderStyle: "solid",
     borderWidth: 1,
-    borderColor: '#ddd',
+    borderColor: "#ddd",
     marginBottom: 20,
-    borderCollapse: 'collapse',
+    borderCollapse: "collapse",
   },
   tableRow: {
-    flexDirection: 'row',
+    flexDirection: "row",
   },
   tableColHeader: {
-    borderStyle: 'solid',
+    borderStyle: "solid",
     borderWidth: 1,
-    borderColor: '#ddd',
+    borderColor: "#ddd",
     padding: 8,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     flex: 1,
-    textAlign: 'center',
+    textAlign: "center",
   },
   tableCol: {
-    borderStyle: 'solid',
+    borderStyle: "solid",
     borderWidth: 1,
-    borderColor: '#ddd',
+    borderColor: "#ddd",
     padding: 8,
     flex: 1,
-    textAlign: 'center',
+    textAlign: "center",
   },
   watermark: {
-    position: 'absolute',
-    top: '25%',
-    left: '25%',
-    transform: 'translate(-50%, -50%)',
+    position: "absolute",
+    top: "25%",
+    left: "25%",
+    transform: "translate(-50%, -50%)",
     opacity: 0.2, // Adjust opacity to make the logo faded
-    width: '80%', // Adjust size as needed
-    height: 'auto',
+    width: "80%", // Adjust size as needed
+    height: "auto",
     zIndex: 0,
   },
 });
 
 const ExportPDFDocument = ({ row }: { row: OrderProps }) => {
   // Calculate total amount
-  const totalAmount = row.productList.reduce((sum, product) => sum + product.totalAmount, 0);
+  const totalAmount = row.productList.reduce(
+    (sum, product) => sum + product.totalAmount,
+    0
+  );
 
   return (
     <Document>
@@ -78,11 +92,16 @@ const ExportPDFDocument = ({ row }: { row: OrderProps }) => {
           <Text>Hóa đơn</Text>
         </View>
         <View style={styles.section}>
-          <Text>Mã hóa đơn: {row.invoiceCode || ''}</Text>
-          <Text>Khách hàng: {row.userInfo.fullName || ''}</Text>
-          <Text>Địa chỉ: {formatAddress(row.address) || ''}</Text>
-          <Text>Ngày mua: {formatDateFunc.formatDate(row.createDate) || ''}</Text>
-          <Text>Ngày hoàn thành: {formatDateFunc.formatDate(row.completedDate) || ''}</Text>
+          <Text>Mã hóa đơn: {row.invoiceCode || ""}</Text>
+          <Text>Khách hàng: {row.userInfo.fullName || ""}</Text>
+          <Text>Địa chỉ: {formatAddress(row.address) || ""}</Text>
+          <Text>
+            Ngày mua: {formatDateFunc.formatDate(row.createDate) || ""}
+          </Text>
+          <Text>
+            Ngày hoàn thành:{" "}
+            {formatDateFunc.formatDate(row.completedDate) || ""}
+          </Text>
         </View>
         <View style={styles.section}>
           <Text>Thông tin đơn hàng</Text>
@@ -94,14 +113,18 @@ const ExportPDFDocument = ({ row }: { row: OrderProps }) => {
             </View>
             {row.productList.map((product, index) => (
               <View style={styles.tableRow} key={index}>
-                <Text style={styles.tableCol}>{product.productName || ''}</Text>
-                <Text style={styles.tableCol}>{product.quantity || ''}</Text>
-                <Text style={styles.tableCol}>{formatMoney(product.totalAmount) || ''}</Text>
+                <Text style={styles.tableCol}>{product.productName || ""}</Text>
+                <Text style={styles.tableCol}>{product.quantity || ""}</Text>
+                <Text style={styles.tableCol}>
+                  {formatMoney(product.totalAmount) || ""}
+                </Text>
               </View>
             ))}
             <View style={styles.tableRow}>
               <Text style={styles.tableCol}>Tổng tiền</Text>
-              <Text style={styles.tableCol}>{formatMoney(totalAmount) || ''}</Text>
+              <Text style={styles.tableCol}>
+                {formatMoney(totalAmount) || ""}
+              </Text>
             </View>
           </View>
         </View>
@@ -129,11 +152,7 @@ const ExportPDF = ({ row }: { row: OrderProps }) => {
     }
   };
 
-  return (
-    <div onClick={handleOpenPdf}>
-      Xuất hóa đơn
-    </div>
-  );
+  return <div onClick={handleOpenPdf}>Xuất hóa đơn</div>;
 };
 
 export default ExportPDF;
