@@ -11,6 +11,7 @@ export const MACHINERY_LIST = "machinery";
 export const MACHINERY_ID = "/Machinery/:id";
 export const MACHINERY_DETAIL = "Machinery/Detail";
 export const MACHINERY_HOME_PRIORITY = "Machinery?Priority=1&size=4";
+export const ADD_MACHINERY_COMPONENT = "machinery/:id/addComponent";
 
 //Category Machinery
 export const GET_CATEGORY = "categories?status=Active&kind=Machinery";
@@ -22,6 +23,7 @@ export const GET_CATEGORY_CHILD =
 
 //Machinery Component
 export const MACHINERY_COMPONENT = "machineryComponent";
+export const GET_MACHINERY_COMPONENT = "machineryComponent/noPaginate";
 export const MACHINERY_COMPONENT_ID = "machineryComponent/:id";
 
 //Category Component
