@@ -410,6 +410,7 @@ const Detail: React.FC = () => {
                     transform: "scale(0.9)",
                   },
                 }}
+                disabled={selectProductQuantity === 0}
               >
                 <span className="add-to-cart">Thêm vào giỏ</span>
               </Button>
