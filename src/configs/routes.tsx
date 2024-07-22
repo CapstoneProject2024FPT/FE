@@ -22,6 +22,7 @@ export const routes = {
   aboutUs: "/about-us",
   privacyPolicy: "/privacy-policy",
   termsOfService: "/terms-of-service",
+  transaction: "/transaction",
 };
 
 export const adminRoutes = {
