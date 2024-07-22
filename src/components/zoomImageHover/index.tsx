@@ -47,12 +47,16 @@ const Zoom: React.FC<Props> = ({
         width,
         height,
         backgroundRepeat: "no-repeat",
-        marginTop: 0,
-        marginLeft: 0,
         transition: `background-position ${transitionTime}s ease`,
         ...style,
+        boxShadow:
+          "rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px",
+        "&: hover": {
+          cursor: "pointer",
+        },
 
         "&:hover img": {
+          cursor: "pointer",
           opacity: 0,
         },
       }}
@@ -66,6 +70,8 @@ const Zoom: React.FC<Props> = ({
           height: "100%",
           pointerEvents: "none",
           objectFit: "cover",
+          boxShadow:
+            "rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px",
         }}
       />
     </Box>
