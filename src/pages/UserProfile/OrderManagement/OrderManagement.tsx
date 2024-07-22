@@ -39,6 +39,7 @@ import emailjs from "@emailjs/browser";
 import moment from "moment";
 import { ApiCheckout } from "../../../api/services/apiCheckout";
 import { paymentProps } from "../../../models/payment";
+import { handleSendEmail } from "../../../utils/sendEmail";
 
 const getStatusStyles = (status: string) => {
   switch (status) {
@@ -65,8 +66,9 @@ const Row = (props: {
   const [open, setOpen] = useState(false);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const openMenu = Boolean(anchorEl);
-  let  email: string
-  let username: string
+  let  email: string = "";
+  let username: string = "";
+  let isSucess: boolean = false;
   const [remainingTime, setRemainingTime] = useState<number | null>(null);
 
   const { apiPayment, apiPaymentUpdate } = ApiCheckout();
@@ -89,6 +91,7 @@ const Row = (props: {
     }
     onCancelOrder(row.orderId);
     handleCloseMenu();
+    handleSendEmail(isSucess, email, username)
   };
 
   const handleOpenMenu = (event: React.MouseEvent<HTMLElement>) => {
@@ -97,48 +100,11 @@ const Row = (props: {
 
   const handleCloseMenu = () => {
     setAnchorEl(null);
-    sendCancelEmail();
   };
 
   const handleDetailOrder = () => {
     setOpen(!open);
     handleCloseMenu();
-  };
-
-  const sendCancelEmail = () => {
-    const templateParams = {
-      from_name: 'Admin SMMMS', // You can customize this field
-      from_email: 'ad.smmms.gsu24se44@gmail.com',
-      to_email: email,
-      message: `Chào, ${username} bạn đã hủy đơn hàng thành công!`,
-      reply_to: 'NoReply',
-      user_name: username
-    };
-
-    emailjs.send(
-      'service_gm8vuij', // Replace with your EmailJS service ID
-      'template_x9vsymt', // Replace with your EmailJS template ID
-      templateParams,
-      'plAq1eN98XuLLSYlh' // Replace with your EmailJS user ID
-    )
-  };
-
-  const sendSuccessEmail = () => {
-    const templateParams = {
-      from_name: 'Admin SMMMS', // You can customize this field
-      from_email: 'ad.smmms.gsu24se44@gmail.com',
-      to_email: email,
-      message: `Chào, ${username} bạn đã thanh toán đơn hàng thành công!`,
-      reply_to: 'NoReply',
-      user_name: username
-    };
-
-    emailjs.send(
-      'service_gm8vuij', // Replace with your EmailJS service ID
-      'template_x9vsymt', // Replace with your EmailJS template ID
-      templateParams,
-      'plAq1eN98XuLLSYlh' // Replace with your EmailJS user ID
-    )
   };
 
   useEffect(() => {
@@ -190,7 +156,8 @@ const Row = (props: {
           if (response.status === 200) {
             toast.success("Thanh toán thành công");
             // send mail for payment success
-            sendSuccessEmail()
+            isSucess = true
+            handleSendEmail(isSucess, email, username)
           }
         } catch (error) {
           console.error("Error updating payment status:", error);
@@ -207,6 +174,7 @@ const Row = (props: {
         }
       }
       sessionStorage.removeItem("paymmentID");
+      isSucess = false
     };
 
     if (transactionId) {
