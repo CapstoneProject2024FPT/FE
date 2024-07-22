@@ -59,7 +59,7 @@ const TableComponent: React.FC = () => {
       const response = await apiGetListComponent();
 
       if (response && response.status === 200) {
-        setProducts(response.data.items);
+        setProducts(response.data);
       } else {
         //lỗi show thông báo lỗi
         toast.error(response.Error);

@@ -1,4 +1,5 @@
 import { CategoryMachineDetail } from "./category";
+import { ComponentMachine } from "./machineComponent";
 
 type originProduct = {
   id: string;
@@ -51,6 +52,7 @@ export interface ProductAdmin {
   createDate: Date;
   image: [{ imageURL: string; createDate: string }];
   status: string;
+  component: ComponentMachine[];
 }
 
 export interface ProductAdminCategory {

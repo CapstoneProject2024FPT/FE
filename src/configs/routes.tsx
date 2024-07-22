@@ -37,6 +37,8 @@ export const adminRoutes = {
   product: "/dashboard/product",
   createProduct: "/dashboard/create/product",
   viewDetailProduct: "/dashboard/product/:id",
+  viewDetailMachineOfComponent: "/dashboard/product/:id/component",
+  AddComponentOfMachine: "/dashboard/product/:id/component/add",
   viewSerialProduct: "/dashboard/product/serial/:id",
   viewMachineComponent: "/dashboard/product/component",
   createMachineComponent: "/dashboard/create/component",

@@ -78,6 +78,14 @@ const ProductDetail = () => {
       navigate(config.adminRoutes.viewSerialProduct.replace(":id", id));
     }
   };
+
+  const handleOpenComponent = () => {
+    if (id) {
+      navigate(
+        config.adminRoutes.viewDetailMachineOfComponent.replace(":id", id)
+      );
+    }
+  };
   const handleUpdateSuccess = (response: string) => {
     handleClose();
     fetchProductDetail();
@@ -91,6 +99,9 @@ const ProductDetail = () => {
         <>
           <Box sx={{ display: "flex", justifyContent: "flex-end", mb: 2 }}>
             <Stack spacing={2} display="flex" direction="row">
+              <Button onClick={() => handleOpenComponent()}>
+                Các bộ phận máy
+              </Button>
               <Button onClick={() => handleOpenSerial()}>
                 Cập nhật số lượng máy
               </Button>

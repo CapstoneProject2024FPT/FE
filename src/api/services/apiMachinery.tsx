@@ -1,6 +1,7 @@
 import { axiosPublic } from "../axiosInstance";
 import {
   ADD_MACHINERY,
+  ADD_MACHINERY_COMPONENT,
   GET_MACHINERY,
   MACHINERY,
   MACHINERY_HOME_PRIORITY,
@@ -220,6 +221,30 @@ export const MachineryApi = () => {
       setLoading(false);
     }
   };
+
+  type postComponentMachine = string[];
+
+  const apiPostMachineComponent = async (
+    requestParams: postComponentMachine,
+    id: string
+  ) => {
+    setLoading(true);
+    try {
+      const response = await axiosPublic.post(
+        ADD_MACHINERY_COMPONENT.replace(":id", id),
+        requestParams
+      );
+      return response;
+    } catch (error) {
+      if (axios.isAxiosError(error) && error.response) {
+        return error.response.data;
+      } else {
+        return { statusCode: 500, Error: "Gặp vấn đề quá trình lấy dư liệu" };
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
   return {
     loading,
     apiGetList,
@@ -232,5 +257,6 @@ export const MachineryApi = () => {
     apiGetMachineryID,
     apiGetMachineryPriority,
     apiGetMachineAtHome,
+    apiPostMachineComponent,
   };
 };

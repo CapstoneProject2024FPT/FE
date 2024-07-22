@@ -42,7 +42,7 @@ const TableSerialComponent: React.FC<TableSerial> = ({ handleSetName }) => {
   const [selectedData, setSelectedData] = useState<serialProps | null>(null);
 
   //api
-  const { apiGetSerialbyMachineId, loading } = ApiSerial();
+  const { apiGetSerialbyMachineComponentId, loading } = ApiSerial();
   const { apiGetMachineryComponentDetail } = MachineryComponentApi();
   //modal popup
   const handleActionDelete = (record: serialProps) => {
@@ -68,11 +68,13 @@ const TableSerialComponent: React.FC<TableSerial> = ({ handleSetName }) => {
       handleSetName(response.data.name);
     }
   };
+
+  // api get serial numberMAchinebyMassterCategoryId
   //----------------------------------------------------------------------------
   const fetchSerialMachine = async () => {
     try {
       if (id) {
-        const response = await apiGetSerialbyMachineId(id);
+        const response = await apiGetSerialbyMachineComponentId(id);
 
         setSerialNumbers(response.data);
         setSelectedData(response.data[0]);

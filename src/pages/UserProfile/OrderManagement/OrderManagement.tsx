@@ -276,8 +276,8 @@ const Row = (props: {
             )}
             <MenuItem onClick={handleDetailOrder}>Chi tiết đơn hàng</MenuItem>
             {row.status === StatusType.COMPLETED && (
-              <MenuItem onClick={() => ExportPDF({ row })}>
-                Xuất hóa đơn
+              <MenuItem >
+                <ExportPDF row={row} />
               </MenuItem>
             )}
           </Menu>
@@ -331,13 +331,7 @@ const Row = (props: {
                       <TableCell>{formatMoney(product.totalAmount)}</TableCell>
                       {row.status === StatusType.COMPLETED && (
                         <TableCell>
-                          <Button
-                            onClick={() => WarrantyPDF({ order: row, product })}
-                            variant="contained"
-                            color="primary"
-                          >
-                            Phiếu bảo hành
-                          </Button>
+                          <WarrantyPDF order={row} product={product} />
                         </TableCell>
                       )}
                     </TableRow>
