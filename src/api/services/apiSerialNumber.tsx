@@ -87,7 +87,7 @@ export const ApiSerial = () => {
   };
 
   interface addPropsSerial {
-    machineComponentId?: string;
+    machineComponentsId?: string;
   }
   interface quantitySerialComponent {
     quantity: number;
@@ -120,7 +120,7 @@ export const ApiSerial = () => {
     setLoading(true);
     try {
       const response = await axiosPublic.get(
-        `${SERIALNUMBER}?MachinerycomponentId=${query}`
+        `${SERIALNUMBER}?MachineComponentsId=${query}`
       );
 
       return response;

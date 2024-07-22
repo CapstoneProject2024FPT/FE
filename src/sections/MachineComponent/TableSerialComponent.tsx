@@ -4,7 +4,7 @@ import type { TableProps } from "antd";
 import { DownOutlined } from "@ant-design/icons";
 import { Table, Input, Space, Dropdown, Button, Typography } from "antd";
 
-import { serialProps } from "../../models/serialNumber";
+import { conditionSerial, serialProps } from "../../models/serialNumber";
 import { ApiSerial } from "../../api/services/apiSerialNumber";
 import { toast } from "react-toastify";
 import { formatDateFunc } from "../../utils/fn";
@@ -25,7 +25,11 @@ interface TableSerial {
   handleSetName: (text: string) => void;
 }
 const TableSerialComponent: React.FC<TableSerial> = ({ handleSetName }) => {
-  const [serialNumbers, setSerialNumbers] = useState<serialProps[]>();
+  const [serialNumbers, setSerialNumbers] = useState<serialProps[]>([]);
+  const [masterId, setMasterId] = useState<string[]>([]);
+  const [masterIdInven, setMasterIdInven] = useState<Record<string, string>>(
+    {}
+  );
   const [pagination, setPagination] = useState({
     current: 1,
     pageSize: pageSize,
@@ -42,7 +46,11 @@ const TableSerialComponent: React.FC<TableSerial> = ({ handleSetName }) => {
   const [selectedData, setSelectedData] = useState<serialProps | null>(null);
 
   //api
-  const { apiGetSerialbyMachineComponentId, loading } = ApiSerial();
+  const {
+    apiGetSerialbyMachineComponentId,
+    loading,
+    apiGetByMasterCategoryId,
+  } = ApiSerial();
   const { apiGetMachineryComponentDetail } = MachineryComponentApi();
   //modal popup
   const handleActionDelete = (record: serialProps) => {
@@ -69,6 +77,24 @@ const TableSerialComponent: React.FC<TableSerial> = ({ handleSetName }) => {
     }
   };
 
+  const fetchMachineInventory = async (id: string[]) => {
+    try {
+      const MachineInventory = await Promise.all(
+        id.map(async (item) => {
+          const response = await apiGetByMasterCategoryId(item);
+          return { id: item, name: response.data.serialNumber };
+        })
+      );
+      const machineInventoryMap = MachineInventory.reduce((acc, item) => {
+        acc[item.id] = item.name;
+        return acc;
+      }, {} as Record<string, string>);
+      setMasterIdInven(machineInventoryMap);
+    } catch (error) {
+      console.error("Lỗi sản phẩm", error);
+    }
+  };
+
   // api get serial numberMAchinebyMassterCategoryId
   //----------------------------------------------------------------------------
   const fetchSerialMachine = async () => {
@@ -92,6 +118,20 @@ const TableSerialComponent: React.FC<TableSerial> = ({ handleSetName }) => {
     fetchMachineComponentDetail();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  useEffect(() => {
+    const ids = serialNumbers
+      .filter((item) => item.masterInventoryId !== null)
+      .map((item) => item.masterInventoryId);
+    setMasterId(ids);
+  }, [serialNumbers]);
+
+  useEffect(() => {
+    if (masterId.length > 0) {
+      fetchMachineInventory(masterId);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [masterId]);
 
   const handleAddSuccess = () => {
     handleCLose();
@@ -158,10 +198,28 @@ const TableSerialComponent: React.FC<TableSerial> = ({ handleSetName }) => {
       },
     },
     {
+      title: "Tình trạng",
+      dataIndex: "condition",
+      render: (condition) => {
+        return condition === conditionSerial.OLD
+          ? "Cũ"
+          : condition === conditionSerial.NEW
+          ? "Mới"
+          : "Đang dùng";
+      },
+    },
+    {
       title: "Ngày tạo",
       dataIndex: "createDate",
       render: (createDate) => {
         return formatDateFunc.formatDate(createDate);
+      },
+    },
+    {
+      title: "Dùng cho máy",
+      dataIndex: "masterInventoryId",
+      render: (masterInventoryId) => {
+        return masterIdInven[masterInventoryId] || "Chưa có máy dùng";
       },
     },
     {
@@ -202,7 +260,7 @@ const TableSerialComponent: React.FC<TableSerial> = ({ handleSetName }) => {
           style={{ width: 200, marginBottom: 16 }}
         />
         <Button onClick={handleOpen} icon={<PlusOutlined />}>
-          Thêm máy
+          Thêm số lượng máy
         </Button>
       </div>
 

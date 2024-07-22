@@ -18,7 +18,8 @@ const SideBarUserProfile: React.FC = () => {
   const location = useLocation();
 
   const getActiveStyle = (path: string) => ({
-    backgroundColor: location.pathname === path ? 'rgba(0, 0, 0, 0.08)' : 'inherit',
+    backgroundColor:
+      location.pathname === path ? "rgba(0, 0, 0, 0.08)" : "inherit",
   });
 
   return (
@@ -70,7 +71,11 @@ const SideBarUserProfile: React.FC = () => {
             sx={getActiveStyle(config.routes.userAddress)}
           >
             <ListItemIcon>
-              <Iconify icon={"mdi:address-marker-outline"} width={20} height={20} />
+              <Iconify
+                icon={"mdi:address-marker-outline"}
+                width={20}
+                height={20}
+              />
             </ListItemIcon>
             <ListItemText primary="Địa chỉ" />
           </ListItemButton>
@@ -103,6 +108,20 @@ const SideBarUserProfile: React.FC = () => {
               <EngineeringIcon />
             </ListItemIcon>
             <ListItemText primary="Bảo hành" />
+          </ListItemButton>
+          <ListItemButton
+            component={Link}
+            to={config.routes.transaction}
+            sx={getActiveStyle(config.routes.transaction)}
+          >
+            <ListItemIcon>
+              <Iconify
+                icon={"ant-design:transaction-outlined"}
+                width={20}
+                height={20}
+              />
+            </ListItemIcon>
+            <ListItemText primary="Giao dịch" />
           </ListItemButton>
         </div>
       </List>

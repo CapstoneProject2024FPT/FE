@@ -41,6 +41,9 @@ export const BRAND = "brand";
 //Customer
 export const CUSTOMER_PROFILE = "/users/:id";
 
+//transaction
+export const USER_TRANSACTION = "/transaction";
+export const USER_TRANSACTION_ID = "/transaction/:id";
 //checkout
 export const CHECKOUT = "/orders";
 
