@@ -47,6 +47,7 @@ import KanBan from "../pages/Admin/Task/Task";
 import WarrantyManagent from "../pages/Admin/Warranty/WarrantyManagement";
 import ComponentOfMachine from "../pages/Admin/Product/ComponentOfMachine";
 import AddComponentOfMachine from "../pages/Admin/Product/AddComponentOfMachine";
+import UserTransaction from "../pages/UserProfile/UserTransaction";
 
 const AppRoute: React.FC = () => {
   return (
@@ -87,6 +88,11 @@ const AppRoute: React.FC = () => {
           key="Address"
           path={config.routes.userAddress}
           element={<Address />}
+        />
+        <Route
+          key="Transaction"
+          path={config.routes.transaction}
+          element={<UserTransaction />}
         />
         <Route
           key="productList"

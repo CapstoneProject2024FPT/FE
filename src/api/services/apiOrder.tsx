@@ -80,13 +80,10 @@ export const ApiOrder = () => {
     status: string;
     note: string;
   }
-  const apiAcceptOrder = async (id: string, params: OrderProps) => {
+  const apiOrderId = async (id: string) => {
     setLoading(true);
     try {
-      const response = await axiosPublic.put(
-        ORDER_ID.replace(":id", id),
-        params
-      );
+      const response = await axiosPublic.get(ORDER_ID.replace(":id", id));
       return response;
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
@@ -125,7 +122,7 @@ export const ApiOrder = () => {
     loading,
     apiGetOrderById,
     apiCancelOrder,
-    apiAcceptOrder,
+    apiOrderId,
     apiCompleteOrder,
   };
 };
