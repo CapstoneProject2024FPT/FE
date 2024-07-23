@@ -12,75 +12,36 @@ import {
   Pie,
   PieChart,
   ResponsiveContainer,
+  Label,
 } from "recharts";
 import {
   Box,
   Card,
   CardActionArea,
   CardContent,
-  Container,
   Divider,
-  Stack,
   Typography,
 } from "@mui/material";
 import HeaderBreadcrumbs from "../../components/HeaderBreadcrumbs";
 
 const data = [
-  {
-    name: "Tháng 1",
-    value: 2400,
-  },
-  {
-    name: "Tháng 2",
-    value: 1398,
-  },
-  {
-    name: "Tháng 3",
-    value: 9800,
-  },
-  {
-    name: "Tháng 4",
-    value: 3908,
-  },
-  {
-    name: "Tháng 5",
-    value: 4800,
-  },
-  {
-    name: "Tháng 6",
-    value: 3800,
-  },
-  {
-    name: "Tháng 7",
-    value: 4300,
-  },
-  {
-    name: "Tháng 8",
-    value: 9800,
-  },
-  {
-    name: "Tháng 9",
-    value: 3908,
-  },
-  {
-    name: "Tháng 10",
-    value: 4800,
-  },
-  {
-    name: "Tháng 11",
-    value: 3800,
-  },
-  {
-    name: "Tháng 12",
-    value: 4300,
-  },
+  { name: "Tháng 1", value: 2400 },
+  { name: "Tháng 2", value: 1398 },
+  { name: "Tháng 3", value: 9800 },
+  { name: "Tháng 4", value: 3908 },
+  { name: "Tháng 5", value: 4800 },
+  { name: "Tháng 6", value: 3800 },
+  { name: "Tháng 7", value: 4300 },
+  { name: "Tháng 8", value: 9800 },
+  { name: "Tháng 9", value: 3908 },
+  { name: "Tháng 10", value: 4800 },
+  { name: "Tháng 11", value: 3800 },
+  { name: "Tháng 12", value: 4300 },
 ];
 
 const dataPie = [
-  { name: "Group A", value: 400 },
-  { name: "Group B", value: 300 },
-  { name: "Group C", value: 300 },
-  { name: "Group D", value: 200 },
+  { name: "Đơn đã thanh toán", value: 400 },
+  { name: "Đơn đã hủy", value: 300 },
 ];
 
 const RADIAN = Math.PI / 180;
@@ -109,10 +70,9 @@ const renderCustomizedLabel = ({
   );
 };
 
-const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042"];
+const COLORS = ["#27ae60", "#e74c3c"];
 
 const Dashboard: React.FC = () => {
-
   const CustomXAxisTick = (props: any) => {
     const { x, y, payload } = props;
     return (
@@ -121,9 +81,9 @@ const Dashboard: React.FC = () => {
           x={0}
           y={0}
           dy={16}
-          textAnchor="end"
+          textAnchor="start"
           fill="#666"
-          transform="rotate(-30)"
+          transform="rotate(40)"
         >
           {payload.value}
         </text>
@@ -131,28 +91,30 @@ const Dashboard: React.FC = () => {
     );
   };
   return (
-    <Container>
+    <Box sx={{ width: "100%", height: "100%" }}>
       <HeaderBreadcrumbs
         heading="Thống kê"
         links={[{ name: "Thống kê doanh thu" }]}
       />
       <Box
         sx={{
-          width: "100%",
           display: "flex",
-          gap: "40px",
-          justifyContent: "space-around",
+          flexDirection: "column",
+          alignItems: "center",
+          gap: "20px",
         }}
       >
         <Box
           sx={{
             display: "grid",
-            gap: "20px",
+            rowGap: 3,
+            columnGap: 3,
             gridTemplateColumns: {
-              xs: "repeat(1, fr)",
+              xs: "repeat(1, 1fr)",
               sm: "repeat(2, 1fr)",
+              md: "repeat(3, 1fr)",
+              lg: "repeat(4, 1fr)",
             },
-            height: "fit-content",
           }}
         >
           <Card
@@ -215,48 +177,94 @@ const Dashboard: React.FC = () => {
               </CardContent>
             </CardActionArea>
           </Card>
+          <Card
+            sx={{
+              maxWidth: 300,
+              minWidth: 150,
+              height: 130,
+              boxShadow:
+                "rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px",
+            }}
+          >
+            <CardActionArea sx={{ height: 130 }}>
+              <CardContent>
+                <Typography variant="body2" color="text.secondary">
+                  Số lượng khách hàng đã đăng ký
+                </Typography>
+                <Typography gutterBottom variant="h5">
+                  1500
+                </Typography>
+              </CardContent>
+            </CardActionArea>
+          </Card>
         </Box>
         <Divider
-          orientation="vertical"
+          orientation="horizontal"
           flexItem
-          sx={{ margin: "5px", border: "1px solid #d9d9d9" }}
+          sx={{ margin: "10px", border: "1px solid #d9d9d9" }}
         />
-        <Box>
-          <ResponsiveContainer width="100%" height={300}>
-            <BarChart data={data}>
-              <CartesianGrid />
-              <XAxis dataKey="name" tick={<CustomXAxisTick />} />
-              <YAxis />
-              <Tooltip />
-              <Legend />
-              <Bar dataKey="value" fill="#8884d8" />
-            </BarChart>
-          </ResponsiveContainer>
-
-          <ResponsiveContainer width={500} height={300}>
-            <PieChart>
-              <Pie
-                data={dataPie}
-                outerRadius={80}
-                labelLine={false}
-                label={renderCustomizedLabel}
-                fill="#8884d8"
-                dataKey="value"
-              >
-                {dataPie.map((entry, index) => (
-                  <Cell
-                    key={`cell-${index}`}
-                    fill={COLORS[index % COLORS.length]}
-                  />
-                ))}
-              </Pie>
-              <Tooltip />
-              <Legend />
-            </PieChart>
-          </ResponsiveContainer>
+        <Box
+          sx={{
+            width: "100%",
+            display: "flex",
+            gap: "20px",
+          }}
+        >
+          <Box sx={{ width: "50%" }}>
+            <ResponsiveContainer width="100%" height={400}>
+              <BarChart data={data} barSize="3%" barGap="6" barCategoryGap="3%">
+                <CartesianGrid />
+                <XAxis dataKey="name" tick={<CustomXAxisTick />} interval={0} />
+                <YAxis />
+                <Tooltip />
+                <Legend
+                  payload={[
+                    {
+                      value: "Doanh thu",
+                      type: "square",
+                      color: "#3498db",
+                    },
+                  ]}
+                  wrapperStyle={{
+                    position: "relative",
+                    fontSize: "18px",
+                  }}
+                />
+                <Bar dataKey="value" fill="#3498db" />
+              </BarChart>
+            </ResponsiveContainer>
+          </Box>
+          <Divider
+            orientation="vertical"
+            flexItem
+            sx={{ margin: "5px", border: "1px solid #d9d9d9" }}
+          />
+          <Box sx={{ width: "40%" }}>
+            <ResponsiveContainer width="100%" height={300}>
+              <PieChart>
+                <Pie
+                  data={dataPie}
+                  outerRadius={120}
+                  labelLine={false}
+                  label={renderCustomizedLabel}
+                  fill="#8884d8"
+                  dataKey="value"
+                >
+                  {dataPie.map((entry, index) => (
+                    <Cell
+                      key={`cell-${index}`}
+                      fill={COLORS[index % COLORS.length]}
+                    />
+                  ))}
+                </Pie>
+                <Tooltip />
+                <Legend />
+              </PieChart>
+            </ResponsiveContainer>
+          </Box>
         </Box>
       </Box>
-    </Container>
+    </Box>
   );
 };
 
