@@ -17,6 +17,8 @@ import { ApiTask } from "../../../api/services/apiTask";
 import { LoadingButton } from "@mui/lab";
 import { RoleType, staffProps } from "../../../models/UserData";
 import { ApiAccount } from "../../../api/services/apiAccount";
+import { ApiWarranty } from "../../../api/services/apiWarranty";
+import { WarrantyPropsById } from "../../../models/warranty";
 
 interface ModalBrand {
   TaskData: GetTaskProps | null;
@@ -39,9 +41,13 @@ const ModalChangeStaffTask: React.FC<ModalBrand> = ({
   handleClose,
   onChangeSuccess,
 }) => {
+  //api
   const { apiUpdateTask } = ApiTask();
   const { apiGetUserByRole } = ApiAccount();
+  const { apiGetWarrantyById } = ApiWarranty();
+  //useState
   const [data, setData] = useState<staffProps[]>();
+  const [warranty, setWarranty] = useState<WarrantyPropsById>();
 
   const fetchAccountUser = async () => {
     const params = {
@@ -56,11 +62,33 @@ const ModalChangeStaffTask: React.FC<ModalBrand> = ({
     }
   };
 
+  const fetchWarantyId = async (id: string) => {
+    try {
+      if (TaskData) {
+        const response = await apiGetWarrantyById(id);
+        if (response.status === 200) {
+          setWarranty(response.data);
+        } else {
+          toast.error(response.Error);
+        }
+      }
+    } catch (error) {
+      toast.error("Lỗi lấy thông tin người dung");
+    }
+  };
+
   useEffect(() => {
     fetchAccountUser();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  useEffect(() => {
+    if (TaskData?.warrantyDetail?.warrantyId) {
+      fetchWarantyId(TaskData.warrantyDetail.warrantyId);
+    }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
   const RankSchema = Yup.object().shape({
     accountId: Yup.string().required("Bắt buộc"),
   });
@@ -102,7 +130,7 @@ const ModalChangeStaffTask: React.FC<ModalBrand> = ({
   };
   return (
     <Modal
-      title={`Đổi nhân viên ${TaskData?.id ?? ""}`}
+      title={`Đổi nhân viên cho nhiệm vụ có id:  ${TaskData?.id ?? ""}`}
       open={open}
       onCancel={handleClose}
       footer={[]}
@@ -112,10 +140,25 @@ const ModalChangeStaffTask: React.FC<ModalBrand> = ({
       <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
         <Card sx={{ p: 3 }}>
           <Stack spacing={3}>
-            <TextField
-              label="Mã đơn hàng"
-              value={TaskData?.order?.invoiceCode}
-            />
+            {TaskData?.type === "Delivery" ? (
+              <>
+                <TextField
+                  label="Mã đơn hàng"
+                  value={TaskData?.order?.invoiceCode}
+                />
+              </>
+            ) : (
+              <>
+                <TextField
+                  label="Tên máy"
+                  value={warranty?.inventory?.machinery?.name}
+                />
+                <TextField
+                  label="Mã số máy"
+                  value={warranty?.inventory.serialNumber}
+                />
+              </>
+            )}
             <RHFAutoCompleteUser
               name="accountId"
               label="Mức tiền"

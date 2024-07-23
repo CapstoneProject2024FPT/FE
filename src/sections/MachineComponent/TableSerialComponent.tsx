@@ -242,7 +242,7 @@ const TableSerialComponent: React.FC<TableSerial> = ({ handleSetName }) => {
             }}
           >
             <a>
-              Thêm <DownOutlined />
+              <DownOutlined />
             </a>
           </Dropdown>
         </Space>

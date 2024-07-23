@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import {
   Container,
   Typography,
@@ -33,12 +33,10 @@ import EmptyOrder from "../../../components/EmptyOrder";
 import CancelOrderDialog from "./Modal/PopupCancelOrder";
 import ExportPDF from "./Exportpdf/ExportPDF";
 import WarrantyPDF from "./Exportpdf/WarrantyPDF";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import config from "../../../configs";
 import emailjs from "@emailjs/browser";
 import moment from "moment";
-import { ApiCheckout } from "../../../api/services/apiCheckout";
-import { paymentProps } from "../../../models/payment";
 
 const getStatusStyles = (status: string) => {
   switch (status) {
@@ -65,25 +63,22 @@ const Row = (props: {
   const [open, setOpen] = useState(false);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const openMenu = Boolean(anchorEl);
-  let  email: string
-  let username: string
+  let email: string;
+  let username: string;
   const [remainingTime, setRemainingTime] = useState<number | null>(null);
 
-  const { apiPayment, apiPaymentUpdate } = ApiCheckout();
-  const location = useLocation();
   const navigate = useNavigate();
   const defaultStatus = "Đang chờ xác nhận";
   const StatusName = row?.status
     ? statusMapping?.find((status) => status.id === row?.status)?.name
     : defaultStatus;
 
-
   const handleCancelOrder = () => {
     const getUserInfoString = localStorage.getItem("getUserInfo");
     if (getUserInfoString) {
       const userInfo = JSON.parse(getUserInfoString);
-    email = userInfo?.email
-    username = userInfo?.username
+      email = userInfo?.email;
+      username = userInfo?.username;
     } else {
       console.error("No user info found in localStorage");
     }
@@ -107,38 +102,20 @@ const Row = (props: {
 
   const sendCancelEmail = () => {
     const templateParams = {
-      from_name: 'Admin SMMMS', // You can customize this field
-      from_email: 'ad.smmms.gsu24se44@gmail.com',
+      from_name: "Admin SMMMS", // You can customize this field
+      from_email: "ad.smmms.gsu24se44@gmail.com",
       to_email: email,
       message: `Chào, ${username} bạn đã hủy đơn hàng thành công!`,
-      reply_to: 'NoReply',
-      user_name: username
+      reply_to: "NoReply",
+      user_name: username,
     };
 
     emailjs.send(
-      'service_gm8vuij', // Replace with your EmailJS service ID
-      'template_x9vsymt', // Replace with your EmailJS template ID
+      "service_gm8vuij", // Replace with your EmailJS service ID
+      "template_x9vsymt", // Replace with your EmailJS template ID
       templateParams,
-      'plAq1eN98XuLLSYlh' // Replace with your EmailJS user ID
-    )
-  };
-
-  const sendSuccessEmail = () => {
-    const templateParams = {
-      from_name: 'Admin SMMMS', // You can customize this field
-      from_email: 'ad.smmms.gsu24se44@gmail.com',
-      to_email: email,
-      message: `Chào, ${username} bạn đã thanh toán đơn hàng thành công!`,
-      reply_to: 'NoReply',
-      user_name: username
-    };
-
-    emailjs.send(
-      'service_gm8vuij', // Replace with your EmailJS service ID
-      'template_x9vsymt', // Replace with your EmailJS template ID
-      templateParams,
-      'plAq1eN98XuLLSYlh' // Replace with your EmailJS user ID
-    )
+      "plAq1eN98XuLLSYlh" // Replace with your EmailJS user ID
+    );
   };
 
   useEffect(() => {
@@ -173,70 +150,20 @@ const Row = (props: {
     return `${mins}:${secs < 10 ? "0" : ""}${secs}`;
   };
 
-
-  //vnreturn
-  useEffect(() => {
-    const queryParams = new URLSearchParams(location.search);
-    const transactionId = queryParams.get("vnp_TransactionStatus");
-
-    const handleTransactionStatus = async () => {
-      const id = sessionStorage.getItem("paymmentID");
-
-      if (transactionId === "00" && id) {
-        const params = { status: "SUCCESS" };
-        try {
-          const response = await apiPaymentUpdate(params, id);
-          console.log(response);
-          if (response.status === 200) {
-            toast.success("Thanh toán thành công");
-            // send mail for payment success
-            sendSuccessEmail()
-          }
-        } catch (error) {
-          console.error("Error updating payment status:", error);
-        }
-      } else if (id) {
-        const params = { status: "FAILED" };
-        try {
-          const response = await apiPaymentUpdate(params, id);
-          if (response.status === 200) {
-            toast.error("Thanh toán thất bại");
-          }
-        } catch (error) {
-          console.error("Error updating payment status:", error);
-        }
-      }
-      sessionStorage.removeItem("paymmentID");
-    };
-
-    if (transactionId) {
-      handleTransactionStatus();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [location, navigate]);
-
+  //payment
   const handlePayment = async (row: OrderProps) => {
-    const paramPayment: paymentProps = {
-      orderId: row.orderId,
-      amount: row.finalAmount,
-      callbackUrl: window.location.href,
-      paymentType: "VNPAY",
-    };
-
-    const responsePayment = await apiPayment(paramPayment);
-    sessionStorage.setItem("paymmentID", responsePayment.data.paymentId);
-
-    if (responsePayment.status === 200) {
-      window.location.href = responsePayment.data.url;
-    } else {
-      console.error("Khởi tạo vnpay lỗi", responsePayment);
-    }
+    navigate(config.routes.paymentOrderID.replace(":id", row.orderId));
   };
+
   return (
     <React.Fragment>
       <TableRow>
         <TableCell>
-          <IconButton aria-label="expand row" size="small" onClick={() => setOpen(!open)}>
+          <IconButton
+            aria-label="expand row"
+            size="small"
+            onClick={() => setOpen(!open)}
+          >
             {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
           </IconButton>
         </TableCell>
@@ -244,7 +171,9 @@ const Row = (props: {
         <TableCell>{row.invoiceCode}</TableCell>
         <TableCell>{formatDateFunc.formatDate(row.createDate)}</TableCell>
         <TableCell>
-          {row.completedDate ? formatDateFunc.formatDate(row.completedDate) : "Chưa hoàn thành"}
+          {row.completedDate
+            ? formatDateFunc.formatDate(row.completedDate)
+            : "Chưa hoàn thành"}
         </TableCell>
         <TableCell>{formatMoney(row.finalAmount)}</TableCell>
         <TableCell>
@@ -267,7 +196,11 @@ const Row = (props: {
           </TableCell>
         )}
         <TableCell>
-          <IconButton aria-label="more actions" size="small" onClick={handleOpenMenu}>
+          <IconButton
+            aria-label="more actions"
+            size="small"
+            onClick={handleOpenMenu}
+          >
             <MoreVertIcon />
           </IconButton>
           <Menu anchorEl={anchorEl} open={openMenu} onClose={handleCloseMenu}>
@@ -276,7 +209,7 @@ const Row = (props: {
             )}
             <MenuItem onClick={handleDetailOrder}>Chi tiết đơn hàng</MenuItem>
             {row.status === StatusType.COMPLETED && (
-              <MenuItem >
+              <MenuItem>
                 <ExportPDF row={row} />
               </MenuItem>
             )}
@@ -321,7 +254,10 @@ const Row = (props: {
                     <TableRow key={product.orderDetailId}>
                       <TableCell>
                         <Link
-                          to={config.routes.productDetail.replace(":id", product.productId)}
+                          to={config.routes.productDetail.replace(
+                            ":id",
+                            product.productId
+                          )}
                           style={{ textDecoration: "none", color: "black" }}
                         >
                           {product.productName}
@@ -381,8 +317,11 @@ const OrderManagement: React.FC = () => {
   const handleChangeRowsPerPage = (
     event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>
   ) => {
-    setRowsPerPage(parseInt(event.target.value, 10));
-    setPage(0);
+    const newRowsPerPage = parseInt(event.target.value, 10);
+    if (routePage.includes(newRowsPerPage)) {
+      setRowsPerPage(newRowsPerPage);
+      setPage(0);
+    }
   };
 
   const loginInfo = localStorage.getItem("loginInfo") || "";
@@ -390,7 +329,7 @@ const OrderManagement: React.FC = () => {
 
   const { apiGetOrderById, apiCancelOrder } = ApiOrder();
 
-  const fetchOrders = async () => {
+  const fetchOrders = useCallback(async () => {
     try {
       if (auth) {
         const params = {
@@ -406,7 +345,7 @@ const OrderManagement: React.FC = () => {
     } catch (error) {
       console.log(error);
     }
-  };
+  }, [apiGetOrderById]);
 
   const handleOpenDialog = (orderId: string) => {
     setSelectedOrderId(orderId);
@@ -514,8 +453,8 @@ const OrderManagement: React.FC = () => {
       <TablePagination
         rowsPerPageOptions={routePage}
         component="div"
-        count={orders?.total ? orders?.total : 0}
-        rowsPerPage={orders?.size ?? 0}
+        count={orders?.total ? orders.total : 0}
+        rowsPerPage={rowsPerPage}
         page={page}
         onPageChange={handleChangePage}
         onRowsPerPageChange={handleChangeRowsPerPage}

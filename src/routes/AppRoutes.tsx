@@ -48,6 +48,8 @@ import WarrantyManagent from "../pages/Admin/Warranty/WarrantyManagement";
 import ComponentOfMachine from "../pages/Admin/Product/ComponentOfMachine";
 import AddComponentOfMachine from "../pages/Admin/Product/AddComponentOfMachine";
 import UserTransaction from "../pages/UserProfile/UserTransaction";
+import PaymentOrder from "../pages/UserProfile/PaymentOrder";
+import WarrantyRequestDetail from "../pages/Admin/Warranty/WarrantyRequestDetail";
 
 const AppRoute: React.FC = () => {
   return (
@@ -114,6 +116,11 @@ const AppRoute: React.FC = () => {
           key="orderManagement"
           path={config.routes.orderManagement}
           element={<OrderCustomer />}
+        />
+        <Route
+          key="orderPayment"
+          path={config.routes.paymentOrderID}
+          element={<PaymentOrder />}
         />
         <Route
           key="newDetail"
@@ -279,6 +286,12 @@ const AppRoute: React.FC = () => {
           key="maintanance"
           path={config.adminRoutes.maintenance}
           element={<WarrantyManagent />}
+        />
+
+        <Route
+          key="maintananceDetailRequest"
+          path={config.adminRoutes.maintenanceRequestDetail}
+          element={<WarrantyRequestDetail />}
         />
       </Route>
 

@@ -2,7 +2,7 @@ import React from "react";
 import { useLocation, Link } from "react-router-dom";
 import PersonIcon from "@mui/icons-material/Person";
 import CachedIcon from "@mui/icons-material/Cached";
-import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
+// import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import EngineeringIcon from "@mui/icons-material/Engineering";
 import {
   List,
@@ -89,7 +89,7 @@ const SideBarUserProfile: React.FC = () => {
             </ListItemIcon>
             <ListItemText primary="Lịch sử mua hàng" />
           </ListItemButton>
-          <ListItemButton
+          {/* <ListItemButton
             component={Link}
             to={config.routes.favoriteProduct}
             sx={getActiveStyle(config.routes.favoriteProduct)}
@@ -98,7 +98,7 @@ const SideBarUserProfile: React.FC = () => {
               <FavoriteBorderIcon />
             </ListItemIcon>
             <ListItemText primary="Sản phẩm yêu thích" />
-          </ListItemButton>
+          </ListItemButton> */}
           <ListItemButton
             component={Link}
             to={config.routes.maintenance}
