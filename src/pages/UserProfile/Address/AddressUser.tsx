@@ -114,7 +114,7 @@ function AddressItem({ address }: AddressItemProps) {
           flexDirection="row"
           sx={{ justifyContent: "flex-end" }}
         >
-          <Button>Chi Tiết</Button>
+          {/* <Button>Chi Tiết</Button> */}
         </Stack>
       </Card>
     </>

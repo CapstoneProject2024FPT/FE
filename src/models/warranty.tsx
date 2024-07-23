@@ -1,3 +1,4 @@
+import { AddressDetail } from "./order";
 import { ProductAdmin } from "./products";
 
 export enum StatusType {
@@ -45,6 +46,7 @@ export interface WarrantyProps {
     role: string;
   };
   inventory: Inventory;
+  address: AddressDetail;
 }
 
 interface Inventory {
@@ -55,10 +57,10 @@ interface Inventory {
 }
 
 export interface WarrantyPropsById extends WarrantyProps {
-  warrantyDetail: WarrantyDetail[];
+  warrantyDetail: WarrantyDetailProps[];
 }
 
-interface WarrantyDetail {
+export interface WarrantyDetailProps {
   id: string;
   status: string;
   createDate: Date;
@@ -93,4 +95,11 @@ export interface WarrantyGetProps {
     fullName: string;
     role: string;
   };
+}
+
+export interface CreateWarranty {
+  description: string;
+  inventoryId: string;
+  addressId: string;
+  accountId: string;
 }

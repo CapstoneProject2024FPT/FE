@@ -5,37 +5,31 @@ import { DownOutlined } from "@ant-design/icons";
 import { Table, Space, Dropdown } from "antd";
 import { toast } from "react-toastify";
 import { ApiWarranty } from "../../../api/services/apiWarranty";
-import { WarrantyGetProps } from "../../../models/warranty";
+import { WarrantyProps } from "../../../models/warranty";
+import { formatDateFunc } from "../../../utils/fn";
+import { useNavigate } from "react-router-dom";
+import config from "../../../configs";
 
 type ColumnsType<T> = TableProps<T>["columns"];
 
 const pageSize = 20;
 
 const TableRequestWarranty: React.FC = () => {
-  const [requestWarranty, setRequestWarranty] = useState<WarrantyGetProps[]>(
-    []
-  );
+  const [requestWarranty, setRequestWarranty] = useState<WarrantyProps[]>([]);
   const [pagination, setPagination] = useState({
     current: 1,
     pageSize: pageSize,
   });
+  const navigate = useNavigate();
   const { apiGetWarantyManager, loading } = ApiWarranty();
 
-  //popup
-  const [open, setOpen] = useState<boolean>(false);
-  const [selectedData, setSelectedData] = useState<WarrantyGetProps | null>(
-    null
-  );
-
   //modal popup
-  const handleActionDetail = (record: WarrantyGetProps) => {
-    setOpen(!open);
-    setSelectedData(record);
+  const handleActionDetail = (record: WarrantyProps) => {
+    navigate(
+      config.adminRoutes.maintenanceRequestDetail.replace(":id", record.id)
+    );
   };
 
-  const handleCLose = () => setOpen(false);
-
-  console.log(selectedData, handleCLose);
   const fetchWarrantyRequest = async () => {
     try {
       const params = {
@@ -43,7 +37,11 @@ const TableRequestWarranty: React.FC = () => {
       };
       const response = await apiGetWarantyManager(params);
 
-      setRequestWarranty(response.data);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const warrantyShow = response.data.map((item: any, idx: any) => {
+        return { ...item, key: idx + 1 };
+      });
+      setRequestWarranty(warrantyShow);
     } catch (error) {
       toast.error("lỗi");
     }
@@ -77,16 +75,29 @@ const TableRequestWarranty: React.FC = () => {
     },
     {
       key: "2",
-      label: "Xoá",
+      label: "Cử nhân viên",
     },
   ];
 
-  const columns: ColumnsType<WarrantyGetProps> = [
+  const columns: ColumnsType<WarrantyProps> = [
+    {
+      title: "Thứ tự",
+      dataIndex: "key",
+    },
     {
       title: "Loại Bảo Hành",
       dataIndex: "type",
-      width: "40%",
       render: (type) => (type === "Periodic" ? "Định kì" : "Yêu cầu"),
+    },
+    {
+      title: "Mã máy",
+      dataIndex: "inventory",
+      render: (inventory) => inventory.serialNumber,
+    },
+    {
+      title: "Ngày tạo",
+      dataIndex: "createDate",
+      render: (createDate) => formatDateFunc.formatDateTime(createDate),
     },
     {
       title: "Hành Động",
@@ -110,7 +121,7 @@ const TableRequestWarranty: React.FC = () => {
             }}
           >
             <a>
-              Thêm <DownOutlined />
+              <DownOutlined />
             </a>
           </Dropdown>
         </Space>
