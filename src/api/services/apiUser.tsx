@@ -8,8 +8,6 @@ export const CustomerApi = () => {
   const [loading, setLoading] = useState(false);
 
   const apiUserProfile = async (id: string) => {
-    console.log(id);
-
     setLoading(true);
     try {
       const response = await axiosPublic.get(

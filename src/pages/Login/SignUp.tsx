@@ -88,7 +88,7 @@ const SignUpForm: React.FC = () => {
   return (
     <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
       <div className={cx("form-container", "sign-up-container")}>
-        <div className={cx("form")}>
+        <div className={cx("form")} style={{ marginTop: "20px" }}>
           <Typography variant="h4" sx={{ fontWeight: "bold" }}>
             Tạo Tài Khoản
           </Typography>
