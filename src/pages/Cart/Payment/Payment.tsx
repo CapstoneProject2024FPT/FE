@@ -79,21 +79,23 @@ const CheckoutPayment: React.FC<checkoutPaymentProps> = ({
     quantity: cart.currentQuantities,
     sellingPrice: cart.sellingPrice,
   }));
-  let  email: string
-  let username: string
+  let email: string;
+  let username: string;
   //vnreturn
   useEffect(() => {
     const queryParams = new URLSearchParams(location.search);
     const transactionId = queryParams.get("vnp_TransactionStatus");
 
+    console.log(transactionId);
+
     const handleTransactionStatus = async () => {
       const id = sessionStorage.getItem("paymmentID");
+      console.log(id, "payment");
 
       if (transactionId === "00" && id) {
         const params = { status: "SUCCESS" };
         try {
           const response = await apiPaymentUpdate(params, id);
-          console.log(response);
 
           // handle
           const getUserInfoString = localStorage.getItem("getUserInfo");
@@ -116,7 +118,6 @@ const CheckoutPayment: React.FC<checkoutPaymentProps> = ({
         const params = { status: "FAILED" };
         try {
           const response = await apiPaymentUpdate(params, id);
-          console.log(response);
           if (response.status === 200) {
             navigate(config.routes.paymentFailure);
           }
@@ -206,20 +207,20 @@ const CheckoutPayment: React.FC<checkoutPaymentProps> = ({
 
   const sendSuccessEmail = () => {
     const templateParams = {
-      from_name: 'Admin SMMMS', // You can customize this field
-      from_email: 'ad.smmms.gsu24se44@gmail.com',
+      from_name: "Admin SMMMS", // You can customize this field
+      from_email: "ad.smmms.gsu24se44@gmail.com",
       to_email: email,
       message: `Chào, ${username} bạn đã thanh toán đơn hàng thành công!`,
-      reply_to: 'NoReply',
-      user_name: username
+      reply_to: "NoReply",
+      user_name: username,
     };
 
     emailjs.send(
-      'service_gm8vuij', // Replace with your EmailJS service ID
-      'template_x9vsymt', // Replace with your EmailJS template ID
+      "service_gm8vuij", // Replace with your EmailJS service ID
+      "template_x9vsymt", // Replace with your EmailJS template ID
       templateParams,
-      'plAq1eN98XuLLSYlh' // Replace with your EmailJS user ID
-    )
+      "plAq1eN98XuLLSYlh" // Replace with your EmailJS user ID
+    );
   };
 
   return (

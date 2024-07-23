@@ -91,7 +91,12 @@ const ModalAddSerialPopup: React.FC<ModalSerialNumber> = ({
             InputProps={{ readOnly: true }}
             label="Tên máy"
           />
-          <RHFTextField name="quantity" type="number" label="Số lượng" />
+          <RHFTextField
+            name="quantity"
+            type="number"
+            label="Số lượng"
+            InputProps={{ inputProps: { min: 0 } }}
+          />
           <div
             style={{
               display: " flex",

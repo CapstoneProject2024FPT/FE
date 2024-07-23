@@ -1,90 +1,130 @@
-import React from "react";
-import Box from '@mui/material/Box';
-import Collapse from '@mui/material/Collapse';
-import IconButton from '@mui/material/IconButton';
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
-import TableRow from '@mui/material/TableRow';
-import Typography from '@mui/material/Typography';
-import Paper from '@mui/material/Paper';
-import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
-import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
-import axios from "axios";
-import { useState, useEffect } from "react";
-import { Button, Container } from "@mui/material";
+import React, { useState, useEffect } from "react";
+import Box from "@mui/material/Box";
+import Collapse from "@mui/material/Collapse";
+import IconButton from "@mui/material/IconButton";
+import Table from "@mui/material/Table";
+import TableBody from "@mui/material/TableBody";
+import TableCell from "@mui/material/TableCell";
+import TableContainer from "@mui/material/TableContainer";
+import TableHead from "@mui/material/TableHead";
+import TableRow from "@mui/material/TableRow";
+import Typography from "@mui/material/Typography";
+import Paper from "@mui/material/Paper";
+import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
+import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
+import { Button, Container, TablePagination } from "@mui/material";
+import { ApiWarranty } from "../../../api/services/apiWarranty";
+import {
+  WarrantyProps,
+  WarrantyPropsById,
+  warrantyStatusMapping,
+} from "../../../models/warranty";
+import { formatDateFunc } from "../../../utils/fn";
+import EmptyOrder from "../../../components/EmptyOrder";
 
-function createData(
-  id: number,
-  status: string,
-  productName: string,
-  serialNumber: string,
-  expiry: string,
-) {
-  return { id, status, productName, serialNumber, expiry };
-}
+const getStatusStyles = (status: string) => {
+  switch (status) {
+    case "Process":
+      return { backgroundColor: "#FFD700", color: "black" }; // vàng
+    case "Completed":
+      return { backgroundColor: "#4CAF50", color: "white" }; // xanh lá
+    case "AwaitingAssignment":
+      return { backgroundColor: "#FFD700", color: "black" }; // vàng
+    case "Cancele":
+      return { backgroundColor: "#F44336", color: "white" }; // đỏ
+    default:
+      return { backgroundColor: "transparent", color: "black" };
+  }
+};
 
-function Row(props: { row: ReturnType<typeof createData> }) {
+function Row(props: { row: WarrantyProps }) {
   const { row } = props;
   const [open, setOpen] = useState(false);
-  // Format expiry date
-  const date = new Date(row.expiry);
+  const date = new Date(row.createDate);
+  const [warrantyDetail, setWarrantyDetail] = useState<WarrantyPropsById>();
+  const { apiGetWarrantyById } = ApiWarranty();
+  const fetchWarrantyById = async () => {
+    if (row) {
+      const response = await apiGetWarrantyById(row.id);
+      setWarrantyDetail(response.data);
+    }
+  };
+
+  const handleClick = () => {
+    if (!open) {
+      fetchWarrantyById();
+    }
+    setOpen(!open);
+  };
 
   return (
     <React.Fragment>
-      <TableRow sx={{ '& > *': { borderBottom: 'unset' } }}>
+      <TableRow>
         <TableCell>
           <IconButton
             aria-label="expand row"
             size="small"
-            onClick={() => setOpen(!open)}
+            onClick={handleClick}
           >
             {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
           </IconButton>
         </TableCell>
-
-        <TableCell align="right">{row.status}</TableCell>
-        <TableCell align="right">{row.productName}</TableCell>
-        <TableCell align="right">{row.serialNumber}</TableCell>
-
-        <TableCell align="right">{date.getDate() + "/" + (date.getMonth() + 1) + "/" + date.getFullYear()}</TableCell>
+        <TableCell align="right">{row.inventory.serialNumber}</TableCell>
+        <TableCell align="right">{row.inventory.machinery.name}</TableCell>
+        <TableCell align="right">{`${date.getDate()}/${
+          date.getMonth() + 1
+        }/${date.getFullYear()}`}</TableCell>
       </TableRow>
       <TableRow>
-        <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={12}>
+        <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={8}>
           <Collapse in={open} timeout="auto" unmountOnExit>
             <Box sx={{ margin: 1 }}>
               <Typography variant="h6" gutterBottom component="div">
-                Phiếu bảo hành
+                Chi tiết yêu cầu
               </Typography>
               <Table size="medium" aria-label="purchases">
                 <TableHead>
                   <TableRow>
-                    <TableCell>Số Serial</TableCell>
-
-                    <TableCell align="right">Tên sản phẩm</TableCell>
-                    <TableCell align="right">Ngày lập phiếu</TableCell>
+                    <TableCell>Ngày bắt đầu</TableCell>
+                    <TableCell align="right">Mô tả</TableCell>
+                    <TableCell align="right">Trạng thái</TableCell>
+                    <TableCell align="right">Hành động</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  <TableRow>
-                    <TableCell component="th" scope="row">
-                      {row.serialNumber}
-                    </TableCell>
-
-                    <TableCell align="right">{row.productName}</TableCell>
-                    <TableCell align="right">{date.getDate() + "/" + (date.getMonth() + 1) + "/" + date.getFullYear()}</TableCell>
-                  </TableRow>
-                  <div>
-                    <Button
-                      variant="contained"
-                      color="primary"
-                      style={{ marginRight: "10px" }}
-                    >
-                      Hủy yêu cầu
-                    </Button>
-                  </div>
+                  {warrantyDetail?.warrantyDetail.map((detail) => (
+                    <TableRow key={detail.id}>
+                      <TableCell component="th" scope="row">
+                        {formatDateFunc.formatDate(detail.startDate)}
+                      </TableCell>
+                      <TableCell align="right">{detail.description}</TableCell>
+                      <TableCell align="right">
+                        <Box
+                          sx={{
+                            ...getStatusStyles(detail.status),
+                            padding: "8px 16px",
+                            borderRadius: "8px",
+                            display: "inline-block",
+                          }}
+                        >
+                          {
+                            warrantyStatusMapping.find(
+                              (status) => status.id === detail.status
+                            )?.name
+                          }
+                        </Box>
+                      </TableCell>
+                      <TableCell align="right">
+                        <Button
+                          variant="contained"
+                          color="primary"
+                          style={{ marginRight: "10px" }}
+                        >
+                          Hủy
+                        </Button>
+                      </TableCell>
+                    </TableRow>
+                  ))}
                 </TableBody>
               </Table>
             </Box>
@@ -95,37 +135,90 @@ function Row(props: { row: ReturnType<typeof createData> }) {
   );
 }
 
-export default function WarrantyRequest() {
-  const [warranty, setWarranty] = useState([]);
+const WarrantyRequest: React.FC = () => {
+  const [requests, setRequests] = useState<WarrantyProps[]>([]);
+  const [page, setPage] = useState<number>(0);
+  const [rowsPerPage, setRowsPerPage] = useState(15);
+  const routePage = [15, 20, 25, 30];
+
+  const handleChangePage = (
+    _event: React.MouseEvent<HTMLButtonElement> | null,
+    newPage: number
+  ) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (
+    event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>
+  ) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
+
+  const { apiGetWarranty } = ApiWarranty();
+
+  const loginInfoString = localStorage.getItem("loginInfo");
+  const auth = loginInfoString ? JSON.parse(loginInfoString) : null;
+
+  const fetchWarranty = async () => {
+    if (auth) {
+      const params = {
+        type: "CustomerRequest",
+        AccountId: auth.data.id,
+      };
+      const response = await apiGetWarranty(params);
+      setRequests(response.data);
+    }
+  };
 
   useEffect(() => {
-    axios.get("https://6687c05c0bc7155dc018f48e.mockapi.io/warranty").then((response) => {
-      setWarranty(response.data);
-    });
+    fetchWarranty();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
     <Container>
-      <TableContainer component={Paper} >
-        <Table aria-label="collapsible table">
+      <TableContainer component={Paper}>
+        <Table sx={{ minWidth: 650 }}>
           <TableHead>
             <TableRow>
               <TableCell />
-              <TableCell align="right">Trạng thái</TableCell>
-              <TableCell align="right">Tên sản phẩm</TableCell>
               <TableCell align="right">Số serial</TableCell>
-
-              <TableCell align="right">Ngày hết hạn</TableCell>
+              <TableCell align="right">Tên sản phẩm</TableCell>
+              <TableCell align="right">Ngày tạo phiếu</TableCell>
             </TableRow>
           </TableHead>
-          <TableBody>
-            {warranty.map((row: any) => (
-              <Row key={row.id} row={row} />
-            ))}
-          </TableBody>
+          {requests.length > 0 ? (
+            <TableBody>
+              {requests
+                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                .map((row: WarrantyProps) => (
+                  <Row key={row.id} row={row} />
+                ))}
+            </TableBody>
+          ) : (
+            <TableBody>
+              <TableRow>
+                <TableCell colSpan={5}>
+                  <EmptyOrder title="Không có dữ liệu" />
+                </TableCell>
+              </TableRow>
+            </TableBody>
+          )}
         </Table>
       </TableContainer>
+      <TablePagination
+        rowsPerPageOptions={routePage}
+        component="div"
+        count={requests.length}
+        rowsPerPage={rowsPerPage}
+        page={page}
+        onPageChange={handleChangePage}
+        onRowsPerPageChange={handleChangeRowsPerPage}
+        labelRowsPerPage="Số hàng mỗi trang"
+      />
     </Container>
-
   );
-}
+};
+
+export default WarrantyRequest;

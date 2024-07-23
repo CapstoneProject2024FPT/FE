@@ -155,7 +155,7 @@ const Transaction: React.FC = () => {
     <>
       <Container maxWidth="lg">
         <Typography variant="h4" component="h1" gutterBottom>
-          Lịch sử mua hàng
+          Lịch sử giao dịch
         </Typography>
 
         <TableContainer component={Paper}>

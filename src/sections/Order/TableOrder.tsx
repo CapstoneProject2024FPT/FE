@@ -247,7 +247,7 @@ const TableOrder: React.FC = () => {
             }}
           >
             <a>
-              Thêm <DownOutlined />
+              <DownOutlined />
             </a>
           </Dropdown>
         </Space>

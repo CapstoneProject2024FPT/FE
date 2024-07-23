@@ -11,6 +11,7 @@ export const routes = {
   userAddress: "/address",
   maintenance: "/maintenance",
   orderManagement: "/order-management",
+  paymentOrderID: "/order-management/:id",
   favoriteProduct: "/favorite-product",
   notFound: "notFound",
   paymentSuccessful: "/payment-successful",
@@ -51,5 +52,6 @@ export const adminRoutes = {
   order: "/dashboard/orders",
   rank: "/dashboard/ranks",
   maintenance: "/dashboard/maintenance",
+  maintenanceRequestDetail: "/dashboard/maintenance/request/:id",
   task: "/dashboard/kanban",
 };

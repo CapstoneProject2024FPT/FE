@@ -17,6 +17,8 @@ import { userProps } from "../../../models/UserData";
 import { CustomerApi } from "../../../api/services/apiUser";
 import { toast } from "react-toastify";
 import { GetTaskProps, StatusTaskType } from "../../../models/task";
+import { ApiWarranty } from "../../../api/services/apiWarranty";
+import { WarrantyPropsById } from "../../../models/warranty";
 
 interface ModalBrand {
   TaskData: GetTaskProps | null;
@@ -30,8 +32,10 @@ const ModalDetailTask: React.FC<ModalBrand> = ({
   handleClose,
 }) => {
   const [customer, setCustomer] = useState<userProps>();
+  const [warranty, setWarranty] = useState<WarrantyPropsById>();
 
   const { apiUserProfile } = CustomerApi();
+  const { apiGetWarrantyById } = ApiWarranty();
   const fetchCustomerData = async () => {
     try {
       if (TaskData) {
@@ -47,8 +51,30 @@ const ModalDetailTask: React.FC<ModalBrand> = ({
     }
   };
 
+  const fetchWarantyId = async (id: string) => {
+    try {
+      if (TaskData) {
+        const response = await apiGetWarrantyById(id);
+        if (response.status === 200) {
+          setWarranty(response.data);
+        } else {
+          toast.error(response.Error);
+        }
+      }
+    } catch (error) {
+      toast.error("Lỗi lấy thông tin người dung");
+    }
+  };
   useEffect(() => {
     fetchCustomerData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    if (TaskData?.warrantyDetail?.warrantyId) {
+      fetchWarantyId(TaskData.warrantyDetail.warrantyId);
+    }
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   return (
@@ -90,7 +116,7 @@ const ModalDetailTask: React.FC<ModalBrand> = ({
               <TableRow>
                 <TableCell sx={{ width: "30%" }}>Tình trạng</TableCell>
                 <TableCell>
-                  {TaskData?.type === StatusTaskType.PROCESS
+                  {TaskData?.status === StatusTaskType.PROCESS
                     ? "Đang tiến hành"
                     : "Hoàn Thành"}
                 </TableCell>
@@ -111,8 +137,14 @@ const ModalDetailTask: React.FC<ModalBrand> = ({
               ) : (
                 <>
                   <TableRow>
-                    <TableCell sx={{ width: "30%" }}>Mã đơn hàng</TableCell>
-                    <TableCell>{TaskData?.order.invoiceCode}</TableCell>
+                    <TableCell sx={{ width: "30%" }}>Mã máy</TableCell>
+                    <TableCell>{warranty?.inventory.serialNumber}</TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell sx={{ width: "30%" }}>Tên máy</TableCell>
+                    <TableCell>
+                      {warranty?.inventory?.machinery?.name}
+                    </TableCell>
                   </TableRow>
                 </>
               )}
