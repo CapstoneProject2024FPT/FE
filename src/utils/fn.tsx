@@ -43,7 +43,7 @@ export function navigateId(
   return route.replace(suffix, "");
 }
 
-export const formatAddress = (address: AddressDetail) => {
+export const formatAddress = (address: AddressDetail | undefined) => {
   if (!address) {
     return "Địa chỉ không xác định";
   }
