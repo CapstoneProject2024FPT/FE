@@ -1,15 +1,20 @@
-import { axiosPublic } from "../axiosInstance";
-import { WARRANTY, WARRANTY_DETAIL, WARRANTY_ID } from "../pathApiName";
+import { axiosPrivate, axiosPublic } from "../axiosInstance";
+import { WARRANTY, WARRANTY_ID } from "../pathApiName";
 import { useState } from "react";
 import axios from "axios";
+import { CreateWarranty } from "../../models/warranty";
 
 export const ApiWarranty = () => {
   const [loading, setLoading] = useState(false);
 
-  const apiGetWarranty = async () => {
+  interface warrantyParams {
+    type?: string;
+    AccountId: string;
+  }
+  const apiGetWarranty = async (params: warrantyParams) => {
     setLoading(true);
     try {
-      const response = await axiosPublic.get(WARRANTY);
+      const response = await axiosPublic.get(WARRANTY, { params });
       return response;
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
@@ -43,13 +48,11 @@ export const ApiWarranty = () => {
     }
   };
 
-  const apiCreateRequestWaranty = async (id: string) => {
+  const apiCreateRequestWaranty = async (params: CreateWarranty) => {
     setLoading(true);
 
     try {
-      const response = await axiosPublic.get(
-        WARRANTY_DETAIL.replace(":id", id)
-      );
+      const response = await axiosPrivate.post(WARRANTY, params);
 
       return response;
 
@@ -66,7 +69,7 @@ export const ApiWarranty = () => {
   };
 
   interface getWarrantyProps {
-    Type: string;
+    Type?: string;
   }
   const apiGetWarantyManager = async (params: getWarrantyProps) => {
     setLoading(true);

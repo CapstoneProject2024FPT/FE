@@ -1,4 +1,3 @@
-import React from "react";
 import ReactDOM from "react-dom/client";
 import App from "./App.tsx";
 import { AuthContextProvider } from "./context/AuthContext.tsx";
@@ -13,24 +12,22 @@ import "react-quill/dist/quill.snow.css";
 import OverrideMuiTheme from "./theme/override.tsx";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
-  <React.StrictMode>
-    <AuthContextProvider>
-      <ToastContainer
-        position="top-right"
-        autoClose={3000}
-        hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-      />
-      <GlobalStyled>
-        <OverrideMuiTheme>
-          <App />
-        </OverrideMuiTheme>
-      </GlobalStyled>
-    </AuthContextProvider>
-  </React.StrictMode>
+  <AuthContextProvider>
+    <ToastContainer
+      position="top-right"
+      autoClose={3000}
+      hideProgressBar={false}
+      newestOnTop={false}
+      closeOnClick
+      rtl={false}
+      pauseOnFocusLoss
+      draggable
+      pauseOnHover
+    />
+    <GlobalStyled>
+      <OverrideMuiTheme>
+        <App />
+      </OverrideMuiTheme>
+    </GlobalStyled>
+  </AuthContextProvider>
 );

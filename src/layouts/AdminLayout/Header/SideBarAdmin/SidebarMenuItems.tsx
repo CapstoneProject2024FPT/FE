@@ -101,7 +101,9 @@ const MenuSideBars: MenuSideBar[] = [
     icon: <EngineeringIcon />,
     children: [
       {
-        label: <Link to={config.adminRoutes.maintenance}>Tất cả đơn hàng</Link>,
+        label: (
+          <Link to={config.adminRoutes.maintenance}>Tất cả đơn bảo hành</Link>
+        ),
         key: config.adminRoutes.maintenance,
       },
     ],
