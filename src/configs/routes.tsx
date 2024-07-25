@@ -15,6 +15,7 @@ export const routes = {
   favoriteProduct: "/favorite-product",
   notFound: "notFound",
   paymentSuccessful: "/payment-successful",
+  viewBill: "/bill",
   paymentFailure: "/payment-failure",
   news: "/news",
   newsDetail: `/news/${suffix.detailId}`,

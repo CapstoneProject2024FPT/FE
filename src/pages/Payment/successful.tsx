@@ -1,7 +1,7 @@
 import React from "react";
 
 import SuccessfullGif from "../../assets/gif/success.gif";
-import { Box, Button, Typography, styled } from "@mui/material";
+import { Box, Button, Stack, Typography, styled } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { routes } from "../../configs/routes";
 
@@ -37,7 +37,7 @@ const PaymentSuccessfull: React.FC = () => {
   return (
     <Box
       sx={{
-        width: "400px",
+        width: "500px",
         borderRadius: "10px",
         boxShadow: "rgba(0, 0, 0, 0.24) 0px 3px 8px",
         padding: "50px 35px",
@@ -68,10 +68,18 @@ const PaymentSuccessfull: React.FC = () => {
           margin: "0 auto 50px",
         }}
       />
-
-      <StyledButton onClick={() => navigate(routes.home)}>
-        Trở về trang chủ
-      </StyledButton>
+      <Stack
+        display="flex"
+        direction="row"
+        sx={{ justifyContent: "space-between" }}
+      >
+        <StyledButton onClick={() => navigate(routes.home)}>
+          Trở về trang chủ
+        </StyledButton>
+        <StyledButton onClick={() => navigate(routes.viewBill)}>
+          Xem hoá đơn
+        </StyledButton>
+      </Stack>
     </Box>
   );
 };

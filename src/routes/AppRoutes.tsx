@@ -50,6 +50,7 @@ import AddComponentOfMachine from "../pages/Admin/Product/AddComponentOfMachine"
 import UserTransaction from "../pages/UserProfile/UserTransaction";
 import PaymentOrder from "../pages/UserProfile/PaymentOrder";
 import WarrantyRequestDetail from "../pages/Admin/Warranty/WarrantyRequestDetail";
+import Bill from "../pages/Bill/Bill";
 
 const AppRoute: React.FC = () => {
   return (
@@ -70,6 +71,11 @@ const AppRoute: React.FC = () => {
           path={config.routes.paymentSuccessful}
           element={<PaymentSuccessfull />}
         ></Route>
+        <Route
+          key="viewBill"
+          path={config.routes.viewBill}
+          element={<Bill />}
+        />
         <Route
           key="payment-failure"
           path={config.routes.paymentFailure}

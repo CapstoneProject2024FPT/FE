@@ -103,3 +103,79 @@ export interface CreateWarranty {
   addressId: string;
   accountId: string;
 }
+
+interface WarrantyDetail {
+  id: string;
+  status: string;
+  createDate: Date;
+  startDate: Date;
+  description: string;
+  comments: string | null;
+  warrantyId: string;
+  accountId: string | null;
+}
+
+interface Inventory {
+  id: string;
+  serialNumber: string;
+  type: string;
+  machinery: ProductAdmin;
+}
+
+interface Customer {
+  id: string;
+  fullName: string;
+  role: string;
+}
+
+interface Address {
+  id: string;
+  name: string;
+  status: string;
+  note: string;
+  city: {
+    id: string;
+    unitId: number;
+    name: string;
+  };
+  district: {
+    id: string;
+    unitId: number;
+    name: string;
+  };
+  ward: {
+    id: string;
+    unitId: number;
+    name: string;
+  };
+  account: {
+    id: string;
+    fullName: string;
+    role: string;
+  };
+}
+
+interface WarrantyDetails {
+  id: string;
+  type: string;
+  createDate: string;
+  startDate: string;
+  completionDate: string | null;
+  status: string;
+  description: string | null;
+  comments: string | null;
+  nextMaintenanceDate: string | null;
+  priority: number;
+  warrantyDetail: WarrantyDetail[];
+  inventory: Inventory;
+  customer: Customer;
+  address: Address;
+}
+
+interface Warranty {
+  warrantyDetails: WarrantyDetails;
+}
+
+export interface WarrantyResponse {
+  warranty: Warranty[];
+}
