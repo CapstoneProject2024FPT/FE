@@ -9,7 +9,8 @@ export const ApiWarranty = () => {
 
   interface warrantyParams {
     type?: string;
-    AccountId: string;
+    AccountId?: string;
+    InventoryId?: string;
   }
   const apiGetWarranty = async (params: warrantyParams) => {
     setLoading(true);

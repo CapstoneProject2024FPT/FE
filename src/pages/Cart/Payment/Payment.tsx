@@ -169,6 +169,8 @@ const CheckoutPayment: React.FC<checkoutPaymentProps> = ({
 
         if (response.status === 200) {
           //api vnpay
+          sessionStorage.setItem("OrderId", response.data);
+
           if (data.payment === PaymentTypeProps.VNPAY) {
             const paramPayment: paymentProps = {
               orderId: response.data,
