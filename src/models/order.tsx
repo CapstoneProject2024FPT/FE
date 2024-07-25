@@ -60,6 +60,7 @@ export interface ProductProps {
 }
 
 export interface AddressDetail {
+  id: string;
   name: string;
   status: string;
   note: string;

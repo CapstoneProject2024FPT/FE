@@ -22,11 +22,14 @@ import {
 import { ApiWarranty } from "../../../api/services/apiWarranty";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import {
+  StatusType,
   WarrantyProps,
   WarrantyPropsById,
   warrantyStatusMapping,
 } from "../../../models/warranty";
 import { formatDateFunc } from "../../../utils/fn";
+import EmptyOrder from "../../../components/EmptyOrder";
+import ModalTransactionDetail from "./Modal/ModalRequestWarranty";
 
 const getStatusStyles = (status: string) => {
   switch (status) {
@@ -51,6 +54,9 @@ function Row(props: { row: WarrantyProps }) {
   const { apiGetWarrantyById } = ApiWarranty();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const openMenu = Boolean(anchorEl);
+  const [openRequestWarranty, setOpenRequestWarranty] =
+    useState<boolean>(false);
+  const [selectWarranty, setSelectWarranty] = useState<WarrantyProps>();
   const fetchWarrantyById = async () => {
     if (row) {
       const response = await apiGetWarrantyById(row.id);
@@ -72,6 +78,15 @@ function Row(props: { row: WarrantyProps }) {
   const handleCloseMenu = () => {
     setAnchorEl(null);
   };
+
+  const handleOpenWarranty = (record: WarrantyProps) => {
+    setSelectWarranty(record);
+    setOpenRequestWarranty(!openRequestWarranty);
+  };
+
+  const handleClosetWarranty = () => {
+    setOpenRequestWarranty(!openRequestWarranty);
+  };
   return (
     <React.Fragment>
       <TableRow>
@@ -86,10 +101,9 @@ function Row(props: { row: WarrantyProps }) {
         </TableCell>
         <TableCell align="right">{row.inventory.serialNumber}</TableCell>
         <TableCell align="right">{row.inventory.machinery.name}</TableCell>
-        <TableCell align="right">{`${date.getDate()}/${
-          date.getMonth() + 1
-        }/${date.getFullYear()}`}</TableCell>
-        <TableCell>
+        <TableCell align="right">{`${date.getDate()}/${date.getMonth() + 1
+          }/${date.getFullYear()}`}</TableCell>
+        <TableCell align="center">
           <IconButton
             aria-label="more actions"
             size="small"
@@ -98,7 +112,13 @@ function Row(props: { row: WarrantyProps }) {
             <MoreVertIcon />
           </IconButton>
           <Menu anchorEl={anchorEl} open={openMenu} onClose={handleCloseMenu}>
-            <MenuItem onClick={() => {}}>Yêu cầu bảo hành</MenuItem>
+            <MenuItem
+              onClick={() => {
+                handleOpenWarranty(row);
+              }}
+            >
+              Yêu cầu bảo hành
+            </MenuItem>
           </Menu>
         </TableCell>
       </TableRow>
@@ -125,6 +145,7 @@ function Row(props: { row: WarrantyProps }) {
                         {formatDateFunc.formatDate(detail.startDate)}
                       </TableCell>
                       <TableCell align="right">{detail.description}</TableCell>
+
                       <TableCell align="right">
                         <Box
                           sx={{
@@ -142,13 +163,16 @@ function Row(props: { row: WarrantyProps }) {
                         </Box>
                       </TableCell>
                       <TableCell align="right">
-                        <Button
-                          variant="contained"
-                          color="primary"
-                          style={{ marginRight: "10px" }}
-                        >
-                          Hủy
-                        </Button>
+                        {detail.status === StatusType.PROCESS && (
+
+                          <Button
+                            variant="contained"
+                            color="primary"
+                            style={{ marginRight: "10px" }}
+                          >
+                            Hủy
+                          </Button>
+                        )}
                       </TableCell>
                     </TableRow>
                   ))}
@@ -158,6 +182,13 @@ function Row(props: { row: WarrantyProps }) {
           </Collapse>
         </TableCell>
       </TableRow>
+      {openRequestWarranty && (
+        <ModalTransactionDetail
+          onClose={handleClosetWarranty}
+          open={openRequestWarranty}
+          warrantyData={selectWarranty}
+        />
+      )}
     </React.Fragment>
   );
 }
@@ -184,13 +215,23 @@ const WarrantyManagement: React.FC = () => {
 
   const { apiGetWarranty } = ApiWarranty();
 
+  const loginInfoString = localStorage.getItem("loginInfo");
+  const auth = loginInfoString ? JSON.parse(loginInfoString) : null;
+
   const fetchWarranty = async () => {
-    const response = await apiGetWarranty();
-    setRequests(response.data);
+    if (auth) {
+      const params = {
+        type: "Periodic",
+        AccountId: auth.data.id,
+      };
+      const response = await apiGetWarranty(params);
+      setRequests(response.data);
+    }
   };
 
   useEffect(() => {
     fetchWarranty();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
@@ -206,11 +247,23 @@ const WarrantyManagement: React.FC = () => {
               <TableCell align="right">Tạo yêu cầu bảo hành</TableCell>
             </TableRow>
           </TableHead>
-          <TableBody>
-            {requests.map((row: WarrantyProps) => (
-              <Row key={row.id} row={row} />
-            ))}
-          </TableBody>
+          {requests.length > 0 ? (
+            <TableBody>
+              {requests
+                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                .map((row: WarrantyProps) => (
+                  <Row key={row.id} row={row} />
+                ))}
+            </TableBody>
+          ) : (
+            <TableBody>
+              <TableRow>
+                <TableCell colSpan={5}>
+                  <EmptyOrder title="Không có dữ liệu" />
+                </TableCell>
+              </TableRow>
+            </TableBody>
+          )}
         </Table>
       </TableContainer>
       <TablePagination

@@ -84,14 +84,16 @@ const CheckoutPayment: React.FC<checkoutPaymentProps> = ({
     const queryParams = new URLSearchParams(location.search);
     const transactionId = queryParams.get("vnp_TransactionStatus");
 
+    console.log(transactionId);
+
     const handleTransactionStatus = async () => {
       const id = sessionStorage.getItem("paymmentID");
+      console.log(id, "payment");
 
       if (transactionId === "00" && id) {
         const params = { status: "SUCCESS" };
         try {
           const response = await apiPaymentUpdate(params, id);
-          console.log(response);
 
           // handle
           const getUserInfoString = localStorage.getItem("getUserInfo");
@@ -116,7 +118,6 @@ const CheckoutPayment: React.FC<checkoutPaymentProps> = ({
         const params = { status: "FAILED" };
         try {
           const response = await apiPaymentUpdate(params, id);
-          console.log(response);
           if (response.status === 200) {
             navigate(config.routes.paymentFailure);
           }

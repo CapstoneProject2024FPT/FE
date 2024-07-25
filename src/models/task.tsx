@@ -1,8 +1,10 @@
+import { WarrantyDetailProps } from "./warranty";
+
 export interface DeliveryPropsPost {
   type: string;
   status: string;
   warrantyDetailId?: string;
-  orderId: string;
+  orderId?: string;
   accountId: string;
 }
 
@@ -12,7 +14,7 @@ export interface GetTaskProps {
   createDate: Date;
   status: string;
   completedDate: Date;
-  warrantyDetail: string;
+  warrantyDetail: WarrantyDetailProps;
   order: {
     id: string;
     invoiceCode: string;

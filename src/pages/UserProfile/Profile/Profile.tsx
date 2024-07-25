@@ -88,8 +88,12 @@ const Profile: React.FC = () => {
         >
           <div className={cx("avatar", "avatar-large", classRank)}>
             <img
-              src={userProfile?.image}
-              alt="Usuário"
+              src={
+                userProfile?.image
+                  ? userProfile?.image
+                  : "https://firebasestorage.googleapis.com/v0/b/selling-maintainance-machinery.appspot.com/o/images%20(1).jfif?alt=media&token=5d70b7f3-d5c5-4de7-ba5a-767a328f9b82"
+              }
+              alt="hình cá nhân"
               className={cx("avatar-image")}
             />
           </div>

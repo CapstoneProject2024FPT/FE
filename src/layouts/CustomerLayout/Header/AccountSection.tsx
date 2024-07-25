@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import Box from "@mui/material/Box";
 import Avatar from "@mui/material/Avatar";
 import Menu from "@mui/material/Menu";
@@ -11,17 +11,16 @@ import Logout from "@mui/icons-material/Logout";
 import config from "../../../configs";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import { Button } from "@mui/material";
-import { useAuthContext } from "../../../context/AuthContext";
 import Iconify from "../../../components/Iconify";
+import LogoutModal from "./Modal/LogoutModal";
 
 const AccountSection = () => {
   const jsonString = localStorage.getItem("loginInfo");
   const user = JSON.parse(jsonString || "{}");
-  const { setAuthUser } = useAuthContext();
   const [name, setName] = React.useState(user?.fullName ? user.fullName : "U");
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
-  const navigate = useNavigate();
   const location = useLocation();
+  const [openLogout, setOpenLogout] = React.useState<boolean>(false);
 
   const getActiveStyle = (path: string) => ({
     backgroundColor:
@@ -48,12 +47,12 @@ const AccountSection = () => {
   };
 
   const handleLogout = () => {
-    localStorage.removeItem("loginInfo");
-    localStorage.removeItem("historyPath");
-    setAuthUser(null);
-    setTimeout(() => {
-      navigate(config.routes.home);
-    }, 500);
+    setOpenLogout(!openLogout);
+    handleClose();
+  };
+
+  const handleCloseLogout = () => {
+    setOpenLogout(!openLogout);
   };
 
   return (
@@ -161,6 +160,10 @@ const AccountSection = () => {
           Đăng xuất
         </MenuItem>
       </Menu>
+
+      {openLogout && (
+        <LogoutModal handleClose={handleCloseLogout} open={openLogout} />
+      )}
     </>
   );
 };

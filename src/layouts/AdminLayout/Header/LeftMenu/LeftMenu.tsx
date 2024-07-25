@@ -12,7 +12,10 @@ const LeftMenu: React.FC<HeaderProps> = ({ isCollapse, handleCollapsed }) => {
   return (
     <div style={{ display: "flex" }}>
       {isCollapse && (
-        <div className="demo-logo-vertical" style={{ height: "auto" }}>
+        <div
+          className="demo-logo-vertical"
+          style={{ height: "auto", transition: "ease-in-out 2s" }}
+        >
           <Logo />
         </div>
       )}
