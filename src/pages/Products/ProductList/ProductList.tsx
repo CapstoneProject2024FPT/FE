@@ -16,6 +16,7 @@ import { CloseOutlined } from "@mui/icons-material";
 import { ProductsFilterType } from "../../../constants/filter";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useFilterContext } from "../../../context/FilterContext";
+import EmptyCart from "../../../components/EmptyCart";
 
 interface ProductFilter {
   [key: string]: string[];
@@ -52,20 +53,11 @@ const ProductList: React.FC = () => {
     setPage(0);
   };
 
-  const [productListOriginName, setProductListOriginName] = useState<string[]>(
-    []
-  );
-  const [productListCategoryName, setProductListCategoryName] = useState<
-    string[]
-  >([]);
-  const [productListBrandName, setProductListBrandName] = useState<string[]>(
-    []
-  );
-  const [productListName, setProductListName] = useState<string[]>([]);
-  console.log(productListName);
-
+  const [productListOriginName, setProductListOriginName] = useState<string[]>([]);
+  const [productListCategoryName, setProductListCategoryName] = useState<string[]>([]);
+  const [productListBrandName, setProductListBrandName] = useState<string[]>([]);
+  const [, setProductListName] = useState<string[]>([]);
   const [isReset, setIsReset] = useState<boolean>(false);
-
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -338,7 +330,7 @@ const ProductList: React.FC = () => {
       <TableContainer component={Paper} sx={{ overflow: "hidden" }}>
         <Box
           sx={{
-            width: "90%",
+            width: "100%",
             display: "flex",
             flexDirection: "row",
             margin: "20px",
@@ -486,7 +478,7 @@ const ProductList: React.FC = () => {
             </Box>
             {loading ? (
               <Skeleton />
-            ) : (
+            ) : products.length > 0 ? (
               <Box
                 sx={{
                   display: "grid",
@@ -501,6 +493,10 @@ const ProductList: React.FC = () => {
                   <ProductCard key={product.id} product={product} />
                 ))}
               </Box>
+            ) : (
+              <Typography sx={{ padding: "20px" }}>
+                  <EmptyCart title="Không tìm thấy sản phẩm" />
+              </Typography>
             )}
           </Box>
         </Box>

@@ -47,7 +47,7 @@ const SearchBar: React.FC = () => {
   return (
     <Box sx={{ display: "flex", alignItems: "center" }}>
       <InputBase
-        placeholder="Nhập nội dung tìm kiếm..."
+        placeholder="Nhập tên sản phẩm bạn muốn tìm..."
         endAdornment={
           <LoadingButton onClick={handleKeyboardAltClick}>
             <KeyboardAlt sx={{ color: "rgba(0, 0, 0, 0.55)" }} />
