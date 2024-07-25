@@ -40,7 +40,7 @@ export default function UserChangePassword() {
       ),
     confirmNewPassword: Yup.string()
       .required("Bắt buộc nhập")
-      .oneOf([Yup.ref("newPassword")], "Phải giống với mật khẩu"),
+      .oneOf([Yup.ref("newPassword")], "Phải giống với mật khẩu mới"),
   });
 
   const defaultValues = {
@@ -68,7 +68,6 @@ export default function UserChangePassword() {
         newPassword: data.newPassword,
       };
       const response = await ChangePassword(id, params);
-      console.log(response);
       if (response.status === 200) {
         toast.success(response.data.message);
         reset();

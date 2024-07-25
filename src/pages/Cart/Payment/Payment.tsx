@@ -86,11 +86,8 @@ const CheckoutPayment: React.FC<checkoutPaymentProps> = ({
     const queryParams = new URLSearchParams(location.search);
     const transactionId = queryParams.get("vnp_TransactionStatus");
 
-    console.log(transactionId);
-
     const handleTransactionStatus = async () => {
       const id = sessionStorage.getItem("paymmentID");
-      console.log(id, "payment");
 
       if (transactionId === "00" && id) {
         const params = { status: "SUCCESS" };
@@ -172,6 +169,8 @@ const CheckoutPayment: React.FC<checkoutPaymentProps> = ({
 
         if (response.status === 200) {
           //api vnpay
+          sessionStorage.setItem("OrderId", response.data);
+
           if (data.payment === PaymentTypeProps.VNPAY) {
             const paramPayment: paymentProps = {
               orderId: response.data,
@@ -189,7 +188,8 @@ const CheckoutPayment: React.FC<checkoutPaymentProps> = ({
             if (responsePayment.status === 200) {
               window.location.href = responsePayment.data.url;
             } else {
-              console.error("Khởi tạo vnpay lỗi", responsePayment);
+              navigate(config.routes.paymentFailure);
+              toast.error("Khởi tạo vnpay lỗi");
             }
           } else {
             navigate(config.routes.home);
