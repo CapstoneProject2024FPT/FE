@@ -52,13 +52,13 @@ export default function CheckoutNewAddressForm({
   const { apiGetCity, apiDistrict, apiWard, apiCreateAddress } = ApiAddress();
 
   const NewAddressSchema = Yup.object().shape({
-    name: Yup.string().required("Cần đặt tên cho địa chỉ"),
+    name: Yup.string().required("Bắt buộc"),
     note: Yup.string()
       .required("Cần mô tả số nhà, tên đường")
-      .min(2, "Nhiều hơn 2"),
+      .min(2, "Tối thiểu 2 kí tự"),
     cityId: Yup.string().required("Bắt buộc"),
     districtId: Yup.string().required("Bắt buộc"),
-    wardId: Yup.string().required("bắt buộc"),
+    wardId: Yup.string().required("Bắt buộc"),
   });
 
   const defaultValues = {
