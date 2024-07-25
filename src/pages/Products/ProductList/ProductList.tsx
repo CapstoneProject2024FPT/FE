@@ -35,7 +35,7 @@ const ProductList: React.FC = () => {
   const { data } = useFilterContext();
   const [productQuantity, setProductQuantity] = useState<GetProductProps>();
   const [page, setPage] = useState<number>(0);
-  const [, setRowsPerPage] = useState(15);
+  const [rowsPerPage, setRowsPerPage] = useState(15);
   const routePage = [15, 20, 25, 30];
 
   const handleChangePage = (
@@ -505,7 +505,7 @@ const ProductList: React.FC = () => {
         rowsPerPageOptions={routePage}
         component="div"
         count={productQuantity?.total ? productQuantity?.total : 0}
-        rowsPerPage={productQuantity?.size ?? 0}
+        rowsPerPage={rowsPerPage}
         page={page}
         onPageChange={handleChangePage}
         onRowsPerPageChange={handleChangeRowsPerPage}
