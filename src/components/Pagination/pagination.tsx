@@ -10,7 +10,7 @@ interface PaginationInterface {
   sibling?: number;
 }
 
-const PaginationUser: React.FC<PaginationInterface> = ({
+const PaginationProduct: React.FC<PaginationInterface> = ({
   totalPosts,
   postsPerPage,
   currentPage,
@@ -40,4 +40,4 @@ const PaginationUser: React.FC<PaginationInterface> = ({
   );
 };
 
-export default PaginationUser;
+export default PaginationProduct;

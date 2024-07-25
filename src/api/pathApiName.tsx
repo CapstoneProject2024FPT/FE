@@ -4,7 +4,7 @@ export const REGISTER = "register/users";
 export const CHANGE_PASSWORD = "/users/:id/password";
 
 //Machinery
-export const GET_MACHINERY = "/machinery/noPaginate?Status=Available";
+export const GET_MACHINERY = "/machinery?Status=Available";
 export const ADD_MACHINERY = "/Machinery";
 export const MACHINERY = "/Machinery";
 export const MACHINERY_LIST = "machinery";

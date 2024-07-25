@@ -33,25 +33,7 @@ const ProductList: React.FC = () => {
   const { getBrandName } = BrandApi();
 
   const { data } = useFilterContext();
-  const [productQuantity, setProductQuantity] = useState<GetProductProps>();
-  const [page, setPage] = useState<number>(0);
-  const [rowsPerPage, setRowsPerPage] = useState(15);
-  const routePage = [15, 20, 25, 30];
-
-  const handleChangePage = (
-    _event: React.MouseEvent<HTMLButtonElement> | null,
-    newPage: number
-  ) => {
-    setPage(newPage);
-  };
-
-  const handleChangeRowsPerPage = (
-    event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>
-  ) => {
-    console.log(event.target.value);
-    setRowsPerPage(parseInt(event.target.value, 10));
-    setPage(0);
-  };
+  const [, setProductQuantity] = useState<GetProductProps>();
 
   const [productListOriginName, setProductListOriginName] = useState<string[]>([]);
   const [productListCategoryName, setProductListCategoryName] = useState<string[]>([]);
@@ -158,7 +140,7 @@ const ProductList: React.FC = () => {
   const getProductFilteredData = async (params: any) => {
     try {
       const data = await apiGetList(params);
-      setProducts(data);
+      setProducts(data.items);
     } catch (error) {
       console.error("lỗi");
     }
@@ -327,7 +309,6 @@ const ProductList: React.FC = () => {
 
   return (
     <Container maxWidth="xl">
-      <TableContainer component={Paper} sx={{ overflow: "hidden" }}>
         <Box
           sx={{
             width: "100%",
@@ -494,23 +475,10 @@ const ProductList: React.FC = () => {
                 ))}
               </Box>
             ) : (
-              <Typography sx={{ padding: "20px" }}>
-                  <EmptyCart title="Không tìm thấy sản phẩm" />
-              </Typography>
+              <EmptyCart title="Không tìm thấy sản phẩm" />
             )}
           </Box>
         </Box>
-      </TableContainer>
-      <TablePagination
-        rowsPerPageOptions={routePage}
-        component="div"
-        count={productQuantity?.total ? productQuantity?.total : 0}
-        rowsPerPage={rowsPerPage}
-        page={page}
-        onPageChange={handleChangePage}
-        onRowsPerPageChange={handleChangeRowsPerPage}
-        labelRowsPerPage="Số hàng mỗi trang"
-      ></TablePagination>
     </Container>
   );
 };

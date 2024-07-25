@@ -378,9 +378,7 @@ const ListNews: React.FC = () => {
             ))}
           </Box>
         ) : (
-          <Typography sx={{ padding: "20px" }}>
-            <EmptyContent title="Không tìm thấy nội dung" />
-          </Typography>
+          <EmptyContent title="Không tìm thấy nội dung" />
         )}
       </Box>
     </Box>

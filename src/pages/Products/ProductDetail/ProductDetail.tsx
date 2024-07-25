@@ -31,12 +31,14 @@ const Detail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const [selectedImage, setSelectedImage] = useState<number>(0);
   const [currentQuantities, setCurrentQuantities] = useState<number>(1);
-  const [isActive, setActive] = useState(false);
   const [isRed, setIsRed] = useState(false);
+  const [isAvailable, setIsAvailable] = useState(false);
   const [product, setProduct] = useState<ProductDetailProps>();
   const [selectProductQuantity, setSelectProductQuantity] = useState<number>(0);
   const { apiGetMachineryID } = MachineryApi();
-
+  const [initQuantity, setInitQuantity] = useState<number>(0);
+  let restQuantity = 0
+  // let initQuantity = 0
   const fetchProducts = async () => {
     try {
       if (id) {
@@ -69,7 +71,7 @@ const Detail: React.FC = () => {
   const addToCart = () => {
     if (selectProductQuantity === 0) {
       toast.error("Sản phẩm hiện không còn");
-      return
+      return;
     }
     const existCart = localStorage.getItem("cart");
     const productQuantity = { ...product, currentQuantities, id: id };
@@ -79,10 +81,17 @@ const Detail: React.FC = () => {
         (p: { id: string | undefined }) => p.id === productQuantity.id
       );
       if (existProduct !== -1) {
+        restQuantity = initQuantity
+        if (restQuantity === 0) {
+          toast.error("Bạn đã thêm toàn bộ sản phẩm vào trong Giỏ hàng");
+          return;
+        }
         parseProduct[existProduct].currentQuantities += currentQuantities;
         toast.success("Thêm sản phẩm thành công");
       } else {
         parseProduct.push(productQuantity);
+        console.log("KHÔNG: ");
+        setInitQuantity(selectProductQuantity -1)
         toast.success("Thêm sản phẩm thành công");
       }
       localStorage.setItem("cart", JSON.stringify(parseProduct));
@@ -122,7 +131,11 @@ const Detail: React.FC = () => {
   };
 
   const increaseQuantity = () => {
-    if (selectProductQuantity === 0 || currentQuantities === selectProductQuantity) return;
+    if (
+      selectProductQuantity === 0 ||
+      currentQuantities === selectProductQuantity
+    )
+      return;
     setCurrentQuantities(currentQuantities + 1);
   };
 
@@ -401,7 +414,8 @@ const Detail: React.FC = () => {
                   color: "#fff",
                   transition: "0.3s ease-in-out",
                   overflow: "hidden",
-                  cursor: selectProductQuantity === 0 ? "not-allowed" : "pointer",
+                  cursor:
+                    selectProductQuantity === 0 ? "not-allowed" : "pointer",
                   "&:hover": {
                     backgroundColor: "#35269b",
                   },
