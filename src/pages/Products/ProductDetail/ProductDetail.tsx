@@ -97,6 +97,7 @@ const Detail: React.FC = () => {
       localStorage.setItem("cart", JSON.stringify(parseProduct));
     } else {
       localStorage.setItem("cart", JSON.stringify([productQuantity]));
+      setInitQuantity(selectProductQuantity)
       toast.success("Thêm sản phẩm thành công");
     }
 
