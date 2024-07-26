@@ -14,7 +14,7 @@ export default function MachineComponentDetail() {
   return (
     <Container>
       <HeaderBreadcrumbs
-        heading="Tất cả chi tiết"
+        heading="Chi tiết bộ phận"
         links={[
           { name: "Thống kê", href: config.adminRoutes.dashboard },
           { name: "Sản phẩm", href: config.adminRoutes.viewMachineComponent },

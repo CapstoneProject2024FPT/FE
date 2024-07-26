@@ -7,8 +7,8 @@ import { toast } from "react-toastify";
 import { GetTaskProps, statusTaskMapping } from "../../models/task";
 import { ApiTask } from "../../api/services/apiTask";
 import { formatDateFunc } from "../../utils/fn";
-import ModalChangeStaffTask from "./Popup/ModalChangeStaffTask";
 import ModalDetailTask from "./Popup/ModalTaskDetail";
+import ModalChangeStaffTask from "./Popup/ModalChangeStaffTask";
 
 type ColumnsType<T> = TableProps<T>["columns"];
 
