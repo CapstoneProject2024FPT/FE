@@ -9,6 +9,8 @@ import React, {
 interface AuthContextProps {
   authUser: string | null;
   setAuthUser: React.Dispatch<React.SetStateAction<string | null>>;
+  role: string | null;
+  setRole: React.Dispatch<React.SetStateAction<string | null>>;
 }
 
 interface AuthContextProviderProps {
@@ -33,17 +35,18 @@ export const AuthContextProvider: React.FC<AuthContextProviderProps> = ({
   children,
 }) => {
   const [authUser, setAuthUser] = useState<string | null>(null);
-
+  const [role, setRole] = useState<string | null>(null);
   useEffect(() => {
     const loginInfoString = localStorage.getItem("loginInfo");
     const auth = loginInfoString ? JSON.parse(loginInfoString) : null;
     if (auth) {
       setAuthUser(auth.data.id);
+      setRole(auth.data.role);
     }
   }, [authUser]); // Empty depen
 
   return (
-    <AuthContext.Provider value={{ authUser, setAuthUser }}>
+    <AuthContext.Provider value={{ authUser, setAuthUser, role, setRole }}>
       {children}
     </AuthContext.Provider>
   );
