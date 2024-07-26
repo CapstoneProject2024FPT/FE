@@ -81,7 +81,7 @@ const ModalChangeRole: React.FC<ModalUser> = ({
   };
   return (
     <Modal
-      title="Chi Tiết Loại Máy"
+      title="Chức vụ"
       open={open}
       onCancel={handleClose}
       footer={[]}

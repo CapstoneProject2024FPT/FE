@@ -49,7 +49,7 @@ const ModaBanned: React.FC<ModalUser> = ({
             }
           } else {
             handleCLose();
-            toast.error("Xảy ra lỗi trong quá trình chặn");
+            toast.error("Xảy ra lỗi trong quá trình mở chặn");
           }
         }
       }

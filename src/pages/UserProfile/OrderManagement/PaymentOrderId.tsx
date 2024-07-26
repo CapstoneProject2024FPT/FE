@@ -37,6 +37,7 @@ import { OrderProps, statusMapping, StatusType } from "../../../models/order";
 import CheckoutPaymentMethods from "../../Cart/Payment/CheckoutPaymentMethods";
 import { ApiOrder } from "../../../api/services/apiOrder";
 import { formatAddress, formatDateFunc, formatMoney } from "../../../utils/fn";
+import { useAuthContext } from "../../../context/AuthContext";
 
 // ----------------------------------------------------------------------
 
@@ -60,6 +61,8 @@ const PaymentOrderId: React.FC = () => {
   //api
   const { apiGetOrderId } = ApiOrder();
   const { apiPayment, apiPaymentUpdate } = ApiCheckout();
+
+  const { authUser } = useAuthContext();
 
   let email: string;
   let username: string;
@@ -168,13 +171,14 @@ const PaymentOrderId: React.FC = () => {
   const onSubmit = async (data: FormValuesProps) => {
     try {
       //api vnpay
-      if (orderData) {
+      if (orderData && authUser) {
         if (data.payment === PaymentTypeProps.VNPAY) {
           const paramPayment: paymentProps = {
             orderId: orderData.orderId,
             amount: orderData.finalAmount,
             callbackUrl: window.location.href,
             paymentType: data.payment,
+            accountId: authUser,
           };
 
           const responsePayment = await apiPayment(paramPayment);
