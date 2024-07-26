@@ -116,7 +116,7 @@ const Bill: React.FC = () => {
             <Card sx={{ p: 2 }}>
               <CardHeader title="Thông tin đơn hàng" />
               <Stack display="flex" direction="column" spacing={2}>
-                <Typography> Mã đơn hàng :{orderData?.invoiceCode}</Typography>
+                <Typography> Mã đơn hàng : {orderData?.invoiceCode}</Typography>
                 <Typography>
                   Tên chủ đơn :{orderData?.userInfo?.fullName}
                 </Typography>
