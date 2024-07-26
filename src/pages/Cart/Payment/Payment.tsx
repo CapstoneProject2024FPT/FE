@@ -78,6 +78,7 @@ const CheckoutPayment: React.FC<checkoutPaymentProps> = ({
     machineryId: cart.id,
     quantity: cart.currentQuantities,
     sellingPrice: cart.sellingPrice,
+    stockPrice: cart.sellingPrice,
   }));
   let email: string;
   let username: string;
@@ -159,8 +160,6 @@ const CheckoutPayment: React.FC<checkoutPaymentProps> = ({
     try {
       if (address && authUser) {
         const params = {
-          totalAmount: total,
-          finalAmount: total,
           description: note,
           machineryList: machineList,
           addressId: address.id,
