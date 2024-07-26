@@ -12,8 +12,6 @@ import React, { useEffect, useState } from "react";
 import {
   ArrowBackIos,
   ArrowForwardIos,
-  ShoppingCart,
-  Unarchive,
   Refresh,
   Verified,
   LocalPolice,
@@ -32,12 +30,11 @@ const Detail: React.FC = () => {
   const [selectedImage, setSelectedImage] = useState<number>(0);
   const [currentQuantities, setCurrentQuantities] = useState<number>(1);
   const [isRed, setIsRed] = useState(false);
-  const [isAvailable, setIsAvailable] = useState(false);
   const [product, setProduct] = useState<ProductDetailProps>();
   const [selectProductQuantity, setSelectProductQuantity] = useState<number>(0);
   const { apiGetMachineryID } = MachineryApi();
   const [initQuantity, setInitQuantity] = useState<number>(0);
-  let restQuantity = 0
+  let restQuantity = 0;
   // let initQuantity = 0
   const fetchProducts = async () => {
     try {
@@ -81,7 +78,7 @@ const Detail: React.FC = () => {
         (p: { id: string | undefined }) => p.id === productQuantity.id
       );
       if (existProduct !== -1) {
-        restQuantity = initQuantity
+        restQuantity = initQuantity;
         if (restQuantity === 0) {
           toast.error("Bạn đã thêm toàn bộ sản phẩm vào trong Giỏ hàng");
           return;
@@ -91,7 +88,7 @@ const Detail: React.FC = () => {
       } else {
         parseProduct.push(productQuantity);
         console.log("KHÔNG: ");
-        setInitQuantity(selectProductQuantity -1)
+        setInitQuantity(selectProductQuantity - 1);
         toast.success("Thêm sản phẩm thành công");
       }
       localStorage.setItem("cart", JSON.stringify(parseProduct));
