@@ -55,10 +55,6 @@ const TopBar: React.FC = () => {
         <li
           className={cx("menu-item")}
           style={{ height: "54px", alignContent: "center" }}
-          onClick={(e) => {
-            e.preventDefault();
-            e.stopPropagation();
-          }}
         >
           <a href={config.routes.productList}>LOẠI MÁY</a>
           <ul className={cx("submenu")}>

@@ -12,6 +12,7 @@ import { CloseOutlined, LogoutOutlined } from "@mui/icons-material";
 import { ApiNewsCategories } from "../../../api/services/apiNewsCategories";
 import { NEWS_FILTER } from "../../../constants/filter";
 import { useLocation, useNavigate } from "react-router-dom";
+import EmptyContent from "../../../components/EmptyContent";
 
 const ListNews: React.FC = () => {
   const [listNews, setListNews] = useState<PostGetProps[]>([]);
@@ -360,21 +361,25 @@ const ListNews: React.FC = () => {
         >
           <Box sx={{ display: "flex", flexWrap: "wrap" }}>{renderChips()}</Box>
         </Box>
-        <Box
-          sx={{
-            display: "grid",
-            gap: "25px",
-            justifyContent: "space-between",
-            padding: "0 20px",
-            gridTemplateColumns: {
-              md: "1fr",
-            },
-          }}
-        >
-          {listNews?.map((post) => (
-            <NewsCard key={post.id} post={post} />
-          ))}
-        </Box>
+        {listNews.length > 0 ? (
+          <Box
+            sx={{
+              display: "grid",
+              gap: "25px",
+              justifyContent: "space-between",
+              padding: "0 20px",
+              gridTemplateColumns: {
+                md: "1fr",
+              },
+            }}
+          >
+            {listNews?.map((post) => (
+              <NewsCard key={post.id} post={post} />
+            ))}
+          </Box>
+        ) : (
+          <EmptyContent title="Không tìm thấy nội dung" />
+        )}
       </Box>
     </Box>
   );

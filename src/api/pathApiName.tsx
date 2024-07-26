@@ -4,7 +4,7 @@ export const REGISTER = "register/users";
 export const CHANGE_PASSWORD = "/users/:id/password";
 
 //Machinery
-export const GET_MACHINERY = "/machinery/noPaginate?Status=Available";
+export const GET_MACHINERY = "/machinery?Status=Available";
 export const ADD_MACHINERY = "/Machinery";
 export const MACHINERY = "/Machinery";
 export const MACHINERY_LIST = "machinery";
@@ -99,6 +99,10 @@ export const WARRANTY_ID = "warranty/:id";
 //warranty detail
 export const WARRANTY_DETAIL = "/warrantyDetail";
 export const WARRANTY_DETAIL_ID = "/warrantyDetail/:id";
+
 //payments
 export const PAYMENTS = "payments";
 export const PAYMENTS_ID = "payments/:id";
+
+// amdin dashboard
+export const ADMIN_DASHBOARD = "admin/dashBoard";

@@ -40,7 +40,10 @@ export const MachineryApi = () => {
           indexes: null, // no brackets at all
         },
       });
-      return response.data;
+      return {
+        items: response.data.items,
+        total: response.data.total, // Ensure the total count is returned
+      };
     } catch (error) {
       console.error(error);
       if (axios.isAxiosError(error) && error.response) {

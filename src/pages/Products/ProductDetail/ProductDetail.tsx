@@ -12,8 +12,6 @@ import React, { useEffect, useState } from "react";
 import {
   ArrowBackIos,
   ArrowForwardIos,
-  ShoppingCart,
-  Unarchive,
   Refresh,
   Verified,
   LocalPolice,
@@ -31,19 +29,32 @@ const Detail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const [selectedImage, setSelectedImage] = useState<number>(0);
   const [currentQuantities, setCurrentQuantities] = useState<number>(1);
-  const [isActive, setActive] = useState(false);
   const [isRed, setIsRed] = useState(false);
   const [product, setProduct] = useState<ProductDetailProps>();
   const [selectProductQuantity, setSelectProductQuantity] = useState<number>(0);
   const { apiGetMachineryID } = MachineryApi();
-
+  // const [initQuantity, setInitQuantity] = useState<number>(0);
+  // let restQuantity = 0;
+  let initQuantity = 0
   const fetchProducts = async () => {
     try {
       if (id) {
+        const existCart = localStorage.getItem("cart");
+        const productQuantity = { ...product, currentQuantities, id: id };
+        if (existCart) {
+          const parseProduct = JSON.parse(existCart);
+          const existProduct = parseProduct.findIndex(
+            (p: { id: string | undefined }) => p.id === productQuantity.id
+          );
+          if (existProduct !== -1) {
+            initQuantity = parseProduct[existProduct].currentQuantities;
+            console.log("parseProduct[existProduct].currentQuantities: ", initQuantity);
+          }
+        }
         const response = await apiGetMachineryID(id);
         if (response.status === 200) {
           setProduct(response.data);
-          setSelectProductQuantity(response.data.quantity?.Available || 0);
+          setSelectProductQuantity(remainingQuantity(response.data.quantity?.Available, initQuantity) || 0);
         } else {
           toast.error("Có lỗi trong quá trình lấy");
         }
@@ -53,6 +64,10 @@ const Detail: React.FC = () => {
     } catch (error) {
       toast.error("lỗi");
     }
+  };
+
+  const remainingQuantity = (quantityStock: any, quantityInCart: any) => {
+    return quantityStock - quantityInCart;
   };
 
   useEffect(() => {
@@ -67,8 +82,10 @@ const Detail: React.FC = () => {
   };
 
   const addToCart = () => {
-    if (isActive) return;
-    setActive(!isActive);
+    if (selectProductQuantity === 0) {
+      toast.error("Sản phẩm hiện không còn");
+      return;
+    }
     const existCart = localStorage.getItem("cart");
     const productQuantity = { ...product, currentQuantities, id: id };
     if (existCart) {
@@ -77,17 +94,28 @@ const Detail: React.FC = () => {
         (p: { id: string | undefined }) => p.id === productQuantity.id
       );
       if (existProduct !== -1) {
-        parseProduct[existProduct].currentQuantities = +currentQuantities;
-        toast.success("Thêm sản phẩm thành công");
+        if (selectProductQuantity <= 0) {
+          toast.error("Sản phẩm hiện không còn");
+          return;
+        } else {
+          parseProduct[existProduct].currentQuantities += currentQuantities;
+        }
       } else {
         parseProduct.push(productQuantity);
-        toast.success("Thêm sản phẩm thành công");
       }
+      toast.success("Thêm sản phẩm thành công");
       localStorage.setItem("cart", JSON.stringify(parseProduct));
+
+      console.log("parseProduct[existProduct].currentQuantities: ");
     } else {
       localStorage.setItem("cart", JSON.stringify([productQuantity]));
       toast.success("Thêm sản phẩm thành công");
     }
+
+    // Update the selectProductQuantity state
+    setSelectProductQuantity(
+      (prevQuantity) => prevQuantity - currentQuantities
+    );
   };
 
   const buttonStyle = {
@@ -115,12 +143,16 @@ const Detail: React.FC = () => {
   };
 
   const increaseQuantity = () => {
-    if (currentQuantities === selectProductQuantity) return;
+    if (
+      selectProductQuantity === 0 ||
+      currentQuantities === selectProductQuantity
+    )
+      return;
     setCurrentQuantities(currentQuantities + 1);
   };
 
   const decreaseQuantity = () => {
-    if (currentQuantities === 1) return;
+    if (selectProductQuantity === 0 || currentQuantities === 1) return;
     setCurrentQuantities(currentQuantities - 1);
   };
 
@@ -137,12 +169,12 @@ const Detail: React.FC = () => {
       <Box
         sx={{
           display: "flex",
-          justifyContent: "space-between",
+          justifyContent: "space-around",
         }}
       >
         <Box
           sx={{
-            width: "30%",
+            width: "35%",
             height: "100%",
             boxShadow:
               "rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px",
@@ -174,11 +206,12 @@ const Detail: React.FC = () => {
               }
             />
             <Zoom
+              className="product-images"
               src={
                 product?.image[selectedImage].imageURL ||
                 "https://via.placeholder.com/150"
               }
-              width="100%"
+              width="unset"
               height="300px"
             />
             <ArrowForwardIos
@@ -213,7 +246,13 @@ const Detail: React.FC = () => {
             rowHeight={164}
           >
             {(product?.image || [])?.map(({ imageURL }, index) => (
-              <ImageListItem key={index} sx={{ cursor: "pointer" }}>
+              <ImageListItem
+                key={index}
+                sx={{
+                  cursor: "pointer",
+                  boxShadow: "rgba(99, 99, 99, 0.2) 0px 2px 8px 0px",
+                }}
+              >
                 <img
                   src={imageURL}
                   alt={imageURL}
@@ -225,7 +264,7 @@ const Detail: React.FC = () => {
           </ImageList>
         </Box>
 
-        <Box sx={{ width: "68%", display: "flex", flexDirection: "column" }}>
+        <Box sx={{ width: "60%", display: "flex", flexDirection: "column" }}>
           <Box sx={{ display: "flex", justifyContent: "space-between" }}>
             <Box>
               <Typography variant="h4">{product?.name}</Typography>
@@ -298,7 +337,9 @@ const Detail: React.FC = () => {
                 50
               </Typography>
 
-              <Box>
+              <Box
+                sx={{ display: "flex", flexDirection: "column", gap: "20px" }}
+              >
                 <Box
                   sx={{
                     display: "flex",
@@ -372,7 +413,6 @@ const Detail: React.FC = () => {
               </Box>
 
               <Button
-                className={`cart-button ${isActive && "clicked"}`}
                 onClick={addToCart}
                 sx={{
                   marginTop: "20px",
@@ -383,11 +423,11 @@ const Detail: React.FC = () => {
                   borderRadius: "10px",
                   backgroundColor: "#4834d4",
                   outline: "none",
-                  cursor: "pointer",
                   color: "#fff",
                   transition: "0.3s ease-in-out",
                   overflow: "hidden",
-
+                  cursor:
+                    selectProductQuantity === 0 ? "not-allowed" : "pointer",
                   "&:hover": {
                     backgroundColor: "#35269b",
                   },
@@ -396,16 +436,8 @@ const Detail: React.FC = () => {
                     transform: "scale(0.9)",
                   },
                 }}
-                disabled={selectProductQuantity === 0}
               >
-                <span className="add-to-cart">
-                  {selectProductQuantity === 0
-                    ? "Tạm hết hàng"
-                    : "Thêm vào giỏ"}
-                </span>
-                <span className="added">Đã thêm</span>
-                <ShoppingCart className="fas fa-shopping-cart" />
-                <Unarchive className="fas fa-box" />
+                <span className="add-to-cart">Thêm vào giỏ</span>
               </Button>
             </Box>
             <Divider orientation="vertical" flexItem sx={{ margin: "0 8px" }} />
