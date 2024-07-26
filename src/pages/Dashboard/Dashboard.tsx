@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useEffect, useState } from "react";
 import "./Dashboard.scss";
 import {
@@ -25,20 +26,20 @@ import HeaderBreadcrumbs from "../../components/HeaderBreadcrumbs";
 import { ApiAdminDashboard } from "../../api/services/apiAdminDashboard";
 import { DashboardProp } from "../../models/dashboard";
 
-const data = [
-  { name: "Tháng 1", value: 2400 },
-  { name: "Tháng 2", value: 1398 },
-  { name: "Tháng 3", value: 9800 },
-  { name: "Tháng 4", value: 3908 },
-  { name: "Tháng 5", value: 4800 },
-  { name: "Tháng 6", value: 3800 },
-  { name: "Tháng 7", value: 4300 },
-  { name: "Tháng 8", value: 9800 },
-  { name: "Tháng 9", value: 3908 },
-  { name: "Tháng 10", value: 4800 },
-  { name: "Tháng 11", value: 3800 },
-  { name: "Tháng 12", value: 4300 },
-];
+// const data = [
+//   { name: "Tháng 1", value: 2400 },
+//   { name: "Tháng 2", value: 1398 },
+//   { name: "Tháng 3", value: 9800 },
+//   { name: "Tháng 4", value: 3908 },
+//   { name: "Tháng 5", value: 4800 },
+//   { name: "Tháng 6", value: 3800 },
+//   { name: "Tháng 7", value: 4300 },
+//   { name: "Tháng 8", value: 9800 },
+//   { name: "Tháng 9", value: 3908 },
+//   { name: "Tháng 10", value: 4800 },
+//   { name: "Tháng 11", value: 3800 },
+//   { name: "Tháng 12", value: 4300 },
+// ];
 
 const RADIAN = Math.PI / 180;
 const renderCustomizedLabel = ({
@@ -73,7 +74,7 @@ const Dashboard: React.FC = () => {
   // const [total, setTotal] = useState(0);
   // const [dataPie, setDataPie] = useState(0);
   const [dashboardData, setDashboardData] = useState<DashboardProp>();
-  const [loading, setLoading] = useState(true);
+  // const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchDashboardData = async () => {
@@ -109,6 +110,7 @@ const Dashboard: React.FC = () => {
     };
 
     fetchDashboardData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const dataPie = [
@@ -124,17 +126,25 @@ const Dashboard: React.FC = () => {
     totalOrders: item.totalOrders,
   }));
 
-  const totalProfitAndTotalRevenue = dashboardData?.monthlyStatistics.map((item) => ({
-    month: `Tháng ${item.month}`,
-    totalProfit: item.totalProfit,
-    totalRevenue: item.totalRevenue,
-  }));
+  const totalProfitAndTotalRevenue = dashboardData?.monthlyStatistics.map(
+    (item) => ({
+      month: `Tháng ${item.month}`,
+      totalProfit: item.totalProfit,
+      totalRevenue: item.totalRevenue,
+    })
+  );
 
   const CustomTooltip2 = ({ active, payload, label }: any) => {
     if (active && payload && payload.length) {
       return (
-        <div className="custom-tooltip"
-        style={{ backgroundColor: 'white', padding: '10px', border: '1px solid #ccc', borderRadius: '5px' }}
+        <div
+          className="custom-tooltip"
+          style={{
+            backgroundColor: "white",
+            padding: "10px",
+            border: "1px solid #ccc",
+            borderRadius: "5px",
+          }}
         >
           <p className="label">{`Tháng ${label}`}</p>
           <p className="intro">{`Lợi nhuận: ${payload[0].value}`}</p>
@@ -142,25 +152,30 @@ const Dashboard: React.FC = () => {
         </div>
       );
     }
-  
+
     return null;
   };
 
   const CustomTooltip1 = ({ active, payload, label }: any) => {
     if (active && payload && payload.length) {
       return (
-        <div className="custom-tooltip"
-        style={{ backgroundColor: 'white', padding: '10px', border: '1px solid #ccc', borderRadius: '5px' }}
+        <div
+          className="custom-tooltip"
+          style={{
+            backgroundColor: "white",
+            padding: "10px",
+            border: "1px solid #ccc",
+            borderRadius: "5px",
+          }}
         >
           <p className="label">{`Tháng ${label}`}</p>
           <p className="intro">{`Tổng đơn: ${payload[0].value}`}</p>
         </div>
       );
     }
-  
+
     return null;
   };
-  
 
   const CustomXAxisTick = (props: any) => {
     const { x, y, payload } = props;
@@ -180,9 +195,9 @@ const Dashboard: React.FC = () => {
     );
   };
 
-  const formatMonthTick = (month: any) => {
-    return `Tháng ${month}`;
-  };
+  // const formatMonthTick = (month: any) => {
+  //   return `Tháng ${month}`;
+  // };
 
   return (
     <Box sx={{ width: "100%", height: "100%" }}>
@@ -306,7 +321,7 @@ const Dashboard: React.FC = () => {
                   padding={{ left: 25, right: 25 }}
                 />
                 <YAxis />
-                <Tooltip content={<CustomTooltip1 />}/>
+                <Tooltip content={<CustomTooltip1 />} />
                 <Legend
                   payload={[
                     {
@@ -340,7 +355,7 @@ const Dashboard: React.FC = () => {
                   fill="#8884d8"
                   dataKey="value"
                 >
-                  {dataPie.map((entry, index) => (
+                  {dataPie.map((_entry, index) => (
                     <Cell
                       key={`cell-${index}`}
                       fill={COLORS[index % COLORS.length]}
@@ -375,7 +390,7 @@ const Dashboard: React.FC = () => {
                   interval={0}
                   padding={{ left: 25, right: 25 }}
                 />
-                <YAxis/>
+                <YAxis />
                 <Tooltip content={<CustomTooltip2 />} />
                 <Legend
                   payload={[
