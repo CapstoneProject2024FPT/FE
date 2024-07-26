@@ -40,7 +40,6 @@ export const MachineryApi = () => {
           indexes: null, // no brackets at all
         },
       });
-      console.log(response.data.items)
       return {
         items: response.data.items,
         total: response.data.total, // Ensure the total count is returned

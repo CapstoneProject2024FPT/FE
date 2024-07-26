@@ -24,7 +24,7 @@ import { ProductsFilterType } from "../../../constants/filter";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useFilterContext } from "../../../context/FilterContext";
 import EmptyCart from "../../../components/EmptyCart";
-import PaginationProduct from "../../../components/pagination/pagination";
+import PaginationProduct from "../../../components/Pagination/pagination";
 
 interface ProductFilter {
   [key: string]: string[];
@@ -37,7 +37,7 @@ const ProductList: React.FC = () => {
   const [filter, setFilter] = useState<ProductFilter>();
   const { apiGetList, apiGetMachine } = MachineryApi();
   const [currentPage, setCurrentPage] = useState(1);
-  const productsPerPage = 3;
+  const productsPerPage = 8;
   const { apiGetOrigin } = ApiOrigin();
   const { getCategoryName } = CategoryApi();
   const { getBrandName } = BrandApi();
@@ -329,10 +329,8 @@ const ProductList: React.FC = () => {
   };
 
   const indexOfLastProduct = currentPage * productsPerPage;
-  console.log(indexOfLastProduct);
 
   const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
-  console.log(indexOfFirstProduct);
 
   const currentProducts = products.slice(
     indexOfFirstProduct,
@@ -455,7 +453,7 @@ const ProductList: React.FC = () => {
 
         {/* ---------------------------------------- */}
 
-        <Box sx={{ width: { xs: "100%", md: "80%" } }}>
+        <Box sx={{ width: { xs: "100%", md: "80%", minHeight: "1500px" } }}>
           <Box
             sx={{
               padding: "10px",
@@ -498,8 +496,7 @@ const ProductList: React.FC = () => {
                 gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))",
                 gap: "25px",
                 justifyContent: "space-between",
-                width: "100%%",
-                padding: "0 20px",
+                width: "100%",
               }}
             >
               {currentProducts?.map((product) => (
@@ -507,16 +504,23 @@ const ProductList: React.FC = () => {
               ))}
             </Box>
           ) : (
-            <EmptyCart title="Không tìm thấy sản phẩm" />
+            <EmptyCart sx={{display: "flex", height: "50%"}} title="Không tìm thấy sản phẩm" />
           )}
-        </Box>
+        </Box>     
       </Box>
-      <PaginationProduct
-        currentPage={currentPage}
-        onPageChange={handlePageChange}
-        postsPerPage={productsPerPage}
-        totalPosts={products.length}
-      />
+      <Box sx={{
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        position: "sticky"
+      }}>
+        <PaginationProduct
+          currentPage={currentPage}
+          onPageChange={handlePageChange}
+          postsPerPage={productsPerPage}
+          totalPosts={products.length}
+        />
+      </Box>
     </Container>
   );
 };

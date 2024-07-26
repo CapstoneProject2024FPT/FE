@@ -33,16 +33,28 @@ const Detail: React.FC = () => {
   const [product, setProduct] = useState<ProductDetailProps>();
   const [selectProductQuantity, setSelectProductQuantity] = useState<number>(0);
   const { apiGetMachineryID } = MachineryApi();
-  const [initQuantity, setInitQuantity] = useState<number>(0);
-  let restQuantity = 0;
-  // let initQuantity = 0
+  // const [initQuantity, setInitQuantity] = useState<number>(0);
+  // let restQuantity = 0;
+  let initQuantity = 0
   const fetchProducts = async () => {
     try {
       if (id) {
+        const existCart = localStorage.getItem("cart");
+        const productQuantity = { ...product, currentQuantities, id: id };
+        if (existCart) {
+          const parseProduct = JSON.parse(existCart);
+          const existProduct = parseProduct.findIndex(
+            (p: { id: string | undefined }) => p.id === productQuantity.id
+          );
+          if (existProduct !== -1) {
+            initQuantity = parseProduct[existProduct].currentQuantities;
+            console.log("parseProduct[existProduct].currentQuantities: ", initQuantity);
+          }
+        }
         const response = await apiGetMachineryID(id);
         if (response.status === 200) {
           setProduct(response.data);
-          setSelectProductQuantity(response.data.quantity?.Available || 0);
+          setSelectProductQuantity(remainingQuantity(response.data.quantity?.Available, initQuantity) || 0);
         } else {
           toast.error("Có lỗi trong quá trình lấy");
         }
@@ -52,6 +64,10 @@ const Detail: React.FC = () => {
     } catch (error) {
       toast.error("lỗi");
     }
+  };
+
+  const remainingQuantity = (quantityStock: any, quantityInCart: any) => {
+    return quantityStock - quantityInCart;
   };
 
   useEffect(() => {
@@ -78,23 +94,21 @@ const Detail: React.FC = () => {
         (p: { id: string | undefined }) => p.id === productQuantity.id
       );
       if (existProduct !== -1) {
-        restQuantity = initQuantity;
-        if (restQuantity === 0) {
-          toast.error("Bạn đã thêm toàn bộ sản phẩm vào trong Giỏ hàng");
+        if (selectProductQuantity <= 0) {
+          toast.error("Sản phẩm hiện không còn");
           return;
+        } else {
+          parseProduct[existProduct].currentQuantities += currentQuantities;
         }
-        parseProduct[existProduct].currentQuantities += currentQuantities;
-        toast.success("Thêm sản phẩm thành công");
       } else {
         parseProduct.push(productQuantity);
-        console.log("KHÔNG: ");
-        setInitQuantity(selectProductQuantity - 1);
-        toast.success("Thêm sản phẩm thành công");
       }
+      toast.success("Thêm sản phẩm thành công");
       localStorage.setItem("cart", JSON.stringify(parseProduct));
+
+      console.log("parseProduct[existProduct].currentQuantities: ");
     } else {
       localStorage.setItem("cart", JSON.stringify([productQuantity]));
-      setInitQuantity(selectProductQuantity)
       toast.success("Thêm sản phẩm thành công");
     }
 
