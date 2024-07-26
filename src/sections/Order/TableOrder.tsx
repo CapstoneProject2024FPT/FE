@@ -8,7 +8,6 @@ import { ApiOrder } from "../../api/services/apiOrder";
 import { toast } from "react-toastify";
 import { formatDateFunc, formatMoney } from "../../utils/fn";
 import ModalDetailOrder from "./OrderModal/ModalDetailOrder";
-import ModalCompleteOrder from "./OrderModal/ModalCompleteOrder";
 import ModalCancelOrder from "./OrderModal/ModalCancelOrder";
 import ModalDeliveryTask from "./OrderModal/ModalDeliveryTask";
 
@@ -25,7 +24,6 @@ const TableOrder: React.FC = () => {
 
   //popup
   const [open, setOpen] = useState<boolean>(false);
-  const [openCompletePopup, setOpenCompletePopup] = useState<boolean>(false);
   const [openCancelPopup, setOpenCancelPopup] = useState<boolean>(false);
   const [openTaskPopup, setOpenTaskPopup] = useState<boolean>(false);
   const [selectedData, setSelectedData] = useState<OrderProps | null>(null);
@@ -50,14 +48,6 @@ const TableOrder: React.FC = () => {
 
   const handleCLoseTask = () => {
     setOpenTaskPopup(!openTaskPopup);
-  };
-
-  const handleActionComplete = (record: OrderProps) => {
-    setOpenCompletePopup(!openCompletePopup);
-    setSelectedData(record);
-  };
-  const handleCLoseComplete = () => {
-    setOpenCompletePopup(!openCompletePopup);
   };
 
   const handleActionCancel = (record: OrderProps) => {
@@ -106,12 +96,6 @@ const TableOrder: React.FC = () => {
     toast.success(response);
   };
 
-  const handleCompleteSuccess = (response: string) => {
-    handleCLoseComplete();
-    fetchOrder();
-    toast.success(response);
-  };
-
   const handleTaskSuccess = (response: string) => {
     handleCLoseTask();
     fetchOrder();
@@ -148,10 +132,6 @@ const TableOrder: React.FC = () => {
     },
     {
       key: "3",
-      label: "Hoàn thành đơn hàng",
-    },
-    {
-      key: "4",
       label: "Huỷ đơn hàng",
     },
   ];
@@ -217,7 +197,7 @@ const TableOrder: React.FC = () => {
                     record.status === StatusType.COMPLETED ||
                     record.status === StatusType.CANCELED
                   ) {
-                    return !["2", "3", "4"].includes(item.key as string);
+                    return !["2", "3"].includes(item.key as string);
                   } else if (record.status === StatusType.DELIVERY) {
                     return item.key !== "2";
                   } else {
@@ -235,9 +215,6 @@ const TableOrder: React.FC = () => {
                     handleActionTask(record);
                     break;
                   case "3":
-                    handleActionComplete(record);
-                    break;
-                  case "4":
                     handleActionCancel(record);
                     break;
                   default:
@@ -270,15 +247,6 @@ const TableOrder: React.FC = () => {
           OrderData={selectedData}
           open={open}
           handleClose={handleCLose}
-        />
-      )}
-
-      {openCompletePopup && (
-        <ModalCompleteOrder
-          openCompletePopup={openCompletePopup}
-          handleCLoseComplete={handleCLoseComplete}
-          onCompleteSuccess={handleCompleteSuccess}
-          OrderData={selectedData}
         />
       )}
 

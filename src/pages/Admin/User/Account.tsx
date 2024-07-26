@@ -4,6 +4,7 @@ import { TabValue } from "../User/AccountType";
 import { Container } from "@mui/material";
 import HeaderBreadcrumbs from "../../../components/HeaderBreadcrumbs";
 import config from "../../../configs";
+import { useAuthContext } from "../../../context/AuthContext";
 interface TabItem {
   key: string;
   label: React.ReactNode;
@@ -26,7 +27,13 @@ const getItemTab = (
 };
 
 const Account: React.FC = () => {
-  const tabItems = TabValue.map((item) => {
+  const { role } = useAuthContext();
+
+  const filterTabValues = TabValue.filter((tab) =>
+    tab.roles?.includes(role || "")
+  );
+
+  const tabItems = filterTabValues.map((item) => {
     return getItemTab(item.label, item.key, item.icon, item.children);
   });
 

@@ -36,6 +36,7 @@ import { useAddress } from "../../../zustand/useAddress";
 import config from "../../../configs";
 import { useLocation, useNavigate } from "react-router-dom";
 import emailjs from "@emailjs/browser";
+import { useAuthContext } from "../../../context/AuthContext";
 
 // ----------------------------------------------------------------------
 
@@ -47,9 +48,6 @@ const PAYMENT_OPTIONS: PaymentOption[] = [
   },
 ];
 
-// interface QueryParams {
-//   [key: string]: string;
-// }
 type FormValuesProps = {
   payment: string;
 };
@@ -64,6 +62,8 @@ const CheckoutPayment: React.FC<checkoutPaymentProps> = ({
 }) => {
   const { total } = useCheckout();
   const { address } = useAddress();
+  const { authUser } = useAuthContext();
+
   const location = useLocation();
   const navigate = useNavigate();
   //api
@@ -157,7 +157,7 @@ const CheckoutPayment: React.FC<checkoutPaymentProps> = ({
 
   const onSubmit = async (data: FormValuesProps) => {
     try {
-      if (address) {
+      if (address && authUser) {
         const params = {
           totalAmount: total,
           finalAmount: total,
@@ -177,7 +177,10 @@ const CheckoutPayment: React.FC<checkoutPaymentProps> = ({
               amount: total,
               callbackUrl: window.location.href,
               paymentType: "VNPAY",
+              accountId: authUser,
             };
+
+            console.log(paramPayment);
 
             const responsePayment = await apiPayment(paramPayment);
             sessionStorage.setItem(
