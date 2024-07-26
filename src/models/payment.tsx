@@ -22,4 +22,5 @@ export interface paymentProps {
   amount: number;
   paymentType: string;
   callbackUrl: string;
+  accountId: string;
 }

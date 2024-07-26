@@ -1,15 +1,12 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Modal } from "antd";
-//form
 import {
   FormProvider,
   RHFAutoCompleteUser,
 } from "../../../components/hook-form";
-// form
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm } from "react-hook-form";
 import * as Yup from "yup";
-//component
 import { Card, Stack, TextField } from "@mui/material";
 import { toast } from "react-toastify";
 import { GetTaskProps } from "../../../models/task";
@@ -35,66 +32,60 @@ interface updateChangeProps {
 interface updateField {
   accountId: string;
 }
-const ModalChangeStaffTask: React.FC<ModalBrand> = ({
+
+export default function ModalChangeStaffTask({
   TaskData,
   open,
   handleClose,
   onChangeSuccess,
-}) => {
-  //api
+}: ModalBrand) {
   const { apiUpdateTask } = ApiTask();
   const { apiGetUserByRole } = ApiAccount();
   const { apiGetWarrantyById } = ApiWarranty();
-  //useState
+
   const [data, setData] = useState<staffProps[]>();
   const [warranty, setWarranty] = useState<WarrantyPropsById>();
 
   const fetchAccountUser = async () => {
-    const params = {
-      Role: RoleType.TECHNICAL,
-      size: 20,
-    };
-    const response = await apiGetUserByRole(params);
-    if (response.status === 200) {
-      setData(response.data.items);
-    } else {
-      toast.error(response.Error);
+    const params = { Role: RoleType.TECHNICAL, size: 20 };
+    try {
+      const response = await apiGetUserByRole(params);
+      if (response.status === 200) {
+        setData(response.data.items);
+      } else {
+        toast.error(response.Error);
+      }
+    } catch (error) {
+      toast.error("Error fetching user data");
     }
   };
 
-  const fetchWarantyId = async (id: string) => {
+  const fetchWarrantyId = async (id: string) => {
     try {
-      if (TaskData) {
-        const response = await apiGetWarrantyById(id);
-        if (response.status === 200) {
-          setWarranty(response.data);
-        } else {
-          toast.error(response.Error);
-        }
+      const response = await apiGetWarrantyById(id);
+      if (response.status === 200) {
+        setWarranty(response.data);
+      } else {
+        toast.error(response.Error);
       }
     } catch (error) {
-      toast.error("Lỗi lấy thông tin người dung");
+      toast.error("Error fetching warranty data");
     }
   };
 
   useEffect(() => {
     fetchAccountUser();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  useEffect(() => {
     if (TaskData?.warrantyDetail?.warrantyId) {
-      fetchWarantyId(TaskData.warrantyDetail.warrantyId);
+      fetchWarrantyId(TaskData.warrantyDetail.warrantyId);
     }
+  }, [TaskData]);
 
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
   const RankSchema = Yup.object().shape({
-    accountId: Yup.string().required("Bắt buộc"),
+    accountId: Yup.string().required("Required"),
   });
 
   const defaultValues: updateField = {
-    accountId: TaskData?.staff.id || "",
+    accountId: TaskData?.staff?.id || "",
   };
 
   const methods = useForm<updateField>({
@@ -109,31 +100,33 @@ const ModalChangeStaffTask: React.FC<ModalBrand> = ({
   } = methods;
 
   const onSubmit = async (data: updateField) => {
-    try {
-      if (TaskData) {
-        const params: updateChangeProps = {
-          accountId: data.accountId,
-          addressId: TaskData.address.id,
-        };
-        const response = await apiUpdateTask(TaskData.id, params);
+    if (!TaskData) return;
 
-        if (response.status === 200) {
-          onChangeSuccess(response.data);
-        } else {
-          toast.error(response.Error);
-        }
-        reset();
+    const params: updateChangeProps = {
+      accountId: data.accountId,
+      addressId: TaskData.address.id,
+    };
+
+    try {
+      const response = await apiUpdateTask(TaskData.id, params);
+      if (response.status === 200) {
+        onChangeSuccess(response.data);
+      } else {
+        toast.error(response.Error);
       }
+      reset();
     } catch (error) {
+      toast.error("Error updating task");
       console.error(error);
     }
   };
+
   return (
     <Modal
-      title={`Đổi nhân viên cho nhiệm vụ có id:  ${TaskData?.id ?? ""}`}
+      title={`Đổi nhân viên cho nhiệm vụ có id: ${TaskData?.id ?? ""}`}
       open={open}
       onCancel={handleClose}
-      footer={[]}
+      footer={null}
       style={{ top: 50 }}
       width={600}
     >
@@ -141,21 +134,19 @@ const ModalChangeStaffTask: React.FC<ModalBrand> = ({
         <Card sx={{ p: 3 }}>
           <Stack spacing={3}>
             {TaskData?.type === "Delivery" ? (
-              <>
-                <TextField
-                  label="Mã đơn hàng"
-                  value={TaskData?.order?.invoiceCode}
-                />
-              </>
+              <TextField
+                label="Mã đơn hàng"
+                value={TaskData?.order?.invoiceCode}
+              />
             ) : (
               <>
                 <TextField
                   label="Tên máy"
-                  value={warranty?.inventory?.machinery?.name}
+                  value={warranty?.inventory?.machinery?.name || ""}
                 />
                 <TextField
                   label="Mã số máy"
-                  value={warranty?.inventory.serialNumber}
+                  value={warranty?.inventory?.serialNumber || ""}
                 />
               </>
             )}
@@ -170,9 +161,7 @@ const ModalChangeStaffTask: React.FC<ModalBrand> = ({
               loading={isSubmitting}
               variant="outlined"
               type="submit"
-              sx={{
-                marginTop: "5px",
-              }}
+              sx={{ marginTop: "5px" }}
             >
               Lưu
             </LoadingButton>
@@ -181,6 +170,4 @@ const ModalChangeStaffTask: React.FC<ModalBrand> = ({
       </FormProvider>
     </Modal>
   );
-};
-
-export default ModalChangeStaffTask;
+}
