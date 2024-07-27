@@ -24,7 +24,7 @@ import { ProductsFilterType } from "../../../constants/filter";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useFilterContext } from "../../../context/FilterContext";
 import EmptyCart from "../../../components/EmptyCart";
-import PaginationProduct from "../../../components/pagination/pagination";
+import CustomPagination from "../../../components/pagination/CustomPagination";
 
 interface ProductFilter {
   [key: string]: string[];
@@ -519,7 +519,7 @@ const ProductList: React.FC = () => {
           position: "sticky",
         }}
       >
-        <PaginationProduct
+        <CustomPagination
           currentPage={currentPage}
           onPageChange={handlePageChange}
           postsPerPage={productsPerPage}
