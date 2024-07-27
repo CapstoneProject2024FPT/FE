@@ -44,7 +44,7 @@ const getStatusStyles = (status: string) => {
     case "UnPaid":
       return { backgroundColor: "#FFD700", color: "black" }; // vàng
     case "Paid":
-      return { backgroundColor: "#4CAF50", color: "white" }; // xanh lá
+      return { backgroundColor: "#2196F3", color: "white" }; // xanh dương
     case "Completed":
       return { backgroundColor: "#4CAF50", color: "white" }; // xanh lá
     case "Canceled":
@@ -64,7 +64,7 @@ const Row = (props: {
   const [open, setOpen] = useState(false);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const openMenu = Boolean(anchorEl);
-  let  email: string = "";
+  let email: string = "";
   let username: string = "";
   let isSucess: boolean = false;
   const [remainingTime, setRemainingTime] = useState<number | null>(null);
