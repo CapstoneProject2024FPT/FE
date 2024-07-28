@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from "react";
-import type { MenuProps } from "antd";
-import type { TableProps } from "antd";
-import { DownOutlined } from "@ant-design/icons";
-import { Table, Input, Space, Dropdown, Button } from "antd";
+import { Table, Input, Space, Dropdown, Button, DatePicker, MenuProps, TableProps } from "antd";
+import { DownOutlined, PlusOutlined } from "@ant-design/icons";
 import ModalProductPopupDelete from "./PopupProduct/ModalProductPopupDelete";
 import { toast } from "react-toastify";
 import { MachineryApi } from "../../api/services/apiMachinery";
@@ -11,8 +9,8 @@ import { useNavigate } from "react-router-dom";
 import config from "../../configs";
 import ModalProductPopupPriority from "./PopupProduct/ModalProductPopupPriority";
 import { formatDateFunc } from "../../utils/fn";
-import { PlusOutlined } from "@ant-design/icons";
-
+import moment from "moment";
+import dayjs from "dayjs";
 type ColumnsType<T> = TableProps<T>["columns"];
 const { Search } = Input;
 
@@ -20,13 +18,14 @@ const pageSize = 20;
 
 const TableProduct: React.FC = () => {
   const navigate = useNavigate();
-  const [products, setProducts] = useState<ProductAdmin[]>();
+  const [products, setProducts] = useState<ProductAdmin[]>([]);
   const [pagination, setPagination] = useState({
     current: 1,
     pageSize: pageSize,
   });
   //search
   const [query, setQuery] = useState<string>("");
+  const [selectedDate, setSelectedDate] = useState<string | null>(null);
 
   //popup
   const [openDeletePopup, setOpenDeletePopup] = useState<boolean>(false);
@@ -118,9 +117,20 @@ const TableProduct: React.FC = () => {
     setQuery(e.target.value);
   };
 
-  const filteredRows = products?.filter((item) =>
-    item.name?.toLowerCase().includes(query)
-  );
+  const handleDateChange = (date: any, dateString: string | string[]) => {
+    setSelectedDate(Array.isArray(dateString) ? dateString[0] : dateString);
+  };
+
+  const dateFormatList = ["DD/MM/YYYY", "DD/MM/YY", "DD-MM-YYYY", "DD-MM-YY"];
+
+  const filteredRows = 
+  products
+    ?.filter((item) => item.name?.toLowerCase().includes(query.toLowerCase()))
+    .filter((item) =>
+      selectedDate
+        ? moment(item.createDate).format("DD/MM/YYYY") === selectedDate
+        : true
+    );
 
   const items: MenuProps["items"] = [
     {
@@ -177,7 +187,18 @@ const TableProduct: React.FC = () => {
       sorter: (a, b) => a.priority - b.priority,
     },
     {
-      title: "Ngày tạo",
+      title: (
+        <div style={{ display: "flex" }}>
+          Ngày tạo
+          <DatePicker
+            onChange={handleDateChange}
+            style={{ marginLeft: 8 }}
+            defaultValue={dayjs("01/01/2024", dateFormatList[0])}
+            format={dateFormatList}
+            placeholder="Chọn ngày"
+          />
+        </div>
+      ),
       dataIndex: "createDate",
       render: (createDate) => formatDateFunc.formatDate(createDate),
     },
