@@ -2,14 +2,15 @@ import React, { useEffect, useState } from "react";
 import type { MenuProps } from "antd";
 import type { TableProps } from "antd";
 import { DownOutlined } from "@ant-design/icons";
-import { Table, Space, Dropdown } from "antd";
+import { Table, Space, Dropdown, DatePicker } from "antd";
 import { toast } from "react-toastify";
 import { GetTaskProps, statusTaskMapping } from "../../models/task";
 import { ApiTask } from "../../api/services/apiTask";
 import { formatDateFunc } from "../../utils/fn";
 import ModalDetailTask from "./Popup/ModalTaskDetail";
 import ModalChangeStaffTask from "./Popup/ModalChangeStaffTask";
-
+import moment from "moment";
+import dayjs from "dayjs";
 type ColumnsType<T> = TableProps<T>["columns"];
 
 const pageSize = 20;
@@ -28,6 +29,7 @@ const TableTask: React.FC = () => {
 
   //api
   const { loading, apiGetTask } = ApiTask();
+  const [selectedDate, setSelectedDate] = useState<string | null>(null);
 
   //modal popup
   const handleActionDetail = (record: GetTaskProps) => {
@@ -100,6 +102,16 @@ const TableTask: React.FC = () => {
         return { backgroundColor: "transparent", color: "black" };
     }
   };
+  const handleDateChange = (date: any, dateString: string | string[]) => {
+    setSelectedDate(Array.isArray(dateString) ? dateString[0] : dateString);
+  };
+  const dateFormatList = ["DD/MM/YYYY", "DD/MM/YY", "DD-MM-YYYY", "DD-MM-YY"];
+
+  const filteredRows = tasks?.filter((item) =>
+    selectedDate
+      ? moment(item.createDate).format("DD/MM/YYYY") === selectedDate
+      : true
+  );
 
   const items: MenuProps["items"] = [
     {
@@ -113,22 +125,45 @@ const TableTask: React.FC = () => {
   ];
   const columns: ColumnsType<GetTaskProps> = [
     {
-      title: "Loại công việc ",
+      title: <div style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}>Loại công việc</div>,
       dataIndex: "type",
       render: (type) => (type === "Delivery" ? "Giao Hàng" : "Bảo Trì"),
+      align: "center",
     },
     {
-      title: "Ngày tạo ",
+      title: (
+        <div
+          style={{
+            textAlign: "center",
+            fontSize: "16px",
+            fontWeight: "bold",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          Ngày tạo
+          <DatePicker
+            onChange={handleDateChange}
+            style={{ marginLeft: 8 }}
+            defaultValue={dayjs("01/01/2024", dateFormatList[0])}
+            format={dateFormatList}
+            placeholder="Chọn ngày"
+          />
+        </div>
+      ),
       dataIndex: "createDate",
       render: (createDate) => formatDateFunc.formatDateTime(createDate),
+      align: "center",
     },
     {
-      title: "Nhân viên ",
+      title: <div style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}>Nhân viên</div>,
       dataIndex: "staff",
       render: (staff) => staff.fullName,
+      align: "center",
     },
     {
-      title: "Trạng thái",
+      title: <div style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}>Trạng thái</div>,
       dataIndex: "status",
       render: (status: string) => {
         const defaultStatus = "Đang Tiến Hành";
@@ -151,9 +186,10 @@ const TableTask: React.FC = () => {
           </div>
         );
       },
+      align: "center",
     },
     {
-      title: "Hành Động",
+      title: <div style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}>Hành Động</div>,
       key: "operation",
       render: (record) => (
         <Space size="middle">
@@ -180,6 +216,7 @@ const TableTask: React.FC = () => {
           </Dropdown>
         </Space>
       ),
+      align: "center",
     },
   ];
 
@@ -188,7 +225,7 @@ const TableTask: React.FC = () => {
       <Table
         columns={columns}
         rowKey={(record) => record.id}
-        dataSource={tasks}
+        dataSource={filteredRows}
         pagination={customPagination}
         loading={loading}
         onChange={handleTableChange}

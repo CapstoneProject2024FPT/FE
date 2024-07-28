@@ -148,13 +148,13 @@ const TableProduct: React.FC = () => {
   ];
   const columns: ColumnsType<ProductAdmin> = [
     {
-      title: "Tên máy",
+      title: <div style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}>Tên máy</div>,
       dataIndex: "name",
       sorter: (a, b) => a.name.length - b.name.length,
       width: "20%",
     },
     {
-      title: "hình máy",
+      title: <div style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}>Hình máy</div>,
       dataIndex: "image",
       render: (images) => (
         <img
@@ -163,32 +163,46 @@ const TableProduct: React.FC = () => {
           style={{ width: 100 }}
         />
       ),
+      align: "center",
     },
     {
-      title: "Mẫu máy",
+      title: <div style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}>Mẫu máy</div>,
       dataIndex: "model",
+      align: "center",
     },
     {
-      title: "Thương hiệu",
+      title: <div style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}>Thương hiệu</div>,
       dataIndex: "brand",
       render: (brand) => {
         return brand.name;
       },
+      align: "center",
     },
     {
-      title: "Số lượng",
+      title: <div style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}>Số lượng</div>,
       dataIndex: "quantity",
       render: (quantity) => quantity.Available || 0,
+      align: "center",
     },
     {
-      title: "Độ ưu tiên",
+      title: <div style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}>Độ ưu tiên</div>,
       dataIndex: "priority",
       render: (priority) => priority || 0,
       sorter: (a, b) => a.priority - b.priority,
+      align: "center",
     },
     {
       title: (
-        <div style={{ display: "flex" }}>
+        <div
+          style={{
+            textAlign: "center",
+            fontSize: "16px",
+            fontWeight: "bold",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
           Ngày tạo
           <DatePicker
             onChange={handleDateChange}
@@ -201,9 +215,10 @@ const TableProduct: React.FC = () => {
       ),
       dataIndex: "createDate",
       render: (createDate) => formatDateFunc.formatDate(createDate),
+      align: "center"
     },
     {
-      title: "Hành Động",
+      title: <div style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}>Hành Động</div>,
       key: "operation",
       render: (record) => (
         <Space size="middle">
@@ -233,12 +248,13 @@ const TableProduct: React.FC = () => {
           </Dropdown>
         </Space>
       ),
+      align: "center",
     },
   ];
 
   return (
     <>
-      <div style={{ display: "flex", justifyContent: "space-between" }}>
+      <div style={{ display: "flex"}}>
         <Search
           placeholder="Nhập từ khoá"
           onChange={handleSearch}
@@ -267,6 +283,7 @@ const TableProduct: React.FC = () => {
           triggerAsc: "Sắp xếp tăng dần",
           cancelSort: "Huỷ sắp xếp",
         }}
+        style={{ textAlign: "center" }} // Center all text in table
       />
 
       {openDeletePopup && (

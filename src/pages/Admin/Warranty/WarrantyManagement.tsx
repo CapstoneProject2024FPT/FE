@@ -6,7 +6,7 @@ import TableWarranty from "../../../sections/Warranty/TableWarranty";
 
 const WarrantyManagent: React.FC = () => {
   return (
-    <Container>
+    <Container sx={{ width: "100% !important", maxWidth: "none !important" }}>
       <HeaderBreadcrumbs
         heading="Tất cả bảo trì"
         links={[

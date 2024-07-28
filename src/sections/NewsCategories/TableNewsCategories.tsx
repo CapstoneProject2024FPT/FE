@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import type { MenuProps } from "antd";
 import type { TableProps } from "antd";
 import { DownOutlined } from "@ant-design/icons";
-import { Table, Input, Space, Dropdown, Button } from "antd";
+import { Table, Input, Space, Dropdown, Button, DatePicker } from "antd";
 import { toast } from "react-toastify";
 
 import { PlusOutlined } from "@ant-design/icons";
@@ -12,7 +12,8 @@ import ModalNewsCategoryPopup from "./PopupNewsCategories/popupDetailNewsCategor
 import { NewsCategoryProps } from "../../models/newCategories";
 import { formatDateFunc } from "../../utils/fn";
 import ModalNewsCategoryPopupDelete from "./PopupNewsCategories/popupDeleteNewsCategory";
-
+import moment from "moment";
+import dayjs from "dayjs";
 type ColumnsType<T> = TableProps<T>["columns"];
 const { Search } = Input;
 
@@ -26,6 +27,7 @@ const TableNewsCategory: React.FC = () => {
   });
   //search
   const [query, setQuery] = useState<string>("");
+  const [selectedDate, setSelectedDate] = useState<string | null>(null);
 
   //popup
   const [open, setOpen] = useState<boolean>(false);
@@ -111,10 +113,18 @@ const TableNewsCategory: React.FC = () => {
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     setQuery(e.target.value);
   };
+  const handleDateChange = (date: any, dateString: string | string[]) => {
+    setSelectedDate(Array.isArray(dateString) ? dateString[0] : dateString);
+  };
+  const dateFormatList = ["DD/MM/YYYY", "DD/MM/YY", "DD-MM-YYYY", "DD-MM-YY"];
 
-  const filteredRows = categories?.filter((item) =>
-    item.name.toLowerCase().includes(query)
-  );
+  const filteredRows = categories
+    ?.filter((item) => item.name.toLowerCase().includes(query))
+    ?.filter((item) =>
+      selectedDate
+        ? moment(item.createDate).format("DD/MM/YYYY") === selectedDate
+        : true
+    );
 
   const items: MenuProps["items"] = [
     {
@@ -128,25 +138,48 @@ const TableNewsCategory: React.FC = () => {
   ];
   const columns: ColumnsType<NewsCategoryProps> = [
     {
-      title: "Loại tin tức",
+      title: <div style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}>Loại tin tức</div>,
       dataIndex: "name",
       sorter: (a, b) => a.name.length - b.name.length,
       width: "20%",
+      align: "center",
     },
     {
-      title: "Ngày tạo",
+      title: (
+        <div
+          style={{
+            textAlign: "center",
+            fontSize: "16px",
+            fontWeight: "bold",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          Ngày tạo
+          <DatePicker
+            onChange={handleDateChange}
+            style={{ marginLeft: 8 }}
+            defaultValue={dayjs("01/01/2024", dateFormatList[0])}
+            format={dateFormatList}
+            placeholder="Chọn ngày"
+          />
+        </div>
+      ),
       dataIndex: "createDate",
       width: "20%",
       render: (createDate) => formatDateFunc.formatDate(createDate),
+      align: "center",
     },
     {
-      title: "Trạng Thái",
+      title: <div style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}>Trạng Thái</div>,
       dataIndex: "status",
       width: "20%",
       render: (status) => (status === "Active" ? "Khả dụng" : "Không khả dụng"),
+      align: "center",
     },
     {
-      title: "Hành Động",
+      title: <div style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}>Hành Động</div>,
       key: "operation",
       render: (record) => (
         <Space size="middle">
@@ -173,6 +206,7 @@ const TableNewsCategory: React.FC = () => {
           </Dropdown>
         </Space>
       ),
+      align: "center",
     },
   ];
 

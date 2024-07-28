@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import type { MenuProps } from "antd";
 import type { TableProps } from "antd";
 import { DownOutlined } from "@ant-design/icons";
-import { Table, Input, Space, Dropdown, Button } from "antd";
+import { Table, Input, Space, Dropdown, Button, DatePicker } from "antd";
 import { toast } from "react-toastify";
 import { PostGetProps } from "../../models/blog";
 import { PlusOutlined } from "@ant-design/icons";
@@ -12,7 +12,8 @@ import { useNavigate } from "react-router-dom";
 import config from "../../configs";
 import BlogAbleModal from "./PopupBLog/BlogAbleModal";
 import BlogHotModal from "./PopupBLog/BlogHotModal";
-
+import moment from "moment";
+import dayjs from "dayjs";
 type ColumnsType<T> = TableProps<T>["columns"];
 const { Search } = Input;
 
@@ -28,6 +29,7 @@ const TableBlogNew: React.FC = () => {
   });
   //search
   const [query, setQuery] = useState<string>("");
+  const [selectedDate, setSelectedDate] = useState<string | null>(null);
 
   //popup
   const [openStatusPopup, setOpenStatusPopup] = useState<boolean>(false);
@@ -105,11 +107,19 @@ const TableBlogNew: React.FC = () => {
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     setQuery(e.target.value);
   };
-
-  const filteredRows = blogNews?.filter((item) =>
-    item.title.toLowerCase().includes(query)
-  );
-
+  const handleDateChange = (date: any, dateString: string | string[]) => {
+    setSelectedDate(Array.isArray(dateString) ? dateString[0] : dateString);
+  };
+  const dateFormatList = ["DD/MM/YYYY", "DD/MM/YY", "DD-MM-YYYY", "DD-MM-YY"];
+  
+  const filteredRows = 
+  blogNews
+    ?.filter((item) => item.title.toLowerCase().includes(query))
+    ?.filter((item) =>
+      selectedDate
+        ? moment(item.createDate).format("DD/MM/YYYY") === selectedDate
+        : true
+    );
   const items: MenuProps["items"] = [
     {
       key: "1",
@@ -126,40 +136,63 @@ const TableBlogNew: React.FC = () => {
   ];
   const columns: ColumnsType<PostGetProps> = [
     {
-      title: "tiêu đề",
+      title: <div style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}>Tiêu đề</div>,
       dataIndex: "title",
       width: "20%",
     },
     {
-      title: "Hình",
+      title: <div style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}>Hình</div>,
       dataIndex: "cover",
       render: (cover) => (
         <img src={cover} alt="ảnh bìa" style={{ width: 100 }} />
       ),
+      align: "center",
       width: "20%",
     },
     {
-      title: "Ngày tạo",
+      title: (
+        <div
+          style={{
+            textAlign: "center", fontSize: "16px", fontWeight: "bold",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          Ngày tạo
+          <DatePicker
+            onChange={handleDateChange}
+            style={{ marginLeft: 8 }}
+            defaultValue={dayjs("01/01/2024", dateFormatList[0])}
+            format={dateFormatList}
+            placeholder="Chọn ngày"
+          />
+        </div>
+      ),
       dataIndex: "createDate",
       render: (createDate) => formatDateFunc.formatDate(createDate),
+      align: "center",
     },
     {
-      title: "Người viết",
+      title: <div style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}>Người viết</div>,
       dataIndex: "account",
       render: (account) => account.fullName,
+      align: "center",
     },
     {
-      title: "Trạng Thái",
+      title: <div style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}>Trạng Thái</div>,
       dataIndex: "status",
       render: (status) => (status === "Active" ? "Đang hiển thị" : "Đang ẩn"),
+      align: "center",
     },
     {
-      title: "Độ hot",
+      title: <div style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}>Độ hot</div>,
       dataIndex: "type",
       render: (type) => (type === "Normal" ? "Bình Thường" : "Tin Nóng" || ""),
+      align: "center",
     },
     {
-      title: "Hành Động",
+      title: <div style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}>Hành Động</div>,
       key: "operation",
       render: (record) => (
         <Space size="middle">
@@ -189,6 +222,7 @@ const TableBlogNew: React.FC = () => {
           </Dropdown>
         </Space>
       ),
+      align: "center",
     },
   ];
 

@@ -116,13 +116,13 @@ const ManagerData: React.FC = () => {
   ];
   const columns: ColumnsType<staffProps> = [
     {
-      title: "Tên",
+      title: <div style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}>Tên</div>,
       dataIndex: "fullName",
       sorter: (a, b) => a.fullName.length - b.fullName.length,
       width: "20%",
     },
     {
-      title: "Chức vụ",
+      title: <div style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}>Chức vụ</div>,
       dataIndex: "role",
       width: "20%",
       render: (role) => {
@@ -132,7 +132,7 @@ const ManagerData: React.FC = () => {
       },
     },
     {
-      title: "Giới tính",
+      title: <div style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}>Giới tính</div>,
       dataIndex: "gender",
       width: "20%",
       render: (gender) => {
@@ -144,11 +144,12 @@ const ManagerData: React.FC = () => {
       },
     },
     {
-      title: "Email",
+      title: <div style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}>Email</div>,
       dataIndex: "email",
+      width: "20%",
     },
     {
-      title: "Tình trạng",
+      title: <div style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}>Tình trạng</div>,
       dataIndex: "status",
       width: "20%",
       render: (status) => {
@@ -160,7 +161,7 @@ const ManagerData: React.FC = () => {
       },
     },
     {
-      title: "Action",
+      title: <div style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}>Action</div>,
       key: "operation",
       render: (record) => (
         <Space size="middle">
