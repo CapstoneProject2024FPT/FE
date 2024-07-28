@@ -236,7 +236,7 @@ const Row = (props: {
               <MenuItem onClick={handleCancelOrder}>Hủy đơn hàng</MenuItem>
             )}
             <MenuItem onClick={handleDetailOrder}>Chi tiết đơn hàng</MenuItem>
-            {row.status === StatusType.COMPLETED && (
+            {(row.status === StatusType.COMPLETED || row.status === StatusType.PAID) && (
               <MenuItem>
                 <ExportPDF row={row} />
               </MenuItem>
@@ -293,7 +293,7 @@ const Row = (props: {
                       </TableCell>
                       <TableCell>{product.quantity}</TableCell>
                       <TableCell>{formatMoney(product.totalAmount)}</TableCell>
-                      {row.status === StatusType.COMPLETED && (
+                      {(row.status === StatusType.COMPLETED || row.status === StatusType.PAID) && (
                         <TableCell>
                           <WarrantyPDF order={row} product={product} />
                         </TableCell>
