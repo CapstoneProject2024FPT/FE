@@ -2,21 +2,21 @@ import { Container } from "@mui/material";
 import React from "react";
 import HeaderBreadcrumbs from "../../../components/HeaderBreadcrumbs";
 import config from "../../../configs";
-import TablePeriodicWarranty from "../../../sections/Warranty/PeriodicWarranty/PeriodicWarranty";
+import TableRequestWarranty from "../../../sections/Warranty/RequestWarranty/RequestWarranty";
 
-const WarrantyManagent: React.FC = () => {
+const WarrantyRequestManagent: React.FC = () => {
   return (
     <Container>
       <HeaderBreadcrumbs
-        heading="Bảo trì định kì"
+        heading="Yêu cầu bảo hành"
         links={[
           { name: "Thống kê", href: config.adminRoutes.dashboard },
-          { name: "Bảo trì định kì" },
+          { name: "Yêu cầu bảo hành" },
         ]}
       />
-      <TablePeriodicWarranty />
+      <TableRequestWarranty />
     </Container>
   );
 };
 
-export default WarrantyManagent;
+export default WarrantyRequestManagent;

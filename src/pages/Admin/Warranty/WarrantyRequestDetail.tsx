@@ -11,7 +11,10 @@ const WarrantyRequestDetail: React.FC = () => {
         heading="Chi tiết yêu cầu bảo hành"
         links={[
           { name: "Thống kê", href: config.adminRoutes.dashboard },
-          { name: "Tất cả bảo trì", href: config.adminRoutes.maintenance },
+          {
+            name: "Tất cả bảo trì",
+            href: config.adminRoutes.maintenanceRequest,
+          },
           { name: "Chi tiết yêu cầu bảo hành" },
         ]}
       />

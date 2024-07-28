@@ -51,6 +51,7 @@ import UserTransaction from "../pages/UserProfile/UserTransaction";
 import PaymentOrder from "../pages/UserProfile/PaymentOrder";
 import WarrantyRequestDetail from "../pages/Admin/Warranty/WarrantyRequestDetail";
 import Bill from "../pages/Bill/Bill";
+import WarrantyRequestManagent from "../pages/Admin/Warranty/WarrantyRequestManagement";
 
 const AppRoute: React.FC = () => {
   return (
@@ -299,8 +300,13 @@ const AppRoute: React.FC = () => {
           path={config.adminRoutes.maintenanceRequestDetail}
           element={<WarrantyRequestDetail />}
         />
-      </Route>
 
+        <Route
+          key="maintananceRequestManagement"
+          path={config.adminRoutes.maintenanceRequest}
+          element={<WarrantyRequestManagent />}
+        />
+      </Route>
       <Route
         key="notfound"
         path={config.routes.notFound}

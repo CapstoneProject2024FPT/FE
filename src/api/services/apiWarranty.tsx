@@ -1,5 +1,5 @@
 import { axiosPrivate, axiosPublic } from "../axiosInstance";
-import { WARRANTY, WARRANTY_ID } from "../pathApiName";
+import { WARRANTY, WARRANTY_DETAIL, WARRANTY_ID } from "../pathApiName";
 import { useState } from "react";
 import axios from "axios";
 import { CreateWarranty } from "../../models/warranty";
@@ -88,11 +88,32 @@ export const ApiWarranty = () => {
       setLoading(false);
     }
   };
+
+  interface getWarrantyProps {
+    Type?: string;
+  }
+  const apiGetWarantyPeriodic = async (params: getWarrantyProps) => {
+    setLoading(true);
+    try {
+      const response = await axiosPublic.get(WARRANTY_DETAIL, { params });
+      return response;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+      if (axios.isAxiosError(error) && error.response) {
+        return error.response.data;
+      } else {
+        return { statusCode: 500, Error: "Internal Server Error" };
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
   return {
     apiGetWarranty,
     apiGetWarrantyById,
     loading,
     apiCreateRequestWaranty,
     apiGetWarantyManager,
+    apiGetWarantyPeriodic,
   };
 };

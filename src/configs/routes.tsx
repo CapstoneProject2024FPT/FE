@@ -54,5 +54,6 @@ export const adminRoutes = {
   rank: "/dashboard/ranks",
   maintenance: "/dashboard/maintenance",
   maintenanceRequestDetail: "/dashboard/maintenance/request/:id",
+  maintenanceRequest: "/dashboard/maintenance/request",
   task: "/dashboard/kanban",
 };

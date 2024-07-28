@@ -19,8 +19,6 @@ import { ApiWarranty } from "../../../api/services/apiWarranty";
 import { formatAddress, formatDateFunc } from "../../../utils/fn";
 import ModalDeliveryTaskWarranty from "../Modal/ModalDeliveryTaskWarranty";
 import { PlusOutlined } from "@ant-design/icons";
-import { CustomerApi } from "../../../api/services/apiUser";
-import { RoleType, staffProps } from "../../../models/UserData";
 
 const LabelStyle = styled(Typography)(({ theme }) => ({
   ...theme.typography.subtitle2,
@@ -28,15 +26,12 @@ const LabelStyle = styled(Typography)(({ theme }) => ({
   marginBottom: theme.spacing(1),
 }));
 
-const RequestDetail = () => {
+const PeriodicWarrantyDetail = () => {
   const { id } = useParams<{ id: string }>();
   const [requestWarranty, setRequestWarranty] = useState<WarrantyPropsById>();
   const [open, setOpen] = useState<boolean>(false);
-  const [idEmployee, setIdEmployee] = useState<string>();
-  const [employee, setEmployee] = useState<staffProps>();
 
   const { apiGetWarrantyById, loading } = ApiWarranty();
-  const { apiUserProfile } = CustomerApi();
 
   const fetchProductDetail = async () => {
     try {
@@ -45,7 +40,6 @@ const RequestDetail = () => {
 
         if (response && response.status === 200) {
           setRequestWarranty(response.data);
-          setIdEmployee(response.data.warrantyDetail.accountId);
         } else toast.error(response.Error);
       }
     } catch (error) {
@@ -53,25 +47,11 @@ const RequestDetail = () => {
     }
   };
 
-  const fetchEmployee = async (id: string) => {
-    const response = await apiUserProfile(id);
-    setEmployee(response.data);
-  };
-
   useEffect(() => {
     fetchProductDetail();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  useEffect(() => {
-    if (idEmployee) {
-      console.log(idEmployee);
-
-      fetchEmployee(idEmployee);
-    }
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
   const handleClickOpen = () => {
     setOpen(!open);
   };
@@ -86,24 +66,10 @@ const RequestDetail = () => {
     toast.success(response);
   };
 
-  //check request has technical employee
-  useEffect(() => {
-    const nullAccountDetail = requestWarranty?.warrantyDetail.find(
-      (detail) => detail.accountId !== null
-    );
-
-    if (nullAccountDetail?.accountId) {
-      setIdEmployee(nullAccountDetail.accountId);
-    }
-  }, [requestWarranty]);
-
-  useEffect(() => {
-    if (idEmployee) {
-      fetchEmployee(idEmployee);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [idEmployee]);
-
+  const hasNullAccount =
+    requestWarranty?.warrantyDetail.some(
+      (detail) => detail.accountId === null
+    ) ?? false;
   return (
     <>
       {loading ? (
@@ -111,7 +77,7 @@ const RequestDetail = () => {
       ) : (
         <>
           <div style={{ display: "flex", justifyContent: "flex-end" }}>
-            {idEmployee === undefined && (
+            {hasNullAccount && (
               <Button icon={<PlusOutlined />} onClick={() => handleClickOpen()}>
                 Chọn nhân viên
               </Button>
@@ -157,13 +123,13 @@ const RequestDetail = () => {
                     <TextField
                       label="Tên khách hàng"
                       placeholder="0"
-                      value={requestWarranty?.customer.fullName || ""}
+                      value={requestWarranty?.customer.fullName}
                       InputLabelProps={{ shrink: true }}
                     />
                     <TextField
                       label="Địa chỉ sửa"
                       placeholder="0"
-                      value={formatAddress(requestWarranty?.address) || ""}
+                      value={formatAddress(requestWarranty?.address)}
                       InputLabelProps={{ shrink: true }}
                     />
                   </Stack>
@@ -193,30 +159,6 @@ const RequestDetail = () => {
                     </Stack>
                   </Card>
                 </Stack>
-                <Stack spacing={3} sx={{ mt: 2 }}>
-                  <Card sx={{ p: 3 }}>
-                    <Stack spacing={3} mt={2}>
-                      <TextField
-                        label="Tên nhân viên"
-                        placeholder=""
-                        value={employee?.fullName || "Chưa cử nhân viên"}
-                        InputProps={{
-                          readOnly: true,
-                        }}
-                      />
-                      <TextField
-                        label="Vai trò"
-                        placeholder=""
-                        value={
-                          employee?.role === RoleType.TECHNICAL
-                            ? "Nhân viên kỹ thuật"
-                            : ""
-                        }
-                        InputLabelProps={{ shrink: true }}
-                      />
-                    </Stack>
-                  </Card>
-                </Stack>
               </Grid>
             </Grid>
           </Box>
@@ -234,4 +176,4 @@ const RequestDetail = () => {
   );
 };
 
-export default RequestDetail;
+export default PeriodicWarrantyDetail;

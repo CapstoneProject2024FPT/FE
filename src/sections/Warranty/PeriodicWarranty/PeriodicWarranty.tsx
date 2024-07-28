@@ -18,7 +18,7 @@ const TablePeriodicWarranty: React.FC = () => {
     current: 1,
     pageSize: pageSize,
   });
-  const { apiGetWarantyManager, loading } = ApiWarranty();
+  const { loading, apiGetWarantyPeriodic } = ApiWarranty();
 
   //popup
   const [open, setOpen] = useState<boolean>(false);
@@ -39,10 +39,16 @@ const TablePeriodicWarranty: React.FC = () => {
       const params = {
         Type: "Periodic",
       };
-      const response = await apiGetWarantyManager(params);
-      console.log(response);
+      const response = await apiGetWarantyPeriodic(params);
 
-      setPeriodicWarranty(response.data);
+      const keyData = response.data.map((item: WarrantyProps, idx: number) => {
+        return {
+          key: idx + 1,
+          ...item,
+        };
+      });
+
+      setPeriodicWarranty(keyData);
     } catch (error) {
       toast.error("lỗi");
     }
@@ -82,19 +88,28 @@ const TablePeriodicWarranty: React.FC = () => {
 
   const columns: ColumnsType<WarrantyProps> = [
     {
+      title: "Thứ tự",
+      dataIndex: "key",
+    },
+    {
       title: "Loại Bảo Hành",
       dataIndex: "type",
       render: (type) => (type === "Periodic" ? "Định kì" : "Yêu cầu"),
     },
     {
-      title: "Ngày tạo",
-      dataIndex: "createDate",
-      render: (createDate) => formatDateFunc.formatDate(createDate),
+      title: "Ngày bắt đầu",
+      dataIndex: "startDate",
+      render: (startDate) => formatDateFunc.formatDate(startDate),
     },
     {
-      title: "Mã số máy",
-      dataIndex: "inventory",
-      render: (inventory) => inventory.serialNumber,
+      title: "Ngày hoàn thành",
+      dataIndex: "completionDate",
+      render: (completionDate) =>
+        completionDate ? formatDateFunc.formatDate(completionDate) : "-------",
+    },
+    {
+      title: "Trạng thái",
+      dataIndex: "status",
     },
     {
       title: "Hành Động",
