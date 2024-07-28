@@ -57,6 +57,7 @@ function Row(props: { row: WarrantyProps }) {
   const [openRequestWarranty, setOpenRequestWarranty] =
     useState<boolean>(false);
   const [selectWarranty, setSelectWarranty] = useState<WarrantyProps>();
+
   const fetchWarrantyById = async () => {
     if (row) {
       const response = await apiGetWarrantyById(row.id);
@@ -147,20 +148,22 @@ function Row(props: { row: WarrantyProps }) {
                       <TableCell align="right">{detail.description}</TableCell>
 
                       <TableCell align="right">
-                        <Box
-                          sx={{
-                            ...getStatusStyles(detail.status),
-                            padding: "8px 16px",
-                            borderRadius: "8px",
-                            display: "inline-block",
-                          }}
-                        >
-                          {
-                            warrantyStatusMapping.find(
-                              (status) => status.id === detail.status
-                            )?.name
-                          }
-                        </Box>
+                        {detail.status !== StatusType.AWAITINGASSIGNMENT && (
+                          <Box
+                            sx={{
+                              ...getStatusStyles(detail.status),
+                              padding: "8px 16px",
+                              borderRadius: "8px",
+                              display: "inline-block",
+                            }}
+                          >
+                            {
+                              warrantyStatusMapping.find(
+                                (status) => status.id === detail.status
+                              )?.name
+                            }
+                          </Box>
+                        )}
                       </TableCell>
                       <TableCell align="right">
                         {detail.status === StatusType.PROCESS && (
