@@ -11,7 +11,6 @@ import ModalDetailOrder from "./OrderModal/ModalDetailOrder";
 import ModalCancelOrder from "./OrderModal/ModalCancelOrder";
 import ModalDeliveryTask from "./OrderModal/ModalDeliveryTask";
 import moment from "moment";
-import dayjs from "dayjs";
 type ColumnsType<T> = TableProps<T>["columns"];
 
 const defaultPageSize = 10;
@@ -23,8 +22,8 @@ const TableOrder: React.FC = () => {
     pageSize: defaultPageSize,
     total: 0,
   });
-  const [selectedDate, setSelectedDate] = useState<string | null>(null);
-  const [completedDate, setCompletedDate] = useState<string | null>(null);
+  const [selectedCreateDate, setSelectedCreateDate] = useState<string | null>(null);
+  const [selectedCompletedDate, setSelectedCompletedDate] = useState<string | null>(null);
 
   const [open, setOpen] = useState<boolean>(false);
   const [openCancelPopup, setOpenCancelPopup] = useState<boolean>(false);
@@ -136,22 +135,25 @@ const TableOrder: React.FC = () => {
     onChange: handleTableChange,
   };
 
-  const handleDateChange = (date: any, dateString: string | string[]) => {
-    setSelectedDate(Array.isArray(dateString) ? dateString[0] : dateString);
-    setCompletedDate(Array.isArray(dateString) ? dateString[0] : dateString);
+  const handleCreateDateChange = (date: any, dateString: string | string[]) => {
+    setSelectedCreateDate(Array.isArray(dateString) ? dateString[0] : dateString);
+  };
+
+  const handleCompletedDateChange = (date: any, dateString: string | string[]) => {
+    setSelectedCompletedDate(Array.isArray(dateString) ? dateString[0] : dateString);
   };
   const dateFormatList = ["DD/MM/YYYY", "DD/MM/YY", "DD-MM-YYYY", "DD-MM-YY"];
   const filteredRows = orders
     ?.filter((item) =>
-      selectedDate
-        ? moment(item.createDate).format("DD/MM/YYYY") === selectedDate
+      selectedCreateDate
+        ? moment(item.createDate).format("DD/MM/YYYY") === selectedCreateDate
         : true
     )
-    ?.filter((item) =>
-      completedDate
-        ? moment(item.completedDate).format("DD/MM/YYYY") === selectedDate
+    .filter((item) =>
+      selectedCompletedDate
+        ? moment(item.completedDate).format("DD/MM/YYYY") === selectedCompletedDate
         : true
-    )
+    );
   const items: MenuProps["items"] = [
     {
       key: "1",
@@ -188,9 +190,8 @@ const TableOrder: React.FC = () => {
         >
           Ngày tạo
           <DatePicker
-            onChange={handleDateChange}
+            onChange={handleCreateDateChange}
             style={{ marginLeft: 8, width: "50%" }}
-            defaultValue={dayjs("01/01/2024", dateFormatList[0])}
             format={dateFormatList}
             placeholder="Ngày tạo"
           />
@@ -214,9 +215,8 @@ const TableOrder: React.FC = () => {
         >
           Ngày hoàn thành
           <DatePicker
-            onChange={handleDateChange}
+            onChange={handleCompletedDateChange}
             style={{ marginLeft: 8, width: "50%" }}
-            defaultValue={dayjs("01/01/2024", dateFormatList[0])}
             format={dateFormatList}
             placeholder="Ngày hoàn thành"
           />
