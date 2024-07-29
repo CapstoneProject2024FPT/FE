@@ -69,3 +69,16 @@ export const statusTaskMapping = [
     name: "Hoàn thành",
   },
 ];
+
+export interface StaffTaskProps {
+  staffId: string;
+  staffName: string;
+  todayTaskStatusCount: {
+    Process: number;
+    Completed: number;
+  };
+  taskStatusCount: {
+    Process: number;
+    Completed: number;
+  };
+}

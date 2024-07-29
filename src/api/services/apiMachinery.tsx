@@ -7,6 +7,7 @@ import {
   MACHINERY_HOME_PRIORITY,
   MACHINERY_ID,
   MACHINERY_LIST,
+  MACHINERY_STATUS,
 } from "../pathApiName";
 import { useState } from "react";
 import {
@@ -79,7 +80,7 @@ export const MachineryApi = () => {
       const response = await axiosPublic.delete(
         MACHINERY_ID.replace(":id", id)
       );
-      return response.data;
+      return response;
     } catch (error) {
       if (axios.isAxiosError(error) && error.response) {
         return error.response.data;
@@ -90,12 +91,16 @@ export const MachineryApi = () => {
       setLoading(false);
     }
   };
-  const apiGetMachine = async (query: string) => {
+
+  interface MachineParams {
+    size?: number;
+    page?: number;
+    Status?: string;
+  }
+  const apiGetMachine = async (params: MachineParams) => {
     setLoading(true);
     try {
-      const response = await axiosPublic.get(
-        `${MACHINERY_LIST}?Status=${query}`
-      );
+      const response = await axiosPublic.get(MACHINERY_LIST, { params });
       return response;
     } catch (error) {
       if (axios.isAxiosError(error) && error.response) {
@@ -248,6 +253,31 @@ export const MachineryApi = () => {
       setLoading(false);
     }
   };
+
+  interface updateMachineStatusProps {
+    status: string;
+  }
+  const apiUpdateStatus = async (
+    id: string,
+    requestParams: updateMachineStatusProps
+  ) => {
+    setLoading(true);
+    try {
+      const response = await axiosPublic.put(
+        MACHINERY_STATUS.replace(":id", id),
+        requestParams
+      );
+      return response;
+    } catch (error) {
+      if (axios.isAxiosError(error) && error.response) {
+        return error.response.data;
+      } else {
+        return { statusCode: 500, Error: "Gặp vấn đề quá trình lấy dư liệu" };
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
   return {
     loading,
     apiGetList,
@@ -261,5 +291,6 @@ export const MachineryApi = () => {
     apiGetMachineryPriority,
     apiGetMachineAtHome,
     apiPostMachineComponent,
+    apiUpdateStatus,
   };
 };

@@ -21,19 +21,34 @@ const ModalProductPopupDelete: React.FC<ModalCategory> = ({
   handleCLoseDelete,
   onDeleteSuccess,
 }) => {
-  const { loading, apiDeleteMachine } = MachineryApi();
+  const { loading, apiDeleteMachine, apiUpdateStatus } = MachineryApi();
 
   const onSubmit = async () => {
     try {
       if (ProductData) {
-        const response = await apiDeleteMachine(ProductData?.id);
+        if (ProductData.status === "Available") {
+          const response = await apiDeleteMachine(ProductData?.id);
 
-        if (response.status === 200) {
-          if (onDeleteSuccess) {
-            onDeleteSuccess(response.data);
+          if (response.status === 200) {
+            if (onDeleteSuccess) {
+              onDeleteSuccess(response.data);
+            }
+          } else {
+            toast.error(response.Error);
           }
         } else {
-          toast.error(response.Error);
+          const params = {
+            status: "Available",
+          };
+          const response = await apiUpdateStatus(ProductData?.id, params);
+
+          if (response.status === 200) {
+            if (onDeleteSuccess) {
+              onDeleteSuccess(response.data);
+            }
+          } else {
+            toast.error(response.Error);
+          }
         }
       }
     } catch (error) {
@@ -61,9 +76,15 @@ const ModalProductPopupDelete: React.FC<ModalCategory> = ({
         </Button>,
       ]}
     >
-      <Typography.Text>
-        Bạn có muốn xoá loại máy tên: {ProductData?.name}
-      </Typography.Text>
+      {ProductData?.status === "Available" ? (
+        <Typography.Text>
+          Bạn có muốn ngưng bán loại máy tên: {ProductData?.name}
+        </Typography.Text>
+      ) : (
+        <Typography.Text>
+          Bạn có muốn bán lại máy tên: {ProductData?.name}
+        </Typography.Text>
+      )}
     </Modal>
   );
 };

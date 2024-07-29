@@ -90,7 +90,10 @@ const ProductList: React.FC = () => {
   };
 
   const fetchProductListName = async () => {
-    const response = await apiGetMachine("Available");
+    const params = {
+      Status: "Available",
+    };
+    const response = await apiGetMachine(params);
     const productName = response.data.items.map(
       (productName: { name: any }) => productName.name
     );
