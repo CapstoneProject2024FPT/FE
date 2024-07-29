@@ -57,6 +57,7 @@ export interface ProductProps {
   productName: string;
   quantity: number;
   totalAmount: number;
+  inventoryId: string;
 }
 
 export interface AddressDetail {
@@ -74,6 +75,7 @@ interface ProductDetail {
   productName: string;
   quantity: number;
   totalAmount: number;
+  inventoryId: string;
 }
 
 interface CityDetail {
