@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { Table, Input, Space, Dropdown, Button, DatePicker, MenuProps, TableProps } from "antd";
+import type { MenuProps, TablePaginationConfig } from "antd";
+import type { TableProps } from "antd";
 import { DownOutlined, PlusOutlined } from "@ant-design/icons";
+import { Table, Input, Space, Dropdown, Button } from "antd";
 import ModalProductPopupDelete from "./PopupProduct/ModalProductPopupDelete";
 import { toast } from "react-toastify";
 import { MachineryApi } from "../../api/services/apiMachinery";
@@ -10,18 +12,19 @@ import config from "../../configs";
 import ModalProductPopupPriority from "./PopupProduct/ModalProductPopupPriority";
 import { formatDateFunc } from "../../utils/fn";
 import moment from "moment";
-import dayjs from "dayjs";
+
 type ColumnsType<T> = TableProps<T>["columns"];
 const { Search } = Input;
 
-const pageSize = 20;
+const defaultPageSize = 10;
 
 const TableProduct: React.FC = () => {
   const navigate = useNavigate();
-  const [products, setProducts] = useState<ProductAdmin[]>([]);
-  const [pagination, setPagination] = useState({
+  const [products, setProducts] = useState<ProductAdmin[]>();
+  const [pagination, setPagination] = useState<TablePaginationConfig>({
     current: 1,
-    pageSize: pageSize,
+    pageSize: defaultPageSize,
+    total: 0,
   });
   //search
   const [query, setQuery] = useState<string>("");
@@ -61,12 +64,25 @@ const TableProduct: React.FC = () => {
   };
 
   //----------------------------------------------------------------------------
-  const fetchProducts = async () => {
+  const fetchProducts = async (
+    page: number = 1,
+    pageSize: number = defaultPageSize
+  ) => {
     try {
-      const response = await apiGetMachine("Available");
+      const params = {
+        size: pageSize,
+        page: page,
+      };
+      const response = await apiGetMachine(params);
 
       if (response && response.status === 200) {
         setProducts(response.data.items);
+        setPagination((prev) => ({
+          ...prev,
+          total: response.data.total,
+          current: response.data.page,
+          pageSize: response.data.size,
+        }));
       } else {
         //lỗi show thông báo lỗi
         toast.error(response.Error);
@@ -77,7 +93,7 @@ const TableProduct: React.FC = () => {
   };
 
   useEffect(() => {
-    fetchProducts();
+    fetchProducts(pagination.current, pagination.pageSize);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -94,23 +110,23 @@ const TableProduct: React.FC = () => {
   };
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const handleTableChange = (newPagination: any) => {
-    setPagination({
-      ...pagination,
-      ...newPagination,
-    });
-
-    if (pagination.pageSize !== pagination?.pageSize) {
-      setProducts([]);
-    }
+  const handleTableChange = (page: number, pageSize: number) => {
+    setPagination((prev) => ({
+      ...prev,
+      current: page,
+      pageSize: pageSize,
+    }));
+    fetchProducts(page, pageSize);
   };
 
   const customPagination = {
-    ...pagination,
+    current: pagination.current,
+    pageSize: pagination.pageSize,
+    total: pagination.total,
+    pageSizeOptions: ["20", "25", "50"],
+    showSizeChanger: false,
+    showQuickJumper: false,
     onChange: handleTableChange,
-    pageSizeOptions: ["20", "25", "50"], // Custom page size options
-    showSizeChanger: false, // Show page size changer
-    showQuickJumper: false, // Show quick jumper
   };
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -139,10 +155,14 @@ const TableProduct: React.FC = () => {
     },
     {
       key: "2",
-      label: "Xoá",
+      label: "Ngưng bán",
     },
     {
       key: "3",
+      label: "Bán lại",
+    },
+    {
+      key: "4",
       label: "Chỉnh độ ưu tiên",
     },
   ];
@@ -166,12 +186,7 @@ const TableProduct: React.FC = () => {
       align: "center",
     },
     {
-      title: <div style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}>Mẫu máy</div>,
-      dataIndex: "model",
-      align: "center",
-    },
-    {
-      title: <div style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}>Thương hiệu</div>,
+      title: "Thương hiệu",
       dataIndex: "brand",
       render: (brand) => {
         return brand.name;
@@ -192,27 +207,12 @@ const TableProduct: React.FC = () => {
       align: "center",
     },
     {
-      title: (
-        <div
-          style={{
-            textAlign: "center",
-            fontSize: "16px",
-            fontWeight: "bold",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        >
-          Ngày tạo
-          <DatePicker
-            onChange={handleDateChange}
-            style={{ marginLeft: 8 }}
-            defaultValue={dayjs("01/01/2024", dateFormatList[0])}
-            format={dateFormatList}
-            placeholder="Chọn ngày"
-          />
-        </div>
-      ),
+      title: "Tình trạng",
+      dataIndex: "status",
+      render: (status) => (status === "Available" ? "Đang bán" : "Ngưng bán"),
+    },
+    {
+      title: "Ngày tạo",
       dataIndex: "createDate",
       render: (createDate) => formatDateFunc.formatDate(createDate),
       align: "center"
@@ -224,7 +224,16 @@ const TableProduct: React.FC = () => {
         <Space size="middle">
           <Dropdown
             menu={{
-              items,
+              items: items.filter((item) => {
+                if (item && item.key) {
+                  if (record.status === "Available") {
+                    return ["1", "2", "4"].includes(item.key as string);
+                  } else {
+                    return ["1", "3"].includes(item.key as string);
+                  }
+                }
+                return true;
+              }),
               onClick: ({ key }) => {
                 switch (key) {
                   case "1":
@@ -234,6 +243,9 @@ const TableProduct: React.FC = () => {
                     handleActionDelete(record);
                     break;
                   case "3":
+                    handleActionDelete(record);
+                    break;
+                  case "4":
                     handleActionPriority(record);
                     break;
                   default:
@@ -277,7 +289,9 @@ const TableProduct: React.FC = () => {
         pagination={customPagination}
         bordered
         loading={loading}
-        onChange={handleTableChange}
+        onChange={(pagination) =>
+          handleTableChange(pagination.current!, pagination.pageSize!)
+        }
         locale={{
           triggerDesc: "Sắp xếp giảm dần",
           triggerAsc: "Sắp xếp tăng dần",

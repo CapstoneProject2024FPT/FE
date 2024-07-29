@@ -7,8 +7,9 @@ import { toast } from "react-toastify";
 import { ApiWarranty } from "../../../api/services/apiWarranty";
 import { WarrantyProps } from "../../../models/warranty";
 import { formatDateFunc } from "../../../utils/fn";
+import config from "../../../configs";
+import { useNavigate } from "react-router-dom";
 import moment from "moment";
-import dayjs from "dayjs";
 type ColumnsType<T> = TableProps<T>["columns"];
 
 const pageSize = 20;
@@ -19,32 +20,30 @@ const TablePeriodicWarranty: React.FC = () => {
     current: 1,
     pageSize: pageSize,
   });
-  const { apiGetWarantyManager, loading } = ApiWarranty();
-  const [selectedDate, setSelectedDate] = useState<string | null>(null);
+  const { loading, apiGetWarantyPeriodic } = ApiWarranty();
+  const navigate = useNavigate();
+  const [selectedCreateDate, setSelectedCreateDate] = useState<string | null>(null);
+  const [selectedCompletedDate, setSelectedCompletedDate] = useState<string | null>(null);
 
-  //popup
-  const [open, setOpen] = useState<boolean>(false);
-  const [selectedData, setSelectedData] = useState<WarrantyProps | null>(null);
-
-  //modal popup
   const handleActionDetail = (record: WarrantyProps) => {
-    setOpen(!open);
-    setSelectedData(record);
+    navigate(config.adminRoutes.maintenanceDetail.replace(":id", record.id));
   };
-
-  const handleCLose = () => setOpen(false);
-
-  console.log(selectedData, handleCLose);
 
   const fetchWarrantyPeriodic = async () => {
     try {
       const params = {
         Type: "Periodic",
       };
-      const response = await apiGetWarantyManager(params);
-      console.log(response);
+      const response = await apiGetWarantyPeriodic(params);
 
-      setPeriodicWarranty(response.data);
+      const keyData = response.data.map((item: WarrantyProps, idx: number) => {
+        return {
+          key: idx + 1,
+          ...item,
+        };
+      });
+
+      setPeriodicWarranty(keyData);
     } catch (error) {
       toast.error("lỗi");
     }
@@ -70,28 +69,41 @@ const TablePeriodicWarranty: React.FC = () => {
     showSizeChanger: false,
     showQuickJumper: false,
   };
-  const handleDateChange = (date: any, dateString: string | string[]) => {
-    setSelectedDate(Array.isArray(dateString) ? dateString[0] : dateString);
+
+  const handleCreateDateChange = (date: any, dateString: string | string[]) => {
+    setSelectedCreateDate(Array.isArray(dateString) ? dateString[0] : dateString);
   };
+
+  const handleCompletedDateChange = (date: any, dateString: string | string[]) => {
+    setSelectedCompletedDate(Array.isArray(dateString) ? dateString[0] : dateString);
+  };
+
   const dateFormatList = ["DD/MM/YYYY", "DD/MM/YY", "DD-MM-YYYY", "DD-MM-YY"];
 
-  const filteredRows = periodicWarranty?.filter((item) =>
-    selectedDate
-      ? moment(item.createDate).format("DD/MM/YYYY") === selectedDate
+  const filteredRows = periodicWarranty
+  ?.filter((item) =>
+    selectedCreateDate
+      ? moment(item.startDate).format("DD/MM/YYYY") === selectedCreateDate
       : true
-  );
+  )
+  ?.filter((item) =>
+    selectedCompletedDate
+      ? moment(item.completionDate).format("DD/MM/YYYY") === selectedCompletedDate
+      : true
+  )
   const items: MenuProps["items"] = [
     {
       key: "1",
       label: "Chi tiết",
     },
-    {
-      key: "2",
-      label: "Xoá",
-    },
   ];
 
   const columns: ColumnsType<WarrantyProps> = [
+    {
+      title: <div style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}>Thứ tự</div>,
+      dataIndex: "key",
+      align: "center",
+    },
     {
       title: <div style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}>Loại Bảo Hành</div>,
       dataIndex: "type",
@@ -110,24 +122,48 @@ const TablePeriodicWarranty: React.FC = () => {
             justifyContent: "center",
           }}
         >
-          Ngày tạo
+          Ngày bắt đầu
           <DatePicker
-            onChange={handleDateChange}
-            style={{ marginLeft: 8 }}
-            defaultValue={dayjs("01/01/2024", dateFormatList[0])}
+            onChange={handleCreateDateChange}
+            style={{ marginLeft: 8, width: "50%" }}
             format={dateFormatList}
-            placeholder="Chọn ngày"
+            placeholder="Ngày tạo"
           />
         </div>
       ),
-      dataIndex: "createDate",
-      render: (createDate) => formatDateFunc.formatDate(createDate),
+      dataIndex: "startDate",
+      render: (startDate) => formatDateFunc.formatDate(startDate),
       align: "center",
     },
     {
-      title: <div style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}>Mã số máy</div>,
-      dataIndex: "inventory",
-      render: (inventory) => inventory.serialNumber,
+      title: (
+        <div
+          style={{
+            textAlign: "center",
+            fontSize: "16px",
+            fontWeight: "bold",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          Ngày hoàn thành
+          <DatePicker
+            onChange={handleCompletedDateChange}
+            style={{ marginLeft: 8, width: "50%" }}
+            format={dateFormatList}
+            placeholder="Ngày hoàn thành"
+          />
+        </div>
+      ),
+      dataIndex: "completionDate",
+      render: (completionDate) =>
+        completionDate ? formatDateFunc.formatDate(completionDate) : "-------",
+      align: "center",
+    },
+    {
+      title: <div style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}>Trạng thái</div>,
+      dataIndex: "status",
       align: "center",
     },
     {

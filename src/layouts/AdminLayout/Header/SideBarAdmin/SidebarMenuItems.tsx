@@ -102,9 +102,17 @@ const MenuSideBars: MenuSideBar[] = [
     children: [
       {
         label: (
-          <Link to={config.adminRoutes.maintenance}>Tất cả đơn bảo hành</Link>
+          <Link to={config.adminRoutes.maintenance}>Bảo hành định kì</Link>
         ),
         key: config.adminRoutes.maintenance,
+      },
+      {
+        label: (
+          <Link to={config.adminRoutes.maintenanceRequest}>
+            Yêu cầu bảo hành
+          </Link>
+        ),
+        key: config.adminRoutes.maintenanceRequest,
       },
     ],
   },

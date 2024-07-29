@@ -12,7 +12,6 @@ import { GetMachineComponents } from "../../models/machineComponent";
 import { MachineryComponentApi } from "../../api/services/apiMachineComponent";
 import ModalDeleteComponent from "./Popup/ModalDeleteComponent";
 import moment from "moment";
-import dayjs from "dayjs";
 type ColumnsType<T> = TableProps<T>["columns"];
 const { Search } = Input;
 
@@ -161,8 +160,7 @@ const TableComponent: React.FC = () => {
           Ngày tạo
           <DatePicker
             onChange={handleDateChange}
-            style={{ marginLeft: 8 }}
-            defaultValue={dayjs("01/01/2024", dateFormatList[0])}
+            style={{ marginLeft: 8, width: "50%" }}
             format={dateFormatList}
             placeholder="Chọn ngày"
           />

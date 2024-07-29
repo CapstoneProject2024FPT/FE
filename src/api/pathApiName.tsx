@@ -12,6 +12,7 @@ export const MACHINERY_ID = "/Machinery/:id";
 export const MACHINERY_DETAIL = "Machinery/Detail";
 export const MACHINERY_HOME_PRIORITY = "Machinery?Priority=1&size=4";
 export const ADD_MACHINERY_COMPONENT = "machinery/:id/addComponent";
+export const MACHINERY_STATUS = "machinery/updateStatus/:id";
 
 //Category Machinery
 export const GET_CATEGORY = "categories?status=Active&kind=Machinery";
@@ -79,6 +80,7 @@ export const NEWS_ADMIN = "news/noPaginate";
 //task
 export const TASK = "task";
 export const TASK_ID = "task/:id";
+export const TASK_STAFF = "staff/task";
 //newsCategories
 export const NEWS_CATEGORIES = "/newsCategory";
 export const NEWS_CATEGORIES_ID = "/newsCategory/:id";

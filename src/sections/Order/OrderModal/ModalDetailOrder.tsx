@@ -14,9 +14,11 @@ import {
 } from "@mui/material";
 import { OrderProps, statusMapping } from "../../../models/order";
 import { formatAddress, formatMoney } from "../../../utils/fn";
-import { userProps } from "../../../models/UserData";
+import { RoleType, userProps } from "../../../models/UserData";
 import { CustomerApi } from "../../../api/services/apiUser";
 import { toast } from "react-toastify";
+import { ApiTask } from "../../../api/services/apiTask";
+import { GetTaskProps } from "../../../models/task";
 
 interface ModalBrand {
   OrderData: OrderProps | null;
@@ -30,8 +32,10 @@ const ModalDetailOrder: React.FC<ModalBrand> = ({
   handleClose,
 }) => {
   const [customer, setCustomer] = useState<userProps>();
+  const [staff, setStaff] = useState<GetTaskProps[]>([]);
 
   const { apiUserProfile } = CustomerApi();
+  const { apiGetTaskStaff } = ApiTask();
   const fetchCustomerData = async () => {
     try {
       if (OrderData) {
@@ -47,8 +51,26 @@ const ModalDetailOrder: React.FC<ModalBrand> = ({
     }
   };
 
+  const fetchStaffData = async () => {
+    try {
+      if (OrderData) {
+        const params = {
+          OrderId: OrderData.orderId,
+        };
+        const response = await apiGetTaskStaff(params);
+        if (response.status === 200) {
+          setStaff(response.data);
+        } else {
+          toast.error(response.Error);
+        }
+      }
+    } catch (error) {
+      toast.error("Lỗi lấy thông tin người dung");
+    }
+  };
   useEffect(() => {
     fetchCustomerData();
+    fetchStaffData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -156,6 +178,35 @@ const ModalDetailOrder: React.FC<ModalBrand> = ({
               </TableRow>
             </TableBody>
           </Table>
+          {staff.length > 0 && (
+            <>
+              <Typography variant="h6" gutterBottom component="div">
+                Nhân viên giao hàng
+              </Typography>
+              <Table size="small" aria-label="additional-info">
+                <TableBody>
+                  {staff?.map((detail) => (
+                    <React.Fragment key={detail.id}>
+                      <TableRow>
+                        <TableCell sx={{ width: "30%" }}>
+                          Tên nhân viên
+                        </TableCell>
+                        <TableCell>{detail.staff.fullName}</TableCell>
+                      </TableRow>
+                      <TableRow>
+                        <TableCell sx={{ width: "30%" }}>Ghi chú </TableCell>
+                        <TableCell>
+                          {detail.staff.role === RoleType.TECHNICAL
+                            ? "Nhân viên kĩ thuật"
+                            : ""}
+                        </TableCell>
+                      </TableRow>
+                    </React.Fragment>
+                  ))}
+                </TableBody>
+              </Table>
+            </>
+          )}
         </Box>
       ) : (
         <Card>

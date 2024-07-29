@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import type { MenuProps } from "antd";
-import type { TableProps } from "antd";
+import type { TableProps, TablePaginationConfig } from "antd";
 import { DownOutlined } from "@ant-design/icons";
 import { Table, Space, Dropdown, DatePicker } from "antd";
 import { OrderProps, statusMapping, StatusType } from "../../models/order";
@@ -14,26 +14,25 @@ import moment from "moment";
 import dayjs from "dayjs";
 type ColumnsType<T> = TableProps<T>["columns"];
 
-const pageSize = 20;
+const defaultPageSize = 10;
 
 const TableOrder: React.FC = () => {
-  const [orders, setOrders] = useState<OrderProps[]>();
-  const [pagination, setPagination] = useState({
+  const [orders, setOrders] = useState<OrderProps[]>([]);
+  const [pagination, setPagination] = useState<TablePaginationConfig>({
     current: 1,
-    pageSize: pageSize,
+    pageSize: defaultPageSize,
+    total: 0,
   });
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
+  const [completedDate, setCompletedDate] = useState<string | null>(null);
 
-  //popup
   const [open, setOpen] = useState<boolean>(false);
   const [openCancelPopup, setOpenCancelPopup] = useState<boolean>(false);
   const [openTaskPopup, setOpenTaskPopup] = useState<boolean>(false);
   const [selectedData, setSelectedData] = useState<OrderProps | null>(null);
 
-  //api
   const { loading, apiGetOrder } = ApiOrder();
 
-  //modal popup
   const handleActionDetail = (record: OrderProps) => {
     setOpen(!open);
     setSelectedData(record);
@@ -56,6 +55,7 @@ const TableOrder: React.FC = () => {
     setOpenCancelPopup(!openCancelPopup);
     setSelectedData(record);
   };
+
   const handleCLoseCancel = () => {
     setOpenCancelPopup(!openCancelPopup);
   };
@@ -67,7 +67,7 @@ const TableOrder: React.FC = () => {
       case "Completed":
         return { backgroundColor: "green", color: "white" };
       case "Paid":
-        return { backgroundColor: "green", color: "white" };
+        return { backgroundColor: "#2196F3", color: "white" };
       case "Canceled":
         return { backgroundColor: "red", color: "white" };
       case "Delivery":
@@ -76,55 +76,69 @@ const TableOrder: React.FC = () => {
         return { backgroundColor: "transparent", color: "black" };
     }
   };
-  //----------------------------------------------------------------------------
-  const fetchOrder = async () => {
+
+  const fetchOrder = async (
+    page: number = 1,
+    pageSize: number = defaultPageSize
+  ) => {
     try {
-      const response = await apiGetOrder();
+      const params = {
+        size: pageSize,
+        page: page,
+      };
+      const response = await apiGetOrder(params);
 
       setOrders(response.data.items);
+      setPagination((prev) => ({
+        ...prev,
+        total: response.data.total,
+        current: response.data.page,
+        pageSize: response.data.size,
+      }));
     } catch (error) {
-      toast.error("lỗi");
+      toast.error("Error fetching orders");
     }
   };
 
   useEffect(() => {
-    fetchOrder();
+    fetchOrder(pagination.current, pagination.pageSize);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleCancelSuccess = (response: string) => {
     handleCLoseCancel();
-    fetchOrder();
+    fetchOrder(pagination.current, pagination.pageSize);
     toast.success(response);
   };
 
   const handleTaskSuccess = (response: string) => {
     handleCLoseTask();
-    fetchOrder();
+    fetchOrder(pagination.current, pagination.pageSize);
     toast.success(response);
   };
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const handleTableChange = (newPagination: any) => {
-    setPagination({
-      ...pagination,
-      ...newPagination,
-    });
 
-    if (pagination.pageSize !== pagination?.pageSize) {
-      setOrders([]);
-    }
+  const handleTableChange = (page: number, pageSize: number) => {
+    setPagination((prev) => ({
+      ...prev,
+      current: page,
+      pageSize: pageSize,
+    }));
+    fetchOrder(page, pageSize);
   };
 
   const customPagination = {
-    ...pagination,
+    current: pagination.current,
+    pageSize: pagination.pageSize,
+    total: pagination.total,
+    pageSizeOptions: ["20", "25", "50"],
+    showSizeChanger: false,
+    showQuickJumper: false,
     onChange: handleTableChange,
-    pageSizeOptions: ["20", "25", "50"], // Custom page size options
-    showSizeChanger: false, // Show page size changer
-    showQuickJumper: false, // Show quick jumper
   };
 
   const handleDateChange = (date: any, dateString: string | string[]) => {
     setSelectedDate(Array.isArray(dateString) ? dateString[0] : dateString);
+    setCompletedDate(Array.isArray(dateString) ? dateString[0] : dateString);
   };
   const dateFormatList = ["DD/MM/YYYY", "DD/MM/YY", "DD-MM-YYYY", "DD-MM-YY"];
   const filteredRows = orders
@@ -132,7 +146,12 @@ const TableOrder: React.FC = () => {
       selectedDate
         ? moment(item.createDate).format("DD/MM/YYYY") === selectedDate
         : true
-    );
+    )
+    ?.filter((item) =>
+      completedDate
+        ? moment(item.completedDate).format("DD/MM/YYYY") === selectedDate
+        : true
+    )
   const items: MenuProps["items"] = [
     {
       key: "1",
@@ -147,6 +166,7 @@ const TableOrder: React.FC = () => {
       label: "Huỷ đơn hàng",
     },
   ];
+
   const columns: ColumnsType<OrderProps> = [
     {
       title: <div style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}>Mã đơn hàng</div>,
@@ -169,10 +189,10 @@ const TableOrder: React.FC = () => {
           Ngày tạo
           <DatePicker
             onChange={handleDateChange}
-            style={{ marginLeft: 8 }}
+            style={{ marginLeft: 8, width: "50%" }}
             defaultValue={dayjs("01/01/2024", dateFormatList[0])}
             format={dateFormatList}
-            placeholder="Chọn ngày"
+            placeholder="Ngày tạo"
           />
         </div>
       ),
@@ -181,12 +201,30 @@ const TableOrder: React.FC = () => {
       align: "center",
     },
     {
-      title: <div style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}>Ngày hoàn thành</div>,
+      title: (
+        <div
+          style={{
+            textAlign: "center",
+            fontSize: "16px",
+            fontWeight: "bold",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          Ngày hoàn thành
+          <DatePicker
+            onChange={handleDateChange}
+            style={{ marginLeft: 8, width: "50%" }}
+            defaultValue={dayjs("01/01/2024", dateFormatList[0])}
+            format={dateFormatList}
+            placeholder="Ngày hoàn thành"
+          />
+        </div>
+      ),
       dataIndex: "completedDate",
       render: (completedDate) =>
-        completedDate
-          ? formatDateFunc.formatDate(completedDate)
-          : "Chưa hoàn thành",
+        completedDate ? formatDateFunc.formatDate(completedDate) : "--------",
       align: "center",
     },
     {
@@ -278,7 +316,9 @@ const TableOrder: React.FC = () => {
         dataSource={filteredRows}
         pagination={customPagination}
         loading={loading}
-        onChange={handleTableChange}
+        onChange={(pagination) =>
+          handleTableChange(pagination.current!, pagination.pageSize!)
+        }
       />
       {open && (
         <ModalDetailOrder

@@ -10,7 +10,6 @@ import { formatDateFunc } from "../../utils/fn";
 import ModalDetailTask from "./Popup/ModalTaskDetail";
 import ModalChangeStaffTask from "./Popup/ModalChangeStaffTask";
 import moment from "moment";
-import dayjs from "dayjs";
 type ColumnsType<T> = TableProps<T>["columns"];
 
 const pageSize = 20;
@@ -145,8 +144,7 @@ const TableTask: React.FC = () => {
           Ngày tạo
           <DatePicker
             onChange={handleDateChange}
-            style={{ marginLeft: 8 }}
-            defaultValue={dayjs("01/01/2024", dateFormatList[0])}
+            style={{ marginLeft: 8, width: "50%" }}
             format={dateFormatList}
             placeholder="Chọn ngày"
           />

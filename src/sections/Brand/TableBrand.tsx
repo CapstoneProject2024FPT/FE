@@ -12,7 +12,6 @@ import ModalBrandPopupDetail from "./BrandPopup/popupBrandDetail";
 import ModalBrandPopupDelete from "./BrandPopup/popupDeleteBrand";
 import { PlusOutlined } from "@ant-design/icons";
 import moment from "moment";
-import dayjs from "dayjs";
 type ColumnsType<T> = TableProps<T>["columns"];
 const { Search } = Input;
 
@@ -165,8 +164,7 @@ const TableBrand: React.FC = () => {
           Ngày tạo
           <DatePicker
             onChange={handleDateChange}
-            style={{ marginLeft: 8 }}
-            defaultValue={dayjs("01/01/2024", dateFormatList[0])}
+            style={{ marginLeft: 8, width: "50%" }}
             format={dateFormatList}
             placeholder="Chọn ngày"
           />
