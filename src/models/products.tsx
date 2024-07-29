@@ -53,6 +53,7 @@ export interface ProductAdmin {
   image: [{ imageURL: string; createDate: string }];
   status: string;
   component: ComponentMachine[];
+  monthWarrantyNumber: number;
 }
 
 export interface ProductAdminCategory {
@@ -86,6 +87,7 @@ export interface CreateProductFormSchema {
   categoryId: string;
   brandId: string;
   timeWarranty: number;
+  monthWarrantyNumber: number;
 }
 
 export interface CreateProductFormADDSchema {
@@ -100,6 +102,8 @@ export interface CreateProductFormADDSchema {
   categoryId: string;
   brandId: string;
   timeWarranty: number;
+  monthWarrantyNumber: number;
+  machineComponentsId: string[];
 }
 
 export type Specification = {
@@ -133,6 +137,7 @@ export type ProductDetailProps = {
   timeWarranty: number;
   serialNumber: number;
   status: string;
+  monthWarrantyNumber: number;
 };
 
 //update product
@@ -146,6 +151,7 @@ export interface UpdateProduct {
   timeWarranty: number;
   categoryId: string | undefined;
   status: string;
+  monthWarrantyNumber: number;
 }
 
 //enum

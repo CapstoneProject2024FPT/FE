@@ -155,7 +155,7 @@ interface Address {
   };
 }
 
-interface WarrantyDetails {
+export interface WarrantyDetails {
   id: string;
   type: string;
   createDate: string;
@@ -171,7 +171,6 @@ interface WarrantyDetails {
   customer: Customer;
   address: Address;
 }
-
 interface Warranty {
   warrantyDetails: WarrantyDetails;
 }
