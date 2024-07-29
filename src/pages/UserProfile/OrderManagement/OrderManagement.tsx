@@ -44,7 +44,7 @@ const getStatusStyles = (status: string) => {
     case "UnPaid":
       return { backgroundColor: "#FFD700", color: "black" }; // vàng
     case "Paid":
-      return { backgroundColor: "#4CAF50", color: "white" }; // xanh lá
+      return { backgroundColor: "#2196F3", color: "white" }; // xanh dương
     case "Completed":
       return { backgroundColor: "#4CAF50", color: "white" }; // xanh lá
     case "Canceled":
@@ -64,7 +64,7 @@ const Row = (props: {
   const [open, setOpen] = useState(false);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const openMenu = Boolean(anchorEl);
-  let  email: string = "";
+  let email: string = "";
   let username: string = "";
   let isSucess: boolean = false;
   const [remainingTime, setRemainingTime] = useState<number | null>(null);
@@ -236,7 +236,7 @@ const Row = (props: {
               <MenuItem onClick={handleCancelOrder}>Hủy đơn hàng</MenuItem>
             )}
             <MenuItem onClick={handleDetailOrder}>Chi tiết đơn hàng</MenuItem>
-            {row.status === StatusType.COMPLETED && (
+            {(row.status === StatusType.COMPLETED || row.status === StatusType.PAID) && (
               <MenuItem>
                 <ExportPDF row={row} />
               </MenuItem>
@@ -293,7 +293,7 @@ const Row = (props: {
                       </TableCell>
                       <TableCell>{product.quantity}</TableCell>
                       <TableCell>{formatMoney(product.totalAmount)}</TableCell>
-                      {row.status === StatusType.COMPLETED && (
+                      {(row.status === StatusType.COMPLETED || row.status === StatusType.PAID) && (
                         <TableCell>
                           <WarrantyPDF order={row} product={product} />
                         </TableCell>

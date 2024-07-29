@@ -64,7 +64,7 @@ const TableOrder: React.FC = () => {
       case "Completed":
         return { backgroundColor: "green", color: "white" };
       case "Paid":
-        return { backgroundColor: "green", color: "white" };
+        return { backgroundColor: "#2196F3", color: "white" };
       case "Canceled":
         return { backgroundColor: "red", color: "white" };
       case "Delivery":
