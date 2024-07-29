@@ -1,8 +1,8 @@
 import { Container } from "@mui/material";
 import React from "react";
-import HeaderBreadcrumbs from "../../../components/HeaderBreadcrumbs";
-import config from "../../../configs";
-import TableRequestWarranty from "../../../sections/Warranty/RequestWarranty/RequestWarranty";
+import HeaderBreadcrumbs from "../../../../components/HeaderBreadcrumbs";
+import config from "../../../../configs";
+import TableRequestWarranty from "../../../../sections/Warranty/RequestWarranty/RequestWarranty";
 
 const WarrantyRequestManagent: React.FC = () => {
   return (

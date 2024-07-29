@@ -65,8 +65,6 @@ const RequestDetail = () => {
 
   useEffect(() => {
     if (idEmployee) {
-      console.log(idEmployee);
-
       fetchEmployee(idEmployee);
     }
 

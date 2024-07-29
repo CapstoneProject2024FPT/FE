@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 //mui
 import { useEffect, useState } from "react";
 import {
@@ -14,11 +15,16 @@ import { useParams } from "react-router-dom";
 //components
 import { toast } from "react-toastify";
 import { Button } from "antd";
-import { WarrantyPropsById } from "../../../models/warranty";
+import {
+  WarrantyDetailProps,
+  WarrantyPropsById,
+} from "../../../models/warranty";
 import { ApiWarranty } from "../../../api/services/apiWarranty";
 import { formatAddress, formatDateFunc } from "../../../utils/fn";
-import ModalDeliveryTaskWarranty from "../Modal/ModalDeliveryTaskWarranty";
 import { PlusOutlined } from "@ant-design/icons";
+import { RoleType, staffProps } from "../../../models/UserData";
+import ModalDeliveryTaskPeriodic from "../Modal/ModalDeliveryTaskPeriodic";
+import { CustomerApi } from "../../../api/services/apiUser";
 
 const LabelStyle = styled(Typography)(({ theme }) => ({
   ...theme.typography.subtitle2,
@@ -28,18 +34,27 @@ const LabelStyle = styled(Typography)(({ theme }) => ({
 
 const PeriodicWarrantyDetail = () => {
   const { id } = useParams<{ id: string }>();
-  const [requestWarranty, setRequestWarranty] = useState<WarrantyPropsById>();
+  const [requestWarranty, setRequestWarranty] = useState<WarrantyDetailProps>();
   const [open, setOpen] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [warrantyPeriodicId, setWarrantyPeriodicId] = useState<string>();
+  const [idWarranty, setIdWarranty] = useState<string>();
+  const [warrantyPeriodic, setWarrantyPeriodic] = useState<WarrantyPropsById>();
+  const [idEmployee, setIdEmployee] = useState<string>();
+  const [employee, setEmployee] = useState<staffProps>();
 
-  const { apiGetWarrantyById, loading } = ApiWarranty();
+  const { apiGetWarrantyById, apiGetWarrantyDetailById } = ApiWarranty();
+  const { apiUserProfile } = CustomerApi();
 
-  const fetchProductDetail = async () => {
+  const fetchWarrantyDetail = async () => {
     try {
       if (id) {
-        const response = await apiGetWarrantyById(id);
-
+        const response = await apiGetWarrantyDetailById(id);
         if (response && response.status === 200) {
           setRequestWarranty(response.data);
+          setWarrantyPeriodicId(response.data.warrantyId);
+          setIdEmployee(response.data.staff.id);
+          setIdWarranty(response.data.id);
         } else toast.error(response.Error);
       }
     } catch (error) {
@@ -47,10 +62,39 @@ const PeriodicWarrantyDetail = () => {
     }
   };
 
+  const fetchWarranty = async (id: string) => {
+    const response = await apiGetWarrantyById(id);
+    return response.data;
+  };
+
+  const fetchEmployee = async (id: string) => {
+    const response = await apiUserProfile(id);
+    return response.data;
+  };
+
   useEffect(() => {
-    fetchProductDetail();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    const fetchData = async () => {
+      setLoading(true);
+      try {
+        await fetchWarrantyDetail();
+
+        const [warrantyData, employeeData] = await Promise.all([
+          warrantyPeriodicId ? fetchWarranty(warrantyPeriodicId) : null,
+          idEmployee ? fetchEmployee(idEmployee) : null,
+        ]);
+
+        if (warrantyData) setWarrantyPeriodic(warrantyData);
+        if (employeeData) setEmployee(employeeData);
+        setLoading(false);
+      } catch (error) {
+        setLoading(false);
+        console.error(error);
+        toast.error("Failed to fetch data");
+      }
+    };
+
+    fetchData();
+  }, [id, warrantyPeriodicId, idEmployee]);
 
   const handleClickOpen = () => {
     setOpen(!open);
@@ -62,14 +106,10 @@ const PeriodicWarrantyDetail = () => {
 
   const handleUpdateSuccess = (response: string) => {
     handleClose();
-    fetchProductDetail();
+    fetchWarrantyDetail();
     toast.success(response);
   };
 
-  const hasNullAccount =
-    requestWarranty?.warrantyDetail.some(
-      (detail) => detail.accountId === null
-    ) ?? false;
   return (
     <>
       {loading ? (
@@ -77,7 +117,7 @@ const PeriodicWarrantyDetail = () => {
       ) : (
         <>
           <div style={{ display: "flex", justifyContent: "flex-end" }}>
-            {hasNullAccount && (
+            {requestWarranty?.accountId !== null && (
               <Button icon={<PlusOutlined />} onClick={() => handleClickOpen()}>
                 Chọn nhân viên
               </Button>
@@ -92,9 +132,9 @@ const PeriodicWarrantyDetail = () => {
                       name="name"
                       label="Ngày tạo"
                       value={
-                        requestWarranty?.createDate
+                        warrantyPeriodic?.createDate
                           ? formatDateFunc.formatDateTime(
-                              requestWarranty?.createDate
+                              warrantyPeriodic?.createDate
                             )
                           : ""
                       }
@@ -110,7 +150,7 @@ const PeriodicWarrantyDetail = () => {
                         multiline
                         rows={4}
                         name="description"
-                        value={requestWarranty?.description || ""}
+                        value={warrantyPeriodic?.description || ""}
                         InputProps={{
                           readOnly: true,
                         }}
@@ -123,13 +163,13 @@ const PeriodicWarrantyDetail = () => {
                     <TextField
                       label="Tên khách hàng"
                       placeholder="0"
-                      value={requestWarranty?.customer.fullName}
+                      value={warrantyPeriodic?.customer.fullName || ""}
                       InputLabelProps={{ shrink: true }}
                     />
                     <TextField
                       label="Địa chỉ sửa"
                       placeholder="0"
-                      value={formatAddress(requestWarranty?.address)}
+                      value={formatAddress(warrantyPeriodic?.address) || ""}
                       InputLabelProps={{ shrink: true }}
                     />
                   </Stack>
@@ -144,7 +184,7 @@ const PeriodicWarrantyDetail = () => {
                       <TextField
                         label="tên máy"
                         value={
-                          requestWarranty?.inventory?.machinery?.name || ""
+                          warrantyPeriodic?.inventory?.machinery?.name || ""
                         }
                         InputProps={{
                           readOnly: true,
@@ -153,7 +193,31 @@ const PeriodicWarrantyDetail = () => {
                       <TextField
                         label="Mã số máy"
                         placeholder="0.00"
-                        value={requestWarranty?.inventory.serialNumber || ""}
+                        value={warrantyPeriodic?.inventory.serialNumber || ""}
+                        InputLabelProps={{ shrink: true }}
+                      />
+                    </Stack>
+                  </Card>
+                </Stack>
+                <Stack spacing={3} sx={{ mt: 2 }}>
+                  <Card sx={{ p: 3 }}>
+                    <Stack spacing={3} mt={2}>
+                      <TextField
+                        label="Tên nhân viên"
+                        placeholder=""
+                        value={employee?.fullName || "Chưa cử nhân viên"}
+                        InputProps={{
+                          readOnly: true,
+                        }}
+                      />
+                      <TextField
+                        label="Vai trò"
+                        placeholder=""
+                        value={
+                          employee?.role === RoleType.TECHNICAL
+                            ? "Nhân viên kỹ thuật"
+                            : ""
+                        }
                         InputLabelProps={{ shrink: true }}
                       />
                     </Stack>
@@ -163,8 +227,9 @@ const PeriodicWarrantyDetail = () => {
             </Grid>
           </Box>
           {open && (
-            <ModalDeliveryTaskWarranty
-              OrderData={requestWarranty}
+            <ModalDeliveryTaskPeriodic
+              OrderData={warrantyPeriodic}
+              idWarranty={idWarranty}
               handleCLose={handleClose}
               onCreateSuccess={handleUpdateSuccess}
               openTaskPopup={open}

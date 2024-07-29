@@ -8,16 +8,16 @@ import { useForm } from "react-hook-form";
 import * as Yup from "yup";
 import { toast } from "react-toastify";
 //model
-import { OrderProps } from "../../../models/order";
 import { Card, Grid, Stack, TextField } from "@mui/material";
 import { LoadingButton } from "@mui/lab";
 import { ApiTask } from "../../../api/services/apiTask";
 import { DeliveryPropsPost, StaffTaskProps } from "../../../models/task";
-
+import { WarrantyPropsById } from "../../../models/warranty";
 //api
 
 interface ModalOrder {
-  OrderData: OrderProps | null;
+  OrderData: WarrantyPropsById | undefined;
+  idWarranty: string | undefined;
   openTaskPopup: boolean;
   handleCLose: () => void;
   onCreateSuccess: (response: string) => void;
@@ -28,11 +28,12 @@ interface DeliveryProps {
 }
 
 const { Search } = Input;
-const ModalDeliveryTask: React.FC<ModalOrder> = ({
+const ModalDeliveryTaskPeriodic: React.FC<ModalOrder> = ({
   OrderData,
   openTaskPopup,
   handleCLose,
   onCreateSuccess,
+  idWarranty,
 }) => {
   const { apiCreateTask, apiTaskStaff } = ApiTask();
 
@@ -56,7 +57,7 @@ const ModalDeliveryTask: React.FC<ModalOrder> = ({
   }, []);
 
   const DeliverySchema = Yup.object().shape({
-    accountId: Yup.string().required("Chọn một nhân viên"),
+    accountId: Yup.string().required("bắt buộc"),
   });
 
   const defaultValues: DeliveryProps = {
@@ -79,21 +80,24 @@ const ModalDeliveryTask: React.FC<ModalOrder> = ({
 
   const onSubmit = async (data: DeliveryProps) => {
     try {
-      if (OrderData) {
-        const params: DeliveryPropsPost = {
-          accountId: data.accountId,
-          status: "Process",
-          orderId: OrderData.orderId,
-          type: "Delivery",
-        };
-        const response = await apiCreateTask(params);
-        if (response.status === 200) {
-          if (onCreateSuccess) {
-            onCreateSuccess("Giao nhiệm vụ thành công");
-            reset();
+      if (OrderData && OrderData.warrantyDetail) {
+        if (idWarranty) {
+          const params: DeliveryPropsPost = {
+            accountId: data.accountId,
+            status: "Process",
+            warrantyDetailId: idWarranty,
+            type: "Warranty",
+          };
+
+          const response = await apiCreateTask(params);
+          if (response.status === 200) {
+            if (onCreateSuccess) {
+              onCreateSuccess("Giao nhiệm vụ thành công");
+              reset();
+            }
+          } else {
+            toast.error("Xảy ra lỗi trong quá trình thêm");
           }
-        } else {
-          toast.error(response.Error);
         }
       }
     } catch (error) {
@@ -117,7 +121,7 @@ const ModalDeliveryTask: React.FC<ModalOrder> = ({
   }));
   return (
     <Modal
-      title={`Chấp nhận đơn hàng mã ${OrderData?.invoiceCode}`}
+      title="Chấp nhận đơn hàng"
       open={openTaskPopup}
       onOk={handleCLose}
       onCancel={handleCLose}
@@ -130,8 +134,22 @@ const ModalDeliveryTask: React.FC<ModalOrder> = ({
             <Card sx={{ p: 3 }}>
               <Stack spacing={3}>
                 <TextField
-                  value={OrderData?.invoiceCode}
-                  label="Mã đơn hàng"
+                  value={
+                    OrderData?.type === "CustomerRequest"
+                      ? "Yêu cầu bảo hành"
+                      : "Định kì"
+                  }
+                  label="Loại bảo hành"
+                  InputProps={{ readOnly: true }}
+                />
+                <TextField
+                  value={OrderData?.inventory?.machinery?.name || ""}
+                  label="Mã máy"
+                  InputProps={{ readOnly: true }}
+                />
+                <TextField
+                  value={OrderData?.inventory?.serialNumber || ""}
+                  label="Tên máy"
                   InputProps={{ readOnly: true }}
                 />
                 <TextField
@@ -185,4 +203,4 @@ const ModalDeliveryTask: React.FC<ModalOrder> = ({
   );
 };
 
-export default ModalDeliveryTask;
+export default ModalDeliveryTaskPeriodic;

@@ -53,6 +53,7 @@ export const adminRoutes = {
   order: "/dashboard/orders",
   rank: "/dashboard/ranks",
   maintenance: "/dashboard/maintenance",
+  maintenanceDetail: "/dashboard/maintenance/:id",
   maintenanceRequestDetail: "/dashboard/maintenance/request/:id",
   maintenanceRequest: "/dashboard/maintenance/request",
   task: "/dashboard/kanban",

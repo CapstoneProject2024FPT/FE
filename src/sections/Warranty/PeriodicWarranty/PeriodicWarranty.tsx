@@ -7,6 +7,8 @@ import { toast } from "react-toastify";
 import { ApiWarranty } from "../../../api/services/apiWarranty";
 import { WarrantyProps } from "../../../models/warranty";
 import { formatDateFunc } from "../../../utils/fn";
+import config from "../../../configs";
+import { useNavigate } from "react-router-dom";
 
 type ColumnsType<T> = TableProps<T>["columns"];
 
@@ -19,20 +21,11 @@ const TablePeriodicWarranty: React.FC = () => {
     pageSize: pageSize,
   });
   const { loading, apiGetWarantyPeriodic } = ApiWarranty();
+  const navigate = useNavigate();
 
-  //popup
-  const [open, setOpen] = useState<boolean>(false);
-  const [selectedData, setSelectedData] = useState<WarrantyProps | null>(null);
-
-  //modal popup
   const handleActionDetail = (record: WarrantyProps) => {
-    setOpen(!open);
-    setSelectedData(record);
+    navigate(config.adminRoutes.maintenanceDetail.replace(":id", record.id));
   };
-
-  const handleCLose = () => setOpen(false);
-
-  console.log(selectedData, handleCLose);
 
   const fetchWarrantyPeriodic = async () => {
     try {
@@ -79,10 +72,6 @@ const TablePeriodicWarranty: React.FC = () => {
     {
       key: "1",
       label: "Chi tiết",
-    },
-    {
-      key: "2",
-      label: "Xoá",
     },
   ];
 

@@ -6,10 +6,16 @@ import axios from "axios";
 export const ApiOrder = () => {
   const [loading, setLoading] = useState(false);
 
-  const apiGetOrder = async () => {
+  interface GetOrderProps {
+    AccountId?: string;
+    page?: number;
+    size?: number;
+  }
+
+  const apiGetOrder = async (params: GetOrderProps) => {
     setLoading(true);
     try {
-      const response = await axiosPublic.get(ORDER);
+      const response = await axiosPublic.get(ORDER, { params });
 
       return response;
 
@@ -25,11 +31,6 @@ export const ApiOrder = () => {
     }
   };
 
-  interface GetOrderProps {
-    AccountId: string;
-    page: number;
-    size: number;
-  }
   const apiGetOrderById = async (params: GetOrderProps) => {
     setLoading(true);
 

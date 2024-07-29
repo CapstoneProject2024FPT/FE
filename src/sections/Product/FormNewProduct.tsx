@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 //mui
 import {
   Card,
@@ -34,6 +34,9 @@ import { BrandApi } from "../../api/services/apiBrand";
 import { toast } from "react-toastify";
 import { ApiOrigin } from "../../api/services/apiOrigin";
 import { OriginProps } from "../../models/origin";
+import { GetMachineComponents } from "../../models/machineComponent";
+import ModalAddComponentOfMachineTable from "./PopupAddMachine/ModalAddComponent";
+import { Divider } from "antd";
 
 const LabelStyle = styled(Typography)(({ theme }) => ({
   ...theme.typography.subtitle2,
@@ -50,6 +53,9 @@ export default function ProductNewEditForm() {
   const minTimeWarranty = 1;
   const maxTimeWarranty = 3;
 
+  const minTimeMonthWarranty = 3;
+  const maxTimeMonthWarranty = 6;
+
   const initialSpecifications: Specification = {
     name: "",
     value: "",
@@ -58,6 +64,11 @@ export default function ProductNewEditForm() {
   const [categories, setCategories] = useState<GetCategoryProps[]>();
   const [brands, setBrands] = useState<brandTable[]>();
   const [origins, setOrigins] = useState<OriginProps[]>();
+  const [selectedComponents, setSelectedComponents] = useState<
+    GetMachineComponents[]
+  >([]);
+  //modal add component
+  const [showModal, setShowModal] = useState(false);
 
   const defaultValues = {
     name: "",
@@ -72,6 +83,7 @@ export default function ProductNewEditForm() {
     specificationList: [initialSpecifications],
     brandId: "",
     timeWarranty: 0,
+    monthWarrantyNumber: 0,
   };
 
   const validationSchema = Yup.object().shape({
@@ -99,6 +111,16 @@ export default function ProductNewEditForm() {
     timeWarranty: Yup.number()
       .min(minTimeWarranty, `Thời gian bảo trì lớn hơn ${minTimeWarranty}`)
       .max(maxTimeWarranty, `Thời gian bảo trì nhỏ hơn ${maxTimeWarranty}`)
+      .required("Thời gian bảo trì là bắt buộc"),
+    monthWarrantyNumber: Yup.number()
+      .min(
+        minTimeMonthWarranty,
+        `Thời gian bảo trì lớn hơn ${minTimeMonthWarranty}`
+      )
+      .max(
+        maxTimeMonthWarranty,
+        `Thời gian bảo trì nhỏ hơn ${maxTimeMonthWarranty}`
+      )
       .required("Thời gian bảo trì là bắt buộc"),
   });
 
@@ -161,20 +183,32 @@ export default function ProductNewEditForm() {
   //add machinery
   const onSubmit = async (values: CreateProductFormSchema) => {
     try {
-      const transformedData = {
-        ...values,
-        image: values.imageURL?.map((image) => ({
-          imageURL: image,
-        })),
-      };
-      delete transformedData.imageURL;
+      if (selectedComponents.length > 0) {
+        const transformedData = {
+          ...values,
+          image: values.imageURL?.map((image) => ({
+            imageURL: image,
+          })),
+        };
+        delete transformedData.imageURL;
 
-      const response = await apiAddMachinery(transformedData);
+        const component = selectedComponents.map((item) => item.id);
 
-      if (response.status === 200) {
-        toast.success("Thêm máy thành công");
+        const params = {
+          ...transformedData,
+          machineComponentsId: component,
+        };
+
+        const response = await apiAddMachinery(params);
+
+        if (response.status === 200) {
+          toast.success("Thêm máy thành công");
+        }
+        setSelectedComponents([]);
+        reset();
+      } else {
+        toast.error("Thêm bộ phận máy");
       }
-      reset();
     } catch (error) {
       console.error(error);
     }
@@ -215,6 +249,17 @@ export default function ProductNewEditForm() {
   const handleRemoveSpecification = (index: number) => {
     remove(index);
   };
+
+  // modal add component
+  const handleOpenModal = () => {
+    setShowModal(true);
+  };
+
+  const handleModalSubmit = (selectedComponents: GetMachineComponents[]) => {
+    setSelectedComponents(selectedComponents);
+    setShowModal(false);
+  };
+
   return (
     <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
       <Grid container spacing={3}>
@@ -331,9 +376,39 @@ export default function ProductNewEditForm() {
                     inputProps: { min: 0, max: maxTimeWarranty },
                   }}
                 />
+                <RHFTextField
+                  required
+                  name="monthWarrantyNumber"
+                  label="Số tháng bảo trì "
+                  placeholder="0"
+                  InputLabelProps={{ shrink: true }}
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position="end">Tháng</InputAdornment>
+                    ),
+                    type: "number",
+                  }}
+                />
               </Stack>
             </Card>
-
+            {/* component  */}
+            <Card sx={{ p: 3 }}>
+              <Stack spacing={3} mb={2}>
+                <Typography variant="h5">Tên bộ phận máy</Typography>
+                {selectedComponents?.map((component, idx) => (
+                  <React.Fragment key={idx}>
+                    <Stack>
+                      {idx + 1} : {component.name}
+                    </Stack>
+                    <Divider />
+                  </React.Fragment>
+                ))}
+                <Button variant="contained" onClick={handleOpenModal}>
+                  Thêm bộ phận máy
+                </Button>
+              </Stack>
+            </Card>
+            {/* ---------------------------------------- */}
             <Card sx={{ p: 3 }}>
               <Stack spacing={3} mb={2}>
                 <RHFTextField
@@ -379,6 +454,13 @@ export default function ProductNewEditForm() {
           </Stack>
         </Grid>
       </Grid>
+      {showModal && (
+        <ModalAddComponentOfMachineTable
+          handleCloseAddComponent={() => setShowModal(!showModal)}
+          onSubmit={handleModalSubmit}
+          open={showModal}
+        />
+      )}
     </FormProvider>
   );
 }
