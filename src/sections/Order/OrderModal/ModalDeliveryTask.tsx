@@ -1,10 +1,7 @@
 import React, { useEffect, useState } from "react";
 // form
-import { Modal } from "antd";
-import {
-  FormProvider,
-  RHFAutoCompleteUser,
-} from "../../../components/hook-form";
+import { Input, Modal } from "antd";
+import { FormProvider, RHFRadioGroup } from "../../../components/hook-form";
 // form
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm } from "react-hook-form";
@@ -12,12 +9,11 @@ import * as Yup from "yup";
 import { toast } from "react-toastify";
 //model
 import { OrderProps } from "../../../models/order";
-import { Card, Stack, TextField } from "@mui/material";
+import { Card, Grid, Stack, TextField } from "@mui/material";
 import { LoadingButton } from "@mui/lab";
 import { ApiTask } from "../../../api/services/apiTask";
-import { DeliveryPropsPost } from "../../../models/task";
-import { RoleType, staffProps } from "../../../models/UserData";
-import { ApiAccount } from "../../../api/services/apiAccount";
+import { DeliveryPropsPost, StaffTaskProps } from "../../../models/task";
+
 //api
 
 interface ModalOrder {
@@ -31,25 +27,24 @@ interface DeliveryProps {
   accountId: string;
 }
 
+const { Search } = Input;
 const ModalDeliveryTask: React.FC<ModalOrder> = ({
   OrderData,
   openTaskPopup,
   handleCLose,
   onCreateSuccess,
 }) => {
-  const { apiCreateTask } = ApiTask();
-  const { apiGetUserByRole } = ApiAccount();
+  const { apiCreateTask, apiTaskStaff } = ApiTask();
 
-  const [data, setData] = useState<staffProps[]>();
+  //search
+  const [query, setQuery] = useState<string>("");
+
+  const [data, setData] = useState<StaffTaskProps[]>();
 
   const fetchAccountUser = async () => {
-    const params = {
-      Role: RoleType.TECHNICAL,
-      size: 20,
-    };
-    const response = await apiGetUserByRole(params);
+    const response = await apiTaskStaff();
     if (response.status === 200) {
-      setData(response.data.items);
+      setData(response.data);
     } else {
       toast.error(response.Error);
     }
@@ -61,7 +56,7 @@ const ModalDeliveryTask: React.FC<ModalOrder> = ({
   }, []);
 
   const DeliverySchema = Yup.object().shape({
-    accountId: Yup.string().required("bắt buộc"),
+    accountId: Yup.string().required("Chọn một nhân viên"),
   });
 
   const defaultValues: DeliveryProps = {
@@ -76,8 +71,11 @@ const ModalDeliveryTask: React.FC<ModalOrder> = ({
   const {
     reset,
     handleSubmit,
+    watch,
     formState: { isSubmitting },
   } = methods;
+
+  const staffID = watch("accountId");
 
   const onSubmit = async (data: DeliveryProps) => {
     try {
@@ -95,7 +93,7 @@ const ModalDeliveryTask: React.FC<ModalOrder> = ({
             reset();
           }
         } else {
-          toast.error("Xảy ra lỗi trong quá trình thêm");
+          toast.error(response.Error);
         }
       }
     } catch (error) {
@@ -103,44 +101,85 @@ const ModalDeliveryTask: React.FC<ModalOrder> = ({
       console.error(error);
     }
   };
+
+  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setQuery(e.target.value);
+  };
+
+  const filteredRows = data?.filter((item) =>
+    item.staffName.toLowerCase().includes(query.toLocaleLowerCase())
+  );
+
+  const radioOptions = filteredRows?.map((item) => ({
+    label: item.staffName,
+    value: item.staffId,
+    taskStatusCount: item.taskStatusCount,
+  }));
   return (
     <Modal
-      title="Chấp nhận đơn hàng"
+      title={`Chấp nhận đơn hàng mã ${OrderData?.invoiceCode}`}
       open={openTaskPopup}
       onOk={handleCLose}
       onCancel={handleCLose}
       footer={[]}
+      width={1300}
     >
       <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
-        <Card sx={{ p: 3 }}>
-          <Stack spacing={3}>
-            <TextField
-              value={OrderData?.invoiceCode}
-              label="Mã đơn hàng"
-              InputProps={{ readOnly: true }}
-            />
-            <RHFAutoCompleteUser
-              label="Chọn Nhân Viên Kĩ Thuật"
-              name="accountId"
-              options={data || []}
-            />
-          </Stack>
-          <div
-            style={{
-              display: " flex",
-              justifyContent: "flex-end",
-              marginTop: "5px",
-            }}
-          >
-            <LoadingButton
-              loading={isSubmitting}
-              variant="outlined"
-              type="submit"
-            >
-              Lưu
-            </LoadingButton>
-          </div>
-        </Card>
+        <Grid container spacing={2}>
+          <Grid item xs={12} md={6}>
+            <Card sx={{ p: 3 }}>
+              <Stack spacing={3}>
+                <TextField
+                  value={OrderData?.invoiceCode}
+                  label="Mã đơn hàng"
+                  InputProps={{ readOnly: true }}
+                />
+                <TextField
+                  label="Tên nhân viên"
+                  value={
+                    staffID &&
+                    data?.find((item) => item.staffId === staffID)?.staffName
+                  }
+                  InputProps={{
+                    readOnly: true,
+                  }}
+                  InputLabelProps={{
+                    shrink: true,
+                  }}
+                />
+              </Stack>
+              <div
+                style={{
+                  display: " flex",
+                  justifyContent: "flex-end",
+                  marginTop: "5px",
+                }}
+              >
+                <LoadingButton
+                  loading={isSubmitting}
+                  variant="outlined"
+                  type="submit"
+                >
+                  Lưu
+                </LoadingButton>
+              </div>
+            </Card>
+          </Grid>
+          <Grid item xs={12} md={6}>
+            <Card sx={{ p: 3 }}>
+              <Stack>
+                <Search
+                  placeholder="Nhập tên nhân viên"
+                  onChange={handleSearch}
+                  style={{ width: 200, marginBottom: 16 }}
+                />
+
+                {/* {radio} */}
+                <RHFRadioGroup name="accountId" options={radioOptions || []} />
+              </Stack>
+            </Card>
+          </Grid>
+        </Grid>
       </FormProvider>
     </Modal>
   );

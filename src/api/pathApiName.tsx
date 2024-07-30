@@ -4,14 +4,16 @@ export const REGISTER = "register/users";
 export const CHANGE_PASSWORD = "/users/:id/password";
 
 //Machinery
-export const GET_MACHINERY = "/machinery/noPaginate?Status=Available";
+export const GET_MACHINERY = "/machinery?Status=Available";
 export const ADD_MACHINERY = "/Machinery";
 export const MACHINERY = "/Machinery";
 export const MACHINERY_LIST = "machinery";
+export const MACHINERY_LIST_NOPAGING = "machinery/noPaginate";
 export const MACHINERY_ID = "/Machinery/:id";
 export const MACHINERY_DETAIL = "Machinery/Detail";
 export const MACHINERY_HOME_PRIORITY = "Machinery?Priority=1&size=4";
 export const ADD_MACHINERY_COMPONENT = "machinery/:id/addComponent";
+export const MACHINERY_STATUS = "machinery/updateStatus/:id";
 
 //Category Machinery
 export const GET_CATEGORY = "categories?status=Active&kind=Machinery";
@@ -79,6 +81,7 @@ export const NEWS_ADMIN = "news/noPaginate";
 //task
 export const TASK = "task";
 export const TASK_ID = "task/:id";
+export const TASK_STAFF = "staff/task";
 //newsCategories
 export const NEWS_CATEGORIES = "/newsCategory";
 export const NEWS_CATEGORIES_ID = "/newsCategory/:id";
@@ -99,6 +102,11 @@ export const WARRANTY_ID = "warranty/:id";
 //warranty detail
 export const WARRANTY_DETAIL = "/warrantyDetail";
 export const WARRANTY_DETAIL_ID = "/warrantyDetail/:id";
+
 //payments
 export const PAYMENTS = "payments";
 export const PAYMENTS_ID = "payments/:id";
+
+// amdin dashboard
+export const ADMIN_DASHBOARD = "admin/dashBoard";
+export const COUNTORDERS = "admin/dashBoard/countOrders";

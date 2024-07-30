@@ -1,20 +1,8 @@
-import {
-  Page,
-  Text,
-  View,
-  Document,
-  StyleSheet,
-  pdf,
-  Image,
-} from "@react-pdf/renderer";
-import { OrderProps } from "../../../../models/order";
-import {
-  formatAddress,
-  formatDateFunc,
-  formatMoney,
-} from "../../../../utils/fn";
 import { useEffect, useState } from "react";
-import { Font } from "@react-pdf/renderer";
+import { Page, Text, View, Document, StyleSheet, pdf, Image, Font } from "@react-pdf/renderer";
+import moment from "moment";
+import { OrderProps } from "../../../../models/order";
+import { formatAddress, formatMoney } from "../../../../utils/fn";
 import loraRegular from "../../../../assets/fonts/static/Lora-Regular.ttf";
 import logo from "../../../../assets/images/logo-SMMMS.png"; // Adjust path as needed
 
@@ -77,6 +65,27 @@ const styles = StyleSheet.create({
   },
 });
 
+const formatDateFunc = {
+  formatDateTime: (date: Date | undefined): string => {
+    if (!date || !moment(date, moment.ISO_8601).isValid()) {
+      return "Chưa hoàn thành";
+    }
+    return moment(date, moment.ISO_8601).format("DD/MM/YYYY HH:mm a");
+  },
+  formatDate: (date: Date | undefined): string => {
+    if (!date || !moment(date, moment.ISO_8601).isValid()) {
+      return "Chưa hoàn thành";
+    }
+    return moment(date, moment.ISO_8601).format("DD/MM/YYYY");
+  },
+  formatTime: (date: Date | undefined): string => {
+    if (!date || !moment(date, moment.ISO_8601).isValid()) {
+      return "Chưa hoàn thành";
+    }
+    return moment(date, moment.ISO_8601).format("HH:mm A");
+  },
+};
+
 const ExportPDFDocument = ({ row }: { row: OrderProps }) => {
   // Calculate total amount
   const totalAmount = row.productList.reduce(
@@ -99,12 +108,11 @@ const ExportPDFDocument = ({ row }: { row: OrderProps }) => {
             Ngày mua: {formatDateFunc.formatDate(row.createDate) || ""}
           </Text>
           <Text>
-            Ngày hoàn thành:{" "}
-            {formatDateFunc.formatDate(row.completedDate) || ""}
+            Ngày hoàn thành: {formatDateFunc.formatDate(row.completedDate)}
           </Text>
         </View>
         <View style={styles.section}>
-          <Text>Thông tin đơn hàng</Text>
+          <Text>Thông tin đơn hàng:</Text>
           <View style={styles.table}>
             <View style={styles.tableRow}>
               <Text style={styles.tableColHeader}>Tên sản phẩm</Text>

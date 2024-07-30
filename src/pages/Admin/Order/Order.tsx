@@ -6,7 +6,7 @@ import TableOrder from "../../../sections/Order/TableOrder";
 
 const Order: React.FC = () => {
   return (
-    <Container>
+    <Container sx={{ width: "100% !important", maxWidth: "none !important" }}>
       <HeaderBreadcrumbs
         heading="Tất cả Đơn Hàng"
         links={[

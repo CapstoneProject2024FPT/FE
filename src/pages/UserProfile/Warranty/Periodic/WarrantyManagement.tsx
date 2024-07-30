@@ -12,15 +12,29 @@ import Typography from "@mui/material/Typography";
 import Paper from "@mui/material/Paper";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
-import { Button, Container, TablePagination } from "@mui/material";
-import { ApiWarranty } from "../../../api/services/apiWarranty";
 import {
+  Button,
+  Container,
+  Menu,
+  MenuItem,
+  TablePagination,
+} from "@mui/material";
+import { ApiWarranty } from "../../../../api/services/apiWarranty";
+import MoreVertIcon from "@mui/icons-material/MoreVert";
+import {
+  StatusType,
+  WarrantyDetailProps,
   WarrantyProps,
   WarrantyPropsById,
   warrantyStatusMapping,
-} from "../../../models/warranty";
-import { formatDateFunc } from "../../../utils/fn";
-import EmptyOrder from "../../../components/EmptyOrder";
+} from "../../../../models/warranty";
+import CancelWarrantyDialog from "../Modal/ModalCancelWarranty";
+import { toast } from "react-toastify";
+import { formatDateFunc } from "../../../../utils/fn";
+import EmptyOrder from "../../../../components/EmptyOrder";
+import ModalTransactionDetail from "../Modal/ModalRequestWarranty";
+import { useNavigate } from "react-router-dom";
+import config from "../../../../configs";
 
 const getStatusStyles = (status: string) => {
   switch (status) {
@@ -37,12 +51,22 @@ const getStatusStyles = (status: string) => {
   }
 };
 
-function Row(props: { row: WarrantyProps }) {
-  const { row } = props;
+function Row(props: { row: WarrantyProps; onCancelWarranty: (warrantyId: string, description?: string) => void; }) {
+  const { row, onCancelWarranty } = props;
   const [open, setOpen] = useState(false);
   const date = new Date(row.createDate);
   const [warrantyDetail, setWarrantyDetail] = useState<WarrantyPropsById>();
   const { apiGetWarrantyById } = ApiWarranty();
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const openMenu = Boolean(anchorEl);
+  const [openRequestWarranty, setOpenRequestWarranty] =
+    useState<boolean>(false);
+  const [selectWarranty, setSelectWarranty] = useState<WarrantyProps>();
+  const navigate = useNavigate();
+
+  const handleNavigateId = (record: WarrantyDetailProps) => {
+    navigate(config.routes.maintenancePeriodic.replace(":id", record.id));
+  };
   const fetchWarrantyById = async () => {
     if (row) {
       const response = await apiGetWarrantyById(row.id);
@@ -57,6 +81,22 @@ function Row(props: { row: WarrantyProps }) {
     setOpen(!open);
   };
 
+  const handleOpenMenu = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleCloseMenu = () => {
+    setAnchorEl(null);
+  };
+
+  const handleOpenWarranty = (record: WarrantyProps) => {
+    setSelectWarranty(record);
+    setOpenRequestWarranty(!openRequestWarranty);
+  };
+
+  const handleClosetWarranty = () => {
+    setOpenRequestWarranty(!openRequestWarranty);
+  };
   return (
     <React.Fragment>
       <TableRow>
@@ -71,9 +111,26 @@ function Row(props: { row: WarrantyProps }) {
         </TableCell>
         <TableCell align="right">{row.inventory.serialNumber}</TableCell>
         <TableCell align="right">{row.inventory.machinery.name}</TableCell>
-        <TableCell align="right">{`${date.getDate()}/${
-          date.getMonth() + 1
-        }/${date.getFullYear()}`}</TableCell>
+        <TableCell align="right">{`${date.getDate()}/${date.getMonth() + 1
+          }/${date.getFullYear()}`}</TableCell>
+        <TableCell align="center">
+          <IconButton
+            aria-label="more actions"
+            size="small"
+            onClick={handleOpenMenu}
+          >
+            <MoreVertIcon />
+          </IconButton>
+          <Menu anchorEl={anchorEl} open={openMenu} onClose={handleCloseMenu}>
+            <MenuItem
+              onClick={() => {
+                handleOpenWarranty(row);
+              }}
+            >
+              Yêu cầu bảo hành
+            </MenuItem>
+          </Menu>
+        </TableCell>
       </TableRow>
       <TableRow>
         <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={8}>
@@ -98,29 +155,38 @@ function Row(props: { row: WarrantyProps }) {
                         {formatDateFunc.formatDate(detail.startDate)}
                       </TableCell>
                       <TableCell align="right">{detail.description}</TableCell>
+
                       <TableCell align="right">
-                        <Box
-                          sx={{
-                            ...getStatusStyles(detail.status),
-                            padding: "8px 16px",
-                            borderRadius: "8px",
-                            display: "inline-block",
-                          }}
-                        >
-                          {
-                            warrantyStatusMapping.find(
-                              (status) => status.id === detail.status
-                            )?.name
-                          }
-                        </Box>
+                        {detail.status !== StatusType.AWAITINGASSIGNMENT && (
+                          <Box
+                            sx={{
+                              ...getStatusStyles(detail.status),
+                              padding: "8px 16px",
+                              borderRadius: "8px",
+                              display: "inline-block",
+                            }}
+                          >
+                            {
+                              warrantyStatusMapping.find(
+                                (status) => status.id === detail.status
+                              )?.name
+                            }
+                          </Box>
+                        )}
                       </TableCell>
                       <TableCell align="right">
-                        <Button
-                          variant="contained"
-                          color="primary"
-                          style={{ marginRight: "10px" }}
-                        >
-                          Hủy
+                        {detail.status === StatusType.PROCESS && (
+                          <Button
+                            variant="contained"
+                            color="primary"
+                            style={{ marginRight: "10px" }}
+                            onClick={() => onCancelWarranty(detail.id)}
+                          >
+                            Hủy
+                          </Button>
+                        )}
+                        <Button onClick={() => handleNavigateId(detail)}>
+                          Chi tiết
                         </Button>
                       </TableCell>
                     </TableRow>
@@ -131,13 +197,22 @@ function Row(props: { row: WarrantyProps }) {
           </Collapse>
         </TableCell>
       </TableRow>
+      {openRequestWarranty && (
+        <ModalTransactionDetail
+          onClose={handleClosetWarranty}
+          open={openRequestWarranty}
+          warrantyData={selectWarranty}
+        />
+      )}
     </React.Fragment>
   );
 }
 
-const WarrantyRequest: React.FC = () => {
+const WarrantyManagement: React.FC = () => {
   const [requests, setRequests] = useState<WarrantyProps[]>([]);
   const [page, setPage] = useState<number>(0);
+  const [openDialog, setOpenDialog] = useState(false);
+  const [selectWarrantyId, setSelectWarrantyId] = useState<string | null>(null);
   const [rowsPerPage, setRowsPerPage] = useState(15);
   const routePage = [15, 20, 25, 30];
 
@@ -155,7 +230,7 @@ const WarrantyRequest: React.FC = () => {
     setPage(0);
   };
 
-  const { apiGetWarranty } = ApiWarranty();
+  const { apiGetWarranty, apiCancelWarrantyDetail } = ApiWarranty();
 
   const loginInfoString = localStorage.getItem("loginInfo");
   const auth = loginInfoString ? JSON.parse(loginInfoString) : null;
@@ -163,11 +238,42 @@ const WarrantyRequest: React.FC = () => {
   const fetchWarranty = async () => {
     if (auth) {
       const params = {
-        type: "CustomerRequest",
+        type: "Periodic",
         AccountId: auth.data.id,
       };
       const response = await apiGetWarranty(params);
       setRequests(response.data);
+    }
+  };
+
+  const handleOpenDialog = (warrantyId: string) => {
+    setSelectWarrantyId(warrantyId);
+    setOpenDialog(true);
+  };
+
+  const handleCloseDialog = () => {
+    setOpenDialog(false);
+    setSelectWarrantyId(null);
+  };
+
+  const handleCancelWarranty = async (description: string) => {
+    if (selectWarrantyId) {
+      try {
+        const response = await apiCancelWarrantyDetail({
+          warrantyId: selectWarrantyId,
+          status: "Completed",
+          description,
+        });
+        if (response.status === 200) {
+          fetchWarranty();
+          toast.success("Bảo hành định kỳ đã được hủy thành công");
+        }
+      } catch (error) {
+        toast.error("Có lỗi xảy ra khi hủy bảo hành");
+        console.log(error);
+      } finally {
+        handleCloseDialog();
+      }
     }
   };
 
@@ -186,6 +292,7 @@ const WarrantyRequest: React.FC = () => {
               <TableCell align="right">Số serial</TableCell>
               <TableCell align="right">Tên sản phẩm</TableCell>
               <TableCell align="right">Ngày tạo phiếu</TableCell>
+              <TableCell align="right">Tạo yêu cầu bảo hành</TableCell>
             </TableRow>
           </TableHead>
           {requests.length > 0 ? (
@@ -193,7 +300,7 @@ const WarrantyRequest: React.FC = () => {
               {requests
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map((row: WarrantyProps) => (
-                  <Row key={row.id} row={row} />
+                  <Row key={row.id} row={row} onCancelWarranty={handleOpenDialog} />
                 ))}
             </TableBody>
           ) : (
@@ -217,8 +324,13 @@ const WarrantyRequest: React.FC = () => {
         onRowsPerPageChange={handleChangeRowsPerPage}
         labelRowsPerPage="Số hàng mỗi trang"
       />
+      <CancelWarrantyDialog
+        open={openDialog}
+        onClose={handleCloseDialog}
+        onConfirm={handleCancelWarranty}
+      />
     </Container>
   );
 };
 
-export default WarrantyRequest;
+export default WarrantyManagement;

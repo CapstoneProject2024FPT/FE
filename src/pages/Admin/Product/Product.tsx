@@ -6,7 +6,7 @@ import TableProduct from "../../../sections/Product/TableProduct";
 
 const Product: React.FC = () => {
   return (
-    <Container>
+    <Container sx={{ width: "100% !important", maxWidth: "none !important" }}>
       <HeaderBreadcrumbs
         heading="Tất cả máy"
         links={[

@@ -257,6 +257,20 @@ const ProductDetail = () => {
                         readOnly: true,
                       }}
                     />
+                    <TextField
+                      name="timeMonthWarranty"
+                      label="Số tháng bảo trì định kì"
+                      placeholder="0"
+                      value={machine?.monthWarrantyNumber || 0}
+                      InputLabelProps={{ shrink: true }}
+                      InputProps={{
+                        endAdornment: (
+                          <InputAdornment position="end">Tháng</InputAdornment>
+                        ),
+                        type: "number",
+                        readOnly: true,
+                      }}
+                    />
                   </Stack>
                 </Card>
 

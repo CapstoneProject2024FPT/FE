@@ -44,12 +44,17 @@ import MachineComponent from "../pages/Admin/MachineComponent/MachineComponent";
 import MachineComponentDetail from "../pages/Admin/MachineComponent/MachineComponentDetail";
 import SerialNumberComponent from "../pages/Admin/MachineComponent/SerialNumberComponent";
 import KanBan from "../pages/Admin/Task/Task";
-import WarrantyManagent from "../pages/Admin/Warranty/WarrantyManagement";
+import WarrantyManagent from "../pages/Admin/Warranty/Periodic/WarrantyManagement";
 import ComponentOfMachine from "../pages/Admin/Product/ComponentOfMachine";
 import AddComponentOfMachine from "../pages/Admin/Product/AddComponentOfMachine";
 import UserTransaction from "../pages/UserProfile/UserTransaction";
 import PaymentOrder from "../pages/UserProfile/PaymentOrder";
-import WarrantyRequestDetail from "../pages/Admin/Warranty/WarrantyRequestDetail";
+import WarrantyRequestDetail from "../pages/Admin/Warranty/Request/WarrantyRequestDetail";
+import Bill from "../pages/Bill/Bill";
+import WarrantyRequestManagent from "../pages/Admin/Warranty/Request/WarrantyRequestManagement";
+import WarrantyPeriodicDetail from "../pages/Admin/Warranty/Periodic/WarrantyPeriodicDetail";
+import WarrantyDetailPeriodic from "../pages/UserProfile/WarantyDetailPeriodic";
+import WarrantyDetailRequest from "../pages/UserProfile/WarrantyDetailRequest";
 
 const AppRoute: React.FC = () => {
   return (
@@ -70,6 +75,11 @@ const AppRoute: React.FC = () => {
           path={config.routes.paymentSuccessful}
           element={<PaymentSuccessfull />}
         ></Route>
+        <Route
+          key="viewBill"
+          path={config.routes.viewBill}
+          element={<Bill />}
+        />
         <Route
           key="payment-failure"
           path={config.routes.paymentFailure}
@@ -111,6 +121,16 @@ const AppRoute: React.FC = () => {
           key="maintenance"
           path={config.routes.maintenance}
           element={<Maintenance />}
+        />
+        <Route
+          key="maintenancePeriodict"
+          path={config.routes.maintenancePeriodic}
+          element={<WarrantyDetailPeriodic />}
+        />
+        <Route
+          key="maintenanceRequest"
+          path={config.routes.maintenanceRequest}
+          element={<WarrantyDetailRequest />}
         />
         <Route
           key="orderManagement"
@@ -287,14 +307,24 @@ const AppRoute: React.FC = () => {
           path={config.adminRoutes.maintenance}
           element={<WarrantyManagent />}
         />
+        <Route
+          key="maintananceDetail"
+          path={config.adminRoutes.maintenanceDetail}
+          element={<WarrantyPeriodicDetail />}
+        />
 
         <Route
           key="maintananceDetailRequest"
           path={config.adminRoutes.maintenanceRequestDetail}
           element={<WarrantyRequestDetail />}
         />
-      </Route>
 
+        <Route
+          key="maintananceRequestManagement"
+          path={config.adminRoutes.maintenanceRequest}
+          element={<WarrantyRequestManagent />}
+        />
+      </Route>
       <Route
         key="notfound"
         path={config.routes.notFound}

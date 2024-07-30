@@ -6,11 +6,18 @@ import axios from "axios";
 export const ApiOrder = () => {
   const [loading, setLoading] = useState(false);
 
-  const apiGetOrder = async () => {
+  interface GetOrderProps {
+    AccountId?: string;
+    page?: number;
+    size?: number;
+    CreateDate?: string | null;
+    CompletedDate?: string | null;
+  }
+
+  const apiGetOrder = async (params: GetOrderProps) => {
     setLoading(true);
     try {
-      const response = await axiosPublic.get(ORDER);
-
+      const response = await axiosPublic.get(ORDER, { params });
       return response;
 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -25,11 +32,6 @@ export const ApiOrder = () => {
     }
   };
 
-  interface GetOrderProps {
-    AccountId: string;
-    page: number;
-    size: number;
-  }
   const apiGetOrderById = async (params: GetOrderProps) => {
     setLoading(true);
 

@@ -10,6 +10,7 @@ import { ApiOrder } from "../../../../../../api/services/apiOrder";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import ModalCustomerTransaction from "./PopupCustomer/CustomerTransactionDetail";
 import { Dropdown, MenuProps, Space, Table, type TableProps } from "antd";
+import { useParams } from "react-router-dom";
 
 type ColumnsType<T> = TableProps<T>["columns"];
 const CustomerTransaction: React.FC = () => {
@@ -20,16 +21,13 @@ const CustomerTransaction: React.FC = () => {
   const [orderIds, setOrderIds] = useState<string[]>([]);
   const [invoiceCodes, setInvoiceCodes] = useState<Record<string, string>>({});
   const [selectData, setSelectData] = useState<TransactionProps>();
-
+  const { id } = useParams<{ id: string }>();
   //paginate
   const pageSize = 20;
   const [pagination, setPagination] = useState({
     current: 1,
     pageSize: pageSize,
   });
-
-  const loginInfoString = localStorage.getItem("loginInfo");
-  const auth = loginInfoString ? JSON.parse(loginInfoString) : null;
 
   //status color
   const getStatusStyles = (status: string) => {
@@ -86,7 +84,6 @@ const CustomerTransaction: React.FC = () => {
   const { apiUserTransaction, loading } = ApiTransaction();
   const { apiOrderId } = ApiOrder();
   const fetchUserTransaction = async () => {
-    const id: string = auth?.data.id;
     try {
       if (id) {
         const params = {

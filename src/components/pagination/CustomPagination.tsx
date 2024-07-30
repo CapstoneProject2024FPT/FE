@@ -1,5 +1,5 @@
 import React from "react";
-import Pagination from "@mui/material/Pagination";
+import { Pagination } from "@mui/material";
 import Stack from "@mui/material/Stack";
 
 interface PaginationInterface {
@@ -10,7 +10,7 @@ interface PaginationInterface {
   sibling?: number;
 }
 
-const PaginationUser: React.FC<PaginationInterface> = ({
+const CustomPagination: React.FC<PaginationInterface> = ({
   totalPosts,
   postsPerPage,
   currentPage,
@@ -40,4 +40,4 @@ const PaginationUser: React.FC<PaginationInterface> = ({
   );
 };
 
-export default PaginationUser;
+export default CustomPagination;

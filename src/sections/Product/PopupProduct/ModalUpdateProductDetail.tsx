@@ -30,6 +30,7 @@ interface UpdateProductForm {
   sellingPrice: number;
   brandId: string;
   timeWarranty: number;
+  monthWarrantyNumber: number;
 }
 interface ModalProduct {
   productData: ProductDetailProps | undefined;
@@ -46,6 +47,9 @@ const ModalProductDetailPopup: React.FC<ModalProduct> = ({
 }) => {
   const minTimeWarranty = 1;
   const maxTimeWarranty = 3;
+
+  const minTimeMonthWarranty = 3;
+  const maxTimeMonthWarranty = 6;
   const { apiUpdateMachineryDetail } = MachineryApi();
   const { getBrand } = BrandApi();
   const { apiGetOrigin } = ApiOrigin();
@@ -97,6 +101,16 @@ const ModalProductDetailPopup: React.FC<ModalProduct> = ({
       .min(minTimeWarranty, `Thời gian bảo trì lớn hơn ${minTimeWarranty}`)
       .max(maxTimeWarranty, `Thời gian bảo trì nhỏ hơn ${maxTimeWarranty}`)
       .required("Thời gian bảo trì là bắt buộc"),
+    monthWarrantyNumber: Yup.number()
+      .min(
+        minTimeMonthWarranty,
+        `Thời gian bảo trì lớn hơn ${minTimeMonthWarranty}`
+      )
+      .max(
+        maxTimeMonthWarranty,
+        `Thời gian bảo trì nhỏ hơn ${maxTimeMonthWarranty}`
+      )
+      .required("Thời gian bảo trì là bắt buộc"),
   });
 
   const defaultValues: UpdateProductForm = {
@@ -107,6 +121,7 @@ const ModalProductDetailPopup: React.FC<ModalProduct> = ({
     sellingPrice: productData?.sellingPrice || 0,
     brandId: productData?.brand?.id || "",
     timeWarranty: productData?.timeWarranty || 0,
+    monthWarrantyNumber: productData?.monthWarrantyNumber || 0,
   };
 
   const methods = useForm<UpdateProductForm>({
@@ -226,6 +241,17 @@ const ModalProductDetailPopup: React.FC<ModalProduct> = ({
                         min: minTimeWarranty,
                         max: maxTimeWarranty,
                       },
+                    }}
+                  />
+                  <RHFTextField
+                    name="monthWarrantyNumber"
+                    label="Số tháng bảo trì định kì"
+                    autoFocus
+                    InputProps={{
+                      endAdornment: (
+                        <InputAdornment position="end">Tháng</InputAdornment>
+                      ),
+                      type: "number",
                     }}
                   />
                 </Stack>

@@ -35,7 +35,9 @@ import { toast } from "react-toastify";
 import { useAddress } from "../../../zustand/useAddress";
 import config from "../../../configs";
 import { useLocation, useNavigate } from "react-router-dom";
-import emailjs from "@emailjs/browser";
+import { handleSendEmail } from "../../../utils/sendEmail";
+import { useAuthContext } from "../../../context/AuthContext";
+
 
 // ----------------------------------------------------------------------
 
@@ -47,9 +49,6 @@ const PAYMENT_OPTIONS: PaymentOption[] = [
   },
 ];
 
-// interface QueryParams {
-//   [key: string]: string;
-// }
 type FormValuesProps = {
   payment: string;
 };
@@ -64,6 +63,8 @@ const CheckoutPayment: React.FC<checkoutPaymentProps> = ({
 }) => {
   const { total } = useCheckout();
   const { address } = useAddress();
+  const { authUser } = useAuthContext();
+
   const location = useLocation();
   const navigate = useNavigate();
   //api
@@ -78,19 +79,18 @@ const CheckoutPayment: React.FC<checkoutPaymentProps> = ({
     machineryId: cart.id,
     quantity: cart.currentQuantities,
     sellingPrice: cart.sellingPrice,
+    stockPrice: cart.sellingPrice,
   }));
-  let email: string;
-  let username: string;
+  let email: string = "";
+  let username: string = "";
+  let isSucess: boolean = false;
   //vnreturn
   useEffect(() => {
     const queryParams = new URLSearchParams(location.search);
     const transactionId = queryParams.get("vnp_TransactionStatus");
 
-    console.log(transactionId);
-
     const handleTransactionStatus = async () => {
       const id = sessionStorage.getItem("paymmentID");
-      console.log(id, "payment");
 
       if (transactionId === "00" && id) {
         const params = { status: "SUCCESS" };
@@ -109,7 +109,9 @@ const CheckoutPayment: React.FC<checkoutPaymentProps> = ({
 
           if (response.status === 200) {
             navigate(config.routes.paymentSuccessful);
-            sendSuccessEmail();
+            //handle send email
+            isSucess = true
+            handleSendEmail(isSucess, email, username);
           }
         } catch (error) {
           console.error("Error updating payment status:", error);
@@ -134,7 +136,6 @@ const CheckoutPayment: React.FC<checkoutPaymentProps> = ({
     if (transactionId) {
       handleTransactionStatus();
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [location, navigate]);
 
   //payment
@@ -160,10 +161,8 @@ const CheckoutPayment: React.FC<checkoutPaymentProps> = ({
 
   const onSubmit = async (data: FormValuesProps) => {
     try {
-      if (address) {
+      if (address && authUser) {
         const params = {
-          totalAmount: total,
-          finalAmount: total,
           description: note,
           machineryList: machineList,
           addressId: address.id,
@@ -172,13 +171,18 @@ const CheckoutPayment: React.FC<checkoutPaymentProps> = ({
 
         if (response.status === 200) {
           //api vnpay
+          sessionStorage.setItem("OrderId", response.data);
+
           if (data.payment === PaymentTypeProps.VNPAY) {
             const paramPayment: paymentProps = {
               orderId: response.data,
               amount: total,
               callbackUrl: window.location.href,
               paymentType: "VNPAY",
+              accountId: authUser,
             };
+
+            console.log(paramPayment);
 
             const responsePayment = await apiPayment(paramPayment);
             sessionStorage.setItem(
@@ -189,7 +193,8 @@ const CheckoutPayment: React.FC<checkoutPaymentProps> = ({
             if (responsePayment.status === 200) {
               window.location.href = responsePayment.data.url;
             } else {
-              console.error("Khởi tạo vnpay lỗi", responsePayment);
+              navigate(config.routes.paymentFailure);
+              toast.error("Khởi tạo vnpay lỗi");
             }
           } else {
             navigate(config.routes.home);
@@ -203,24 +208,6 @@ const CheckoutPayment: React.FC<checkoutPaymentProps> = ({
       toast.error("Xảy ra lỗi trong quá trình tạo đơn hàng");
       console.error(error);
     }
-  };
-
-  const sendSuccessEmail = () => {
-    const templateParams = {
-      from_name: "Admin SMMMS", // You can customize this field
-      from_email: "ad.smmms.gsu24se44@gmail.com",
-      to_email: email,
-      message: `Chào, ${username} bạn đã thanh toán đơn hàng thành công!`,
-      reply_to: "NoReply",
-      user_name: username,
-    };
-
-    emailjs.send(
-      "service_gm8vuij", // Replace with your EmailJS service ID
-      "template_x9vsymt", // Replace with your EmailJS template ID
-      templateParams,
-      "plAq1eN98XuLLSYlh" // Replace with your EmailJS user ID
-    );
   };
 
   return (

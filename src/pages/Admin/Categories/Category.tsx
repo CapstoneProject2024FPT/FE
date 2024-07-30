@@ -6,7 +6,7 @@ import TableCategory from "../../../sections/Category/TableCategory";
 
 const Category: React.FC = () => {
   return (
-    <Container>
+    <Container sx={{ width: "100% !important", maxWidth: "none !important" }}>
       <HeaderBreadcrumbs
         heading="Tất cả loại máy"
         links={[

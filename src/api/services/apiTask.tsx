@@ -1,5 +1,5 @@
 import { axiosPublic } from "../axiosInstance";
-import { TASK, TASK_ID } from "../pathApiName";
+import { TASK, TASK_ID, TASK_STAFF } from "../pathApiName";
 import { useState } from "react";
 import axios from "axios";
 import { DeliveryPropsPost } from "../../models/task";
@@ -7,6 +7,9 @@ import { DeliveryPropsPost } from "../../models/task";
 export const ApiTask = () => {
   const [loading, setLoading] = useState(false);
 
+  interface TaskProps {
+    OrderId?: string;
+  }
   const apiGetTask = async () => {
     setLoading(true);
     try {
@@ -71,5 +74,52 @@ export const ApiTask = () => {
     }
   };
 
-  return { apiGetTask, loading, apiCreateTask, apiUpdateTask };
+  interface TaskProps {
+    OrderId?: string;
+  }
+  const apiGetTaskStaff = async (params: TaskProps) => {
+    setLoading(true);
+    try {
+      const response = await axiosPublic.get(TASK, { params });
+
+      return response;
+
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+      if (axios.isAxiosError(error) && error.response) {
+        return error.response.data;
+      } else {
+        return { statusCode: 500, Error: "Lỗi lấy dữ liệu" };
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const apiTaskStaff = async () => {
+    setLoading(true);
+    try {
+      const response = await axiosPublic.get(TASK_STAFF);
+
+      return response;
+
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+      if (axios.isAxiosError(error) && error.response) {
+        return error.response.data;
+      } else {
+        return { statusCode: 500, Error: "Lỗi lấy dữ liệu" };
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+  return {
+    apiGetTask,
+    loading,
+    apiCreateTask,
+    apiUpdateTask,
+    apiGetTaskStaff,
+    apiTaskStaff,
+  };
 };
