@@ -118,12 +118,12 @@ const MenuSideBars: MenuSideBar[] = [
   },
   {
     label: <Link to={config.adminRoutes.rank}>Hạng mức</Link>,
-    key: "rank",
+    key: config.adminRoutes.rank,
     icon: <TransactionOutlined />,
   },
   {
     label: <Link to={config.adminRoutes.task}>Nhiệm vụ</Link>,
-    key: "task",
+    key: config.adminRoutes.task,
     icon: <Iconify icon={"mingcute:task-2-fill"} />,
   },
 ];

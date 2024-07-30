@@ -27,7 +27,7 @@ const LayoutAdmin: React.FC = () => {
         style={{
           background: "white",
           borderRight: "1px solid rgba(132, 136, 132, 0.3 )",
-          transform: " scaleY(1)",
+          transform: "scaleY(1)",
         }}
       >
         <div className="demo-logo-vertical" style={{ height: "auto" }}>
@@ -35,7 +35,7 @@ const LayoutAdmin: React.FC = () => {
         </div>
         <Menu
           mode="inline"
-          defaultSelectedKeys={["/dashboard"]}
+          defaultSelectedKeys={[location.pathname]}
           items={menuItems}
         />
       </Sider>

@@ -136,7 +136,6 @@ const TableProduct: React.FC = () => {
         ? moment(item.createDate).format("DD/MM/YYYY") === selectedDate
         : true
     );
-    console.log(filteredRows)
   const items: MenuProps["items"] = [
     {
       key: "1",
