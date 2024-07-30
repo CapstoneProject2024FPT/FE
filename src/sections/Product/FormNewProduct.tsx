@@ -250,6 +250,18 @@ export default function ProductNewEditForm() {
     remove(index);
   };
 
+  //patse
+  const handlePaste = (event: React.ClipboardEvent<HTMLDivElement>) => {
+    const clipboardData = event.clipboardData.getData("Text");
+    const rows = clipboardData
+      .split("\n")
+      .filter((row: string) => row.trim() !== "");
+    const newFields = rows.map((row: string, index: number) => {
+      const columns = row.split("\t");
+      return { id: index + 1, name: columns[0], value: columns[1] };
+    });
+    setValue("specificationList", newFields);
+  };
   // modal add component
   const handleOpenModal = () => {
     setShowModal(true);
@@ -293,6 +305,7 @@ export default function ProductNewEditForm() {
               <div>
                 <LabelStyle>Thông số kỹ thuật</LabelStyle>
                 <div
+                  onPaste={handlePaste}
                   style={{
                     maxHeight: "500px",
                     overflow: "auto",
