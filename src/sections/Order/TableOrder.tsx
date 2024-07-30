@@ -1,8 +1,8 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useEffect, useState } from "react";
 import type { MenuProps } from "antd";
 import type { TableProps, TablePaginationConfig } from "antd";
 import { DownOutlined } from "@ant-design/icons";
-import { Table, Space, Dropdown } from "antd";
 import {
   OrderCount,
   OrderProps,
@@ -10,6 +10,7 @@ import {
   statusMapping,
   StatusType,
 } from "../../models/order";
+import { Table, Space, Dropdown, DatePicker } from "antd";
 import { ApiOrder } from "../../api/services/apiOrder";
 import { toast } from "react-toastify";
 import { formatDateFunc, formatMoney } from "../../utils/fn";
@@ -19,7 +20,7 @@ import ModalDeliveryTask from "./OrderModal/ModalDeliveryTask";
 import { Box, Card, Divider, Stack, Typography } from "@mui/material";
 import { ApiAdminDashboard } from "../../api/services/apiAdminDashboard";
 import SquareIcon from "@mui/icons-material/Square";
-
+import moment from "moment";
 type ColumnsType<T> = TableProps<T>["columns"];
 
 const defaultPageSize = 10;
@@ -31,6 +32,12 @@ const TableOrder: React.FC = () => {
     pageSize: defaultPageSize,
     total: 0,
   });
+  const [selectedCreateDate, setSelectedCreateDate] = useState<string | null>(
+    null
+  );
+  const [selectedCompletedDate, setSelectedCompletedDate] = useState<
+    string | null
+  >(null);
 
   const [open, setOpen] = useState<boolean>(false);
   const [openCancelPopup, setOpenCancelPopup] = useState<boolean>(false);
@@ -90,12 +97,16 @@ const TableOrder: React.FC = () => {
   };
   const fetchOrder = async (
     page: number = 1,
-    pageSize: number = defaultPageSize
+    pageSize: number = defaultPageSize,
+    createDate = selectedCreateDate,
+    CompletedDate = selectedCompletedDate
   ) => {
     try {
       const params = {
         size: pageSize,
         page: page,
+        createDate: createDate,
+        CompletedDate: CompletedDate,
       };
       const response = await apiGetOrder(params);
 
@@ -148,6 +159,40 @@ const TableOrder: React.FC = () => {
     onChange: handleTableChange,
   };
 
+  const handleCreateDateChange = (
+    _date: any,
+    dateString: string | string[]
+  ) => {
+    let formattedDate = Array.isArray(dateString) ? dateString[0] : dateString;
+    if (formattedDate) {
+      formattedDate = moment(formattedDate, "DD/MM/YYYY").format("YYYY/MM/DD");
+    }
+    setSelectedCreateDate(formattedDate);
+    fetchOrder(
+      pagination.current,
+      pagination.pageSize,
+      formattedDate,
+      selectedCompletedDate
+    );
+  };
+
+  const handleCompletedDateChange = (
+    _date: any,
+    dateString: string | string[]
+  ) => {
+    let formattedDate = Array.isArray(dateString) ? dateString[0] : dateString;
+    if (formattedDate) {
+      formattedDate = moment(formattedDate, "DD/MM/YYYY").format("YYYY/MM/DD");
+    }
+    setSelectedCompletedDate(formattedDate);
+    fetchOrder(
+      pagination.current,
+      pagination.pageSize,
+      selectedCreateDate,
+      formattedDate
+    );
+  };
+  const dateFormatList = ["DD/MM/YYYY", "DD/MM/YY", "DD-MM-YYYY", "DD-MM-YY"];
   const items: MenuProps["items"] = [
     {
       key: "1",
@@ -165,28 +210,88 @@ const TableOrder: React.FC = () => {
 
   const columns: ColumnsType<OrderProps> = [
     {
-      title: "Mã đơn hàng",
+      title: (
+        <div
+          style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}
+        >
+          Mã đơn hàng
+        </div>
+      ),
       dataIndex: "invoiceCode",
       width: "20%",
+      align: "center",
     },
     {
-      title: "Ngày Tạo",
+      title: (
+        <div
+          style={{
+            textAlign: "center",
+            fontSize: "16px",
+            fontWeight: "bold",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          Ngày tạo
+          <DatePicker
+            onChange={handleCreateDateChange}
+            style={{ marginLeft: 8, width: "50%" }}
+            format={dateFormatList}
+            placeholder="Ngày tạo"
+          />
+        </div>
+      ),
       dataIndex: "createDate",
       render: (createDate) => formatDateFunc.formatDate(createDate),
+      align: "center",
     },
     {
-      title: "Ngày hoàn thành",
+      title: (
+        <div
+          style={{
+            textAlign: "center",
+            fontSize: "16px",
+            fontWeight: "bold",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          Ngày hoàn thành
+          <DatePicker
+            onChange={handleCompletedDateChange}
+            style={{ marginLeft: 8, width: "50%" }}
+            format={dateFormatList}
+            placeholder="Ngày hoàn thành"
+          />
+        </div>
+      ),
       dataIndex: "completedDate",
       render: (completedDate) =>
         completedDate ? formatDateFunc.formatDate(completedDate) : "--------",
+      align: "center",
     },
     {
-      title: "Tổng thành tiền",
+      title: (
+        <div
+          style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}
+        >
+          Tổng thành tiền
+        </div>
+      ),
       dataIndex: "totalAmount",
       render: (totalAmount) => formatMoney(totalAmount),
+      align: "center",
     },
     {
-      title: "Trạng Thái",
+      title: (
+        <div
+          style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}
+        >
+          Trạng Thái
+        </div>
+      ),
       dataIndex: "status",
       render: (status: string) => {
         const defaultStatus = "Đang chờ xác nhận";
@@ -209,9 +314,16 @@ const TableOrder: React.FC = () => {
           </div>
         );
       },
+      align: "center",
     },
     {
-      title: "Hành Động",
+      title: (
+        <div
+          style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}
+        >
+          Hành Động
+        </div>
+      ),
       key: "operation",
       render: (record) => (
         <Space size="middle">
@@ -255,6 +367,7 @@ const TableOrder: React.FC = () => {
           </Dropdown>
         </Space>
       ),
+      align: "center",
     },
   ];
 

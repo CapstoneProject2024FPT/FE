@@ -12,7 +12,7 @@ import { BlogNewPostForm } from "../../../sections/Blog";
 
 export default function BlogNewPost() {
   return (
-    <Container>
+    <Container sx={{ width: "100% !important", maxWidth: "none !important" }}>
       <HeaderBreadcrumbs
         heading="Thêm mới tin tức"
         links={[

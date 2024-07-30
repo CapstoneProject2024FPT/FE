@@ -130,13 +130,13 @@ const TableCategoryComponent: React.FC = () => {
 
   const columns: ColumnsType<GetCategoryProps> = [
     {
-      title: "Loại máy",
+      title: <div style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}>Loại máy</div>,
       dataIndex: "name",
       sorter: (a, b) => a.name.length - b.name.length,
       width: "40%",
     },
     {
-      title: "Hành Động",
+      title: <div style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}>Hành Động</div>,
       key: "operation",
       render: (record) => (
         <Space size="middle">
@@ -160,6 +160,7 @@ const TableCategoryComponent: React.FC = () => {
           </Dropdown>
         </Space>
       ),
+      align: "center",
     },
   ];
 
@@ -183,6 +184,11 @@ const TableCategoryComponent: React.FC = () => {
         pagination={customPagination}
         loading={loading}
         onChange={handleTableChange}
+        locale={{
+          triggerDesc: "Sắp xếp giảm dần",
+          triggerAsc: "Sắp xếp tăng dần",
+          cancelSort: "Huỷ sắp xếp",
+        }}
       />
       {open && (
         <ModalCategoryPopupComponent

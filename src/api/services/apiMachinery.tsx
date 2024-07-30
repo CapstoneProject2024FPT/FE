@@ -7,6 +7,7 @@ import {
   MACHINERY_HOME_PRIORITY,
   MACHINERY_ID,
   MACHINERY_LIST,
+  MACHINERY_LIST_NOPAGING,
   MACHINERY_STATUS,
 } from "../pathApiName";
 import { useState } from "react";
@@ -101,6 +102,21 @@ export const MachineryApi = () => {
     setLoading(true);
     try {
       const response = await axiosPublic.get(MACHINERY_LIST, { params });
+      return response;
+    } catch (error) {
+      if (axios.isAxiosError(error) && error.response) {
+        return error.response.data;
+      } else {
+        return { statusCode: 500, Error: "Gặp vấn đề quá trình lấy dư liệu" };
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+  const apiGetMachineNoPaging = async () => {
+    setLoading(true);
+    try {
+      const response = await axiosPublic.get(MACHINERY_LIST_NOPAGING);
       return response;
     } catch (error) {
       if (axios.isAxiosError(error) && error.response) {
@@ -292,5 +308,6 @@ export const MachineryApi = () => {
     apiGetMachineAtHome,
     apiPostMachineComponent,
     apiUpdateStatus,
+    apiGetMachineNoPaging
   };
 };
