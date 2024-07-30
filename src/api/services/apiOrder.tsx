@@ -18,7 +18,6 @@ export const ApiOrder = () => {
     setLoading(true);
     try {
       const response = await axiosPublic.get(ORDER, { params });
-
       return response;
 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
