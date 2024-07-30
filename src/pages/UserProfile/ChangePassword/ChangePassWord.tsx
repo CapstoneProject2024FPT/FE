@@ -7,7 +7,6 @@ import { Stack, Card, Typography } from "@mui/material";
 import { LoadingButton } from "@mui/lab";
 // components
 import { FormProvider, RHFTextField } from "../../../components/hook-form";
-import { patternValidate } from "../../../utils/pattern";
 import { CustomerApi } from "../../../api/services/apiUser";
 import { toast } from "react-toastify";
 
@@ -33,11 +32,7 @@ export default function UserChangePassword() {
     newPassword: Yup.string()
       .min(6, "Tồi thiểu phải dc 6 kí tự")
       .max(19, "Tồi đa phải dc 19 kí tự")
-      .required("Mật khấu mới là cần thiết")
-      .matches(
-        patternValidate.password,
-        "Mật khẩu từ 7-19 kí tự, có tối thiểu một số, một chữ và một kí tự đặc biệt"
-      ),
+      .required("Mật khấu mới là cần thiết"),
     confirmNewPassword: Yup.string()
       .required("Bắt buộc nhập")
       .oneOf([Yup.ref("newPassword")], "Phải giống với mật khẩu mới"),

@@ -3,13 +3,22 @@ import type { MenuProps } from "antd";
 import type { TableProps, TablePaginationConfig } from "antd";
 import { DownOutlined } from "@ant-design/icons";
 import { Table, Space, Dropdown } from "antd";
-import { OrderProps, statusMapping, StatusType } from "../../models/order";
+import {
+  OrderCount,
+  OrderProps,
+  OrderStatus,
+  statusMapping,
+  StatusType,
+} from "../../models/order";
 import { ApiOrder } from "../../api/services/apiOrder";
 import { toast } from "react-toastify";
 import { formatDateFunc, formatMoney } from "../../utils/fn";
 import ModalDetailOrder from "./OrderModal/ModalDetailOrder";
 import ModalCancelOrder from "./OrderModal/ModalCancelOrder";
 import ModalDeliveryTask from "./OrderModal/ModalDeliveryTask";
+import { Box, Card, Divider, Stack, Typography } from "@mui/material";
+import { ApiAdminDashboard } from "../../api/services/apiAdminDashboard";
+import SquareIcon from "@mui/icons-material/Square";
 
 type ColumnsType<T> = TableProps<T>["columns"];
 
@@ -27,8 +36,10 @@ const TableOrder: React.FC = () => {
   const [openCancelPopup, setOpenCancelPopup] = useState<boolean>(false);
   const [openTaskPopup, setOpenTaskPopup] = useState<boolean>(false);
   const [selectedData, setSelectedData] = useState<OrderProps | null>(null);
+  const [orderCounts, setOrderCounts] = useState<OrderCount>();
 
   const { loading, apiGetOrder } = ApiOrder();
+  const { apiGetCountOrders } = ApiAdminDashboard();
 
   const handleActionDetail = (record: OrderProps) => {
     setOpen(!open);
@@ -73,7 +84,10 @@ const TableOrder: React.FC = () => {
         return { backgroundColor: "transparent", color: "black" };
     }
   };
-
+  const fetchOrderCount = async () => {
+    const response = await apiGetCountOrders();
+    setOrderCounts(response.data);
+  };
   const fetchOrder = async (
     page: number = 1,
     pageSize: number = defaultPageSize
@@ -99,6 +113,7 @@ const TableOrder: React.FC = () => {
 
   useEffect(() => {
     fetchOrder(pagination.current, pagination.pageSize);
+    fetchOrderCount();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -243,8 +258,61 @@ const TableOrder: React.FC = () => {
     },
   ];
 
+  //Color mapping order
+  const colorMapping: Record<OrderStatus, string> = {
+    Paid: "#2196F3",
+    UnPaid: "grey",
+    Completed: "green",
+    Canceled: "red",
+    Delivery: "yellow",
+  };
+
+  const orderStatusValues: OrderStatus[] = [
+    "Paid",
+    "UnPaid",
+    "Completed",
+    "Canceled",
+    "Delivery",
+  ];
+
   return (
-    <>
+    <React.Fragment>
+      <Box sx={{ display: "flex", flexDirection: "row" }}>
+        <Card sx={{ p: 3, mb: 2, display: "flex", flexDirection: "row" }}>
+          {orderCounts?.ordersByStatus &&
+            Object.entries(orderCounts?.ordersByStatus).map(
+              ([status, count], index) => {
+                const statusName = (
+                  statusMapping.find((item) => item.id === status) || {}
+                ).name;
+                const statusColor = orderStatusValues.includes(
+                  status as OrderStatus
+                )
+                  ? colorMapping[status as OrderStatus]
+                  : "transparent";
+
+                return (
+                  <Box>
+                    <Stack display="flex" direction="row" spacing={1}>
+                      <SquareIcon
+                        sx={{
+                          color: statusColor,
+                          mr: 1,
+                          width: "15px",
+                          height: "15px",
+                        }}
+                      />
+                      <Typography key={index}>
+                        {statusName}: {count}
+                      </Typography>
+                      <Divider orientation="vertical" flexItem sx={{ mr: 8 }} />
+                    </Stack>
+                  </Box>
+                );
+              }
+            )}
+        </Card>
+      </Box>
       <Table
         columns={columns}
         rowKey={(record) => record.orderId}
@@ -280,7 +348,7 @@ const TableOrder: React.FC = () => {
           openTaskPopup={openTaskPopup}
         />
       )}
-    </>
+    </React.Fragment>
   );
 };
 

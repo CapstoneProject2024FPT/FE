@@ -1,5 +1,5 @@
 import { axiosPublic } from "../axiosInstance";
-import { ADMIN_DASHBOARD } from "../pathApiName";
+import { ADMIN_DASHBOARD, COUNTORDERS } from "../pathApiName";
 import { useState } from "react";
 import axios from "axios";
 
@@ -24,5 +24,21 @@ export const ApiAdminDashboard = () => {
     }
   };
 
-  return { apiGetData, loading };
+  const apiGetCountOrders = async () => {
+    setLoading(true);
+    try {
+      const response = await axiosPublic.get(COUNTORDERS);
+      return response;
+    } catch (error) {
+      if (axios.isAxiosError(error) && error.response) {
+        return error.response.data;
+      } else {
+        return { statusCode: 500, Error: "Gặp vấn đề quá trình lấy dư liệu" };
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return { apiGetData, loading, apiGetCountOrders };
 };
