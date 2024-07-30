@@ -22,8 +22,12 @@ const TablePeriodicWarranty: React.FC = () => {
   });
   const { loading, apiGetWarantyPeriodic } = ApiWarranty();
   const navigate = useNavigate();
-  const [selectedCreateDate, setSelectedCreateDate] = useState<string | null>(null);
-  const [selectedCompletedDate, setSelectedCompletedDate] = useState<string | null>(null);
+  const [selectedCreateDate, setSelectedCreateDate] = useState<string | null>(
+    null
+  );
+  const [selectedCompletedDate, setSelectedCompletedDate] = useState<
+    string | null
+  >(null);
 
   const handleActionDetail = (record: WarrantyProps) => {
     navigate(config.adminRoutes.maintenanceDetail.replace(":id", record.id));
@@ -70,27 +74,38 @@ const TablePeriodicWarranty: React.FC = () => {
     showQuickJumper: false,
   };
 
-  const handleCreateDateChange = (date: any, dateString: string | string[]) => {
-    setSelectedCreateDate(Array.isArray(dateString) ? dateString[0] : dateString);
+  const handleCreateDateChange = (
+    _date: any,
+    dateString: string | string[]
+  ) => {
+    setSelectedCreateDate(
+      Array.isArray(dateString) ? dateString[0] : dateString
+    );
   };
 
-  const handleCompletedDateChange = (date: any, dateString: string | string[]) => {
-    setSelectedCompletedDate(Array.isArray(dateString) ? dateString[0] : dateString);
+  const handleCompletedDateChange = (
+    _date: any,
+    dateString: string | string[]
+  ) => {
+    setSelectedCompletedDate(
+      Array.isArray(dateString) ? dateString[0] : dateString
+    );
   };
 
   const dateFormatList = ["DD/MM/YYYY", "DD/MM/YY", "DD-MM-YYYY", "DD-MM-YY"];
 
   const filteredRows = periodicWarranty
-  ?.filter((item) =>
-    selectedCreateDate
-      ? moment(item.startDate).format("DD/MM/YYYY") === selectedCreateDate
-      : true
-  )
-  ?.filter((item) =>
-    selectedCompletedDate
-      ? moment(item.completionDate).format("DD/MM/YYYY") === selectedCompletedDate
-      : true
-  )
+    ?.filter((item) =>
+      selectedCreateDate
+        ? moment(item.startDate).format("DD/MM/YYYY") === selectedCreateDate
+        : true
+    )
+    ?.filter((item) =>
+      selectedCompletedDate
+        ? moment(item.completionDate).format("DD/MM/YYYY") ===
+          selectedCompletedDate
+        : true
+    );
   const items: MenuProps["items"] = [
     {
       key: "1",
@@ -100,12 +115,24 @@ const TablePeriodicWarranty: React.FC = () => {
 
   const columns: ColumnsType<WarrantyProps> = [
     {
-      title: <div style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}>Thứ tự</div>,
+      title: (
+        <div
+          style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}
+        >
+          Thứ tự
+        </div>
+      ),
       dataIndex: "key",
       align: "center",
     },
     {
-      title: <div style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}>Loại Bảo Hành</div>,
+      title: (
+        <div
+          style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}
+        >
+          Loại Bảo Hành
+        </div>
+      ),
       dataIndex: "type",
       render: (type) => (type === "Periodic" ? "Định kì" : "Yêu cầu"),
       align: "center",
@@ -162,12 +189,24 @@ const TablePeriodicWarranty: React.FC = () => {
       align: "center",
     },
     {
-      title: <div style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}>Trạng thái</div>,
+      title: (
+        <div
+          style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}
+        >
+          Trạng thái
+        </div>
+      ),
       dataIndex: "status",
       align: "center",
     },
     {
-      title: <div style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}>Hành Động</div>,
+      title: (
+        <div
+          style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}
+        >
+          Hành Động
+        </div>
+      ),
       key: "operation",
       render: (record) => (
         <Space size="middle">

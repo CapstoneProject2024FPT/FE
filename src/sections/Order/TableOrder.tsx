@@ -22,8 +22,12 @@ const TableOrder: React.FC = () => {
     pageSize: defaultPageSize,
     total: 0,
   });
-  const [selectedCreateDate, setSelectedCreateDate] = useState<string | null>(null);
-  const [selectedCompletedDate, setSelectedCompletedDate] = useState<string | null>(null);
+  const [selectedCreateDate, setSelectedCreateDate] = useState<string | null>(
+    null
+  );
+  const [selectedCompletedDate, setSelectedCompletedDate] = useState<
+    string | null
+  >(null);
 
   const [open, setOpen] = useState<boolean>(false);
   const [openCancelPopup, setOpenCancelPopup] = useState<boolean>(false);
@@ -135,12 +139,22 @@ const TableOrder: React.FC = () => {
     onChange: handleTableChange,
   };
 
-  const handleCreateDateChange = (date: any, dateString: string | string[]) => {
-    setSelectedCreateDate(Array.isArray(dateString) ? dateString[0] : dateString);
+  const handleCreateDateChange = (
+    _date: any,
+    dateString: string | string[]
+  ) => {
+    setSelectedCreateDate(
+      Array.isArray(dateString) ? dateString[0] : dateString
+    );
   };
 
-  const handleCompletedDateChange = (date: any, dateString: string | string[]) => {
-    setSelectedCompletedDate(Array.isArray(dateString) ? dateString[0] : dateString);
+  const handleCompletedDateChange = (
+    _date: any,
+    dateString: string | string[]
+  ) => {
+    setSelectedCompletedDate(
+      Array.isArray(dateString) ? dateString[0] : dateString
+    );
   };
   const dateFormatList = ["DD/MM/YYYY", "DD/MM/YY", "DD-MM-YYYY", "DD-MM-YY"];
   const filteredRows = orders
@@ -151,7 +165,8 @@ const TableOrder: React.FC = () => {
     )
     .filter((item) =>
       selectedCompletedDate
-        ? moment(item.completedDate).format("DD/MM/YYYY") === selectedCompletedDate
+        ? moment(item.completedDate).format("DD/MM/YYYY") ===
+          selectedCompletedDate
         : true
     );
   const items: MenuProps["items"] = [
@@ -171,7 +186,13 @@ const TableOrder: React.FC = () => {
 
   const columns: ColumnsType<OrderProps> = [
     {
-      title: <div style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}>Mã đơn hàng</div>,
+      title: (
+        <div
+          style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}
+        >
+          Mã đơn hàng
+        </div>
+      ),
       dataIndex: "invoiceCode",
       width: "20%",
       align: "center",
@@ -228,13 +249,25 @@ const TableOrder: React.FC = () => {
       align: "center",
     },
     {
-      title: <div style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}>Tổng thành tiền</div>,
+      title: (
+        <div
+          style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}
+        >
+          Tổng thành tiền
+        </div>
+      ),
       dataIndex: "totalAmount",
       render: (totalAmount) => formatMoney(totalAmount),
       align: "center",
     },
     {
-      title: <div style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}>Trạng Thái</div>,
+      title: (
+        <div
+          style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}
+        >
+          Trạng Thái
+        </div>
+      ),
       dataIndex: "status",
       render: (status: string) => {
         const defaultStatus = "Đang chờ xác nhận";
@@ -260,7 +293,13 @@ const TableOrder: React.FC = () => {
       align: "center",
     },
     {
-      title: <div style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}>Hành Động</div>,
+      title: (
+        <div
+          style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}
+        >
+          Hành Động
+        </div>
+      ),
       key: "operation",
       render: (record) => (
         <Space size="middle">

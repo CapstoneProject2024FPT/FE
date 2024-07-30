@@ -113,7 +113,7 @@ const TableBrand: React.FC = () => {
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     setQuery(e.target.value);
   };
-  const handleDateChange = (date: any, dateString: string | string[]) => {
+  const handleDateChange = (_date: any, dateString: string | string[]) => {
     setSelectedDate(Array.isArray(dateString) ? dateString[0] : dateString);
   };
   const dateFormatList = ["DD/MM/YYYY", "DD/MM/YY", "DD-MM-YYYY", "DD-MM-YY"];
@@ -137,14 +137,26 @@ const TableBrand: React.FC = () => {
   ];
   const columns: ColumnsType<brandTable> = [
     {
-      title: <div style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}>Thương hiệu máy</div>,
+      title: (
+        <div
+          style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}
+        >
+          Thương hiệu máy
+        </div>
+      ),
       dataIndex: "name",
       sorter: (a, b) => a.name.length - b.name.length,
       width: "20%",
       align: "center",
     },
     {
-      title: <div style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}>Hình ảnh</div>,
+      title: (
+        <div
+          style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}
+        >
+          Hình ảnh
+        </div>
+      ),
       dataIndex: "urlImage",
       render: (urlImage) => (
         <img src={urlImage} alt="Product Image" style={{ width: 100 }} />
@@ -155,7 +167,9 @@ const TableBrand: React.FC = () => {
       title: (
         <div
           style={{
-            textAlign: "center", fontSize: "16px", fontWeight: "bold",
+            textAlign: "center",
+            fontSize: "16px",
+            fontWeight: "bold",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
@@ -175,7 +189,13 @@ const TableBrand: React.FC = () => {
       align: "center",
     },
     {
-      title: <div style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}>Hành Động</div>,
+      title: (
+        <div
+          style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}
+        >
+          Hành Động
+        </div>
+      ),
       key: "operation",
       render: (record) => (
         <Space size="middle">

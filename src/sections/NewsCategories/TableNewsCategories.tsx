@@ -112,7 +112,7 @@ const TableNewsCategory: React.FC = () => {
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     setQuery(e.target.value);
   };
-  const handleDateChange = (date: any, dateString: string | string[]) => {
+  const handleDateChange = (_date: any, dateString: string | string[]) => {
     setSelectedDate(Array.isArray(dateString) ? dateString[0] : dateString);
   };
   const dateFormatList = ["DD/MM/YYYY", "DD/MM/YY", "DD-MM-YYYY", "DD-MM-YY"];
@@ -137,7 +137,13 @@ const TableNewsCategory: React.FC = () => {
   ];
   const columns: ColumnsType<NewsCategoryProps> = [
     {
-      title: <div style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}>Loại tin tức</div>,
+      title: (
+        <div
+          style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}
+        >
+          Loại tin tức
+        </div>
+      ),
       dataIndex: "name",
       sorter: (a, b) => a.name.length - b.name.length,
       width: "20%",
@@ -170,14 +176,26 @@ const TableNewsCategory: React.FC = () => {
       align: "center",
     },
     {
-      title: <div style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}>Trạng Thái</div>,
+      title: (
+        <div
+          style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}
+        >
+          Trạng Thái
+        </div>
+      ),
       dataIndex: "status",
       width: "20%",
       render: (status) => (status === "Active" ? "Khả dụng" : "Không khả dụng"),
       align: "center",
     },
     {
-      title: <div style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}>Hành Động</div>,
+      title: (
+        <div
+          style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}
+        >
+          Hành Động
+        </div>
+      ),
       key: "operation",
       render: (record) => (
         <Space size="middle">

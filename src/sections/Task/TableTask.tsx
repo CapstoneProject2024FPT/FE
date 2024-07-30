@@ -101,7 +101,7 @@ const TableTask: React.FC = () => {
         return { backgroundColor: "transparent", color: "black" };
     }
   };
-  const handleDateChange = (date: any, dateString: string | string[]) => {
+  const handleDateChange = (_date: any, dateString: string | string[]) => {
     setSelectedDate(Array.isArray(dateString) ? dateString[0] : dateString);
   };
   const dateFormatList = ["DD/MM/YYYY", "DD/MM/YY", "DD-MM-YYYY", "DD-MM-YY"];
@@ -124,7 +124,13 @@ const TableTask: React.FC = () => {
   ];
   const columns: ColumnsType<GetTaskProps> = [
     {
-      title: <div style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}>Loại công việc</div>,
+      title: (
+        <div
+          style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}
+        >
+          Loại công việc
+        </div>
+      ),
       dataIndex: "type",
       render: (type) => (type === "Delivery" ? "Giao Hàng" : "Bảo Trì"),
       align: "center",
@@ -155,13 +161,25 @@ const TableTask: React.FC = () => {
       align: "center",
     },
     {
-      title: <div style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}>Nhân viên</div>,
+      title: (
+        <div
+          style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}
+        >
+          Nhân viên
+        </div>
+      ),
       dataIndex: "staff",
       render: (staff) => staff.fullName,
       align: "center",
     },
     {
-      title: <div style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}>Trạng thái</div>,
+      title: (
+        <div
+          style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}
+        >
+          Trạng thái
+        </div>
+      ),
       dataIndex: "status",
       render: (status: string) => {
         const defaultStatus = "Đang Tiến Hành";
@@ -187,7 +205,13 @@ const TableTask: React.FC = () => {
       align: "center",
     },
     {
-      title: <div style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}>Hành Động</div>,
+      title: (
+        <div
+          style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}
+        >
+          Hành Động
+        </div>
+      ),
       key: "operation",
       render: (record) => (
         <Space size="middle">

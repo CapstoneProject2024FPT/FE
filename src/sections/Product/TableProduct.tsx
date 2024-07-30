@@ -133,14 +133,13 @@ const TableProduct: React.FC = () => {
     setQuery(e.target.value);
   };
 
-  const handleDateChange = (date: any, dateString: string | string[]) => {
+  const handleDateChange = (_date: any, dateString: string | string[]) => {
     setSelectedDate(Array.isArray(dateString) ? dateString[0] : dateString);
   };
 
   const dateFormatList = ["DD/MM/YYYY", "DD/MM/YY", "DD-MM-YYYY", "DD-MM-YY"];
 
-  const filteredRows = 
-  products
+  const filteredRows = products
     ?.filter((item) => item.name?.toLowerCase().includes(query.toLowerCase()))
     .filter((item) =>
       selectedDate
@@ -168,13 +167,25 @@ const TableProduct: React.FC = () => {
   ];
   const columns: ColumnsType<ProductAdmin> = [
     {
-      title: <div style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}>Tên máy</div>,
+      title: (
+        <div
+          style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}
+        >
+          Tên máy
+        </div>
+      ),
       dataIndex: "name",
       sorter: (a, b) => a.name.length - b.name.length,
       width: "20%",
     },
     {
-      title: <div style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}>Hình máy</div>,
+      title: (
+        <div
+          style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}
+        >
+          Hình máy
+        </div>
+      ),
       dataIndex: "image",
       render: (images) => (
         <img
@@ -194,13 +205,25 @@ const TableProduct: React.FC = () => {
       align: "center",
     },
     {
-      title: <div style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}>Số lượng</div>,
+      title: (
+        <div
+          style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}
+        >
+          Số lượng
+        </div>
+      ),
       dataIndex: "quantity",
       render: (quantity) => quantity.Available || 0,
       align: "center",
     },
     {
-      title: <div style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}>Độ ưu tiên</div>,
+      title: (
+        <div
+          style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}
+        >
+          Độ ưu tiên
+        </div>
+      ),
       dataIndex: "priority",
       render: (priority) => priority || 0,
       sorter: (a, b) => a.priority - b.priority,
@@ -215,10 +238,16 @@ const TableProduct: React.FC = () => {
       title: "Ngày tạo",
       dataIndex: "createDate",
       render: (createDate) => formatDateFunc.formatDate(createDate),
-      align: "center"
+      align: "center",
     },
     {
-      title: <div style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}>Hành Động</div>,
+      title: (
+        <div
+          style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}
+        >
+          Hành Động
+        </div>
+      ),
       key: "operation",
       render: (record) => (
         <Space size="middle">
@@ -266,7 +295,7 @@ const TableProduct: React.FC = () => {
 
   return (
     <>
-      <div style={{ display: "flex"}}>
+      <div style={{ display: "flex" }}>
         <Search
           placeholder="Nhập từ khoá"
           onChange={handleSearch}

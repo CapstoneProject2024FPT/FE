@@ -104,7 +104,7 @@ const TableComponent: React.FC = () => {
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     setQuery(e.target.value);
   };
-  const handleDateChange = (date: any, dateString: string | string[]) => {
+  const handleDateChange = (_date: any, dateString: string | string[]) => {
     setSelectedDate(Array.isArray(dateString) ? dateString[0] : dateString);
   };
   const dateFormatList = ["DD/MM/YYYY", "DD/MM/YY", "DD-MM-YYYY", "DD-MM-YY"];
@@ -128,13 +128,25 @@ const TableComponent: React.FC = () => {
   ];
   const columns: ColumnsType<GetMachineComponents> = [
     {
-      title: <div style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}>Tên máy</div>,
+      title: (
+        <div
+          style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}
+        >
+          Tên máy
+        </div>
+      ),
       dataIndex: "name",
       sorter: (a, b) => a.name.length - b.name.length,
       width: "20%",
     },
     {
-      title: <div style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}>Thương hiệu</div>,
+      title: (
+        <div
+          style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}
+        >
+          Thương hiệu
+        </div>
+      ),
       dataIndex: "brand",
       render: (brand) => {
         return brand.name;
@@ -142,7 +154,13 @@ const TableComponent: React.FC = () => {
       align: "center",
     },
     {
-      title: <div style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}>Số lượng</div>,
+      title: (
+        <div
+          style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}
+        >
+          Số lượng
+        </div>
+      ),
       dataIndex: "quantity",
       render: (quantity) => quantity.Available || 0,
       align: "center",
@@ -151,7 +169,9 @@ const TableComponent: React.FC = () => {
       title: (
         <div
           style={{
-            textAlign: "center", fontSize: "16px", fontWeight: "bold",
+            textAlign: "center",
+            fontSize: "16px",
+            fontWeight: "bold",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
@@ -171,7 +191,13 @@ const TableComponent: React.FC = () => {
       align: "center",
     },
     {
-      title: <div style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}>Hành Động</div>,
+      title: (
+        <div
+          style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}
+        >
+          Hành Động
+        </div>
+      ),
       key: "operation",
       render: (record) => (
         <Space size="middle">

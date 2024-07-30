@@ -68,12 +68,11 @@ const TableRequestWarranty: React.FC = () => {
     showSizeChanger: false,
     showQuickJumper: false,
   };
-  const handleDateChange = (date: any, dateString: string | string[]) => {
+  const handleDateChange = (_date: any, dateString: string | string[]) => {
     setSelectedDate(Array.isArray(dateString) ? dateString[0] : dateString);
   };
   const dateFormatList = ["DD/MM/YYYY", "DD/MM/YY", "DD-MM-YYYY", "DD-MM-YY"];
-  const filteredRows = requestWarranty
-  ?.filter((item) =>
+  const filteredRows = requestWarranty?.filter((item) =>
     selectedDate
       ? moment(item.createDate).format("DD/MM/YYYY") === selectedDate
       : true
@@ -91,18 +90,36 @@ const TableRequestWarranty: React.FC = () => {
 
   const columns: ColumnsType<WarrantyProps> = [
     {
-      title: <div style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}>Thứ tự</div>,
+      title: (
+        <div
+          style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}
+        >
+          Thứ tự
+        </div>
+      ),
       dataIndex: "key",
       align: "center",
     },
     {
-      title: <div style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}>Loại Bảo Hành</div>,
+      title: (
+        <div
+          style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}
+        >
+          Loại Bảo Hành
+        </div>
+      ),
       dataIndex: "type",
       render: (type) => (type === "Periodic" ? "Định kì" : "Yêu cầu"),
       align: "center",
     },
     {
-      title: <div style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}>Mã máy</div>,
+      title: (
+        <div
+          style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}
+        >
+          Mã máy
+        </div>
+      ),
       dataIndex: "inventory",
       render: (inventory) => inventory.serialNumber,
       align: "center",
@@ -133,7 +150,13 @@ const TableRequestWarranty: React.FC = () => {
       align: "center",
     },
     {
-      title: <div style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}>Hành Động</div>,
+      title: (
+        <div
+          style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}
+        >
+          Hành Động
+        </div>
+      ),
       key: "operation",
       render: (record) => (
         <Space size="middle">

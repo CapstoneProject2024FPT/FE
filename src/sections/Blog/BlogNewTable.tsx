@@ -107,13 +107,12 @@ const TableBlogNew: React.FC = () => {
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     setQuery(e.target.value);
   };
-  const handleDateChange = (date: any, dateString: string | string[]) => {
+  const handleDateChange = (_date: any, dateString: string | string[]) => {
     setSelectedDate(Array.isArray(dateString) ? dateString[0] : dateString);
   };
   const dateFormatList = ["DD/MM/YYYY", "DD/MM/YY", "DD-MM-YYYY", "DD-MM-YY"];
-  
-  const filteredRows = 
-  blogNews
+
+  const filteredRows = blogNews
     ?.filter((item) => item.title.toLowerCase().includes(query))
     ?.filter((item) =>
       selectedDate
@@ -136,12 +135,24 @@ const TableBlogNew: React.FC = () => {
   ];
   const columns: ColumnsType<PostGetProps> = [
     {
-      title: <div style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}>Tiêu đề</div>,
+      title: (
+        <div
+          style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}
+        >
+          Tiêu đề
+        </div>
+      ),
       dataIndex: "title",
       width: "20%",
     },
     {
-      title: <div style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}>Hình</div>,
+      title: (
+        <div
+          style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}
+        >
+          Hình
+        </div>
+      ),
       dataIndex: "cover",
       render: (cover) => (
         <img src={cover} alt="ảnh bìa" style={{ width: 100 }} />
@@ -153,7 +164,9 @@ const TableBlogNew: React.FC = () => {
       title: (
         <div
           style={{
-            textAlign: "center", fontSize: "16px", fontWeight: "bold",
+            textAlign: "center",
+            fontSize: "16px",
+            fontWeight: "bold",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
@@ -173,25 +186,49 @@ const TableBlogNew: React.FC = () => {
       align: "center",
     },
     {
-      title: <div style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}>Người viết</div>,
+      title: (
+        <div
+          style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}
+        >
+          Người viết
+        </div>
+      ),
       dataIndex: "account",
       render: (account) => account.fullName,
       align: "center",
     },
     {
-      title: <div style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}>Trạng Thái</div>,
+      title: (
+        <div
+          style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}
+        >
+          Trạng Thái
+        </div>
+      ),
       dataIndex: "status",
       render: (status) => (status === "Active" ? "Đang hiển thị" : "Đang ẩn"),
       align: "center",
     },
     {
-      title: <div style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}>Độ hot</div>,
+      title: (
+        <div
+          style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}
+        >
+          Độ hot
+        </div>
+      ),
       dataIndex: "type",
       render: (type) => (type === "Normal" ? "Bình Thường" : "Tin Nóng" || ""),
       align: "center",
     },
     {
-      title: <div style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}>Hành Động</div>,
+      title: (
+        <div
+          style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}
+        >
+          Hành Động
+        </div>
+      ),
       key: "operation",
       render: (record) => (
         <Space size="middle">
