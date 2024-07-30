@@ -30,6 +30,8 @@ import {
 import { formatDateFunc } from "../../../utils/fn";
 import EmptyOrder from "../../../components/EmptyOrder";
 import ModalTransactionDetail from "./Modal/ModalRequestWarranty";
+import CancelWarrantyDialog from "./Modal/ModalCancelWarranty";
+import { toast } from "react-toastify";
 
 const getStatusStyles = (status: string) => {
   switch (status) {
@@ -46,8 +48,8 @@ const getStatusStyles = (status: string) => {
   }
 };
 
-function Row(props: { row: WarrantyProps }) {
-  const { row } = props;
+function Row(props: { row: WarrantyProps; onCancelWarranty: (warrantyId: string, description?: string) => void; }) {
+  const { row, onCancelWarranty } = props;
   const [open, setOpen] = useState(false);
   const date = new Date(row.createDate);
   const [warrantyDetail, setWarrantyDetail] = useState<WarrantyPropsById>();
@@ -167,11 +169,11 @@ function Row(props: { row: WarrantyProps }) {
                       </TableCell>
                       <TableCell align="right">
                         {detail.status === StatusType.PROCESS && (
-
                           <Button
                             variant="contained"
                             color="primary"
                             style={{ marginRight: "10px" }}
+                            onClick={() => onCancelWarranty(detail.id)}
                           >
                             Hủy
                           </Button>
@@ -199,6 +201,8 @@ function Row(props: { row: WarrantyProps }) {
 const WarrantyManagement: React.FC = () => {
   const [requests, setRequests] = useState<WarrantyProps[]>([]);
   const [page, setPage] = useState<number>(0);
+  const [openDialog, setOpenDialog] = useState(false);
+  const [selectWarrantyId, setSelectWarrantyId] = useState<string | null>(null);
   const [rowsPerPage, setRowsPerPage] = useState(15);
   const routePage = [15, 20, 25, 30];
 
@@ -216,7 +220,7 @@ const WarrantyManagement: React.FC = () => {
     setPage(0);
   };
 
-  const { apiGetWarranty } = ApiWarranty();
+  const { apiGetWarranty, apiCancelWarrantyDetail } = ApiWarranty();
 
   const loginInfoString = localStorage.getItem("loginInfo");
   const auth = loginInfoString ? JSON.parse(loginInfoString) : null;
@@ -229,6 +233,37 @@ const WarrantyManagement: React.FC = () => {
       };
       const response = await apiGetWarranty(params);
       setRequests(response.data);
+    }
+  };
+
+  const handleOpenDialog = (warrantyId: string) => {
+    setSelectWarrantyId(warrantyId);
+    setOpenDialog(true);
+  };
+
+  const handleCloseDialog = () => {
+    setOpenDialog(false);
+    setSelectWarrantyId(null);
+  };
+
+  const handleCancelWarranty = async (description: string) => {
+    if (selectWarrantyId) {
+      try {
+        const response = await apiCancelWarrantyDetail({
+          warrantyId: selectWarrantyId,
+          status: "Completed",
+          description,
+        });
+        if (response.status === 200) {
+          fetchWarranty();
+          toast.success("Bảo hành định kỳ đã được hủy thành công");
+        }
+      } catch (error) {
+        toast.error("Có lỗi xảy ra khi hủy bảo hành");
+        console.log(error);
+      } finally {
+        handleCloseDialog();
+      }
     }
   };
 
@@ -255,7 +290,7 @@ const WarrantyManagement: React.FC = () => {
               {requests
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map((row: WarrantyProps) => (
-                  <Row key={row.id} row={row} />
+                  <Row key={row.id} row={row} onCancelWarranty={handleOpenDialog} />
                 ))}
             </TableBody>
           ) : (
@@ -278,6 +313,11 @@ const WarrantyManagement: React.FC = () => {
         onPageChange={handleChangePage}
         onRowsPerPageChange={handleChangeRowsPerPage}
         labelRowsPerPage="Số hàng mỗi trang"
+      />
+      <CancelWarrantyDialog
+        open={openDialog}
+        onClose={handleCloseDialog}
+        onConfirm={handleCancelWarranty}
       />
     </Container>
   );

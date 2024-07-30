@@ -74,15 +74,6 @@ const styles = StyleSheet.create({
   },
 });
 
-const translateStatus = (status: any) => {
-  switch (status) {
-    case 'AwaitingAssignment':
-      return 'Đang thực thi';
-    default:
-      return status;
-  }
-};
-
 const WarrantyPDFDocument = ({
   order,
   product,
@@ -110,16 +101,16 @@ const WarrantyPDFDocument = ({
         </Text>
         <View style={styles.table}>
           <View style={styles.tableRow}>
-            <Text style={styles.tableColHeader}>Bảo trì định kì</Text>
+            <Text style={styles.tableColHeader}>Bảo hành định kì</Text>
             <Text style={styles.tableColHeader}>Ngày bắt đầu</Text>
-            <Text style={styles.tableColHeader}>Trạng thái</Text>
           </View>
-          {warranty.map((warrantyItem: any) => (
-            warrantyItem.warrantyDetails.warrantyDetail.map((e: any) => (
+          {warranty.map((warrantyItem: any, index: number) => (
+            warrantyItem.warrantyDetails.warrantyDetail.map((e: any, subIndex: number) => (
               <View style={styles.tableRow} key={e.id}>
-                <Text style={styles.tableCol}>{e.description || "Bảo trì định kì"}</Text>
+                <Text style={styles.tableCol}>
+                  {`Lần ${index * warrantyItem.warrantyDetails.warrantyDetail.length + subIndex + 1}`}
+                </Text>
                 <Text style={styles.tableCol}>{formatDateFunc.formatDate(e.startDate)}</Text>
-                <Text style={styles.tableCol}>{translateStatus(e.status)}</Text>
               </View>
             ))
           ))}
@@ -138,24 +129,11 @@ const WarrantyPDF = ({
 }) => {
   const [pdfUrl, setPdfUrl] = useState<string | null>(null);
   const { apiGetWarranty, apiGetWarrantyById } = ApiWarranty();
-  const [warrantyDetails, setWarrantyDetails] = useState<any>([]);
-
-  // const fetchWarranty = async () => {
-  //   if (auth) {
-  //     const params = {
-  //       type: "Periodic",
-  //       AccountId: auth.data.id,
-  //     };
-  //     const response = await apiGetWarranty(params);
-  //     setRequests(response.data);
-  //   }
-  // };
 
   useEffect(() => {
     const fetchWarrantyData = async () => {
       try {
         const response = await apiGetWarranty({ InventoryId: product.inventoryId });
-        console.log('Warranty Data:', response.data);
         const warrantyData = response.data.map(
           async (warrantyItem: any) => {
             const warrantyDetails = await apiGetWarrantyById(
@@ -169,25 +147,19 @@ const WarrantyPDF = ({
         const detailedWarrantyItems = await Promise.all(
           warrantyData
         );
-        console.log('Warranty Data11:', detailedWarrantyItems);
-        setWarrantyDetails(detailedWarrantyItems);
         // You can use warrantyData here
+        const blob = await pdf(
+          <WarrantyPDFDocument order={order} product={product} warranty={detailedWarrantyItems} />
+        ).toBlob();
+        const url = URL.createObjectURL(blob);
+        setPdfUrl(url);
+        console.log('Warranty Details:', detailedWarrantyItems);
       } catch (error) {
         console.error('Error fetching warranty:', error);
       }
     };
 
     fetchWarrantyData();
-
-    const generatePdf = async () => {
-      const blob = await pdf(
-        <WarrantyPDFDocument order={order} product={product} warranty={warrantyDetails} />
-      ).toBlob();
-      const url = URL.createObjectURL(blob);
-      setPdfUrl(url);
-    };
-
-    generatePdf();
   }, [order, product]);
 
   const handleOpenPdf = () => {
