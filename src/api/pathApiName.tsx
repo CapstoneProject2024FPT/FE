@@ -109,3 +109,4 @@ export const PAYMENTS_ID = "payments/:id";
 
 // amdin dashboard
 export const ADMIN_DASHBOARD = "admin/dashBoard";
+export const COUNTORDERS = "admin/dashBoard/countOrders";

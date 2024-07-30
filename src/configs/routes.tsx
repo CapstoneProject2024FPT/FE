@@ -10,6 +10,8 @@ export const routes = {
   userChangePassword: "/change-password",
   userAddress: "/address",
   maintenance: "/maintenance",
+  maintenancePeriodic: "/maintenance/periodic/:id",
+  maintenanceRequest: "/maintenance/request/:id",
   orderManagement: "/order-management",
   paymentOrderID: "/order-management/:id",
   favoriteProduct: "/favorite-product",

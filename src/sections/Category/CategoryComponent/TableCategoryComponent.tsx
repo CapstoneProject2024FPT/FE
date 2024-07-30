@@ -5,7 +5,6 @@ import { DownOutlined } from "@ant-design/icons";
 import { Table, Input, Space, Dropdown, Button } from "antd";
 import { GetCategoryProps } from "../../../models/category";
 import ModalCategoryPopupComponent from "./PopupCategoryComponent/popupDetailCategoryComponent";
-import ModalCategoryPopupDeleteComponent from "./PopupCategoryComponent/popupDeleteCategoryComponent";
 import { toast } from "react-toastify";
 import ModalCategoryPopupAddComponent from "./PopupCategoryComponent/popupAddCategoryComponent";
 import { PlusOutlined } from "@ant-design/icons";
@@ -26,7 +25,6 @@ const TableCategoryComponent: React.FC = () => {
 
   //popup
   const [open, setOpen] = useState<boolean>(false);
-  const [openDeletePopup, setOpenDeletePopup] = useState<boolean>(false);
   const [openAddPopup, setOpenAddPopup] = useState<boolean>(false);
   const [selectedData, setSelectedData] = useState<GetCategoryProps | null>(
     null
@@ -40,12 +38,7 @@ const TableCategoryComponent: React.FC = () => {
     setOpen(true);
     setSelectedData(record);
   };
-  const handleActionDelete = (record: GetCategoryProps) => {
-    setOpenDeletePopup(true);
-    setSelectedData(record);
-  };
   const handleCLose = () => setOpen(false);
-  const handleCLoseDelete = () => setOpenDeletePopup(false);
   const handleCloseAdd = () => setOpenAddPopup(false);
 
   const fetchCategoriesComponent = async () => {
@@ -66,12 +59,6 @@ const TableCategoryComponent: React.FC = () => {
     handleCloseAdd();
     fetchCategoriesComponent();
     toast.success("Thêm loại máy thành công");
-  };
-
-  const handleDeleteCategorySuccess = (response: string) => {
-    handleCLoseDelete();
-    fetchCategoriesComponent();
-    toast.success(response);
   };
 
   const handleUpdateCategorySuccess = (response: string) => {
@@ -139,10 +126,6 @@ const TableCategoryComponent: React.FC = () => {
       key: "1",
       label: "Chi tiết",
     },
-    {
-      key: "2",
-      label: "Xoá",
-    },
   ];
 
   const columns: ColumnsType<GetCategoryProps> = [
@@ -164,9 +147,6 @@ const TableCategoryComponent: React.FC = () => {
                 switch (key) {
                   case "1":
                     handleActionDetail(record);
-                    break;
-                  case "2":
-                    handleActionDelete(record);
                     break;
                   default:
                     break;
@@ -216,15 +196,6 @@ const TableCategoryComponent: React.FC = () => {
           open={open}
           handleClose={handleCLose}
           onUpdateSuccess={handleUpdateCategorySuccess}
-        />
-      )}
-
-      {openDeletePopup && (
-        <ModalCategoryPopupDeleteComponent
-          CategoryData={selectedData}
-          openDeletePopup={openDeletePopup}
-          handleCLoseDelete={handleCLoseDelete}
-          onDeleteSuccess={handleDeleteCategorySuccess}
         />
       )}
 

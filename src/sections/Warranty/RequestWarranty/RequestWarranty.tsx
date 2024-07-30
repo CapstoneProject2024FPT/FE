@@ -150,6 +150,14 @@ const TableRequestWarranty: React.FC = () => {
       align: "center",
     },
     {
+      title: "Ngày hoàn thành",
+      dataIndex: "completionDate",
+      render: (completionDate) =>
+        completionDate
+          ? formatDateFunc.formatDateTime(completionDate)
+          : "-------",
+    },
+    {
       title: (
         <div
           style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}

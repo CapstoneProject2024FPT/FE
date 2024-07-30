@@ -97,3 +97,22 @@ interface UserInfo {
   fullName: string;
   role: string;
 }
+
+export type OrderStatus =
+  | "Paid"
+  | "UnPaid"
+  | "Completed"
+  | "Canceled"
+  | "Delivery";
+export interface OrderCount {
+  tolalOrders: number;
+  ordersByStatus: {
+    Paid: number;
+    UnPaid: number;
+    Completed: number;
+    Canceled: number;
+    Delivery: number;
+  };
+  totalRevenue: number;
+  totalProfit: number;
+}

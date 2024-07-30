@@ -1,19 +1,12 @@
-import React, { useState } from "react";
+import React from "react";
 import Box from "@mui/material/Box";
 import Paper from "@mui/material/Paper";
 import Grid from "@mui/material/Unstable_Grid2";
-import { Container, Tabs, Tab } from "@mui/material";
+import { Container } from "@mui/material";
 import SideBarUserProfile from "./SideBar/SideBarUserProfile";
-import WarrantyManagement from "./Warranty/Periodic/WarrantyManagement";
-import WarrantyRequest from "./Warranty/Request/WarrantyRequest";
+import DetailWarrantyRequest from "./Warranty/Request/DetailWarrantyRequest";
 
-const Warranty: React.FC = () => {
-  const [tabValue, setTabValue] = useState(0);
-
-  const handleTabChange = (_event: React.SyntheticEvent, newValue: number) => {
-    setTabValue(newValue);
-  };
-
+const WarrantyDetailRequest: React.FC = () => {
   return (
     <>
       <Container
@@ -37,17 +30,9 @@ const Warranty: React.FC = () => {
                     borderRadius: "10px",
                   }}
                 >
-                  <Tabs
-                    value={tabValue}
-                    style={{ marginLeft: "2rem" }}
-                    onChange={handleTabChange}
-                  >
-                    <Tab label="Bảo hành định kỳ" />
-                    <Tab label="Yêu cầu bảo hành" />
-                  </Tabs>
-
-                  {tabValue === 0 && <WarrantyManagement />}
-                  {tabValue === 1 && <WarrantyRequest />}
+                  <Grid container spacing={2}>
+                    <DetailWarrantyRequest />
+                  </Grid>
                 </Paper>
               </Box>
             </Grid>
@@ -58,4 +43,4 @@ const Warranty: React.FC = () => {
   );
 };
 
-export default Warranty;
+export default WarrantyDetailRequest;

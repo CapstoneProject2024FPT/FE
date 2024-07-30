@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 //mui
 import { useEffect, useState } from "react";
 import {
@@ -14,7 +15,10 @@ import { useParams } from "react-router-dom";
 //components
 import { toast } from "react-toastify";
 import { Button } from "antd";
-import { WarrantyPropsById } from "../../../models/warranty";
+import {
+  WarrantyDetailGetProps,
+  WarrantyPropsById,
+} from "../../../models/warranty";
 import { ApiWarranty } from "../../../api/services/apiWarranty";
 import { formatAddress, formatDateFunc } from "../../../utils/fn";
 import ModalDeliveryTaskWarranty from "../Modal/ModalDeliveryTaskWarranty";
@@ -34,11 +38,15 @@ const RequestDetail = () => {
   const [open, setOpen] = useState<boolean>(false);
   const [idEmployee, setIdEmployee] = useState<string>();
   const [employee, setEmployee] = useState<staffProps>();
+  const [warrantyDetailId, setWarrantyDetailId] = useState<string>();
+  const [warrantyDetail, setWarrantyDetail] =
+    useState<WarrantyDetailGetProps>();
 
-  const { apiGetWarrantyById, loading } = ApiWarranty();
+  const { apiGetWarrantyById, loading, apiGetWarrantyDetailById } =
+    ApiWarranty();
   const { apiUserProfile } = CustomerApi();
 
-  const fetchProductDetail = async () => {
+  const fetchWarranty = async () => {
     try {
       if (id) {
         const response = await apiGetWarrantyById(id);
@@ -58,18 +66,16 @@ const RequestDetail = () => {
     setEmployee(response.data);
   };
 
+  const fetchWarrantyDetail = async (id: string) => {
+    const response = await apiGetWarrantyDetailById(id);
+    setWarrantyDetail(response.data);
+  };
+
   useEffect(() => {
-    fetchProductDetail();
+    fetchWarranty();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  useEffect(() => {
-    if (idEmployee) {
-      fetchEmployee(idEmployee);
-    }
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
   const handleClickOpen = () => {
     setOpen(!open);
   };
@@ -80,7 +86,7 @@ const RequestDetail = () => {
 
   const handleUpdateSuccess = (response: string) => {
     handleClose();
-    fetchProductDetail();
+    fetchWarranty();
     toast.success(response);
   };
 
@@ -91,6 +97,7 @@ const RequestDetail = () => {
     );
 
     if (nullAccountDetail?.accountId) {
+      setWarrantyDetailId(nullAccountDetail.id);
       setIdEmployee(nullAccountDetail.accountId);
     }
   }, [requestWarranty]);
@@ -99,8 +106,13 @@ const RequestDetail = () => {
     if (idEmployee) {
       fetchEmployee(idEmployee);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [idEmployee]);
+
+  useEffect(() => {
+    if (warrantyDetailId) {
+      fetchWarrantyDetail(warrantyDetailId);
+    }
+  }, [warrantyDetailId]);
 
   return (
     <>
@@ -217,6 +229,44 @@ const RequestDetail = () => {
                 </Stack>
               </Grid>
             </Grid>
+
+            {warrantyDetail?.status === "Completed" && (
+              <Grid container spacing={3} sx={{ mt: 1 }}>
+                <Grid item xs={12} md={8}>
+                  <Typography variant="h5">Nội dung sửa</Typography>
+                  <Card sx={{ p: 3 }}>
+                    <TextField
+                      label="Lý do"
+                      value={warrantyDetail?.description || ""}
+                      multiline
+                      rows={4}
+                      fullWidth
+                      InputProps={{
+                        readOnly: true,
+                      }}
+                    />
+                  </Card>
+                </Grid>
+                <Grid item xs={12} md={4}>
+                  <Typography variant="h5">Bộ phận thay</Typography>
+                  <Card sx={{ p: 3 }}>
+                    {warrantyDetail.inventoryChanges.length > 0
+                      ? warrantyDetail?.inventoryChanges.map((item) => (
+                          <TextField
+                            sx={{ mt: 1 }}
+                            label="Tên bộ phận thay thế"
+                            value={item?.newInventory.componentName || ""}
+                            fullWidth
+                            InputProps={{
+                              readOnly: true,
+                            }}
+                          />
+                        ))
+                      : "Không thay thế bộ phận nào cả"}
+                  </Card>
+                </Grid>
+              </Grid>
+            )}
           </Box>
           {open && (
             <ModalDeliveryTaskWarranty
