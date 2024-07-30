@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import type { MenuProps, TablePaginationConfig } from "antd";
 import type { TableProps } from "antd";
-import { DownOutlined } from "@ant-design/icons";
-import { Table, Input, Space, Dropdown, Button } from "antd";
+import { DownOutlined, PlusOutlined } from "@ant-design/icons";
+import { Table, Input, Space, Dropdown, Button, DatePicker } from "antd";
 import ModalProductPopupDelete from "./PopupProduct/ModalProductPopupDelete";
 import { toast } from "react-toastify";
 import { MachineryApi } from "../../api/services/apiMachinery";
@@ -11,7 +11,7 @@ import { useNavigate } from "react-router-dom";
 import config from "../../configs";
 import ModalProductPopupPriority from "./PopupProduct/ModalProductPopupPriority";
 import { formatDateFunc } from "../../utils/fn";
-import { PlusOutlined } from "@ant-design/icons";
+import moment from "moment";
 
 type ColumnsType<T> = TableProps<T>["columns"];
 const { Search } = Input;
@@ -28,6 +28,7 @@ const TableProduct: React.FC = () => {
   });
   //search
   const [query, setQuery] = useState<string>("");
+  const [selectedDate, setSelectedDate] = useState<string | null>(null);
 
   //popup
   const [openDeletePopup, setOpenDeletePopup] = useState<boolean>(false);
@@ -35,7 +36,7 @@ const TableProduct: React.FC = () => {
   const [selectedData, setSelectedData] = useState<ProductAdmin | null>(null);
 
   //api
-  const { apiGetMachine, loading } = MachineryApi();
+  const { apiGetMachineNoPaging, loading } = MachineryApi();
 
   //modal popup
   const handleActionDetail = (record: ProductAdmin) => {
@@ -63,25 +64,12 @@ const TableProduct: React.FC = () => {
   };
 
   //----------------------------------------------------------------------------
-  const fetchProducts = async (
-    page: number = 1,
-    pageSize: number = defaultPageSize
-  ) => {
+  const fetchProducts = async () => {
     try {
-      const params = {
-        size: pageSize,
-        page: page,
-      };
-      const response = await apiGetMachine(params);
+      const response = await apiGetMachineNoPaging();
 
       if (response && response.status === 200) {
-        setProducts(response.data.items);
-        setPagination((prev) => ({
-          ...prev,
-          total: response.data.total,
-          current: response.data.page,
-          pageSize: response.data.size,
-        }));
+        setProducts(response.data);
       } else {
         //lỗi show thông báo lỗi
         toast.error(response.Error);
@@ -92,7 +80,7 @@ const TableProduct: React.FC = () => {
   };
 
   useEffect(() => {
-    fetchProducts(pagination.current, pagination.pageSize);
+    fetchProducts();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -115,7 +103,9 @@ const TableProduct: React.FC = () => {
       current: page,
       pageSize: pageSize,
     }));
-    fetchProducts(page, pageSize);
+    if (pagination.pageSize !== pagination?.pageSize) {
+      setProducts([]);
+    }
   };
 
   const customPagination = {
@@ -132,10 +122,22 @@ const TableProduct: React.FC = () => {
     setQuery(e.target.value);
   };
 
-  const filteredRows = products?.filter((item) =>
-    item.name?.toLowerCase().includes(query)
-  );
+  const handleDateChange = (_date: any, dateString: string | string[]) => {
+    setSelectedDate(Array.isArray(dateString) ? dateString[0] : dateString);
+  };
 
+  const dateFormatList = ["DD/MM/YYYY", "DD/MM/YY", "DD-MM-YYYY", "DD-MM-YY"];
+  //nhớ xoá
+  console.log(handleDateChange, dateFormatList);
+
+  const filteredRows = products
+    ?.filter((item) => item.name?.toLowerCase().includes(query.toLowerCase()))
+    ?.filter((item) =>
+      selectedDate
+        ? moment(item.createDate).format("DD/MM/YYYY") === selectedDate
+        : true
+    );
+  console.log(filteredRows);
   const items: MenuProps["items"] = [
     {
       key: "1",
@@ -156,13 +158,25 @@ const TableProduct: React.FC = () => {
   ];
   const columns: ColumnsType<ProductAdmin> = [
     {
-      title: "Tên máy",
+      title: (
+        <div
+          style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}
+        >
+          Tên máy
+        </div>
+      ),
       dataIndex: "name",
       sorter: (a, b) => a.name.length - b.name.length,
       width: "20%",
     },
     {
-      title: "hình máy",
+      title: (
+        <div
+          style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}
+        >
+          Hình máy
+        </div>
+      ),
       dataIndex: "image",
       render: (images) => (
         <img
@@ -171,6 +185,7 @@ const TableProduct: React.FC = () => {
           style={{ width: 100 }}
         />
       ),
+      align: "center",
     },
     {
       title: "Thương hiệu",
@@ -178,17 +193,32 @@ const TableProduct: React.FC = () => {
       render: (brand) => {
         return brand.name;
       },
+      align: "center",
     },
     {
-      title: "Số lượng",
+      title: (
+        <div
+          style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}
+        >
+          Số lượng
+        </div>
+      ),
       dataIndex: "quantity",
       render: (quantity) => quantity.Available || 0,
+      align: "center",
     },
     {
-      title: "Độ ưu tiên",
+      title: (
+        <div
+          style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}
+        >
+          Độ ưu tiên
+        </div>
+      ),
       dataIndex: "priority",
       render: (priority) => priority || 0,
       sorter: (a, b) => a.priority - b.priority,
+      align: "center",
     },
     {
       title: "Tình trạng",
@@ -196,12 +226,38 @@ const TableProduct: React.FC = () => {
       render: (status) => (status === "Available" ? "Đang bán" : "Ngưng bán"),
     },
     {
-      title: "Ngày tạo",
+      title: (
+        <div
+          style={{
+            textAlign: "center",
+            fontSize: "16px",
+            fontWeight: "bold",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          Ngày tạo
+          <DatePicker
+            onChange={handleDateChange}
+            style={{ marginLeft: 8, width: "50%" }}
+            format={dateFormatList}
+            placeholder="Chọn ngày"
+          />
+        </div>
+      ),
       dataIndex: "createDate",
       render: (createDate) => formatDateFunc.formatDate(createDate),
+      align: "center",
     },
     {
-      title: "Hành Động",
+      title: (
+        <div
+          style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}
+        >
+          Hành Động
+        </div>
+      ),
       key: "operation",
       render: (record) => (
         <Space size="middle">
@@ -243,12 +299,13 @@ const TableProduct: React.FC = () => {
           </Dropdown>
         </Space>
       ),
+      align: "center",
     },
   ];
 
   return (
     <>
-      <div style={{ display: "flex", justifyContent: "space-between" }}>
+      <div style={{ display: "flex" }}>
         <Search
           placeholder="Nhập từ khoá"
           onChange={handleSearch}
@@ -279,6 +336,7 @@ const TableProduct: React.FC = () => {
           triggerAsc: "Sắp xếp tăng dần",
           cancelSort: "Huỷ sắp xếp",
         }}
+        style={{ textAlign: "center" }} // Center all text in table
       />
 
       {openDeletePopup && (

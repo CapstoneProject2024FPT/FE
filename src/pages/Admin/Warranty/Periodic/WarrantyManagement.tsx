@@ -6,7 +6,7 @@ import TablePeriodicWarranty from "../../../../sections/Warranty/PeriodicWarrant
 
 const WarrantyManagent: React.FC = () => {
   return (
-    <Container>
+    <Container sx={{ width: "100% !important", maxWidth: "none !important" }}>
       <HeaderBreadcrumbs
         heading="Bảo trì định kì"
         links={[

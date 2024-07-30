@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import type { MenuProps } from "antd";
 import type { TableProps } from "antd";
 import { DownOutlined } from "@ant-design/icons";
-import { Table, Input, Space, Dropdown, Button } from "antd";
+import { Table, Input, Space, Dropdown, Button, DatePicker } from "antd";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import config from "../../configs";
@@ -11,7 +11,7 @@ import { PlusOutlined } from "@ant-design/icons";
 import { GetMachineComponents } from "../../models/machineComponent";
 import { MachineryComponentApi } from "../../api/services/apiMachineComponent";
 import ModalDeleteComponent from "./Popup/ModalDeleteComponent";
-
+import moment from "moment";
 type ColumnsType<T> = TableProps<T>["columns"];
 const { Search } = Input;
 
@@ -26,6 +26,7 @@ const TableComponent: React.FC = () => {
   });
   //search
   const [query, setQuery] = useState<string>("");
+  const [selectedDate, setSelectedDate] = useState<string | null>(null);
 
   //popup
   const [openDeletePopup, setOpenDeletePopup] = useState<boolean>(false);
@@ -103,11 +104,18 @@ const TableComponent: React.FC = () => {
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     setQuery(e.target.value);
   };
+  const handleDateChange = (_date: any, dateString: string | string[]) => {
+    setSelectedDate(Array.isArray(dateString) ? dateString[0] : dateString);
+  };
+  const dateFormatList = ["DD/MM/YYYY", "DD/MM/YY", "DD-MM-YYYY", "DD-MM-YY"];
 
-  const filteredRows = products?.filter((item) =>
-    item.name?.toLowerCase().includes(query)
-  );
-
+  const filteredRows = products
+    ?.filter((item) => item.name?.toLowerCase().includes(query))
+    ?.filter((item) =>
+      selectedDate
+        ? moment(item.createDate).format("DD/MM/YYYY") === selectedDate
+        : true
+    );
   const items: MenuProps["items"] = [
     {
       key: "1",
@@ -120,30 +128,76 @@ const TableComponent: React.FC = () => {
   ];
   const columns: ColumnsType<GetMachineComponents> = [
     {
-      title: "Tên máy",
+      title: (
+        <div
+          style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}
+        >
+          Tên máy
+        </div>
+      ),
       dataIndex: "name",
       sorter: (a, b) => a.name.length - b.name.length,
       width: "20%",
     },
     {
-      title: "Thương hiệu",
+      title: (
+        <div
+          style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}
+        >
+          Thương hiệu
+        </div>
+      ),
       dataIndex: "brand",
       render: (brand) => {
         return brand.name;
       },
+      align: "center",
     },
     {
-      title: "Số lượng",
+      title: (
+        <div
+          style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}
+        >
+          Số lượng
+        </div>
+      ),
       dataIndex: "quantity",
       render: (quantity) => quantity.Available || 0,
+      align: "center",
     },
     {
-      title: "Ngày tạo",
+      title: (
+        <div
+          style={{
+            textAlign: "center",
+            fontSize: "16px",
+            fontWeight: "bold",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          Ngày tạo
+          <DatePicker
+            onChange={handleDateChange}
+            style={{ marginLeft: 8, width: "50%" }}
+            format={dateFormatList}
+            placeholder="Chọn ngày"
+          />
+        </div>
+      ),
       dataIndex: "createDate",
       render: (createDate) => formatDateFunc.formatDate(createDate),
+      align: "center",
     },
     {
-      title: "Hành Động",
+      title: (
+        <div
+          style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}
+        >
+          Hành Động
+        </div>
+      ),
       key: "operation",
       render: (record) => (
         <Space size="middle">
@@ -170,6 +224,7 @@ const TableComponent: React.FC = () => {
           </Dropdown>
         </Space>
       ),
+      align: "center",
     },
   ];
 

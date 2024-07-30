@@ -129,20 +129,22 @@ const TableRank: React.FC = () => {
   ];
   const columns: ColumnsType<getRank> = [
     {
-      title: "Tên hạng ",
+      title: <div style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}>Tên hạng</div>,
       dataIndex: "name",
       sorter: (a, b) => a.name.length - b.name.length,
       width: "20%",
+      align: "center",
     },
     {
-      title: "Hạng mức",
+      title: <div style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}>Hạng mức</div>,
       dataIndex: "range",
       render: (range) => fNumber(range),
       sorter: (a, b) => a.range - b.range,
       showSorterTooltip: true,
+      align: "center",
     },
     {
-      title: "Hành Động",
+      title: <div style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}>Hành Động</div>,
       key: "operation",
       render: (record) => (
         <Space size="middle">
@@ -169,6 +171,7 @@ const TableRank: React.FC = () => {
           </Dropdown>
         </Space>
       ),
+      align: "center",
     },
   ];
 

@@ -128,13 +128,13 @@ const StaffSale: React.FC = () => {
   ];
   const columns: ColumnsType<staffProps> = [
     {
-      title: "Tên",
+      title: <div style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}>Tên</div>,
       dataIndex: "fullName",
       sorter: (a, b) => a.fullName.length - b.fullName.length,
       width: "20%",
     },
     {
-      title: "Chức vụ",
+      title: <div style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}>Chức vụ</div>,
       dataIndex: "role",
       width: "20%",
       render: (role) => {
@@ -144,9 +144,9 @@ const StaffSale: React.FC = () => {
       },
     },
     {
-      title: "Giới tính",
+      title: <div style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}>Giới tính</div>,
       dataIndex: "gender",
-      width: "20%",
+      width: "10%",
       render: (gender) => {
         return gender === "Male"
           ? "Nam"
@@ -154,13 +154,15 @@ const StaffSale: React.FC = () => {
           ? "Nữ"
           : "Chưa cập nhật";
       },
+      align: "center",
     },
     {
-      title: "Email",
+      title: <div style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}>Email</div>,
       dataIndex: "email",
+      width: "20%",
     },
     {
-      title: "Tình trạng",
+      title: <div style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}>Tình trạng</div>,
       dataIndex: "status",
       width: "20%",
       render: (status) => {
@@ -170,9 +172,11 @@ const StaffSale: React.FC = () => {
           ? "Tài Khoản bị cấm"
           : "Không khả dụng";
       },
+      align: "center",
     },
     {
-      title: "Action",
+      title: <div style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}>Action</div>,
+      width: "20%",
       key: "operation",
       render: (record) => (
         <Space size="middle">
@@ -199,6 +203,7 @@ const StaffSale: React.FC = () => {
           </Dropdown>
         </Space>
       ),
+      align: "center",
     },
   ];
 

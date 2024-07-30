@@ -6,7 +6,7 @@ import TableTask from "../../../sections/Task/TableTask";
 
 const KanBan: React.FC = () => {
   return (
-    <Container>
+    <Container sx={{ width: "100% !important", maxWidth: "none !important" }}>
       <HeaderBreadcrumbs
         heading="Tất cả nhiệm vụ"
         links={[

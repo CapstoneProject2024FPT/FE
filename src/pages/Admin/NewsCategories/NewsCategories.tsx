@@ -6,7 +6,7 @@ import TableNewsCategory from "../../../sections/NewsCategories/TableNewsCategor
 
 const NewsCategories: React.FC = () => {
   return (
-    <Container>
+    <Container sx={{ width: "100% !important", maxWidth: "none !important" }}>
       <HeaderBreadcrumbs
         heading="Tất cả thể loại tin tức"
         links={[

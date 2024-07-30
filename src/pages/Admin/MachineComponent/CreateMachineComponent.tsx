@@ -14,7 +14,7 @@ import config from "../../../configs";
 
 export default function CreateMachineComponent() {
   return (
-    <Container>
+    <Container sx={{ width: "100% !important", maxWidth: "none !important" }}>
       <HeaderBreadcrumbs
         heading="Thêm mới chi tiết máy"
         links={[
