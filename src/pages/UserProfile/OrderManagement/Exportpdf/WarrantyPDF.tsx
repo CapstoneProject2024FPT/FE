@@ -14,6 +14,7 @@ import { Font } from "@react-pdf/renderer";
 import loraRegular from "../../../../assets/fonts/static/Lora-Regular.ttf";
 import logo from "../../../../assets/images/logo-SMMMS.png"; // Adjust path as needed
 import { Button } from "@mui/material";
+import { ApiWarranty } from "../../../../api/services/apiWarranty";
 
 Font.register({
   family: "Lora",
@@ -43,15 +44,48 @@ const styles = StyleSheet.create({
     height: "auto",
     zIndex: 0,
   },
+  table: {
+    width: "100%",
+    borderStyle: "solid",
+    borderWidth: 1,
+    borderColor: "#ddd",
+    marginBottom: 20,
+    borderCollapse: "collapse",
+  },
+  tableRow: {
+    flexDirection: "row",
+  },
+  tableColHeader: {
+    borderStyle: "solid",
+    borderWidth: 1,
+    borderColor: "#ddd",
+    padding: 8,
+    fontWeight: "bold",
+    flex: 1,
+    textAlign: "center",
+  },
+  tableCol: {
+    borderStyle: "solid",
+    borderWidth: 1,
+    borderColor: "#ddd",
+    padding: 8,
+    flex: 1,
+    textAlign: "center",
+  },
 });
 
 const WarrantyPDFDocument = ({
   order,
   product,
+  warranty,
 }: {
   order: OrderProps;
   product: ProductProps;
-}) => (
+  warranty: any;
+}
+
+) => (
+
   <Document>
     <Page style={styles.page}>
       <Image src={logo} style={styles.watermark} />
@@ -65,7 +99,22 @@ const WarrantyPDFDocument = ({
         <Text>
           Ngày mua: {formatDateFunc.formatDate(order.createDate) || ""}
         </Text>
-        <Text>Thời gian bảo hành: 3 năm</Text>
+        <View style={styles.table}>
+          <View style={styles.tableRow}>
+            <Text style={styles.tableColHeader}>Bảo hành định kì</Text>
+            <Text style={styles.tableColHeader}>Ngày bắt đầu</Text>
+          </View>
+          {warranty.map((warrantyItem: any, index: number) => (
+            warrantyItem.warrantyDetails.warrantyDetail.map((e: any, subIndex: number) => (
+              <View style={styles.tableRow} key={e.id}>
+                <Text style={styles.tableCol}>
+                  {`Lần ${index * warrantyItem.warrantyDetails.warrantyDetail.length + subIndex + 1}`}
+                </Text>
+                <Text style={styles.tableCol}>{formatDateFunc.formatDate(e.startDate)}</Text>
+              </View>
+            ))
+          ))}
+        </View>
       </View>
     </Page>
   </Document>
@@ -79,17 +128,38 @@ const WarrantyPDF = ({
   product: ProductProps;
 }) => {
   const [pdfUrl, setPdfUrl] = useState<string | null>(null);
+  const { apiGetWarranty, apiGetWarrantyById } = ApiWarranty();
 
   useEffect(() => {
-    const generatePdf = async () => {
-      const blob = await pdf(
-        <WarrantyPDFDocument order={order} product={product} />
-      ).toBlob();
-      const url = URL.createObjectURL(blob);
-      setPdfUrl(url);
+    const fetchWarrantyData = async () => {
+      try {
+        const response = await apiGetWarranty({ InventoryId: product.inventoryId });
+        const warrantyData = response.data.map(
+          async (warrantyItem: any) => {
+            const warrantyDetails = await apiGetWarrantyById(
+              warrantyItem.id
+            );
+            return {
+              warrantyDetails: warrantyDetails.data,
+            };
+          }
+        );
+        const detailedWarrantyItems = await Promise.all(
+          warrantyData
+        );
+        // You can use warrantyData here
+        const blob = await pdf(
+          <WarrantyPDFDocument order={order} product={product} warranty={detailedWarrantyItems} />
+        ).toBlob();
+        const url = URL.createObjectURL(blob);
+        setPdfUrl(url);
+        console.log('Warranty Details:', detailedWarrantyItems);
+      } catch (error) {
+        console.error('Error fetching warranty:', error);
+      }
     };
 
-    generatePdf();
+    fetchWarrantyData();
   }, [order, product]);
 
   const handleOpenPdf = () => {

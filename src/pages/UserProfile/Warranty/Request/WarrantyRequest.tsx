@@ -15,6 +15,7 @@ import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import { Button, Container, TablePagination } from "@mui/material";
 import { ApiWarranty } from "../../../../api/services/apiWarranty";
 import {
+  StatusType,
   WarrantyProps,
   WarrantyPropsById,
   warrantyStatusMapping,
@@ -49,6 +50,7 @@ function Row(props: { row: WarrantyProps }) {
     if (row) {
       const response = await apiGetWarrantyById(row.id);
       setWarrantyDetail(response.data);
+      console.log("Warranty Detail:", response.data);
     }
   };
 
@@ -78,9 +80,8 @@ function Row(props: { row: WarrantyProps }) {
         </TableCell>
         <TableCell align="right">{row.inventory.serialNumber}</TableCell>
         <TableCell align="right">{row.inventory.machinery.name}</TableCell>
-        <TableCell align="right">{`${date.getDate()}/${
-          date.getMonth() + 1
-        }/${date.getFullYear()}`}</TableCell>
+        <TableCell align="right">{`${date.getDate()}/${date.getMonth() + 1
+          }/${date.getFullYear()}`}</TableCell>
         <TableCell align="right">
           <Button onClick={() => handleNavigateId(row.id)}>Chi tiết</Button>
         </TableCell>
@@ -98,7 +99,9 @@ function Row(props: { row: WarrantyProps }) {
                     <TableCell>Ngày bắt đầu</TableCell>
                     <TableCell align="right">Mô tả</TableCell>
                     <TableCell align="right">Trạng thái</TableCell>
-                    <TableCell align="right">Hành động</TableCell>
+                    {warrantyDetail?.warrantyDetail[0]?.status === StatusType.AWAITINGASSIGNMENT && (
+                      <TableCell align="right">Hành động</TableCell>
+                    )}
                   </TableRow>
                 </TableHead>
                 <TableBody>
@@ -125,13 +128,15 @@ function Row(props: { row: WarrantyProps }) {
                         </Box>
                       </TableCell>
                       <TableCell align="right">
-                        <Button
-                          variant="contained"
-                          color="primary"
-                          style={{ marginRight: "10px" }}
-                        >
-                          Hủy
-                        </Button>
+                        {detail.status === StatusType.AWAITINGASSIGNMENT && (
+                          <Button
+                            variant="contained"
+                            color="primary"
+                            style={{ marginRight: "10px" }}
+                          >
+                            Hủy
+                          </Button>
+                        )}
                       </TableCell>
                     </TableRow>
                   ))}

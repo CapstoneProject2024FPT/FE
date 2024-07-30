@@ -112,7 +112,7 @@ const ExportPDFDocument = ({ row }: { row: OrderProps }) => {
           </Text>
         </View>
         <View style={styles.section}>
-          <Text>Thông tin đơn hàng</Text>
+          <Text>Thông tin đơn hàng:</Text>
           <View style={styles.table}>
             <View style={styles.tableRow}>
               <Text style={styles.tableColHeader}>Tên sản phẩm</Text>

@@ -282,10 +282,7 @@ const Row = (props: {
                     <TableRow key={product.orderDetailId}>
                       <TableCell>
                         <Link
-                          to={config.routes.productDetail.replace(
-                            ":id",
-                            product.productId
-                          )}
+                          to={config.routes.productDetail.replace(":id", product.productId)}
                           style={{ textDecoration: "none", color: "black" }}
                         >
                           {product.productName}
@@ -293,7 +290,7 @@ const Row = (props: {
                       </TableCell>
                       <TableCell>{product.quantity}</TableCell>
                       <TableCell>{formatMoney(product.totalAmount)}</TableCell>
-                      {(row.status === StatusType.COMPLETED || row.status === StatusType.PAID) && (
+                      {row.status === StatusType.COMPLETED && (
                         <TableCell>
                           <WarrantyPDF order={row} product={product} />
                         </TableCell>
