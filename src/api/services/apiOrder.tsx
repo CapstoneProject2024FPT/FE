@@ -10,6 +10,8 @@ export const ApiOrder = () => {
     AccountId?: string;
     page?: number;
     size?: number;
+    CreateDate?: string | null;
+    CompletedDate?: string | null;
   }
 
   const apiGetOrder = async (params: GetOrderProps) => {
