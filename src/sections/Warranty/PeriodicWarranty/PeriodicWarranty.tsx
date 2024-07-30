@@ -1,15 +1,16 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useEffect, useState } from "react";
 import type { MenuProps } from "antd";
 import type { TableProps } from "antd";
 import { DownOutlined } from "@ant-design/icons";
-import { Table, Space, Dropdown } from "antd";
+import { Table, Space, Dropdown, DatePicker } from "antd";
 import { toast } from "react-toastify";
 import { ApiWarranty } from "../../../api/services/apiWarranty";
-import { WarrantyProps } from "../../../models/warranty";
+import { WarrantyProps, warrantyStatusMapping } from "../../../models/warranty";
 import { formatDateFunc } from "../../../utils/fn";
 import config from "../../../configs";
 import { useNavigate } from "react-router-dom";
-
+import moment from "moment";
 type ColumnsType<T> = TableProps<T>["columns"];
 
 const pageSize = 20;
@@ -22,6 +23,12 @@ const TablePeriodicWarranty: React.FC = () => {
   });
   const { loading, apiGetWarantyPeriodic } = ApiWarranty();
   const navigate = useNavigate();
+  const [selectedCreateDate, setSelectedCreateDate] = useState<string | null>(
+    null
+  );
+  const [selectedCompletedDate, setSelectedCompletedDate] = useState<
+    string | null
+  >(null);
 
   const handleActionDetail = (record: WarrantyProps) => {
     navigate(config.adminRoutes.maintenanceDetail.replace(":id", record.id));
@@ -68,6 +75,38 @@ const TablePeriodicWarranty: React.FC = () => {
     showQuickJumper: false,
   };
 
+  const handleCreateDateChange = (
+    _date: any,
+    dateString: string | string[]
+  ) => {
+    setSelectedCreateDate(
+      Array.isArray(dateString) ? dateString[0] : dateString
+    );
+  };
+
+  const handleCompletedDateChange = (
+    _date: any,
+    dateString: string | string[]
+  ) => {
+    setSelectedCompletedDate(
+      Array.isArray(dateString) ? dateString[0] : dateString
+    );
+  };
+
+  const dateFormatList = ["DD/MM/YYYY", "DD/MM/YY", "DD-MM-YYYY", "DD-MM-YY"];
+
+  const filteredRows = periodicWarranty
+    ?.filter((item) =>
+      selectedCreateDate
+        ? moment(item.startDate).format("DD/MM/YYYY") === selectedCreateDate
+        : true
+    )
+    ?.filter((item) =>
+      selectedCompletedDate
+        ? moment(item.completionDate).format("DD/MM/YYYY") ===
+          selectedCompletedDate
+        : true
+    );
   const items: MenuProps["items"] = [
     {
       key: "1",
@@ -77,31 +116,124 @@ const TablePeriodicWarranty: React.FC = () => {
 
   const columns: ColumnsType<WarrantyProps> = [
     {
-      title: "Thứ tự",
+      title: (
+        <div
+          style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}
+        >
+          Thứ tự
+        </div>
+      ),
       dataIndex: "key",
+      align: "center",
     },
     {
-      title: "Loại Bảo Hành",
+      title: (
+        <div
+          style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}
+        >
+          Loại Bảo Hành
+        </div>
+      ),
       dataIndex: "type",
       render: (type) => (type === "Periodic" ? "Định kì" : "Yêu cầu"),
+      align: "center",
     },
     {
-      title: "Ngày bắt đầu",
+      title: (
+        <div
+          style={{
+            textAlign: "center",
+            fontSize: "16px",
+            fontWeight: "bold",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          Ngày bắt đầu
+          <DatePicker
+            onChange={handleCreateDateChange}
+            style={{ marginLeft: 8, width: "50%" }}
+            format={dateFormatList}
+            placeholder="Ngày tạo"
+          />
+        </div>
+      ),
       dataIndex: "startDate",
       render: (startDate) => formatDateFunc.formatDate(startDate),
+      align: "center",
     },
     {
-      title: "Ngày hoàn thành",
+      title: (
+        <div
+          style={{
+            textAlign: "center",
+            fontSize: "16px",
+            fontWeight: "bold",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          Ngày hoàn thành
+          <DatePicker
+            onChange={handleCompletedDateChange}
+            style={{ marginLeft: 8, width: "50%" }}
+            format={dateFormatList}
+            placeholder="Ngày hoàn thành"
+          />
+        </div>
+      ),
       dataIndex: "completionDate",
       render: (completionDate) =>
         completionDate ? formatDateFunc.formatDate(completionDate) : "-------",
+      align: "center",
     },
     {
-      title: "Trạng thái",
+      title: (
+        <div
+          style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}
+        >
+          Trạng thái
+        </div>
+      ),
       dataIndex: "status",
+      render: (status, record) => {
+        const defaultStatus = "Đang chờ xác nhận";
+        const upComming = "Sắp tới";
+        const notCome = "Chưa tới";
+
+        // Check startDate
+        const startDate = moment(record.startDate);
+        const today = moment();
+        const daysDifference = startDate.diff(today, "days");
+
+        const statusName = status
+          ? warrantyStatusMapping?.find((item) => item.id === status)?.name
+          : defaultStatus;
+
+        if (daysDifference >= 0 && daysDifference <= 3) {
+          return (
+            <div>
+              <div style={{ color: "orange" }}>{upComming}</div>
+            </div>
+          );
+        } else if (daysDifference >= 4) {
+          return <div>{notCome}</div>;
+        } else {
+          return <div>{statusName}</div>;
+        }
+      },
+      align: "center",
     },
     {
-      title: "Hành Động",
+      title: (
+        <div
+          style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}
+        >
+          Hành Động
+        </div>
+      ),
       key: "operation",
       render: (record) => (
         <Space size="middle">
@@ -127,6 +259,7 @@ const TablePeriodicWarranty: React.FC = () => {
           </Dropdown>
         </Space>
       ),
+      align: "center",
     },
   ];
 
@@ -135,7 +268,7 @@ const TablePeriodicWarranty: React.FC = () => {
       <Table
         columns={columns}
         rowKey={(record) => record.id}
-        dataSource={periodicWarranty}
+        dataSource={filteredRows}
         pagination={customPagination}
         loading={loading}
         onChange={handleTableChange}

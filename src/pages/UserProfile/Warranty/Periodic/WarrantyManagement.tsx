@@ -19,19 +19,22 @@ import {
   MenuItem,
   TablePagination,
 } from "@mui/material";
-import { ApiWarranty } from "../../../api/services/apiWarranty";
+import { ApiWarranty } from "../../../../api/services/apiWarranty";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import {
   StatusType,
+  WarrantyDetailProps,
   WarrantyProps,
   WarrantyPropsById,
   warrantyStatusMapping,
-} from "../../../models/warranty";
-import { formatDateFunc } from "../../../utils/fn";
-import EmptyOrder from "../../../components/EmptyOrder";
-import ModalTransactionDetail from "./Modal/ModalRequestWarranty";
-import CancelWarrantyDialog from "./Modal/ModalCancelWarranty";
+} from "../../../../models/warranty";
+import CancelWarrantyDialog from "../Modal/ModalCancelWarranty";
 import { toast } from "react-toastify";
+import { formatDateFunc } from "../../../../utils/fn";
+import EmptyOrder from "../../../../components/EmptyOrder";
+import ModalTransactionDetail from "../Modal/ModalRequestWarranty";
+import { useNavigate } from "react-router-dom";
+import config from "../../../../configs";
 
 const getStatusStyles = (status: string) => {
   switch (status) {
@@ -59,7 +62,11 @@ function Row(props: { row: WarrantyProps; onCancelWarranty: (warrantyId: string,
   const [openRequestWarranty, setOpenRequestWarranty] =
     useState<boolean>(false);
   const [selectWarranty, setSelectWarranty] = useState<WarrantyProps>();
+  const navigate = useNavigate();
 
+  const handleNavigateId = (record: WarrantyDetailProps) => {
+    navigate(config.routes.maintenancePeriodic.replace(":id", record.id));
+  };
   const fetchWarrantyById = async () => {
     if (row) {
       const response = await apiGetWarrantyById(row.id);
@@ -178,6 +185,9 @@ function Row(props: { row: WarrantyProps; onCancelWarranty: (warrantyId: string,
                             Hủy
                           </Button>
                         )}
+                        <Button onClick={() => handleNavigateId(detail)}>
+                          Chi tiết
+                        </Button>
                       </TableCell>
                     </TableRow>
                   ))}

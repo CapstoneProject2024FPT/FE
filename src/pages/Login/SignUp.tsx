@@ -29,10 +29,7 @@ const SignUpForm: React.FC = () => {
     password: Yup.string()
       .required("bắt buộc")
       .min(8, "Tối thiểu 8 kí tự")
-      .matches(
-        patternValidate.password,
-        "Độ dài từ 8 tới 19, cần có kí tự, số, kí tự đặc biệt"
-      ),
+      .max(19, "Tối đa 19 kí tự"),
     confirmPassword: Yup.string()
       .required("Bắt buộc")
       .oneOf([Yup.ref("password")], "Phải giống mật khẩu"),

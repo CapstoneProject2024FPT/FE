@@ -12,7 +12,7 @@ import TableComponent from "../../../sections/MachineComponent/TableComponent";
 
 export default function MachineComponent() {
   return (
-    <Container>
+    <Container sx={{ width: "100% !important", maxWidth: "none !important" }}>
       <HeaderBreadcrumbs
         heading="Tất cả chi tiết"
         links={[

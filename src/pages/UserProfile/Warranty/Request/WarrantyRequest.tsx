@@ -13,15 +13,17 @@ import Paper from "@mui/material/Paper";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import { Button, Container, TablePagination } from "@mui/material";
-import { ApiWarranty } from "../../../api/services/apiWarranty";
+import { ApiWarranty } from "../../../../api/services/apiWarranty";
 import {
   StatusType,
   WarrantyProps,
   WarrantyPropsById,
   warrantyStatusMapping,
-} from "../../../models/warranty";
-import { formatDateFunc } from "../../../utils/fn";
-import EmptyOrder from "../../../components/EmptyOrder";
+} from "../../../../models/warranty";
+import { formatDateFunc } from "../../../../utils/fn";
+import EmptyOrder from "../../../../components/EmptyOrder";
+import { useNavigate } from "react-router-dom";
+import config from "../../../../configs";
 
 const getStatusStyles = (status: string) => {
   switch (status) {
@@ -52,6 +54,11 @@ function Row(props: { row: WarrantyProps }) {
     }
   };
 
+  const navigate = useNavigate();
+
+  const handleNavigateId = (record: string) => {
+    navigate(config.routes.maintenanceRequest.replace(":id", record));
+  };
   const handleClick = () => {
     if (!open) {
       fetchWarrantyById();
@@ -75,6 +82,9 @@ function Row(props: { row: WarrantyProps }) {
         <TableCell align="right">{row.inventory.machinery.name}</TableCell>
         <TableCell align="right">{`${date.getDate()}/${date.getMonth() + 1
           }/${date.getFullYear()}`}</TableCell>
+        <TableCell align="right">
+          <Button onClick={() => handleNavigateId(row.id)}>Chi tiết</Button>
+        </TableCell>
       </TableRow>
       <TableRow>
         <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={8}>
@@ -191,6 +201,7 @@ const WarrantyRequest: React.FC = () => {
               <TableCell align="right">Số serial</TableCell>
               <TableCell align="right">Tên sản phẩm</TableCell>
               <TableCell align="right">Ngày tạo phiếu</TableCell>
+              <TableCell align="right">Hành động</TableCell>
             </TableRow>
           </TableHead>
           {requests.length > 0 ? (

@@ -16,7 +16,7 @@ import { useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import { Button } from "antd";
 import {
-  WarrantyDetailProps,
+  WarrantyDetailGetProps,
   WarrantyPropsById,
 } from "../../../models/warranty";
 import { ApiWarranty } from "../../../api/services/apiWarranty";
@@ -34,7 +34,8 @@ const LabelStyle = styled(Typography)(({ theme }) => ({
 
 const PeriodicWarrantyDetail = () => {
   const { id } = useParams<{ id: string }>();
-  const [requestWarranty, setRequestWarranty] = useState<WarrantyDetailProps>();
+  const [requestWarranty, setRequestWarranty] =
+    useState<WarrantyDetailGetProps>();
   const [open, setOpen] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
   const [warrantyPeriodicId, setWarrantyPeriodicId] = useState<string>();
@@ -53,7 +54,7 @@ const PeriodicWarrantyDetail = () => {
         if (response && response.status === 200) {
           setRequestWarranty(response.data);
           setWarrantyPeriodicId(response.data.warrantyId);
-          setIdEmployee(response.data.staff.id);
+          if (response.data.staff) setIdEmployee(response.data.staff.id);
           setIdWarranty(response.data.id);
         } else toast.error(response.Error);
       }
@@ -71,31 +72,46 @@ const PeriodicWarrantyDetail = () => {
     const response = await apiUserProfile(id);
     return response.data;
   };
+  //fetch api
+  useEffect(() => {
+    fetchWarrantyDetail();
+  }, []);
 
   useEffect(() => {
-    const fetchData = async () => {
-      setLoading(true);
-      try {
-        await fetchWarrantyDetail();
-
-        const [warrantyData, employeeData] = await Promise.all([
-          warrantyPeriodicId ? fetchWarranty(warrantyPeriodicId) : null,
-          idEmployee ? fetchEmployee(idEmployee) : null,
-        ]);
-
-        if (warrantyData) setWarrantyPeriodic(warrantyData);
-        if (employeeData) setEmployee(employeeData);
-        setLoading(false);
-      } catch (error) {
-        setLoading(false);
-        console.error(error);
-        toast.error("Failed to fetch data");
+    const fetchWarrantyData = async () => {
+      if (warrantyPeriodicId) {
+        setLoading(true);
+        try {
+          const warrantyData = await fetchWarranty(warrantyPeriodicId);
+          if (warrantyData) setWarrantyPeriodic(warrantyData);
+        } catch (error) {
+          console.error(error);
+          toast.error("Lỗi lấy dữ liệu");
+        } finally {
+          setLoading(false);
+        }
       }
     };
 
-    fetchData();
-  }, [id, warrantyPeriodicId, idEmployee]);
+    const fetchEmployeeData = async () => {
+      if (idEmployee) {
+        setLoading(true);
+        try {
+          const empData = await fetchEmployee(idEmployee);
+          if (empData) setEmployee(empData);
+        } catch (error) {
+          console.error(error);
+          toast.error("Lỗi lấy dữ liệu");
+        } finally {
+          setLoading(false);
+        }
+      }
+    };
+    fetchWarrantyData();
+    fetchEmployeeData();
+  }, [warrantyPeriodicId, idEmployee]);
 
+  //modal add staff
   const handleClickOpen = () => {
     setOpen(!open);
   };
@@ -110,6 +126,8 @@ const PeriodicWarrantyDetail = () => {
     toast.success(response);
   };
 
+  console.log(requestWarranty);
+
   return (
     <>
       {loading ? (
@@ -117,7 +135,7 @@ const PeriodicWarrantyDetail = () => {
       ) : (
         <>
           <div style={{ display: "flex", justifyContent: "flex-end" }}>
-            {requestWarranty?.accountId !== null && (
+            {requestWarranty?.staff === null && (
               <Button icon={<PlusOutlined />} onClick={() => handleClickOpen()}>
                 Chọn nhân viên
               </Button>
@@ -225,6 +243,43 @@ const PeriodicWarrantyDetail = () => {
                 </Stack>
               </Grid>
             </Grid>
+            {requestWarranty?.status === "Completed" && (
+              <Grid container spacing={3} sx={{ mt: 1 }}>
+                <Grid item xs={12} md={8}>
+                  <Typography variant="h5">Nội dung sửa</Typography>
+                  <Card sx={{ p: 3 }}>
+                    <TextField
+                      label="Lý do"
+                      value={requestWarranty?.description || ""}
+                      multiline
+                      rows={4}
+                      fullWidth
+                      InputProps={{
+                        readOnly: true,
+                      }}
+                    />
+                  </Card>
+                </Grid>
+                <Grid item xs={12} md={4}>
+                  <Typography variant="h5">Bộ phận thay</Typography>
+                  <Card sx={{ p: 3 }}>
+                    {requestWarranty.inventoryChanges.length > 0
+                      ? requestWarranty?.inventoryChanges.map((item) => (
+                          <TextField
+                            sx={{ mt: 1 }}
+                            label="Tên bộ phận thay thế"
+                            value={item?.newInventory.componentName || ""}
+                            fullWidth
+                            InputProps={{
+                              readOnly: true,
+                            }}
+                          />
+                        ))
+                      : "Không thay thế bộ phận nào cả"}
+                  </Card>
+                </Grid>
+              </Grid>
+            )}
           </Box>
           {open && (
             <ModalDeliveryTaskPeriodic

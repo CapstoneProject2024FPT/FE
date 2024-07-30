@@ -6,7 +6,7 @@ import TableBrand from "../../../sections/Brand/TableBrand";
 
 const Brand: React.FC = () => {
   return (
-    <Container>
+    <Container sx={{ width: "100% !important", maxWidth: "none !important" }}>
       <HeaderBreadcrumbs
         heading="Tất cả loại máy"
         links={[

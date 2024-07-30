@@ -6,7 +6,7 @@ import TableRank from "../../../sections/Rank/TableRank";
 
 const Rank: React.FC = () => {
   return (
-    <Container>
+    <Container sx={{ width: "100% !important", maxWidth: "none !important" }}>
       <HeaderBreadcrumbs
         heading="Tất cả loại máy"
         links={[

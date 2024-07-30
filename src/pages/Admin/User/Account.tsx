@@ -38,7 +38,7 @@ const Account: React.FC = () => {
   });
 
   return (
-    <Container>
+    <Container sx={{ width: "100% !important", maxWidth: "none !important" }}>
       <HeaderBreadcrumbs
         heading="Tài Khoản"
         links={[

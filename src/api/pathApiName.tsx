@@ -8,6 +8,7 @@ export const GET_MACHINERY = "/machinery?Status=Available";
 export const ADD_MACHINERY = "/Machinery";
 export const MACHINERY = "/Machinery";
 export const MACHINERY_LIST = "machinery";
+export const MACHINERY_LIST_NOPAGING = "machinery/noPaginate";
 export const MACHINERY_ID = "/Machinery/:id";
 export const MACHINERY_DETAIL = "Machinery/Detail";
 export const MACHINERY_HOME_PRIORITY = "Machinery?Priority=1&size=4";
@@ -108,3 +109,4 @@ export const PAYMENTS_ID = "payments/:id";
 
 // amdin dashboard
 export const ADMIN_DASHBOARD = "admin/dashBoard";
+export const COUNTORDERS = "admin/dashBoard/countOrders";

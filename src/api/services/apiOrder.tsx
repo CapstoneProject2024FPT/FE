@@ -10,13 +10,14 @@ export const ApiOrder = () => {
     AccountId?: string;
     page?: number;
     size?: number;
+    CreateDate?: string | null;
+    CompletedDate?: string | null;
   }
 
   const apiGetOrder = async (params: GetOrderProps) => {
     setLoading(true);
     try {
       const response = await axiosPublic.get(ORDER, { params });
-
       return response;
 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
