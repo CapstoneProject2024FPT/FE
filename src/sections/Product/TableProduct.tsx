@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import type { MenuProps, TablePaginationConfig } from "antd";
 import type { TableProps } from "antd";
 import { DownOutlined, PlusOutlined } from "@ant-design/icons";
-import { Table, Input, Space, Dropdown, Button } from "antd";
+import { Table, Input, Space, Dropdown, Button, DatePicker } from "antd";
 import ModalProductPopupDelete from "./PopupProduct/ModalProductPopupDelete";
 import { toast } from "react-toastify";
 import { MachineryApi } from "../../api/services/apiMachinery";
@@ -36,7 +36,7 @@ const TableProduct: React.FC = () => {
   const [selectedData, setSelectedData] = useState<ProductAdmin | null>(null);
 
   //api
-  const { apiGetMachine, loading } = MachineryApi();
+  const { apiGetMachine, apiGetMachineNoPaging, loading } = MachineryApi();
 
   //modal popup
   const handleActionDetail = (record: ProductAdmin) => {
@@ -64,25 +64,13 @@ const TableProduct: React.FC = () => {
   };
 
   //----------------------------------------------------------------------------
-  const fetchProducts = async (
-    page: number = 1,
-    pageSize: number = defaultPageSize
-  ) => {
+  const fetchProducts = async () => {
     try {
-      const params = {
-        size: pageSize,
-        page: page,
-      };
-      const response = await apiGetMachine(params);
+
+      const response = await apiGetMachineNoPaging();
 
       if (response && response.status === 200) {
-        setProducts(response.data.items);
-        setPagination((prev) => ({
-          ...prev,
-          total: response.data.total,
-          current: response.data.page,
-          pageSize: response.data.size,
-        }));
+        setProducts(response.data);
       } else {
         //lỗi show thông báo lỗi
         toast.error(response.Error);
@@ -93,7 +81,7 @@ const TableProduct: React.FC = () => {
   };
 
   useEffect(() => {
-    fetchProducts(pagination.current, pagination.pageSize);
+    fetchProducts();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -116,7 +104,9 @@ const TableProduct: React.FC = () => {
       current: page,
       pageSize: pageSize,
     }));
-    fetchProducts(page, pageSize);
+    if (pagination.pageSize !== pagination?.pageSize) {
+      setProducts([]);
+    }
   };
 
   const customPagination = {
@@ -141,12 +131,12 @@ const TableProduct: React.FC = () => {
 
   const filteredRows = products
     ?.filter((item) => item.name?.toLowerCase().includes(query.toLowerCase()))
-    .filter((item) =>
+    ?.filter((item) =>
       selectedDate
         ? moment(item.createDate).format("DD/MM/YYYY") === selectedDate
         : true
     );
-
+    console.log(filteredRows)
   const items: MenuProps["items"] = [
     {
       key: "1",
@@ -168,9 +158,7 @@ const TableProduct: React.FC = () => {
   const columns: ColumnsType<ProductAdmin> = [
     {
       title: (
-        <div
-          style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}
-        >
+        <div style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}>
           Tên máy
         </div>
       ),
@@ -180,9 +168,7 @@ const TableProduct: React.FC = () => {
     },
     {
       title: (
-        <div
-          style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}
-        >
+        <div style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}>
           Hình máy
         </div>
       ),
@@ -206,9 +192,7 @@ const TableProduct: React.FC = () => {
     },
     {
       title: (
-        <div
-          style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}
-        >
+        <div style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}>
           Số lượng
         </div>
       ),
@@ -218,9 +202,7 @@ const TableProduct: React.FC = () => {
     },
     {
       title: (
-        <div
-          style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}
-        >
+        <div style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}>
           Độ ưu tiên
         </div>
       ),
@@ -235,7 +217,26 @@ const TableProduct: React.FC = () => {
       render: (status) => (status === "Available" ? "Đang bán" : "Ngưng bán"),
     },
     {
-      title: "Ngày tạo",
+      title: (
+        <div
+          style={{
+            textAlign: "center",
+            fontSize: "16px",
+            fontWeight: "bold",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          Ngày tạo
+          <DatePicker
+            onChange={handleDateChange}
+            style={{ marginLeft: 8, width: "50%" }}
+            format={dateFormatList}
+            placeholder="Chọn ngày"
+          />
+        </div>
+      ),
       dataIndex: "createDate",
       render: (createDate) => formatDateFunc.formatDate(createDate),
       align: "center",

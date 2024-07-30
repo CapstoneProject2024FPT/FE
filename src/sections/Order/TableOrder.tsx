@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useEffect, useState } from "react";
 import type { MenuProps } from "antd";
 import type { TableProps, TablePaginationConfig } from "antd";
@@ -82,12 +83,16 @@ const TableOrder: React.FC = () => {
 
   const fetchOrder = async (
     page: number = 1,
-    pageSize: number = defaultPageSize
+    pageSize: number = defaultPageSize,
+    createDate = selectedCreateDate,
+    CompletedDate = selectedCompletedDate
   ) => {
     try {
       const params = {
         size: pageSize,
         page: page,
+        createDate: createDate,
+        CompletedDate: CompletedDate,
       };
       const response = await apiGetOrder(params);
 
@@ -143,8 +148,16 @@ const TableOrder: React.FC = () => {
     _date: any,
     dateString: string | string[]
   ) => {
-    setSelectedCreateDate(
-      Array.isArray(dateString) ? dateString[0] : dateString
+    let formattedDate = Array.isArray(dateString) ? dateString[0] : dateString;
+    if (formattedDate) {
+      formattedDate = moment(formattedDate, "DD/MM/YYYY").format("YYYY/MM/DD");
+    }
+    setSelectedCreateDate(formattedDate);
+    fetchOrder(
+      pagination.current,
+      pagination.pageSize,
+      formattedDate,
+      selectedCompletedDate
     );
   };
 
@@ -152,23 +165,19 @@ const TableOrder: React.FC = () => {
     _date: any,
     dateString: string | string[]
   ) => {
-    setSelectedCompletedDate(
-      Array.isArray(dateString) ? dateString[0] : dateString
+    let formattedDate = Array.isArray(dateString) ? dateString[0] : dateString;
+    if (formattedDate) {
+      formattedDate = moment(formattedDate, "DD/MM/YYYY").format("YYYY/MM/DD");
+    }
+    setSelectedCompletedDate(formattedDate);
+    fetchOrder(
+      pagination.current,
+      pagination.pageSize,
+      selectedCreateDate,
+      formattedDate
     );
   };
   const dateFormatList = ["DD/MM/YYYY", "DD/MM/YY", "DD-MM-YYYY", "DD-MM-YY"];
-  const filteredRows = orders
-    ?.filter((item) =>
-      selectedCreateDate
-        ? moment(item.createDate).format("DD/MM/YYYY") === selectedCreateDate
-        : true
-    )
-    .filter((item) =>
-      selectedCompletedDate
-        ? moment(item.completedDate).format("DD/MM/YYYY") ===
-          selectedCompletedDate
-        : true
-    );
   const items: MenuProps["items"] = [
     {
       key: "1",
@@ -352,7 +361,7 @@ const TableOrder: React.FC = () => {
       <Table
         columns={columns}
         rowKey={(record) => record.orderId}
-        dataSource={filteredRows}
+        dataSource={orders}
         pagination={customPagination}
         loading={loading}
         onChange={(pagination) =>
