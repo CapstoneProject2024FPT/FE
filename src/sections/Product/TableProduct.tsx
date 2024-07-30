@@ -36,7 +36,7 @@ const TableProduct: React.FC = () => {
   const [selectedData, setSelectedData] = useState<ProductAdmin | null>(null);
 
   //api
-  const { apiGetMachine, apiGetMachineNoPaging, loading } = MachineryApi();
+  const { apiGetMachineNoPaging, loading } = MachineryApi();
 
   //modal popup
   const handleActionDetail = (record: ProductAdmin) => {
@@ -66,7 +66,6 @@ const TableProduct: React.FC = () => {
   //----------------------------------------------------------------------------
   const fetchProducts = async () => {
     try {
-
       const response = await apiGetMachineNoPaging();
 
       if (response && response.status === 200) {
@@ -138,7 +137,7 @@ const TableProduct: React.FC = () => {
         ? moment(item.createDate).format("DD/MM/YYYY") === selectedDate
         : true
     );
-    console.log(filteredRows)
+  console.log(filteredRows);
   const items: MenuProps["items"] = [
     {
       key: "1",
@@ -160,7 +159,9 @@ const TableProduct: React.FC = () => {
   const columns: ColumnsType<ProductAdmin> = [
     {
       title: (
-        <div style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}>
+        <div
+          style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}
+        >
           Tên máy
         </div>
       ),
@@ -170,7 +171,9 @@ const TableProduct: React.FC = () => {
     },
     {
       title: (
-        <div style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}>
+        <div
+          style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}
+        >
           Hình máy
         </div>
       ),
@@ -194,7 +197,9 @@ const TableProduct: React.FC = () => {
     },
     {
       title: (
-        <div style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}>
+        <div
+          style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}
+        >
           Số lượng
         </div>
       ),
@@ -204,7 +209,9 @@ const TableProduct: React.FC = () => {
     },
     {
       title: (
-        <div style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}>
+        <div
+          style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}
+        >
           Độ ưu tiên
         </div>
       ),
