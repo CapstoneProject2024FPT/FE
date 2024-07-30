@@ -100,6 +100,14 @@ const TableRequestWarranty: React.FC = () => {
       render: (createDate) => formatDateFunc.formatDateTime(createDate),
     },
     {
+      title: "Ngày hoàn thành",
+      dataIndex: "completionDate",
+      render: (completionDate) =>
+        completionDate
+          ? formatDateFunc.formatDateTime(completionDate)
+          : "-------",
+    },
+    {
       title: "Hành Động",
       key: "operation",
       render: (record) => (

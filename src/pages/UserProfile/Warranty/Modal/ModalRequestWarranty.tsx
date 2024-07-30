@@ -77,7 +77,7 @@ export default function ModalTransactionDetail({
           reset();
           onClose();
         } else {
-          toast.error("Có lỗi tạo yêu cầu bảo hành");
+          toast.error(response.Error);
           onClose();
         }
       }

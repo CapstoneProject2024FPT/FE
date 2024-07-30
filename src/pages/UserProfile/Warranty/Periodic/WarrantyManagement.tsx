@@ -19,17 +19,20 @@ import {
   MenuItem,
   TablePagination,
 } from "@mui/material";
-import { ApiWarranty } from "../../../api/services/apiWarranty";
+import { ApiWarranty } from "../../../../api/services/apiWarranty";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import {
   StatusType,
+  WarrantyDetailProps,
   WarrantyProps,
   WarrantyPropsById,
   warrantyStatusMapping,
-} from "../../../models/warranty";
-import { formatDateFunc } from "../../../utils/fn";
-import EmptyOrder from "../../../components/EmptyOrder";
-import ModalTransactionDetail from "./Modal/ModalRequestWarranty";
+} from "../../../../models/warranty";
+import { formatDateFunc } from "../../../../utils/fn";
+import EmptyOrder from "../../../../components/EmptyOrder";
+import ModalTransactionDetail from "../Modal/ModalRequestWarranty";
+import { useNavigate } from "react-router-dom";
+import config from "../../../../configs";
 
 const getStatusStyles = (status: string) => {
   switch (status) {
@@ -57,7 +60,11 @@ function Row(props: { row: WarrantyProps }) {
   const [openRequestWarranty, setOpenRequestWarranty] =
     useState<boolean>(false);
   const [selectWarranty, setSelectWarranty] = useState<WarrantyProps>();
+  const navigate = useNavigate();
 
+  const handleNavigateId = (record: WarrantyDetailProps) => {
+    navigate(config.routes.maintenancePeriodic.replace(":id", record.id));
+  };
   const fetchWarrantyById = async () => {
     if (row) {
       const response = await apiGetWarrantyById(row.id);
@@ -102,8 +109,9 @@ function Row(props: { row: WarrantyProps }) {
         </TableCell>
         <TableCell align="right">{row.inventory.serialNumber}</TableCell>
         <TableCell align="right">{row.inventory.machinery.name}</TableCell>
-        <TableCell align="right">{`${date.getDate()}/${date.getMonth() + 1
-          }/${date.getFullYear()}`}</TableCell>
+        <TableCell align="right">{`${date.getDate()}/${
+          date.getMonth() + 1
+        }/${date.getFullYear()}`}</TableCell>
         <TableCell align="center">
           <IconButton
             aria-label="more actions"
@@ -167,7 +175,6 @@ function Row(props: { row: WarrantyProps }) {
                       </TableCell>
                       <TableCell align="right">
                         {detail.status === StatusType.PROCESS && (
-
                           <Button
                             variant="contained"
                             color="primary"
@@ -176,6 +183,9 @@ function Row(props: { row: WarrantyProps }) {
                             Hủy
                           </Button>
                         )}
+                        <Button onClick={() => handleNavigateId(detail)}>
+                          Chi tiết
+                        </Button>
                       </TableCell>
                     </TableRow>
                   ))}
