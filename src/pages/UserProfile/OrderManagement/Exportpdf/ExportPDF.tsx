@@ -58,10 +58,26 @@ const styles = StyleSheet.create({
     top: "25%",
     left: "25%",
     transform: "translate(-50%, -50%)",
-    opacity: 0.2, // Adjust opacity to make the logo faded
-    width: "80%", // Adjust size as needed
+    opacity: 0.2,
+    width: "80%",
     height: "auto",
     zIndex: 0,
+  },
+  signatureSection: {
+    marginTop: 50,
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-between",
+  },
+  signatureBox: {
+    width: "45%",
+    textAlign: "center",
+  },
+  signatureText: {
+    marginTop: 70,
+    fontSize: 12,
+    borderTop: "1px solid #000",
+    paddingTop: 5,
   },
 });
 
@@ -134,6 +150,20 @@ const ExportPDFDocument = ({ row }: { row: OrderProps }) => {
                 {formatMoney(totalAmount) || ""}
               </Text>
             </View>
+          </View>
+        </View>
+        <View style={styles.signatureSection}>
+          <View style={styles.signatureBox}>
+            <Text style={{
+              marginTop: 93.5,
+              fontSize: 12,
+              borderTop: "1px solid #000",
+              paddingTop: 5,
+            }}>Khách hàng</Text>
+          </View>
+          <View style={styles.signatureBox}>
+            <Text>Ngày ký: ....../......./............</Text>
+            <Text style={styles.signatureText}>Người bán hàng</Text>
           </View>
         </View>
       </Page>
