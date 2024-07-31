@@ -87,7 +87,7 @@ const Row = (props: {
     }
     onCancelOrder(row.orderId);
     handleCloseMenu();
-    handleSendEmail(isSucess, email, username)
+    handleSendEmail(isSucess, email, username);
   };
 
   const handleOpenMenu = (event: React.MouseEvent<HTMLElement>) => {
@@ -135,7 +135,6 @@ const Row = (props: {
     return `${mins}:${secs < 10 ? "0" : ""}${secs}`;
   };
 
-
   //vnreturn
   useEffect(() => {
     const queryParams = new URLSearchParams(location.search);
@@ -152,8 +151,8 @@ const Row = (props: {
           if (response.status === 200) {
             toast.success("Thanh toán thành công");
             // send mail for payment success
-            isSucess = true
-            handleSendEmail(isSucess, email, username)
+            isSucess = true;
+            handleSendEmail(isSucess, email, username);
           }
         } catch (error) {
           console.error("Error updating payment status:", error);
@@ -170,7 +169,7 @@ const Row = (props: {
         }
       }
       sessionStorage.removeItem("paymmentID");
-      isSucess = false
+      isSucess = false;
     };
 
     if (transactionId) {
@@ -236,7 +235,8 @@ const Row = (props: {
               <MenuItem onClick={handleCancelOrder}>Hủy đơn hàng</MenuItem>
             )}
             <MenuItem onClick={handleDetailOrder}>Chi tiết đơn hàng</MenuItem>
-            {(row.status === StatusType.COMPLETED || row.status === StatusType.PAID) && (
+            {(row.status === StatusType.COMPLETED ||
+              row.status === StatusType.PAID) && (
               <MenuItem>
                 <ExportPDF row={row} />
               </MenuItem>
@@ -282,7 +282,10 @@ const Row = (props: {
                     <TableRow key={product.orderDetailId}>
                       <TableCell>
                         <Link
-                          to={config.routes.productDetail.replace(":id", product.productId)}
+                          to={config.routes.productDetail.replace(
+                            ":id",
+                            product.productId
+                          )}
                           style={{ textDecoration: "none", color: "black" }}
                         >
                           {product.productName}
@@ -391,9 +394,9 @@ const OrderManagement: React.FC = () => {
           note,
         });
         fetchOrders();
-        toast.success("Đơn hàng đã được hủy thành công");
+        toast.success(config.MessageNotice.CancelOrderSuccess);
       } catch (error) {
-        toast.error("Có lỗi xảy ra khi hủy đơn hàng");
+        toast.error(config.MessageNotice.CancelOrderFailed);
         console.log(error);
       } finally {
         handleCloseDialog();
@@ -413,16 +416,19 @@ const OrderManagement: React.FC = () => {
           apiCancelOrder({
             orderId: order.orderId,
             status: "Canceled",
-            note: "Đơn hàng đã bị hủy do quá hạn thời gian thanh toán",
+            note: config.MessageNotice.ReasonCancel,
           })
             .then(() => {
               toast.success(
-                `Đơn hàng ${order.invoiceCode} đã bị hủy do quá hạn thời gian thanh toán`
+                config.MessageNotice.CancelOrderSuccess2.replace(
+                  "invoiceCode",
+                  order.invoiceCode
+                )
               );
               fetchOrders();
             })
             .catch((error) => {
-              toast.error("Có lỗi xảy ra khi hủy đơn hàng");
+              toast.error(config.MessageNotice.CancelOrderFailed);
               console.log(error);
             });
         }

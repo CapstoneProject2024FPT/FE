@@ -2,6 +2,7 @@ import { axiosPublic } from "../axiosInstance";
 import { ORIGIN } from "../pathApiName";
 import { useState } from "react";
 import axios from "axios";
+import config from "../../configs";
 
 export const ApiOrigin = () => {
   const [loading, setLoading] = useState(false);
@@ -16,7 +17,7 @@ export const ApiOrigin = () => {
       if (axios.isAxiosError(error) && error.response) {
         return error.response.data;
       } else {
-        return { statusCode: 500, Error: "Internal Server Error" };
+        return { statusCode: 500, Error: config.MessageNotice.Error500 };
       }
     } finally {
       setLoading(false);

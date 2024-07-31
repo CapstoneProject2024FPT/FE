@@ -3,6 +3,7 @@ import { RANK, RANK_ID } from "../pathApiName";
 import { useState } from "react";
 import axios from "axios";
 import { rankProps } from "../../models/rank";
+import config from "../../configs";
 
 export const ApiRank = () => {
   const [loading, setLoading] = useState(false);
@@ -19,7 +20,7 @@ export const ApiRank = () => {
       if (axios.isAxiosError(error) && error.response) {
         return error.response.data;
       } else {
-        return { statusCode: 500, Error: "Lỗi lấy dữ liệu" };
+        return { statusCode: 500, Error: config.MessageNotice.Error500 };
       }
     } finally {
       setLoading(false);
@@ -41,7 +42,7 @@ export const ApiRank = () => {
       if (axios.isAxiosError(error) && error.response) {
         return error.response.data;
       } else {
-        return { statusCode: 500, Error: "Lỗi lấy dữ liệu" };
+        return { statusCode: 500, Error: config.MessageNotice.Error500 };
       }
     } finally {
       setLoading(false);
@@ -60,7 +61,7 @@ export const ApiRank = () => {
       if (axios.isAxiosError(error) && error.response) {
         return error.response.data;
       } else {
-        return { statusCode: 500, Error: "Lỗi lấy dữ liệu" };
+        return { statusCode: 500, Error: config.MessageNotice.Error500 };
       }
     } finally {
       setLoading(false);
@@ -79,7 +80,7 @@ export const ApiRank = () => {
       if (axios.isAxiosError(error) && error.response) {
         return error.response.data;
       } else {
-        return { statusCode: 500, Error: "Lỗi lấy dữ liệu" };
+        return { statusCode: 500, Error: config.MessageNotice.Error500 };
       }
     } finally {
       setLoading(false);

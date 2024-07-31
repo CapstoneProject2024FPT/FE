@@ -38,7 +38,6 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { handleSendEmail } from "../../../utils/sendEmail";
 import { useAuthContext } from "../../../context/AuthContext";
 
-
 // ----------------------------------------------------------------------
 
 const PAYMENT_OPTIONS: PaymentOption[] = [
@@ -110,7 +109,7 @@ const CheckoutPayment: React.FC<checkoutPaymentProps> = ({
           if (response.status === 200) {
             navigate(config.routes.paymentSuccessful);
             //handle send email
-            isSucess = true
+            isSucess = true;
             handleSendEmail(isSucess, email, username);
           }
         } catch (error) {
@@ -182,8 +181,6 @@ const CheckoutPayment: React.FC<checkoutPaymentProps> = ({
               accountId: authUser,
             };
 
-            console.log(paramPayment);
-
             const responsePayment = await apiPayment(paramPayment);
             sessionStorage.setItem(
               "paymmentID",
@@ -194,7 +191,7 @@ const CheckoutPayment: React.FC<checkoutPaymentProps> = ({
               window.location.href = responsePayment.data.url;
             } else {
               navigate(config.routes.paymentFailure);
-              toast.error("Khởi tạo vnpay lỗi");
+              toast.error(config.MessageNotice.CreateVnpayFailed);
             }
           } else {
             navigate(config.routes.home);
@@ -205,7 +202,7 @@ const CheckoutPayment: React.FC<checkoutPaymentProps> = ({
         }
       }
     } catch (error) {
-      toast.error("Xảy ra lỗi trong quá trình tạo đơn hàng");
+      toast.error(config.MessageNotice.CreateOrderFailed);
       console.error(error);
     }
   };

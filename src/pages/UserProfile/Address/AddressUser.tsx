@@ -8,6 +8,7 @@ import { addressProps } from "../../../models/address";
 import { Button } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
 import { formatAddress } from "../../../utils/fn";
+import config from "../../../configs";
 
 // ----------------------------------------------------------------------
 
@@ -51,7 +52,7 @@ export default function UserAddress() {
 
   const onCreateSuccess = () => {
     handleClose();
-    toast.success("Tạo địa chỉ mới thành công");
+    toast.success(config.MessageNotice.CreateAddressSuccess);
     fetchListAddress();
   };
   return (

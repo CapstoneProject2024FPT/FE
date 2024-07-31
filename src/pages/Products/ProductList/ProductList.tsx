@@ -35,7 +35,7 @@ const ProductList: React.FC = () => {
   const [products, setProducts] = useState<ProductAdmin[]>([]);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [filter, setFilter] = useState<ProductFilter>();
-  const { apiGetList, apiGetMachine } = MachineryApi();
+  const { apiGetList } = MachineryApi();
   const [currentPage, setCurrentPage] = useState(1);
   const productsPerPage = 8;
   const { apiGetOrigin } = ApiOrigin();
@@ -90,11 +90,9 @@ const ProductList: React.FC = () => {
   };
 
   const fetchProductListName = async () => {
-    const params = {
-      Status: "Available",
-    };
-    const response = await apiGetMachine(params);
-    const productName = response.data.items.map(
+    const params = {};
+    const response = await apiGetList(params);
+    const productName = response.data.map(
       (productName: { name: any }) => productName.name
     );
     const productQuantity = response.data;
@@ -159,7 +157,7 @@ const ProductList: React.FC = () => {
   const getProductFilteredData = async (params: any) => {
     try {
       const data = await apiGetList(params);
-      setProducts(data.items);
+      setProducts(data.data);
     } catch (error) {
       console.error("lỗi");
     }
@@ -335,7 +333,7 @@ const ProductList: React.FC = () => {
 
   const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
 
-  const currentProducts = products.slice(
+  const currentProducts = products?.slice(
     indexOfFirstProduct,
     indexOfLastProduct
   );

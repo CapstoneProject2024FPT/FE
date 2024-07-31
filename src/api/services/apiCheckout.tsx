@@ -4,6 +4,7 @@ import { useState } from "react";
 import axios from "axios";
 import { CheckOutProp } from "../../models/checkout";
 import { paymentProps } from "../../models/payment";
+import config from "../../configs";
 
 export const ApiCheckout = () => {
   const [loading, setLoading] = useState(false);
@@ -20,7 +21,7 @@ export const ApiCheckout = () => {
       if (axios.isAxiosError(error) && error.response) {
         return error.response.data;
       } else {
-        return { statusCode: 500, Error: "Internal Server Error" };
+        return { statusCode: 500, Error: config.MessageNotice.Error500 };
       }
     } finally {
       setLoading(false);
@@ -39,7 +40,7 @@ export const ApiCheckout = () => {
       if (axios.isAxiosError(error) && error.response) {
         return error.response.data;
       } else {
-        return { statusCode: 500, Error: "Internal Server Error" };
+        return { statusCode: 500, Error: config.MessageNotice.Error500 };
       }
     } finally {
       setLoading(false);
@@ -64,7 +65,7 @@ export const ApiCheckout = () => {
       if (axios.isAxiosError(error) && error.response) {
         return error.response.data;
       } else {
-        return { statusCode: 500, Error: "Internal Server Error" };
+        return { statusCode: 500, Error: config.MessageNotice.Error500 };
       }
     } finally {
       setLoading(false);

@@ -32,6 +32,7 @@ import {
 } from "../../../../models/address";
 import { useEffect, useState } from "react";
 import { ApiAddress } from "../../../../api/services/apiAddress";
+import { toast } from "react-toastify";
 
 // ----------------------------------------------------------------------
 
@@ -88,6 +89,10 @@ export default function ModalCreateAddress({
       const response = await apiCreateAddress(data);
       if (response.status === 200) {
         if (onSuccess) onSuccess();
+      } else if (response.StatusCode === 500) {
+        toast.error(response.Error);
+      } else {
+        toast.error(response.Error);
       }
     } catch (error) {
       onClose();

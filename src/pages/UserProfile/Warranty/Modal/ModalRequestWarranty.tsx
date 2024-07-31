@@ -20,6 +20,7 @@ import { CreateWarranty, WarrantyProps } from "../../../../models/warranty";
 import { formatAddress } from "../../../../utils/fn";
 import { toast } from "react-toastify";
 import { ApiWarranty } from "../../../../api/services/apiWarranty";
+import config from "../../../../configs";
 
 // _mock
 
@@ -73,7 +74,7 @@ export default function ModalTransactionDetail({
 
         const response = await apiCreateRequestWaranty(params);
         if (response.status === 200) {
-          toast.success("Tạo bảo hành thành công");
+          toast.success(config.MessageNotice.RequestWarrantySuccess);
           reset();
           onClose();
         } else {
