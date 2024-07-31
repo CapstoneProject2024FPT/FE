@@ -24,6 +24,7 @@ import { MachineryApi } from "../../../api/services/apiMachinery";
 import Zoom from "../../../components/zoomImageHover";
 import { ProductDetailProps } from "../../../models/products";
 import { formatMoney } from "../../../utils/fn";
+import config from "../../../configs";
 
 const Detail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -35,7 +36,7 @@ const Detail: React.FC = () => {
   const { apiGetMachineryID } = MachineryApi();
   // const [initQuantity, setInitQuantity] = useState<number>(0);
   // let restQuantity = 0;
-  let initQuantity = 0
+  let initQuantity = 0;
   const fetchProducts = async () => {
     try {
       if (id) {
@@ -48,15 +49,19 @@ const Detail: React.FC = () => {
           );
           if (existProduct !== -1) {
             initQuantity = parseProduct[existProduct].currentQuantities;
-            console.log("parseProduct[existProduct].currentQuantities: ", initQuantity);
           }
         }
         const response = await apiGetMachineryID(id);
         if (response.status === 200) {
           setProduct(response.data);
-          setSelectProductQuantity(remainingQuantity(response.data.quantity?.Available, initQuantity) || 0);
+          setSelectProductQuantity(
+            remainingQuantity(
+              response.data.quantity?.Available,
+              initQuantity
+            ) || 0
+          );
         } else {
-          toast.error("Có lỗi trong quá trình lấy");
+          toast.error(config.MessageNotice.Error500);
         }
       } else {
         throw new Error("Loi");
@@ -66,6 +71,7 @@ const Detail: React.FC = () => {
     }
   };
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const remainingQuantity = (quantityStock: any, quantityInCart: any) => {
     return quantityStock - quantityInCart;
   };
@@ -83,7 +89,7 @@ const Detail: React.FC = () => {
 
   const addToCart = () => {
     if (selectProductQuantity === 0) {
-      toast.error("Sản phẩm hiện không còn");
+      toast.error(config.MessageNotice.OutOfStock);
       return;
     }
     const existCart = localStorage.getItem("cart");
@@ -95,7 +101,7 @@ const Detail: React.FC = () => {
       );
       if (existProduct !== -1) {
         if (selectProductQuantity <= 0) {
-          toast.error("Sản phẩm hiện không còn");
+          toast.error(config.MessageNotice.OutOfStock);
           return;
         } else {
           parseProduct[existProduct].currentQuantities += currentQuantities;
@@ -103,13 +109,11 @@ const Detail: React.FC = () => {
       } else {
         parseProduct.push(productQuantity);
       }
-      toast.success("Thêm sản phẩm thành công");
+      toast.success(config.MessageNotice.AddProductToCartSuccess);
       localStorage.setItem("cart", JSON.stringify(parseProduct));
-
-      console.log("parseProduct[existProduct].currentQuantities: ");
     } else {
       localStorage.setItem("cart", JSON.stringify([productQuantity]));
-      toast.success("Thêm sản phẩm thành công");
+      toast.success(config.MessageNotice.AddProductToCartSuccess);
     }
 
     // Update the selectProductQuantity state

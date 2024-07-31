@@ -8,6 +8,7 @@ import {
 import { useState } from "react";
 import axios from "axios";
 import { CreateWarranty } from "../../models/warranty";
+import config from "../../configs";
 
 export const ApiWarranty = () => {
   const [loading, setLoading] = useState(false);
@@ -27,7 +28,7 @@ export const ApiWarranty = () => {
       if (axios.isAxiosError(error) && error.response) {
         return error.response.data;
       } else {
-        return { statusCode: 500, Error: "Internal Server Error" };
+        return { statusCode: 500, Error: config.MessageNotice.Error500 };
       }
     } finally {
       setLoading(false);
@@ -47,7 +48,7 @@ export const ApiWarranty = () => {
       if (axios.isAxiosError(error) && error.response) {
         return error.response.data;
       } else {
-        return { statusCode: 500, Error: "Internal Server Error" };
+        return { statusCode: 500, Error: config.MessageNotice.Error500 };
       }
     } finally {
       setLoading(false);
@@ -69,7 +70,7 @@ export const ApiWarranty = () => {
       if (axios.isAxiosError(error) && error.response) {
         return error.response.data;
       } else {
-        return { statusCode: 500, Error: "Internal Server Error" };
+        return { statusCode: 500, Error: config.MessageNotice.Error500 };
       }
     } finally {
       setLoading(false);
@@ -89,7 +90,7 @@ export const ApiWarranty = () => {
       if (axios.isAxiosError(error) && error.response) {
         return error.response.data;
       } else {
-        return { statusCode: 500, Error: "Internal Server Error" };
+        return { statusCode: 500, Error: config.MessageNotice.Error500 };
       }
     } finally {
       setLoading(false);
@@ -109,7 +110,7 @@ export const ApiWarranty = () => {
       if (axios.isAxiosError(error) && error.response) {
         return error.response.data;
       } else {
-        return { statusCode: 500, Error: "Internal Server Error" };
+        return { statusCode: 500, Error: config.MessageNotice.Error500 };
       }
     } finally {
       setLoading(false);
@@ -129,7 +130,7 @@ export const ApiWarranty = () => {
       if (axios.isAxiosError(error) && error.response) {
         return error.response.data;
       } else {
-        return { statusCode: 500, Error: "Internal Server Error" };
+        return { statusCode: 500, Error: config.MessageNotice.Error500 };
       }
     } finally {
       setLoading(false);
@@ -145,17 +146,20 @@ export const ApiWarranty = () => {
   const apiCancelWarrantyDetail = async (params: CancelWarrantyProps) => {
     setLoading(true);
     try {
-      const response = await axiosPublic.put(`${WARRANTY_DETAIL}/${params.warrantyId}`, {
-        status: params.status,
-        description: params.description,
-      });
+      const response = await axiosPublic.put(
+        `${WARRANTY_DETAIL}/${params.warrantyId}`,
+        {
+          status: params.status,
+          description: params.description,
+        }
+      );
       return response;
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       if (axios.isAxiosError(error) && error.response) {
         return error.response.data;
       } else {
-        return { statusCode: 500, Error: "Internal Server Error" };
+        return { statusCode: 500, Error: config.MessageNotice.Error500 };
       }
     } finally {
       setLoading(false);
@@ -170,6 +174,6 @@ export const ApiWarranty = () => {
     apiGetWarantyManager,
     apiGetWarantyPeriodic,
     apiGetWarrantyDetailById,
-    apiCancelWarrantyDetail
+    apiCancelWarrantyDetail,
   };
 };

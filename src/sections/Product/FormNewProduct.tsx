@@ -37,6 +37,8 @@ import { OriginProps } from "../../models/origin";
 import { GetMachineComponents } from "../../models/machineComponent";
 import ModalAddComponentOfMachineTable from "./PopupAddMachine/ModalAddComponent";
 import { Divider } from "antd";
+import { useNavigate } from "react-router-dom";
+import config from "../../configs";
 
 const LabelStyle = styled(Typography)(({ theme }) => ({
   ...theme.typography.subtitle2,
@@ -49,6 +51,7 @@ export default function ProductNewEditForm() {
   const { getCategoryChild } = CategoryApi();
   const { getBrand } = BrandApi();
   const { apiGetOrigin } = ApiOrigin();
+  const navigate = useNavigate();
 
   const minTimeWarranty = 1;
   const maxTimeWarranty = 3;
@@ -202,10 +205,11 @@ export default function ProductNewEditForm() {
         const response = await apiAddMachinery(params);
 
         if (response.status === 200) {
+          setSelectedComponents([]);
+          reset();
           toast.success("Thêm máy thành công");
+          navigate(config.adminRoutes.product);
         }
-        setSelectedComponents([]);
-        reset();
       } else {
         toast.error("Thêm bộ phận máy");
       }
@@ -472,6 +476,7 @@ export default function ProductNewEditForm() {
           handleCloseAddComponent={() => setShowModal(!showModal)}
           onSubmit={handleModalSubmit}
           open={showModal}
+          selectBefore={selectedComponents}
         />
       )}
     </FormProvider>

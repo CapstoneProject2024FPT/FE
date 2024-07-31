@@ -3,6 +3,7 @@ import { axiosPublic } from "../axiosInstance";
 import { LOGIN, REGISTER } from "../pathApiName";
 import { useState } from "react";
 import axios from "axios";
+import config from "../../configs";
 
 export const AuthApi = () => {
   const [loading, setLoading] = useState(false);
@@ -18,7 +19,7 @@ export const AuthApi = () => {
       if (axios.isAxiosError(error) && error.response) {
         return error.response.data;
       } else {
-        return { statusCode: 500, Error: "Internal Server Error" };
+        return { statusCode: 500, Error: config.MessageNotice.Error500 };
       }
     } finally {
       setLoading(false);
@@ -34,7 +35,7 @@ export const AuthApi = () => {
       if (axios.isAxiosError(error) && error.response) {
         return error.response.data;
       } else {
-        return { statusCode: 500, Error: "Internal Server Error" };
+        return { statusCode: 500, Error: config.MessageNotice.Error500 };
       }
     }
   };

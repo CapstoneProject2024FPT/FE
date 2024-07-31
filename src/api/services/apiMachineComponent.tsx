@@ -10,6 +10,7 @@ import {
   machineComponentProps,
   UpdateProductComponent,
 } from "../../models/machineComponent";
+import config from "../../configs";
 
 export const MachineryComponentApi = () => {
   const [loading, setLoading] = useState(false);
@@ -23,7 +24,7 @@ export const MachineryComponentApi = () => {
       if (axios.isAxiosError(error) && error.response) {
         return error.response.data;
       } else {
-        return { statusCode: 500, Error: "Gặp vấn đề quá trình lấy dư liệu" };
+        return { statusCode: 500, Error: config.MessageNotice.Error500 };
       }
     } finally {
       setLoading(false);
@@ -39,7 +40,7 @@ export const MachineryComponentApi = () => {
       if (axios.isAxiosError(error) && error.response) {
         return error.response.data;
       } else {
-        return { statusCode: 500, Error: "Gặp vấn đề quá trình lấy dư liệu" };
+        return { statusCode: 500, Error: config.MessageNotice.Error500 };
       }
     } finally {
       setLoading(false);
@@ -57,7 +58,7 @@ export const MachineryComponentApi = () => {
       if (axios.isAxiosError(error) && error.response) {
         return error.response.data;
       } else {
-        return { statusCode: 500, Error: "Gặp vấn đề quá trình lấy dư liệu" };
+        return { statusCode: 500, Error: config.MessageNotice.Error500 };
       }
     } finally {
       setLoading(false);
@@ -75,7 +76,7 @@ export const MachineryComponentApi = () => {
       if (axios.isAxiosError(error) && error.response) {
         return error.response.data;
       } else {
-        return { statusCode: 500, Error: "Gặp vấn đề quá trình lấy dư liệu" };
+        return { statusCode: 500, Error: config.MessageNotice.Error500 };
       }
     } finally {
       setLoading(false);
@@ -97,7 +98,7 @@ export const MachineryComponentApi = () => {
       if (axios.isAxiosError(error) && error.response) {
         return error.response.data;
       } else {
-        return { statusCode: 500, Error: "Gặp vấn đề quá trình lấy dư liệu" };
+        return { statusCode: 500, Error: config.MessageNotice.Error500 };
       }
     } finally {
       setLoading(false);
