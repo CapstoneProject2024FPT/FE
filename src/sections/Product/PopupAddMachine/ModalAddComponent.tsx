@@ -20,20 +20,22 @@ interface AddComponentOfMachine {
   open: boolean;
   handleCloseAddComponent: VoidFunction;
   onSubmit: (selectedComponents: GetMachineComponents[]) => void;
+  selectBefore: GetMachineComponents[];
 }
 const ModalAddComponentOfMachineTable: React.FC<AddComponentOfMachine> = ({
   open,
   handleCloseAddComponent,
   onSubmit,
+  selectBefore,
 }) => {
   const [components, setComponents] = useState<GetMachineComponents[]>([]);
-  const [chooseComponents, setChooseComponents] = useState<
-    GetMachineComponents[]
-  >([]);
+  const [chooseComponents, setChooseComponents] =
+    useState<GetMachineComponents[]>(selectBefore);
   const [pagination, setPagination] = useState({
     current: 1,
     pageSize: pageSize,
   });
+
   //search
   const [query, setQuery] = useState<string>("");
   const debounceQuery = useDebounce({ value: query, delay: 300 });

@@ -9,6 +9,7 @@ import {
 } from "../pathApiName";
 import { useState } from "react";
 import { CategoryProps } from "../../models/category";
+import config from "../../configs";
 
 export const CategoryComponentApi = () => {
   const [loading, setLoading] = useState(false);
@@ -23,7 +24,7 @@ export const CategoryComponentApi = () => {
       if (axios.isAxiosError(error) && error.response) {
         return error.response.data;
       } else {
-        return { statusCode: 500, Error: "Internal Server Error" };
+        return { statusCode: 500, Error: config.MessageNotice.Error500 };
       }
     } finally {
       setLoading(false);
@@ -40,7 +41,7 @@ export const CategoryComponentApi = () => {
       if (axios.isAxiosError(error) && error.response) {
         return error.response.data;
       } else {
-        return { statusCode: 500, Error: "Internal Server Error" };
+        return { statusCode: 500, Error: config.MessageNotice.Error500 };
       }
     } finally {
       setLoading(false);
@@ -60,7 +61,7 @@ export const CategoryComponentApi = () => {
       if (axios.isAxiosError(error) && error.response) {
         return error.response.data;
       } else {
-        return { statusCode: 500, Error: "Internal Server Error" };
+        return { statusCode: 500, Error: config.MessageNotice.Error500 };
       }
     } finally {
       setLoading(false);
@@ -77,7 +78,7 @@ export const CategoryComponentApi = () => {
       if (axios.isAxiosError(error) && error.response) {
         return error.response.data;
       } else {
-        return { statusCode: 500, Error: "Internal Server Error" };
+        return { statusCode: 500, Error: config.MessageNotice.Error500 };
       }
     } finally {
       setLoading(false);
@@ -93,7 +94,7 @@ export const CategoryComponentApi = () => {
   //       if (axios.isAxiosError(error) && error.response) {
   //         return error.response.data;
   //       } else {
-  //         return { statusCode: 500, Error: "Internal Server Error" };
+  //         return { statusCode: 500, Error: config.MessageNotice.Error500 };
   //       }
   //     } finally {
   //       setLoading(false);
@@ -112,7 +113,7 @@ export const CategoryComponentApi = () => {
   //       if (axios.isAxiosError(error) && error.response) {
   //         return error.response.data;
   //       } else {
-  //         return { statusCode: 500, Error: "Internal Server Error" };
+  //         return { statusCode: 500, Error: config.MessageNotice.Error500 };
   //       }
   //     } finally {
   //       setLoading(false);
@@ -131,7 +132,7 @@ export const CategoryComponentApi = () => {
   //       if (axios.isAxiosError(error) && error.response) {
   //         return error.response.data;
   //       } else {
-  //         return { statusCode: 500, Error: "Internal Server Error" };
+  //         return { statusCode: 500, Error: config.MessageNotice.Error500 };
   //       }
   //     } finally {
   //       setLoading(false);
@@ -148,7 +149,7 @@ export const CategoryComponentApi = () => {
   //       if (axios.isAxiosError(error) && error.response) {
   //         return error.response.data;
   //       } else {
-  //         return { statusCode: 500, Error: "Internal Server Error" };
+  //         return { statusCode: 500, Error: config.MessageNotice.Error500 };
   //       }
   //     } finally {
   //       setLoading(false);

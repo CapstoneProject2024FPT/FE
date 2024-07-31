@@ -2,6 +2,7 @@ import { axiosPublic } from "../axiosInstance";
 import { STAFF, USER_BY_ROLE, USER_ID } from "../pathApiName";
 import { useState } from "react";
 import axios from "axios";
+import config from "../../configs";
 
 export const ApiAccount = () => {
   const [loading, setLoading] = useState(false);
@@ -22,7 +23,7 @@ export const ApiAccount = () => {
       if (axios.isAxiosError(error) && error.response) {
         return error.response.data;
       } else {
-        return { statusCode: 500, message: "Internal Server Error" };
+        return { statusCode: 500, Error: config.MessageNotice.Error500 };
       }
     } finally {
       setLoading(false);
@@ -42,7 +43,7 @@ export const ApiAccount = () => {
       if (axios.isAxiosError(error) && error.response) {
         return error.response.data;
       } else {
-        return { statusCode: 500, message: "Internal Server Error" };
+        return { statusCode: 500, Error: config.MessageNotice.Error500 };
       }
     } finally {
       setLoading(false);
@@ -71,7 +72,7 @@ export const ApiAccount = () => {
       if (axios.isAxiosError(error) && error.response) {
         return error.response.data;
       } else {
-        return { statusCode: 500, message: "Internal Server Error" };
+        return { statusCode: 500, Error: config.MessageNotice.Error500 };
       }
     } finally {
       setLoading(false);
@@ -100,7 +101,7 @@ export const ApiAccount = () => {
       if (axios.isAxiosError(error) && error.response) {
         return error.response.data;
       } else {
-        return { statusCode: 500, message: "Internal Server Error" };
+        return { statusCode: 500, Error: config.MessageNotice.Error500 };
       }
     } finally {
       setLoading(false);
@@ -125,7 +126,7 @@ export const ApiAccount = () => {
       if (axios.isAxiosError(error) && error.response) {
         return error.response.data;
       } else {
-        return { statusCode: 500, Error: "Internal Server Error" };
+        return { statusCode: 500, Error: config.MessageNotice.Error500 };
       }
     }
   };

@@ -2,6 +2,7 @@ import { axiosPublic } from "../axiosInstance";
 import { ADMIN_DASHBOARD, COUNTORDERS } from "../pathApiName";
 import { useState } from "react";
 import axios from "axios";
+import config from "../../configs";
 
 export const ApiAdminDashboard = () => {
   const [loading, setLoading] = useState(false);
@@ -17,7 +18,7 @@ export const ApiAdminDashboard = () => {
       if (axios.isAxiosError(error) && error.response) {
         return error.response.data;
       } else {
-        return { statusCode: 500, Error: "Gặp vấn đề quá trình lấy dư liệu" };
+        return { statusCode: 500, Error: config.MessageNotice.Error500 };
       }
     } finally {
       setLoading(false);
@@ -33,7 +34,7 @@ export const ApiAdminDashboard = () => {
       if (axios.isAxiosError(error) && error.response) {
         return error.response.data;
       } else {
-        return { statusCode: 500, Error: "Gặp vấn đề quá trình lấy dư liệu" };
+        return { statusCode: 500, Error: config.MessageNotice.Error500 };
       }
     } finally {
       setLoading(false);

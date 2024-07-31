@@ -3,6 +3,7 @@ import { GET_ADDRESS, GET_CITY, GET_DISTRICT, GET_WARD } from "../pathApiName";
 import { useState } from "react";
 import axios from "axios";
 import { addressForm } from "../../models/address";
+import config from "../../configs";
 
 export const ApiAddress = () => {
   const [loading, setLoading] = useState(false);
@@ -18,7 +19,7 @@ export const ApiAddress = () => {
       if (axios.isAxiosError(error) && error.response) {
         return error.response.data;
       } else {
-        return { statusCode: 500, Error: "Internal Server Error" };
+        return { statusCode: 500, Error: config.MessageNotice.Error500 };
       }
     } finally {
       setLoading(false);
@@ -37,7 +38,7 @@ export const ApiAddress = () => {
       if (axios.isAxiosError(error) && error.response) {
         return error.response.data;
       } else {
-        return { statusCode: 500, Error: "Internal Server Error" };
+        return { statusCode: 500, Error: config.MessageNotice.Error500 };
       }
     }
   };
@@ -54,7 +55,7 @@ export const ApiAddress = () => {
       if (axios.isAxiosError(error) && error.response) {
         return error.response.data;
       } else {
-        return { statusCode: 500, Error: "Internal Server Error" };
+        return { statusCode: 500, Error: config.MessageNotice.Error500 };
       }
     }
   };
@@ -72,7 +73,7 @@ export const ApiAddress = () => {
       if (axios.isAxiosError(error) && error.response) {
         return error.response.data;
       } else {
-        return { statusCode: 500, Error: "Internal Server Error" };
+        return { statusCode: 500, Error: config.MessageNotice.Error500 };
       }
     }
   };
@@ -86,7 +87,7 @@ export const ApiAddress = () => {
       if (axios.isAxiosError(error) && error.response) {
         return error.response.data;
       } else {
-        return { statusCode: 500, Error: "Internal Server Error" };
+        return { statusCode: 500, Error: config.MessageNotice.Error500 };
       }
     }
   };

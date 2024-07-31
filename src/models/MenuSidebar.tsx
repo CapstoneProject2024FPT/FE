@@ -1,11 +1,9 @@
-import { MenuProps } from "antd";
-
-type MenuItem = Required<MenuProps>["items"][number];
-
-export interface MenuSideBar {
-  label: React.ReactNode;
+export type CustomMenuItem = {
+  roles?: string[];
+  children?: CustomMenuItem[];
+} & {
   key: React.Key;
+  label: React.ReactNode;
   icon?: React.ReactNode;
-  children?: MenuItem[];
   type?: "group";
-}
+};

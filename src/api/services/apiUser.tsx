@@ -3,6 +3,7 @@ import { CHANGE_PASSWORD, CUSTOMER_PROFILE } from "../pathApiName";
 import { useState } from "react";
 import axios from "axios";
 import { staffUpdateProps, userPropUpdate } from "../../models/UserData";
+import config from "../../configs";
 
 export const CustomerApi = () => {
   const [loading, setLoading] = useState(false);
@@ -21,7 +22,7 @@ export const CustomerApi = () => {
       if (axios.isAxiosError(error) && error.response) {
         return error.response.data;
       } else {
-        return { statusCode: 500, message: "Internal Server Error" };
+        return { statusCode: 500, Error: config.MessageNotice.Error500 };
       }
     } finally {
       setLoading(false);
@@ -44,7 +45,7 @@ export const CustomerApi = () => {
       if (axios.isAxiosError(error) && error.response) {
         return error.response.data;
       } else {
-        return { statusCode: 500, message: "Internal Server Error" };
+        return { statusCode: 500, Error: config.MessageNotice.Error500 };
       }
     } finally {
       setLoading(false);
@@ -67,7 +68,7 @@ export const CustomerApi = () => {
       if (axios.isAxiosError(error) && error.response) {
         return error.response.data;
       } else {
-        return { statusCode: 500, message: "Internal Server Error" };
+        return { statusCode: 500, Error: config.MessageNotice.Error500 };
       }
     } finally {
       setLoading(false);
@@ -94,7 +95,7 @@ export const CustomerApi = () => {
       if (axios.isAxiosError(error) && error.response) {
         return error.response.data;
       } else {
-        return { statusCode: 500, message: "Internal Server Error" };
+        return { statusCode: 500, Error: config.MessageNotice.Error500 };
       }
     } finally {
       setLoading(false);
