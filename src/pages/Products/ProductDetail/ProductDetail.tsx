@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import {
   Box,
   Button,
@@ -19,24 +20,33 @@ import {
 } from "@mui/icons-material";
 import "./ProductDetail.scss";
 import { toast } from "react-toastify";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { MachineryApi } from "../../../api/services/apiMachinery";
 import Zoom from "../../../components/zoomImageHover";
 import { ProductDetailProps } from "../../../models/products";
 import { formatMoney } from "../../../utils/fn";
 import config from "../../../configs";
+import { ApiFavourite } from "../../../api/services/apiFavourite";
+import { useAuthContext } from "../../../context/AuthContext";
+import { FavoriteListProps } from "../../../models/favourite";
 
 const Detail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const [selectedImage, setSelectedImage] = useState<number>(0);
   const [currentQuantities, setCurrentQuantities] = useState<number>(1);
-  const [isRed, setIsRed] = useState(false);
   const [product, setProduct] = useState<ProductDetailProps>();
   const [selectProductQuantity, setSelectProductQuantity] = useState<number>(0);
   const { apiGetMachineryID } = MachineryApi();
-  // const [initQuantity, setInitQuantity] = useState<number>(0);
-  // let restQuantity = 0;
+  const { apiAddFavourite, apiGetFavourite, apiDeleteFavourite } =
+    ApiFavourite();
+  const { authUser } = useAuthContext();
+  const navigate = useNavigate();
+  const [favouriteList, setFavouriteList] = useState<FavoriteListProps>();
+  //favurite
+  const [isRed, setIsRed] = useState(false);
+
   let initQuantity = 0;
+
   const fetchProducts = async () => {
     try {
       if (id) {
@@ -71,6 +81,66 @@ const Detail: React.FC = () => {
     }
   };
 
+  //handleRemoveFavorite
+  const handleRemoveFavorite = async () => {
+    const isFavourite = favouriteList?.machinery.find(
+      (detail) => detail.id === product?.id
+    );
+
+    if (isFavourite) {
+      const response = await apiDeleteFavourite(isFavourite.id);
+      if (response.status === 200) {
+        toast.success(response.data);
+        GetFavourite();
+        handleRed();
+      }
+    }
+  };
+
+  //add favourite
+  const handleAddfavorite = async () => {
+    if (authUser) {
+      if (isRed) {
+        handleRemoveFavorite();
+        return;
+      } else {
+        if (product) {
+          const params = {
+            machineryId: product.id,
+          };
+          const response = await apiAddFavourite(params);
+          if (response.status === 200) {
+            toast.success(config.MessageNotice.FavouriteSucces);
+            GetFavourite();
+            handleRed();
+          }
+        }
+      }
+    } else {
+      localStorage.setItem("historyPath", location.pathname);
+      navigate(config.routes.login);
+    }
+  };
+
+  const GetFavourite = async () => {
+    const response = await apiGetFavourite();
+    if (response.status === 200) {
+      setFavouriteList(response.data);
+    }
+  };
+
+  const handleRed = () => {
+    const isFavourite = favouriteList?.machinery.some(
+      (detail) => detail.id === product?.id
+    );
+
+    if (isFavourite === true) {
+      setIsRed(true);
+    } else {
+      setIsRed(false);
+    }
+  };
+
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const remainingQuantity = (quantityStock: any, quantityInCart: any) => {
     return quantityStock - quantityInCart;
@@ -80,12 +150,20 @@ const Detail: React.FC = () => {
     fetchProducts();
     //scroll to top
     window.scrollTo(0, 0);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const handleClickButton = () => {
-    setIsRed(!isRed);
-  };
+  //get favourite
+  useEffect(() => {
+    if (authUser) {
+      GetFavourite();
+    }
+  }, [authUser]);
+
+  useEffect(() => {
+    if (favouriteList) {
+      handleRed();
+    }
+  }, [favouriteList]);
 
   const addToCart = () => {
     if (selectProductQuantity === 0) {
@@ -273,7 +351,7 @@ const Detail: React.FC = () => {
             <Box>
               <Typography variant="h4">{product?.name}</Typography>
             </Box>
-            <IconButton onClick={handleClickButton} aria-label="favourite">
+            <IconButton onClick={handleAddfavorite} aria-label="favourite">
               <FavoriteSharp style={buttonStyle} />
             </IconButton>
           </Box>

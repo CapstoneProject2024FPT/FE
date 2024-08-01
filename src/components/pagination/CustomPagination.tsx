@@ -35,6 +35,9 @@ const CustomPagination: React.FC<PaginationInterface> = ({
       sx={{ justifyContent: "center" }}
     >
       <Pagination
+        variant="outlined"
+        shape="rounded"
+        color="primary"
         count={pageCount}
         page={currentPage}
         onChange={handlePageChange}
