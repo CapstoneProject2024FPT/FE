@@ -16,6 +16,8 @@ export const MessageNotice = {
   CancelOrderFailed: "Có lỗi xảy ra khi hủy đơn hàng",
   ReasonCancel: "Đơn hàng đã bị hủy do quá hạn thời gian thanh toán",
   RequestWarrantySuccess: "Tạo bảo hành thành công",
+  FavouriteSucces: "Thêm vào danh sách yêu thích thành công",
+  FavouriteFailed: "Bỏ yêu thích thất bại",
 };
 
 export const AdminMessageNotice = {

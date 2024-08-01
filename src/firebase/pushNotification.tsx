@@ -10,7 +10,7 @@ export const requestNotificationPermission = async () => {
       });
       console.log("FCM Token:", token);
       // Send this token to your C# backend
-      // await sendTokenToBackend(token);
+      await sendTokenToBackend(token);
       return token;
     } else {
       console.log("Notification permission denied");
@@ -33,9 +33,9 @@ const sendTokenToBackend = async (token: string) => {
       body: JSON.stringify({ token }),
     });
     if (!response.ok) {
-      throw new Error("Failed to send token to backend");
+      throw new Error("Gửi lỗi");
     }
-    console.log("Token successfully sent to backend");
+    console.log("Gửi thành công");
   } catch (error) {
     console.error("Error sending token to backend:", error);
   }
