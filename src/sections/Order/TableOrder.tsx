@@ -17,7 +17,15 @@ import { formatDateFunc, formatMoney } from "../../utils/fn";
 import ModalDetailOrder from "./OrderModal/ModalDetailOrder";
 import ModalCancelOrder from "./OrderModal/ModalCancelOrder";
 import ModalDeliveryTask from "./OrderModal/ModalDeliveryTask";
-import { Box, Card, Divider, Stack, Typography } from "@mui/material";
+import {
+  Box,
+  Card,
+  Divider,
+  MenuItem,
+  Stack,
+  TextField,
+  Typography,
+} from "@mui/material";
 import { ApiAdminDashboard } from "../../api/services/apiAdminDashboard";
 import SquareIcon from "@mui/icons-material/Square";
 import moment from "moment";
@@ -44,6 +52,8 @@ const TableOrder: React.FC = () => {
   const [openTaskPopup, setOpenTaskPopup] = useState<boolean>(false);
   const [selectedData, setSelectedData] = useState<OrderProps | null>(null);
   const [orderCounts, setOrderCounts] = useState<OrderCount>();
+  const [selectStatus, setSelectStatus] = useState<string>("");
+  const [selectStatusUi, setSelectStatusUi] = useState<string>("");
 
   const { loading, apiGetOrder } = ApiOrder();
   const { apiGetCountOrders } = ApiAdminDashboard();
@@ -87,6 +97,8 @@ const TableOrder: React.FC = () => {
         return { backgroundColor: "red", color: "white" };
       case "Delivery":
         return { backgroundColor: "yellow", color: "white" };
+      case "ReDelivery":
+        return { backgroundColor: "#704c5e", color: "white" };
       default:
         return { backgroundColor: "transparent", color: "black" };
     }
@@ -99,7 +111,8 @@ const TableOrder: React.FC = () => {
     page: number = 1,
     pageSize: number = defaultPageSize,
     createDate = selectedCreateDate,
-    CompletedDate = selectedCompletedDate
+    CompletedDate = selectedCompletedDate,
+    Status = selectStatus
   ) => {
     try {
       const params = {
@@ -107,6 +120,7 @@ const TableOrder: React.FC = () => {
         page: page,
         createDate: createDate,
         CompletedDate: CompletedDate,
+        Status: Status,
       };
       const response = await apiGetOrder(params);
 
@@ -131,12 +145,14 @@ const TableOrder: React.FC = () => {
   const handleCancelSuccess = (response: string) => {
     handleCLoseCancel();
     fetchOrder(pagination.current, pagination.pageSize);
+    fetchOrderCount();
     toast.success(response);
   };
 
   const handleTaskSuccess = (response: string) => {
     handleCLoseTask();
     fetchOrder(pagination.current, pagination.pageSize);
+    fetchOrderCount();
     toast.success(response);
   };
 
@@ -147,6 +163,7 @@ const TableOrder: React.FC = () => {
       pageSize: pageSize,
     }));
     fetchOrder(page, pageSize);
+    fetchOrderCount();
   };
 
   const customPagination = {
@@ -172,8 +189,10 @@ const TableOrder: React.FC = () => {
       pagination.current,
       pagination.pageSize,
       formattedDate,
-      selectedCompletedDate
+      selectedCompletedDate,
+      selectStatus
     );
+    fetchOrderCount();
   };
 
   const handleCompletedDateChange = (
@@ -189,10 +208,33 @@ const TableOrder: React.FC = () => {
       pagination.current,
       pagination.pageSize,
       selectedCreateDate,
-      formattedDate
+      formattedDate,
+      selectStatus
     );
+    fetchOrderCount();
   };
   const dateFormatList = ["DD/MM/YYYY", "DD/MM/YY", "DD-MM-YYYY", "DD-MM-YY"];
+
+  const handleSelect = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    let valueStatus = e.target.value;
+    const valueStatusUi = e.target.value;
+
+    if (valueStatus === "all") {
+      valueStatus = "";
+    }
+    setSelectStatus(valueStatus);
+    setSelectStatusUi(valueStatusUi);
+    fetchOrder(
+      pagination.current,
+      pagination.pageSize,
+      selectedCreateDate,
+      selectedCompletedDate,
+      valueStatus
+    );
+    fetchOrderCount();
+  };
   const items: MenuProps["items"] = [
     {
       key: "1",
@@ -325,7 +367,7 @@ const TableOrder: React.FC = () => {
         </div>
       ),
       key: "operation",
-      render: (record) => (
+      render: (record: OrderProps) => (
         <Space size="middle">
           <Dropdown
             menu={{
@@ -338,6 +380,8 @@ const TableOrder: React.FC = () => {
                     return !["2", "3"].includes(item.key as string);
                   } else if (record.status === StatusType.DELIVERY) {
                     return item.key !== "2";
+                  } else if (String(record.noteStatus.FAILED) === "3") {
+                    return !["2"].includes(item.key as string);
                   } else {
                     return true;
                   }
@@ -378,6 +422,7 @@ const TableOrder: React.FC = () => {
     Completed: "green",
     Canceled: "red",
     Delivery: "yellow",
+    ReDelivery: "#704c5e",
   };
 
   const orderStatusValues: OrderStatus[] = [
@@ -386,11 +431,18 @@ const TableOrder: React.FC = () => {
     "Completed",
     "Canceled",
     "Delivery",
+    "ReDelivery",
   ];
 
   return (
     <React.Fragment>
-      <Box sx={{ display: "flex", flexDirection: "row" }}>
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "row",
+          justifyContent: "space-between",
+        }}
+      >
         <Card sx={{ p: 3, mb: 2, display: "flex", flexDirection: "row" }}>
           {orderCounts?.ordersByStatus &&
             Object.entries(orderCounts?.ordersByStatus).map(
@@ -405,7 +457,7 @@ const TableOrder: React.FC = () => {
                   : "transparent";
 
                 return (
-                  <Box>
+                  <Box key={index}>
                     <Stack display="flex" direction="row" spacing={1}>
                       <SquareIcon
                         sx={{
@@ -415,7 +467,7 @@ const TableOrder: React.FC = () => {
                           height: "15px",
                         }}
                       />
-                      <Typography key={index}>
+                      <Typography>
                         {statusName}: {count}
                       </Typography>
                       <Divider orientation="vertical" flexItem sx={{ mr: 8 }} />
@@ -425,6 +477,20 @@ const TableOrder: React.FC = () => {
               }
             )}
         </Card>
+        <TextField
+          id="status"
+          select
+          label="Trạng thái đơn"
+          value={selectStatusUi}
+          sx={{ width: "200px" }}
+          onChange={(e) => handleSelect(e)}
+        >
+          {statusMapping.map((option) => (
+            <MenuItem key={option.id} value={option.id}>
+              {option.name}
+            </MenuItem>
+          ))}
+        </TextField>
       </Box>
       <Table
         columns={columns}

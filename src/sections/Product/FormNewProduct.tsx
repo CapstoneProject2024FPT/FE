@@ -207,11 +207,11 @@ export default function ProductNewEditForm() {
         if (response.status === 200) {
           setSelectedComponents([]);
           reset();
-          toast.success("Thêm máy thành công");
+          toast.success(config.AdminMessageNotice.AddMachinerySuccess);
           navigate(config.adminRoutes.product);
         }
       } else {
-        toast.error("Thêm bộ phận máy");
+        toast.error(config.AdminMessageNotice.ForgetAddComponent);
       }
     } catch (error) {
       console.error(error);

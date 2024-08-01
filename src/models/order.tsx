@@ -1,12 +1,18 @@
 export enum StatusType {
+  ALL = "all",
   UNPAID = "UnPaid",
   PAID = "Paid",
   COMPLETED = "Completed",
   CANCELED = "Canceled",
   DELIVERY = "Delivery",
+  REDELIVERY = "ReDelivery",
 }
 
 export const statusMapping = [
+  {
+    id: StatusType.ALL,
+    name: "Tất cả",
+  },
   {
     id: StatusType.UNPAID,
     name: "Chưa thanh toán",
@@ -27,6 +33,10 @@ export const statusMapping = [
     id: StatusType.DELIVERY,
     name: "Đang vận chuyển",
   },
+  {
+    id: StatusType.REDELIVERY,
+    name: "Vận Chuyển Lại",
+  },
 ];
 
 export interface GetOrderProps {
@@ -45,11 +55,22 @@ export interface OrderProps {
   productList: ProductDetail[];
   totalAmount: number;
   finalAmount: number;
-  note: string;
+  noteStatus: {
+    SUCCESS: 0;
+    FAILED: 1;
+  };
+  note: noteDetail[];
   status: string;
   userInfo: UserInfo;
   description: string;
   address: AddressDetail;
+}
+
+interface noteDetail {
+  id: string;
+  status: string;
+  description: string;
+  createDate: Date;
 }
 
 export interface ProductProps {
@@ -105,7 +126,8 @@ export type OrderStatus =
   | "UnPaid"
   | "Completed"
   | "Canceled"
-  | "Delivery";
+  | "Delivery"
+  | "ReDelivery";
 export interface OrderCount {
   tolalOrders: number;
   ordersByStatus: {

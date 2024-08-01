@@ -1,6 +1,6 @@
 //auth
 export const LOGIN = "/auth/login";
-export const REGISTER = "register/users";
+export const REGISTER = "register/customer";
 export const CHANGE_PASSWORD = "/users/:id/password";
 
 //Machinery

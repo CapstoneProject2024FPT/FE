@@ -12,6 +12,7 @@ import ModalBrandPopupDetail from "./BrandPopup/popupBrandDetail";
 import ModalBrandPopupDelete from "./BrandPopup/popupDeleteBrand";
 import { PlusOutlined } from "@ant-design/icons";
 import moment from "moment";
+import config from "../../configs";
 type ColumnsType<T> = TableProps<T>["columns"];
 const { Search } = Input;
 
@@ -76,7 +77,7 @@ const TableBrand: React.FC = () => {
   const handleAddBrandSuccess = () => {
     handleCloseAdd();
     fetchBrand();
-    toast.success("Thêm thương hiệu thành công");
+    toast.success(config.AdminMessageNotice.AddBrandSuccess);
   };
 
   const handleDeleteCategorySuccess = (response: string) => {

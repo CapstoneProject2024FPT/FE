@@ -13,6 +13,7 @@ import { CheckboxChangeEvent } from "antd/es/checkbox";
 import ModalViewBeforeAddComponent from "./PopupAddComponentMachine/ModalAddComponentMachine";
 import { toast } from "react-toastify";
 import useDebounce from "../../hooks/useDebounce";
+import config from "../../configs";
 
 type ColumnsType<T> = TableProps<T>["columns"];
 const { Search } = Input;
@@ -92,7 +93,7 @@ const AddComponentOfMachineTable: React.FC<AddComponentOfMachineTable> = ({
 
   //add success
   const handleAddSuccess = () => {
-    toast("Thêm thành công");
+    toast(config.AdminMessageNotice.AddSucces);
   };
   const handleTableChange = (newPagination: any) => {
     setPagination({

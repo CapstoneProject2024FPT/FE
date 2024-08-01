@@ -76,7 +76,7 @@ const TableBlogNew: React.FC = () => {
   const handleUpdateHotNewsSuccess = () => {
     handleCloseOpenHot();
     fetchBlogNews();
-    toast.success("Cập nhật thành công");
+    toast.success(config.AdminMessageNotice.UpdateSuccess);
   };
 
   const handleUpdateStatusNewsSuccess = (text: string) => {

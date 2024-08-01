@@ -51,6 +51,8 @@ const getStatusStyles = (status: string) => {
       return { backgroundColor: "#F44336", color: "white" }; // đỏ
     case "Delivery":
       return { backgroundColor: "#FFD700", color: "black" }; // vàng
+    case "ReDelivery":
+      return { backgroundColor: "#704c5e", color: "white" }; // Tím
     default:
       return { backgroundColor: "transparent", color: "black" };
   }
@@ -310,7 +312,7 @@ const Row = (props: {
                 <TableBody>
                   <TableRow>
                     <TableCell>Ghi chú</TableCell>
-                    <TableCell>{row.note}</TableCell>
+                    <TableCell>{row.description}</TableCell>
                   </TableRow>
                   <TableRow>
                     <TableCell>Địa chỉ</TableCell>

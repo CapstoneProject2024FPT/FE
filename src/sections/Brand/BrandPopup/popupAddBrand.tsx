@@ -15,6 +15,7 @@ import { toast } from "react-toastify";
 import { BrandApi } from "../../../api/services/apiBrand";
 import { brandProps } from "../../../models/brand";
 import uploadImageToFirebase from "../../../firebase/uploadImageToFirebase";
+import config from "../../../configs";
 
 interface ModalBrand {
   open: boolean;
@@ -70,7 +71,7 @@ const ModalBrandPopupAdd: React.FC<ModalBrand> = ({
       reset();
     } catch (error) {
       handleClose();
-      toast.error("Xảy ra lỗi trong quá trình thêm");
+      toast.error(config.AdminMessageNotice.AddBrandFailed);
       console.error(error);
     }
   };

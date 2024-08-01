@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useEffect, useState } from "react";
 import type { MenuProps } from "antd";
 import type { TableProps } from "antd";
@@ -10,6 +11,7 @@ import { formatDateFunc } from "../../utils/fn";
 import ModalDetailTask from "./Popup/ModalTaskDetail";
 import ModalChangeStaffTask from "./Popup/ModalChangeStaffTask";
 import moment from "moment";
+import { MenuItem, TextField } from "@mui/material";
 type ColumnsType<T> = TableProps<T>["columns"];
 
 const pageSize = 20;
@@ -29,7 +31,20 @@ const TableTask: React.FC = () => {
   //api
   const { loading, apiGetTask } = ApiTask();
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
+  const [selectStatus, setSelectStatus] = useState<string>("");
+  const [selectStatusUi, setSelectStatusUi] = useState<string>("");
 
+  const OptionType = [
+    { id: "all", name: "Tất cả" },
+    {
+      id: "Warranty",
+      name: "Bảo hành",
+    },
+    {
+      id: "Delivery",
+      name: "Giao hàng",
+    },
+  ];
   //modal popup
   const handleActionDetail = (record: GetTaskProps) => {
     setOpen(!open);
@@ -47,9 +62,12 @@ const TableTask: React.FC = () => {
     setOpenChangeStaff(!openChangeStaff);
   };
   //----------------------------------------------------------------------------
-  const fetchTask = async () => {
+  const fetchTask = async (Type: string = selectStatus) => {
     try {
-      const response = await apiGetTask();
+      const params = {
+        Type: Type,
+      };
+      const response = await apiGetTask(params);
       if (response.status === 200) {
         setTasks(response.data);
       } else {
@@ -111,6 +129,19 @@ const TableTask: React.FC = () => {
       ? moment(item.createDate).format("DD/MM/YYYY") === selectedDate
       : true
   );
+
+  const handleSelect = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    let valueStatus = e.target.value;
+    const valueStatusUi = e.target.value;
+    if (valueStatus === "all") {
+      valueStatus = "";
+    }
+    setSelectStatus(valueStatus);
+    setSelectStatusUi(valueStatusUi);
+    fetchTask(valueStatus);
+  };
 
   const items: MenuProps["items"] = [
     {
@@ -217,7 +248,16 @@ const TableTask: React.FC = () => {
         <Space size="middle">
           <Dropdown
             menu={{
-              items,
+              items: items.filter((item) => {
+                if (item && item.key) {
+                  if (record.status === "Completed") {
+                    return item.key !== "2";
+                  } else {
+                    return true;
+                  }
+                }
+                return true;
+              }),
               onClick: ({ key }) => {
                 switch (key) {
                   case "1":
@@ -244,6 +284,20 @@ const TableTask: React.FC = () => {
 
   return (
     <>
+      <TextField
+        id="status"
+        select
+        label="Trạng thái nhiệm vụ"
+        value={selectStatusUi}
+        sx={{ width: "200px" }}
+        onChange={(e) => handleSelect(e)}
+      >
+        {OptionType.map((option) => (
+          <MenuItem key={option.id} value={option.id}>
+            {option.name}
+          </MenuItem>
+        ))}
+      </TextField>
       <Table
         columns={columns}
         rowKey={(record) => record.id}

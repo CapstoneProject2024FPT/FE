@@ -129,7 +129,6 @@ const ModalComponentDetail: React.FC<ModalProduct> = ({
           categoryId: productData?.category?.id,
           status: productData?.status,
         };
-        console.log(params);
 
         if (id) {
           const response = await apiUpdateMachineryComponent(id, params);
