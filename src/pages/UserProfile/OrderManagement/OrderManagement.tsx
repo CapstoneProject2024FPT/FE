@@ -312,7 +312,7 @@ const Row = (props: {
                 <TableBody>
                   <TableRow>
                     <TableCell>Ghi chú</TableCell>
-                    <TableCell>{row.note}</TableCell>
+                    <TableCell>{row.description}</TableCell>
                   </TableRow>
                   <TableRow>
                     <TableCell>Địa chỉ</TableCell>
