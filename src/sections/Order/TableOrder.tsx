@@ -53,6 +53,7 @@ const TableOrder: React.FC = () => {
   const [selectedData, setSelectedData] = useState<OrderProps | null>(null);
   const [orderCounts, setOrderCounts] = useState<OrderCount>();
   const [selectStatus, setSelectStatus] = useState<string>("");
+  const [selectStatusUi, setSelectStatusUi] = useState<string>("");
 
   const { loading, apiGetOrder } = ApiOrder();
   const { apiGetCountOrders } = ApiAdminDashboard();
@@ -188,7 +189,8 @@ const TableOrder: React.FC = () => {
       pagination.current,
       pagination.pageSize,
       formattedDate,
-      selectedCompletedDate
+      selectedCompletedDate,
+      selectStatus
     );
     fetchOrderCount();
   };
@@ -206,7 +208,8 @@ const TableOrder: React.FC = () => {
       pagination.current,
       pagination.pageSize,
       selectedCreateDate,
-      formattedDate
+      formattedDate,
+      selectStatus
     );
     fetchOrderCount();
   };
@@ -215,8 +218,14 @@ const TableOrder: React.FC = () => {
   const handleSelect = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
-    const valueStatus = e.target.value;
+    let valueStatus = e.target.value;
+    const valueStatusUi = e.target.value;
+
+    if (valueStatus === "all") {
+      valueStatus = "";
+    }
     setSelectStatus(valueStatus);
+    setSelectStatusUi(valueStatusUi);
     fetchOrder(
       pagination.current,
       pagination.pageSize,
@@ -472,7 +481,7 @@ const TableOrder: React.FC = () => {
           id="status"
           select
           label="Trạng thái đơn"
-          value={selectStatus}
+          value={selectStatusUi}
           sx={{ width: "200px" }}
           onChange={(e) => handleSelect(e)}
         >

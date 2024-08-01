@@ -67,16 +67,19 @@ const SignUpForm: React.FC = () => {
         email: data.email,
         fullname: data.fullname,
       };
-
+      console.log(params);
       const response = await apiRegister(params);
 
+      console.log(response);
       if (response.StatusCode === 400) {
         toast.error(response.Error);
       } else if (response.StatusCode === 500) {
         toast.error(response.Error || config.MessageNotice.Error500);
-      } else {
+      } else if (response.status === 200) {
         toast.success(config.MessageNotice.RegisterSuccess);
         reset();
+      } else {
+        toast.error(response.Error);
       }
 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any

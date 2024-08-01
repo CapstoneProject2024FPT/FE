@@ -10,11 +10,12 @@ export const ApiTask = () => {
 
   interface TaskProps {
     OrderId?: string;
+    Type?: string;
   }
-  const apiGetTask = async () => {
+  const apiGetTask = async (params: TaskProps) => {
     setLoading(true);
     try {
-      const response = await axiosPublic.get(TASK);
+      const response = await axiosPublic.get(TASK, { params });
 
       return response;
 

@@ -1,5 +1,5 @@
 export enum StatusType {
-  ALL = "",
+  ALL = "all",
   UNPAID = "UnPaid",
   PAID = "Paid",
   COMPLETED = "Completed",
