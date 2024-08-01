@@ -1,5 +1,5 @@
 import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
-import storage from "./firebase";
+import { storage } from "./firebase";
 
 function uploadImageToFirebase(file: File) {
   return new Promise((resolve, reject) => {
