@@ -13,6 +13,7 @@ export const ApiOrder = () => {
     size?: number;
     CreateDate?: string | null;
     CompletedDate?: string | null;
+    Status?: string;
   }
 
   const apiGetOrder = async (params: GetOrderProps) => {

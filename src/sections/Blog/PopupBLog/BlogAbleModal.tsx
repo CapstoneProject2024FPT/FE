@@ -5,6 +5,7 @@ import { PostGetProps } from "../../../models/blog";
 import { Button, Modal, Typography } from "antd";
 import { toast } from "react-toastify";
 import { ApiNews } from "../../../api/services/apiNews";
+import config from "../../../configs";
 //api
 
 interface ModalNews {
@@ -29,9 +30,9 @@ const BlogAbleModal: React.FC<ModalNews> = ({
           const response = await apiDisableNews(NewsData?.id);
           if (response.status === 200) {
             if (onUpdateSuccess) {
-              onUpdateSuccess("Ẩn tin tức thành công");
+              onUpdateSuccess(config.AdminMessageNotice.HideNews);
             } else {
-              toast.error("Gặp lỗi trong quá trình ẩn tin tức");
+              toast.error(config.AdminMessageNotice.HideNewsError);
               handleCLose();
             }
           }

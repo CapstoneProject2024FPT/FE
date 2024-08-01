@@ -15,6 +15,7 @@ import { Card, Grid, Stack } from "@mui/material";
 import { toast } from "react-toastify";
 import { ApiAccount } from "../../../../../api/services/apiAccount";
 import { RoleData } from "../../RoleData";
+import config from "../../../../../configs";
 
 interface ModalUser {
   open: boolean;
@@ -79,7 +80,7 @@ const ModalAddEmployee: React.FC<ModalUser> = ({
 
       reset();
     } catch (error) {
-      toast.error("Có lỗi trong quá trình cập nhât");
+      toast.error(config.AdminMessageNotice.AddEmployeeFailed);
       handleClose();
       console.error(error);
     }

@@ -12,6 +12,7 @@ import { Card, Stack } from "@mui/material";
 import { toast } from "react-toastify";
 import { ApiNewsCategories } from "../../../api/services/apiNewsCategories";
 import { NewsCategoryProps } from "../../../models/newCategories";
+import config from "../../../configs";
 
 interface ModalUser {
   NewsCategoryData: NewsCategoryProps | null;
@@ -69,7 +70,7 @@ const ModalNewsCategoryPopup: React.FC<ModalUser> = ({
             onUpdateSuccess(response.data);
           }
         } else {
-          toast.error("Có lỗi trong quá trình cập nhật");
+          toast.error(config.AdminMessageNotice.UpdateFailed);
         }
       }
       reset();

@@ -6,6 +6,7 @@ import { toast } from "react-toastify";
 import { OrderProps, StatusType } from "../../../models/order";
 //api
 import { ApiOrder } from "../../../api/services/apiOrder";
+import config from "../../../configs";
 
 interface ModalOrder {
   OrderData: OrderProps | null;
@@ -32,10 +33,10 @@ const ModalCompleteOrder: React.FC<ModalOrder> = ({
         const response = await apiCompleteOrder(OrderData?.orderId, params);
         if (response.status === 200) {
           if (onCompleteSuccess) {
-            onCompleteSuccess("Cập nhật đơn hàng thành công");
+            onCompleteSuccess(config.AdminMessageNotice.OrderUpdateSuccess);
           }
         } else {
-          toast.error("Cập nhật đơn hàng thất bại");
+          toast.error(config.AdminMessageNotice.OrderUpdateFailed);
         }
       }
     } catch (error) {

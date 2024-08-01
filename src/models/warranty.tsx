@@ -181,7 +181,7 @@ export interface WarrantyDetails {
   customer: Customer;
   address: Address;
 }
-interface Warranty {
+export interface Warranty {
   warrantyDetails: WarrantyDetails;
 }
 

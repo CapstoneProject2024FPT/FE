@@ -41,7 +41,6 @@ const ModalViewBeforeAddComponent: React.FC<ModalProduct> = ({
         });
         if (id) {
           const response = await apiPostMachineComponent(params, id);
-          console.log(response);
 
           if (response && response.status === 200) {
             onAddSuccess();

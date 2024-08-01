@@ -12,6 +12,7 @@ import ModalChangeRole from "../Popup/PopupChangeRole";
 import { toast } from "react-toastify";
 import { RoleData } from "../../RoleData";
 import ModalAddress from "../Popup/popupAddress";
+import config from "../../../../../configs";
 
 const cx = classNames.bind(styles);
 
@@ -58,7 +59,7 @@ const AccountInfo: React.FC = () => {
   }, []);
 
   const onSuccess = () => {
-    toast.success("Cập nhật chức vụ thành công");
+    toast.success(config.AdminMessageNotice.UpdateRoleSuccess);
     handleClose();
     fetchUserProfile();
   };

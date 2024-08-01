@@ -8,6 +8,7 @@ import { CategoryApi } from "../../../api/services/apiCategories";
 import ModalCategoryPopup from "./PopupCategory/popupDetailCategory";
 import ModalCategoryPopupAdd from "./PopupCategory/popupAddCategory";
 import { toast } from "react-toastify";
+import config from "../../../configs";
 
 type ColumnsType<T> = TableProps<T>["columns"];
 const { Search } = Input;
@@ -57,7 +58,7 @@ const TableCategoryMachinery: React.FC = () => {
   const handleAddCategorySuccess = () => {
     handleCloseAdd();
     fetchCategories();
-    toast.success("Thêm loại máy thành công");
+    toast.success(config.AdminMessageNotice.AddCategory);
   };
 
   const handleUpdateCategorySuccess = (response: string) => {
@@ -129,13 +130,25 @@ const TableCategoryMachinery: React.FC = () => {
 
   const columns: ColumnsType<GetCategoryProps> = [
     {
-      title: <div style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}>Loại máy</div>,
+      title: (
+        <div
+          style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}
+        >
+          Loại máy
+        </div>
+      ),
       dataIndex: "name",
       sorter: (a, b) => a.name.length - b.name.length,
       width: "40%",
     },
     {
-      title: <div style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}>Hành Động</div>,
+      title: (
+        <div
+          style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}
+        >
+          Hành Động
+        </div>
+      ),
       key: "operation",
       render: (record) => (
         <Space size="middle">

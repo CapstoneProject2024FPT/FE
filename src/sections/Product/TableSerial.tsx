@@ -14,6 +14,7 @@ import ModalSerialNumberDelete from "./PopupSerialnumber/ModalDeleteSerialNumber
 import { PlusOutlined } from "@ant-design/icons";
 import { MachineryApi } from "../../api/services/apiMachinery";
 import { ProductAdmin } from "../../models/products";
+import config from "../../configs";
 
 type ColumnsType<T> = TableProps<T>["columns"];
 const { Search } = Input;
@@ -93,7 +94,7 @@ const TableSerial: React.FC<TableSerial> = ({ handleSetName }) => {
   const handleAddSuccess = () => {
     handleCLose();
     fetchSerialMachine();
-    toast.success("Thêm thành công");
+    toast.success(config.AdminMessageNotice.AddMachineToBarn);
   };
 
   const handleDeleteSerialSuccess = (response: string) => {

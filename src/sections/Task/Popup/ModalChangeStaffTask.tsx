@@ -11,6 +11,7 @@ import { ApiTask } from "../../../api/services/apiTask";
 import { LoadingButton } from "@mui/lab";
 import { ApiWarranty } from "../../../api/services/apiWarranty";
 import { WarrantyPropsById } from "../../../models/warranty";
+import CustomPagination from "../../../components/pagination/CustomPagination";
 
 interface ModalBrand {
   TaskData: GetTaskProps | null;
@@ -37,11 +38,11 @@ export default function ModalChangeStaffTask({
 }: ModalBrand) {
   const { apiUpdateTask, apiTaskStaff } = ApiTask();
   const { apiGetWarrantyById } = ApiWarranty();
-
+  const rowPerPage = 5;
+  const [currentPage, setCurrentPage] = useState<number>(1);
   //search
   const [query, setQuery] = useState<string>("");
-
-  const [data, setData] = useState<StaffTaskProps[]>();
+  const [data, setData] = useState<StaffTaskProps[]>([]);
   const [warranty, setWarranty] = useState<WarrantyPropsById>();
 
   const fetchAccountUser = async () => {
@@ -127,7 +128,16 @@ export default function ModalChangeStaffTask({
     item.staffName.toLowerCase().includes(query.toLocaleLowerCase())
   );
 
-  const radioOptions = filteredRows?.map((item) => ({
+  //paginate
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+  };
+
+  const lastIndex = rowPerPage * currentPage;
+  const indexFirstStaff = lastIndex - rowPerPage;
+  const currentStaff = filteredRows?.slice(indexFirstStaff, lastIndex);
+
+  const radioOptions = currentStaff?.map((item) => ({
     label: item.staffName,
     value: item.staffId,
     taskStatusCount: item.taskStatusCount,
@@ -200,6 +210,14 @@ export default function ModalChangeStaffTask({
 
                 {/* {radio} */}
                 <RHFRadioGroup name="accountId" options={radioOptions || []} />
+
+                {/* paginate  */}
+                <CustomPagination
+                  currentPage={currentPage}
+                  onPageChange={handlePageChange}
+                  postsPerPage={rowPerPage}
+                  totalPosts={data?.length}
+                />
               </Stack>
             </Card>
           </Grid>

@@ -217,7 +217,16 @@ const TableTask: React.FC = () => {
         <Space size="middle">
           <Dropdown
             menu={{
-              items,
+              items: items.filter((item) => {
+                if (item && item.key) {
+                  if (record.status === "Completed") {
+                    return item.key !== "2";
+                  } else {
+                    return true;
+                  }
+                }
+                return true;
+              }),
               onClick: ({ key }) => {
                 switch (key) {
                   case "1":

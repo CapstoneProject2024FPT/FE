@@ -12,6 +12,7 @@ import { toast } from "react-toastify";
 import Image from "../../../components/Image";
 import { brandTable } from "../../../models/brand";
 import { BrandApi } from "../../../api/services/apiBrand";
+import config from "../../../configs";
 
 interface ModalBrand {
   BrandData: brandTable | null;
@@ -69,7 +70,7 @@ const ModalBrandPopupDetail: React.FC<ModalBrand> = ({
       }
       reset();
     } catch (error) {
-      toast.error("Có lỗi trong quá trình cập nhât");
+      toast.error(config.AdminMessageNotice.UpdateFailed);
       handleClose();
       console.error(error);
     }

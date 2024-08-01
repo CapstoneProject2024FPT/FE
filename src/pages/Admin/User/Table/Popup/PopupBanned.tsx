@@ -5,6 +5,7 @@ import { staffProps, userModel } from "../../../../../models/UserData";
 import { Button, Modal, Typography } from "antd";
 import { toast } from "react-toastify";
 import { ApiAccount } from "../../../../../api/services/apiAccount";
+import config from "../../../../../configs";
 
 //api
 
@@ -12,7 +13,7 @@ interface ModalUser {
   UserData: staffProps | null | userModel;
   open: boolean;
   handleCLose: () => void;
-  onSuccess: (response: string) => void;
+  onSuccess: () => void;
 }
 
 const ModaBanned: React.FC<ModalUser> = ({
@@ -30,11 +31,11 @@ const ModaBanned: React.FC<ModalUser> = ({
           const response = await apiBanned(UserData?.id);
           if (response.status === 200) {
             if (onSuccess) {
-              onSuccess(response);
+              onSuccess();
             }
           } else {
             handleCLose();
-            toast.error("Xảy ra lỗi trong quá trình chặn");
+            toast.error(config.AdminMessageNotice.BanFailed);
           }
         } else {
           const params = {
@@ -45,16 +46,15 @@ const ModaBanned: React.FC<ModalUser> = ({
           const response = await apiUnbanned(UserData?.id, params);
           if (response.status === 200) {
             if (onSuccess) {
-              onSuccess(response);
+              onSuccess();
             }
           } else {
             handleCLose();
-            toast.error("Xảy ra lỗi trong quá trình mở chặn");
+            toast.error(config.AdminMessageNotice.UnBanFailed);
           }
         }
       }
     } catch (error) {
-      toast.error("Lỗi xoá");
       console.error(error);
     }
   };
