@@ -95,8 +95,8 @@ const LayoutAdmin: React.FC = () => {
             <Outlet />
           </div>
         </Content>
-        <Footer style={{ textAlign: "center" }}>
-            WELCOME TO SMMMS Team
+        <Footer style={{ textAlign: "center", fontSize: "25px" }}>
+            Welcome To SMMMS Team
         </Footer>
       </Layout>
     </Layout>
