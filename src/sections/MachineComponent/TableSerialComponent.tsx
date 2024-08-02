@@ -260,7 +260,7 @@ const TableSerialComponent: React.FC<TableSerial> = ({ handleSetName }) => {
           style={{ width: 200, marginBottom: 16 }}
         />
         <Button onClick={handleOpen} icon={<PlusOutlined />}>
-          Thêm số lượng máy
+          Thêm bộ phận máy vào kho
         </Button>
       </div>
 
