@@ -28,8 +28,16 @@ const CustomPagination: React.FC<PaginationInterface> = ({
   };
 
   return (
-    <Stack spacing={2}>
+    <Stack
+      spacing={2}
+      display="flex"
+      direction="row"
+      sx={{ justifyContent: "center" }}
+    >
       <Pagination
+        variant="outlined"
+        shape="rounded"
+        color="primary"
         count={pageCount}
         page={currentPage}
         onChange={handlePageChange}

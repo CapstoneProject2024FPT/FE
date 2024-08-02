@@ -16,6 +16,7 @@ import {
   UpdateProduct,
 } from "../../models/products";
 import axios from "axios";
+import config from "../../configs";
 
 interface GetListProps {
   name?: string[];
@@ -29,6 +30,8 @@ interface GetListProps {
   priority?: number;
   categoryId?: string;
   Name?: string[]; // mấy hôm trước nhớ sài name thường mà nay nó báo lỗi.. check lại
+  page?: number;
+  size?: number;
 }
 
 export const MachineryApi = () => {
@@ -42,16 +45,13 @@ export const MachineryApi = () => {
           indexes: null, // no brackets at all
         },
       });
-      return {
-        items: response.data.items,
-        total: response.data.total, // Ensure the total count is returned
-      };
+      return response;
     } catch (error) {
       console.error(error);
       if (axios.isAxiosError(error) && error.response) {
         return error.response.data;
       } else {
-        return { statusCode: 500, Error: "Gặp vấn đề quá trình lấy dư liệu" };
+        return { statusCode: 500, Error: config.MessageNotice.Error500 };
       }
     } finally {
       setLoading(false);
@@ -67,7 +67,7 @@ export const MachineryApi = () => {
       if (axios.isAxiosError(error) && error.response) {
         return error.response.data;
       } else {
-        return { statusCode: 500, Error: "Gặp vấn đề quá trình lấy dư liệu" };
+        return { statusCode: 500, Error: config.MessageNotice.Error500 };
       }
     } finally {
       setLoading(false);
@@ -86,7 +86,7 @@ export const MachineryApi = () => {
       if (axios.isAxiosError(error) && error.response) {
         return error.response.data;
       } else {
-        return { statusCode: 500, Error: "Gặp vấn đề quá trình lấy dư liệu" };
+        return { statusCode: 500, Error: config.MessageNotice.Error500 };
       }
     } finally {
       setLoading(false);
@@ -107,7 +107,7 @@ export const MachineryApi = () => {
       if (axios.isAxiosError(error) && error.response) {
         return error.response.data;
       } else {
-        return { statusCode: 500, Error: "Gặp vấn đề quá trình lấy dư liệu" };
+        return { statusCode: 500, Error: config.MessageNotice.Error500 };
       }
     } finally {
       setLoading(false);
@@ -122,7 +122,7 @@ export const MachineryApi = () => {
       if (axios.isAxiosError(error) && error.response) {
         return error.response.data;
       } else {
-        return { statusCode: 500, Error: "Gặp vấn đề quá trình lấy dư liệu" };
+        return { statusCode: 500, Error: config.MessageNotice.Error500 };
       }
     } finally {
       setLoading(false);
@@ -149,7 +149,7 @@ export const MachineryApi = () => {
       if (axios.isAxiosError(error) && error.response) {
         return error.response.data;
       } else {
-        return { statusCode: 500, Error: "Gặp vấn đề quá trình lấy dư liệu" };
+        return { statusCode: 500, Error: config.MessageNotice.Error500 };
       }
     } finally {
       setLoading(false);
@@ -178,7 +178,7 @@ export const MachineryApi = () => {
       if (axios.isAxiosError(error) && error.response) {
         return error.response.data;
       } else {
-        return { statusCode: 500, Error: "Gặp vấn đề quá trình lấy dư liệu" };
+        return { statusCode: 500, Error: config.MessageNotice.Error500 };
       }
     } finally {
       setLoading(false);
@@ -200,7 +200,7 @@ export const MachineryApi = () => {
       if (axios.isAxiosError(error) && error.response) {
         return error.response.data;
       } else {
-        return { statusCode: 500, Error: "Gặp vấn đề quá trình lấy dư liệu" };
+        return { statusCode: 500, Error: config.MessageNotice.Error500 };
       }
     } finally {
       setLoading(false);
@@ -218,7 +218,7 @@ export const MachineryApi = () => {
       } else {
         return {
           statusCode: 500,
-          Error: "Gặp vấn đề quá trình lấy dư liệu",
+          Error: config.MessageNotice.Error500,
         };
       }
     } finally {
@@ -239,7 +239,7 @@ export const MachineryApi = () => {
       if (axios.isAxiosError(error) && error.response) {
         return error.response.data;
       } else {
-        return { statusCode: 500, Error: "Gặp vấn đề quá trình lấy dư liệu" };
+        return { statusCode: 500, Error: config.MessageNotice.Error500 };
       }
     } finally {
       setLoading(false);
@@ -263,7 +263,7 @@ export const MachineryApi = () => {
       if (axios.isAxiosError(error) && error.response) {
         return error.response.data;
       } else {
-        return { statusCode: 500, Error: "Gặp vấn đề quá trình lấy dư liệu" };
+        return { statusCode: 500, Error: config.MessageNotice.Error500 };
       }
     } finally {
       setLoading(false);
@@ -288,7 +288,7 @@ export const MachineryApi = () => {
       if (axios.isAxiosError(error) && error.response) {
         return error.response.data;
       } else {
-        return { statusCode: 500, Error: "Gặp vấn đề quá trình lấy dư liệu" };
+        return { statusCode: 500, Error: config.MessageNotice.Error500 };
       }
     } finally {
       setLoading(false);
@@ -308,6 +308,6 @@ export const MachineryApi = () => {
     apiGetMachineAtHome,
     apiPostMachineComponent,
     apiUpdateStatus,
-    apiGetMachineNoPaging
+    apiGetMachineNoPaging,
   };
 };

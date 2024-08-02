@@ -10,6 +10,7 @@ import { Card, Stack } from "@mui/material";
 
 import { toast } from "react-toastify";
 import { ApiNewsCategories } from "../../../api/services/apiNewsCategories";
+import config from "../../../configs";
 
 interface ModalCategory {
   open: boolean;
@@ -59,7 +60,7 @@ const ModalNewsCategoryPopupAdd: React.FC<ModalCategory> = ({
           reset();
         }
       } else {
-        toast.error("Xảy ra lỗi trong quá trình thêm");
+        toast.error(config.AdminMessageNotice.AddBrandFailed);
       }
     } catch (error) {
       handleClose();

@@ -18,6 +18,7 @@ import { toast } from "react-toastify";
 import { Button } from "antd";
 import BlogNewUpdateForm from "./PopupBLog/BlogEditForm";
 import Fancybox from "../../components/fancy-box-slide/FancyBox";
+import config from "../../configs";
 
 const NewsDetailAdmin: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -33,7 +34,7 @@ const NewsDetailAdmin: React.FC = () => {
       if (response.status === 200) {
         setNews(response.data);
       } else {
-        toast.error("Có lỗi trong quá trình lấy tin tức");
+        toast.error(config.AdminMessageNotice.GetBlogFailed);
       }
     }
   };
@@ -54,7 +55,7 @@ const NewsDetailAdmin: React.FC = () => {
   const onUpdateSuccess = () => {
     handleClose();
     fetchNewsDetail();
-    toast.success("Cập nhật thành công");
+    toast.success(config.AdminMessageNotice.UpdateSuccess);
   };
   return (
     <>

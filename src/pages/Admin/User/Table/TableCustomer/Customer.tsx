@@ -96,7 +96,7 @@ const CustomerData: React.FC = () => {
 
   const onSuccess = () => {
     handleCLose();
-    toast.success("Cập nhật trạng thái thành công");
+    toast.success(config.AdminMessageNotice.BanOrUnbanSuccess);
     fetchAccountUser();
   };
 
@@ -112,13 +112,25 @@ const CustomerData: React.FC = () => {
   ];
   const columns: ColumnsType<userModel> = [
     {
-      title: <div style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}>Tên</div>,
+      title: (
+        <div
+          style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}
+        >
+          Tên
+        </div>
+      ),
       dataIndex: "fullName",
       sorter: (a, b) => a.fullName.length - b.fullName.length,
       width: "20%",
     },
     {
-      title: <div style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}>Chức vụ</div>,
+      title: (
+        <div
+          style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}
+        >
+          Chức vụ
+        </div>
+      ),
       dataIndex: "role",
       width: "20%",
       render: (role) => {
@@ -129,7 +141,13 @@ const CustomerData: React.FC = () => {
       align: "center",
     },
     {
-      title: <div style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}>Giới tính</div>,
+      title: (
+        <div
+          style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}
+        >
+          Giới tính
+        </div>
+      ),
       dataIndex: "gender",
       width: "10%",
       render: (gender) => {
@@ -142,7 +160,13 @@ const CustomerData: React.FC = () => {
       align: "center",
     },
     {
-      title: <div style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}>Hạng</div>,
+      title: (
+        <div
+          style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}
+        >
+          Hạng
+        </div>
+      ),
       dataIndex: "rank",
       width: "20%",
       render: (rank) => {
@@ -151,12 +175,24 @@ const CustomerData: React.FC = () => {
       align: "center",
     },
     {
-      title: <div style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}>Email</div>,
+      title: (
+        <div
+          style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}
+        >
+          Email
+        </div>
+      ),
       width: "20%",
       dataIndex: "email",
     },
     {
-      title: <div style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}>Tình trạng</div>,
+      title: (
+        <div
+          style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}
+        >
+          Tình trạng
+        </div>
+      ),
       dataIndex: "status",
       width: "20%",
       render: (status) => {
@@ -169,7 +205,13 @@ const CustomerData: React.FC = () => {
       align: "center",
     },
     {
-      title: <div style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}>Action</div>,
+      title: (
+        <div
+          style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}
+        >
+          Action
+        </div>
+      ),
       key: "operation",
       render: (record) => (
         <Space size="middle">

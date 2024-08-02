@@ -2,7 +2,12 @@ import { axiosPublic } from "../axiosInstance";
 import { NEWS_ADMIN, NEWS_HOME, NEWS_ID } from "../pathApiName";
 import { useState } from "react";
 import axios from "axios";
-import { NewPostFormADDValues, NewUpdateFormValues, PostGetProps } from "../../models/blog";
+import {
+  NewPostFormADDValues,
+  NewUpdateFormValues,
+  PostGetProps,
+} from "../../models/blog";
+import config from "../../configs";
 
 export const ApiNews = () => {
   const [loading, setLoading] = useState(false);
@@ -17,7 +22,7 @@ export const ApiNews = () => {
       if (axios.isAxiosError(error) && error.response) {
         return error.response.data;
       } else {
-        return { statusCode: 500, Error: "Internal Server Error" };
+        return { statusCode: 500, Error: config.MessageNotice.Error500 };
       }
     } finally {
       setLoading(false);
@@ -34,7 +39,7 @@ export const ApiNews = () => {
       if (axios.isAxiosError(error) && error.response) {
         return error.response.data;
       } else {
-        return { statusCode: 500, Error: "Internal Server Error" };
+        return { statusCode: 500, Error: config.MessageNotice.Error500 };
       }
     } finally {
       setLoading(false);
@@ -51,7 +56,7 @@ export const ApiNews = () => {
       if (axios.isAxiosError(error) && error.response) {
         return error.response.data;
       } else {
-        return { statusCode: 500, Error: "Internal Server Error" };
+        return { statusCode: 500, Error: config.MessageNotice.Error500 };
       }
     } finally {
       setLoading(false);
@@ -74,7 +79,7 @@ export const ApiNews = () => {
       if (axios.isAxiosError(error) && error.response) {
         return error.response.data;
       } else {
-        return { statusCode: 500, Error: "Internal Server Error" };
+        return { statusCode: 500, Error: config.MessageNotice.Error500 };
       }
     } finally {
       setLoading(false);
@@ -91,7 +96,7 @@ export const ApiNews = () => {
       if (axios.isAxiosError(error) && error.response) {
         return error.response.data;
       } else {
-        return { statusCode: 500, Error: "Internal Server Error" };
+        return { statusCode: 500, Error: config.MessageNotice.Error500 };
       }
     } finally {
       setLoading(false);
@@ -116,7 +121,7 @@ export const ApiNews = () => {
       if (axios.isAxiosError(error) && error.response) {
         return error.response.data;
       } else {
-        return { statusCode: 500, Error: "Internal Server Error" };
+        return { statusCode: 500, Error: config.MessageNotice.Error500 };
       }
     } finally {
       setLoading(false);
@@ -136,14 +141,13 @@ export const ApiNews = () => {
       if (axios.isAxiosError(error) && error.response) {
         return error.response.data;
       } else {
-        return { statusCode: 500, Error: "Internal Server Error" };
+        return { statusCode: 500, Error: config.MessageNotice.Error500 };
       }
     } finally {
       setLoading(false);
     }
   };
 
-  
   const apiGetListNews = async () => {
     setLoading(true);
     try {
@@ -154,7 +158,7 @@ export const ApiNews = () => {
       if (axios.isAxiosError(error) && error.response) {
         return error.response.data;
       } else {
-        return { statusCode: 500, Error: "Internal Server Error" };
+        return { statusCode: 500, Error: config.MessageNotice.Error500 };
       }
     } finally {
       setLoading(false);
@@ -176,7 +180,7 @@ export const ApiNews = () => {
       if (axios.isAxiosError(error) && error.response) {
         return error.response.data;
       } else {
-        return { statusCode: 500, Error: "Gặp vấn đề quá trình lấy dư liệu" };
+        return { statusCode: 500, Error: config.MessageNotice.Error500 };
       }
     } finally {
       setLoading(false);

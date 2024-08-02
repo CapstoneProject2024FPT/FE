@@ -13,6 +13,8 @@ import { LoadingButton } from "@mui/lab";
 import { ApiTask } from "../../../api/services/apiTask";
 import { DeliveryPropsPost, StaffTaskProps } from "../../../models/task";
 import { WarrantyPropsById } from "../../../models/warranty";
+import config from "../../../configs";
+import CustomPagination from "../../../components/pagination/CustomPagination";
 //api
 
 interface ModalOrder {
@@ -39,8 +41,9 @@ const ModalDeliveryTaskPeriodic: React.FC<ModalOrder> = ({
 
   //search
   const [query, setQuery] = useState<string>("");
-
-  const [data, setData] = useState<StaffTaskProps[]>();
+  const [data, setData] = useState<StaffTaskProps[]>([]);
+  const rowPerPage = 5;
+  const [currentPage, setCurrentPage] = useState<number>(1);
 
   const fetchAccountUser = async () => {
     const response = await apiTaskStaff();
@@ -92,11 +95,11 @@ const ModalDeliveryTaskPeriodic: React.FC<ModalOrder> = ({
           const response = await apiCreateTask(params);
           if (response.status === 200) {
             if (onCreateSuccess) {
-              onCreateSuccess("Giao nhiệm vụ thành công");
+              onCreateSuccess(config.AdminMessageNotice.CreatTaskSuccess);
               reset();
             }
           } else {
-            toast.error("Xảy ra lỗi trong quá trình thêm");
+            toast.error(response.Error);
           }
         }
       }
@@ -114,7 +117,16 @@ const ModalDeliveryTaskPeriodic: React.FC<ModalOrder> = ({
     item.staffName.toLowerCase().includes(query.toLocaleLowerCase())
   );
 
-  const radioOptions = filteredRows?.map((item) => ({
+  //pagiante
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+  };
+
+  const lastIndexValue = currentPage * rowPerPage;
+  const indexFirstValue = lastIndexValue - rowPerPage;
+  const currentStaff = filteredRows?.slice(indexFirstValue, lastIndexValue);
+
+  const radioOptions = currentStaff?.map((item) => ({
     label: item.staffName,
     value: item.staffId,
     taskStatusCount: item.taskStatusCount,
@@ -194,6 +206,13 @@ const ModalDeliveryTaskPeriodic: React.FC<ModalOrder> = ({
 
                 {/* {radio} */}
                 <RHFRadioGroup name="accountId" options={radioOptions || []} />
+
+                <CustomPagination
+                  currentPage={currentPage}
+                  onPageChange={handlePageChange}
+                  postsPerPage={rowPerPage}
+                  totalPosts={data?.length}
+                />
               </Stack>
             </Card>
           </Grid>

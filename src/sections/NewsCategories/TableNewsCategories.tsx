@@ -13,6 +13,7 @@ import { NewsCategoryProps } from "../../models/newCategories";
 import { formatDateFunc } from "../../utils/fn";
 import ModalNewsCategoryPopupDelete from "./PopupNewsCategories/popupDeleteNewsCategory";
 import moment from "moment";
+import config from "../../configs";
 type ColumnsType<T> = TableProps<T>["columns"];
 const { Search } = Input;
 
@@ -76,7 +77,7 @@ const TableNewsCategory: React.FC = () => {
   const handleAddNewsCategorySuccess = () => {
     handleCloseAdd();
     fetchCategories();
-    toast.success("Thêm loại tin tức thành công");
+    toast.success(config.AdminMessageNotice.AddCategoryNews);
   };
 
   const handleDeleteCategorySuccess = (response: string) => {

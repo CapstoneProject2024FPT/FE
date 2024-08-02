@@ -13,6 +13,8 @@ import { Card, Grid, Stack, TextField } from "@mui/material";
 import { LoadingButton } from "@mui/lab";
 import { ApiTask } from "../../../api/services/apiTask";
 import { DeliveryPropsPost, StaffTaskProps } from "../../../models/task";
+import config from "../../../configs";
+import CustomPagination from "../../../components/pagination/CustomPagination";
 
 //api
 
@@ -38,8 +40,10 @@ const ModalDeliveryTask: React.FC<ModalOrder> = ({
 
   //search
   const [query, setQuery] = useState<string>("");
-
-  const [data, setData] = useState<StaffTaskProps[]>();
+  const [data, setData] = useState<StaffTaskProps[]>([]);
+  //paginate
+  const rowPerPage = 5;
+  const [currentPage, setCurrentPage] = useState<number>(1);
 
   const fetchAccountUser = async () => {
     const response = await apiTaskStaff();
@@ -89,7 +93,7 @@ const ModalDeliveryTask: React.FC<ModalOrder> = ({
         const response = await apiCreateTask(params);
         if (response.status === 200) {
           if (onCreateSuccess) {
-            onCreateSuccess("Giao nhiệm vụ thành công");
+            onCreateSuccess(config.AdminMessageNotice.CreatTaskSuccess);
             reset();
           }
         } else {
@@ -110,7 +114,16 @@ const ModalDeliveryTask: React.FC<ModalOrder> = ({
     item.staffName.toLowerCase().includes(query.toLocaleLowerCase())
   );
 
-  const radioOptions = filteredRows?.map((item) => ({
+  //paginate
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+  };
+
+  const lastIndex = rowPerPage * currentPage;
+  const indexFirstStaff = lastIndex - rowPerPage;
+  const currentStaff = filteredRows?.slice(indexFirstStaff, lastIndex);
+
+  const radioOptions = currentStaff?.map((item) => ({
     label: item.staffName,
     value: item.staffId,
     taskStatusCount: item.taskStatusCount,
@@ -176,6 +189,13 @@ const ModalDeliveryTask: React.FC<ModalOrder> = ({
 
                 {/* {radio} */}
                 <RHFRadioGroup name="accountId" options={radioOptions || []} />
+                {/* paginate  */}
+                <CustomPagination
+                  currentPage={currentPage}
+                  onPageChange={handlePageChange}
+                  postsPerPage={rowPerPage}
+                  totalPosts={data?.length}
+                />
               </Stack>
             </Card>
           </Grid>

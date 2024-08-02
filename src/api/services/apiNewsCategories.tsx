@@ -3,6 +3,7 @@ import axios from "axios";
 import { axiosPublic } from "../axiosInstance";
 import { NEWS_CATEGORIES, NEWS_CATEGORIES_ID } from "../pathApiName";
 import { useState } from "react";
+import config from "../../configs";
 
 export const ApiNewsCategories = () => {
   const [loading, setLoading] = useState(false);
@@ -18,7 +19,7 @@ export const ApiNewsCategories = () => {
       if (axios.isAxiosError(error) && error.response) {
         return error.response.data;
       } else {
-        return { statusCode: 500, Error: "Internal Server Error" };
+        return { statusCode: 500, Error: config.MessageNotice.Error500 };
       }
     } finally {
       setLoading(false);
@@ -38,7 +39,7 @@ export const ApiNewsCategories = () => {
       if (axios.isAxiosError(error) && error.response) {
         return error.response.data;
       } else {
-        return { statusCode: 500, Error: "Internal Server Error" };
+        return { statusCode: 500, Error: config.MessageNotice.Error500 };
       }
     } finally {
       setLoading(false);
@@ -59,7 +60,7 @@ export const ApiNewsCategories = () => {
       if (axios.isAxiosError(error) && error.response) {
         return error.response.data;
       } else {
-        return { statusCode: 500, Error: "Internal Server Error" };
+        return { statusCode: 500, Error: config.MessageNotice.Error500 };
       }
     } finally {
       setLoading(false);
@@ -87,7 +88,7 @@ export const ApiNewsCategories = () => {
       if (axios.isAxiosError(error) && error.response) {
         return error.response.data;
       } else {
-        return { statusCode: 500, Error: "Internal Server Error" };
+        return { statusCode: 500, Error: config.MessageNotice.Error500 };
       }
     } finally {
       setLoading(false);
@@ -108,7 +109,7 @@ export const ApiNewsCategories = () => {
       if (axios.isAxiosError(error) && error.response) {
         return error.response.data;
       } else {
-        return { statusCode: 500, Error: "Internal Server Error" };
+        return { statusCode: 500, Error: config.MessageNotice.Error500 };
       }
     } finally {
       setLoading(false);

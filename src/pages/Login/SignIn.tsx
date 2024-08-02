@@ -56,7 +56,7 @@ const SignInForm: React.FC = () => {
         setAuthUser(response.data);
         const userInfo = await apiUserProfile(response.data.id);
         localStorage.setItem("getUserInfo", JSON.stringify(userInfo.data));
-        toast.success("Đăng nhập thành công");
+        toast.success(config.MessageNotice.loginSuccess);
         if (response?.data.role === "User") {
           if (returnUrl) {
             navigate(returnUrl);
@@ -68,13 +68,16 @@ const SignInForm: React.FC = () => {
         }
       }
       if (response.statusCode === 401) {
-        toast.error(response.error || "Đăng nhập thất bại");
+        toast.error(response.error || config.MessageNotice.loginFailed2);
+      }
+      if (response.statusCode === 500) {
+        toast.error(response.Error || config.MessageNotice.Error500);
       }
 
       reset();
     } catch (error) {
       console.error(error);
-      toast.error("Có lỗi trong quá trình đăng nhập");
+      toast.error(config.MessageNotice.loginFailed3);
     }
   };
 

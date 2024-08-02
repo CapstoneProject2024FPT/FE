@@ -1,10 +1,10 @@
 //auth
 export const LOGIN = "/auth/login";
-export const REGISTER = "register/users";
+export const REGISTER = "register/customer";
 export const CHANGE_PASSWORD = "/users/:id/password";
 
 //Machinery
-export const GET_MACHINERY = "/machinery?Status=Available";
+export const GET_MACHINERY = "/machinery/noPaginate?Status=Available";
 export const ADD_MACHINERY = "/Machinery";
 export const MACHINERY = "/Machinery";
 export const MACHINERY_LIST = "machinery";
@@ -110,3 +110,7 @@ export const PAYMENTS_ID = "payments/:id";
 // amdin dashboard
 export const ADMIN_DASHBOARD = "admin/dashBoard";
 export const COUNTORDERS = "admin/dashBoard/countOrders";
+
+//favourite
+export const FAVOURITE = "favorite";
+export const FAVOURITE_ID = "favorite/:id";

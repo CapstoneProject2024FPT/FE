@@ -38,6 +38,7 @@ import config from "../../../configs";
 import moment from "moment";
 import { ApiCheckout } from "../../../api/services/apiCheckout";
 import { handleSendEmail } from "../../../utils/sendEmail";
+import PopupDetailOrder from "./Modal/PopupDetailOrder";
 
 const getStatusStyles = (status: string) => {
   switch (status) {
@@ -51,6 +52,8 @@ const getStatusStyles = (status: string) => {
       return { backgroundColor: "#F44336", color: "white" }; // đỏ
     case "Delivery":
       return { backgroundColor: "#FFD700", color: "black" }; // vàng
+    case "ReDelivery":
+      return { backgroundColor: "#704c5e", color: "white" }; // Tím
     default:
       return { backgroundColor: "transparent", color: "black" };
   }
@@ -76,6 +79,9 @@ const Row = (props: {
     ? statusMapping?.find((status) => status.id === row?.status)?.name
     : defaultStatus;
 
+  const [openOrderDetail, setOpenOrderDetail] = useState<boolean>(false);
+  const [selectedData, setSelectedData] = useState<OrderProps>();
+
   const handleCancelOrder = () => {
     const getUserInfoString = localStorage.getItem("getUserInfo");
     if (getUserInfoString) {
@@ -87,7 +93,7 @@ const Row = (props: {
     }
     onCancelOrder(row.orderId);
     handleCloseMenu();
-    handleSendEmail(isSucess, email, username)
+    handleSendEmail(isSucess, email, username);
   };
 
   const handleOpenMenu = (event: React.MouseEvent<HTMLElement>) => {
@@ -97,10 +103,14 @@ const Row = (props: {
   const handleCloseMenu = () => {
     setAnchorEl(null);
   };
-
-  const handleDetailOrder = () => {
-    setOpen(!open);
+  //popup detail
+  const handleDetailOrder = (record: OrderProps) => {
+    setOpenOrderDetail(!openOrderDetail);
     handleCloseMenu();
+    setSelectedData(record);
+  };
+  const handleDetailOrderClose = () => {
+    setOpenOrderDetail(!openOrderDetail);
   };
 
   useEffect(() => {
@@ -135,7 +145,6 @@ const Row = (props: {
     return `${mins}:${secs < 10 ? "0" : ""}${secs}`;
   };
 
-
   //vnreturn
   useEffect(() => {
     const queryParams = new URLSearchParams(location.search);
@@ -152,8 +161,8 @@ const Row = (props: {
           if (response.status === 200) {
             toast.success("Thanh toán thành công");
             // send mail for payment success
-            isSucess = true
-            handleSendEmail(isSucess, email, username)
+            isSucess = true;
+            handleSendEmail(isSucess, email, username);
           }
         } catch (error) {
           console.error("Error updating payment status:", error);
@@ -170,7 +179,7 @@ const Row = (props: {
         }
       }
       sessionStorage.removeItem("paymmentID");
-      isSucess = false
+      isSucess = false;
     };
 
     if (transactionId) {
@@ -235,8 +244,11 @@ const Row = (props: {
             {row.status === StatusType.UNPAID && (
               <MenuItem onClick={handleCancelOrder}>Hủy đơn hàng</MenuItem>
             )}
-            <MenuItem onClick={handleDetailOrder}>Chi tiết đơn hàng</MenuItem>
-            {(row.status === StatusType.COMPLETED || row.status === StatusType.PAID) && (
+            <MenuItem onClick={() => handleDetailOrder(row)}>
+              Chi tiết đơn hàng
+            </MenuItem>
+            {(row.status === StatusType.COMPLETED ||
+              row.status === StatusType.PAID) && (
               <MenuItem>
                 <ExportPDF row={row} />
               </MenuItem>
@@ -282,7 +294,10 @@ const Row = (props: {
                     <TableRow key={product.orderDetailId}>
                       <TableCell>
                         <Link
-                          to={config.routes.productDetail.replace(":id", product.productId)}
+                          to={config.routes.productDetail.replace(
+                            ":id",
+                            product.productId
+                          )}
                           style={{ textDecoration: "none", color: "black" }}
                         >
                           {product.productName}
@@ -307,7 +322,7 @@ const Row = (props: {
                 <TableBody>
                   <TableRow>
                     <TableCell>Ghi chú</TableCell>
-                    <TableCell>{row.note}</TableCell>
+                    <TableCell>{row.description}</TableCell>
                   </TableRow>
                   <TableRow>
                     <TableCell>Địa chỉ</TableCell>
@@ -319,6 +334,13 @@ const Row = (props: {
           </Collapse>
         </TableCell>
       </TableRow>
+      {openOrderDetail && (
+        <PopupDetailOrder
+          OrderData={selectedData}
+          handleClose={handleDetailOrderClose}
+          open={openOrderDetail}
+        />
+      )}
     </React.Fragment>
   );
 };
@@ -391,9 +413,9 @@ const OrderManagement: React.FC = () => {
           note,
         });
         fetchOrders();
-        toast.success("Đơn hàng đã được hủy thành công");
+        toast.success(config.MessageNotice.CancelOrderSuccess);
       } catch (error) {
-        toast.error("Có lỗi xảy ra khi hủy đơn hàng");
+        toast.error(config.MessageNotice.CancelOrderFailed);
         console.log(error);
       } finally {
         handleCloseDialog();
@@ -413,16 +435,19 @@ const OrderManagement: React.FC = () => {
           apiCancelOrder({
             orderId: order.orderId,
             status: "Canceled",
-            note: "Đơn hàng đã bị hủy do quá hạn thời gian thanh toán",
+            note: config.MessageNotice.ReasonCancel,
           })
             .then(() => {
               toast.success(
-                `Đơn hàng ${order.invoiceCode} đã bị hủy do quá hạn thời gian thanh toán`
+                config.MessageNotice.CancelOrderSuccess2.replace(
+                  "invoiceCode",
+                  order.invoiceCode
+                )
               );
               fetchOrders();
             })
             .catch((error) => {
-              toast.error("Có lỗi xảy ra khi hủy đơn hàng");
+              toast.error(config.MessageNotice.CancelOrderFailed);
               console.log(error);
             });
         }

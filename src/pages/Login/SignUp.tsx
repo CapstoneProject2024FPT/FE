@@ -12,6 +12,7 @@ import { AuthApi } from "../../api/services/apiAuth";
 import classNames from "classnames/bind";
 import { RegisterData } from "../../models/UserData";
 import { toast } from "react-toastify";
+import config from "../../configs";
 
 const cx = classNames.bind(styles);
 
@@ -66,14 +67,19 @@ const SignUpForm: React.FC = () => {
         email: data.email,
         fullname: data.fullname,
       };
-
+      console.log(params);
       const response = await apiRegister(params);
 
+      console.log(response);
       if (response.StatusCode === 400) {
         toast.error(response.Error);
-      } else {
-        toast.success("Đăng kí thành công");
+      } else if (response.StatusCode === 500) {
+        toast.error(response.Error || config.MessageNotice.Error500);
+      } else if (response.status === 200) {
+        toast.success(config.MessageNotice.RegisterSuccess);
         reset();
+      } else {
+        toast.error(response.Error);
       }
 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any

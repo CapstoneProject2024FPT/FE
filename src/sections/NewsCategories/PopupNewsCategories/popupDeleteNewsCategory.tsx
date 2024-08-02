@@ -6,6 +6,7 @@ import { toast } from "react-toastify";
 import { ApiNewsCategories } from "../../../api/services/apiNewsCategories";
 //model
 import { NewsCategoryProps } from "../../../models/newCategories";
+import config from "../../../configs";
 
 interface ModalCategory {
   NewsCategoryData: NewsCategoryProps | null;
@@ -53,7 +54,7 @@ const ModalNewsCategoryPopupDelete: React.FC<ModalCategory> = ({
               onDeleteSuccess(response.data);
             }
           } else {
-            toast.error("Có lỗi trong quá trình cập nhật");
+            toast.error(config.AdminMessageNotice.UpdateFailed);
           }
         }
       }

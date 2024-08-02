@@ -16,6 +16,7 @@ import { toast } from "react-toastify";
 import { staffProps, userModel } from "../../../../../models/UserData";
 import { ApiAccount } from "../../../../../api/services/apiAccount";
 import { RoleData } from "../../RoleData";
+import config from "../../../../../configs";
 
 interface ModalUser {
   UserData: userModel | staffProps | undefined;
@@ -74,7 +75,7 @@ const ModalChangeRole: React.FC<ModalUser> = ({
       }
       reset();
     } catch (error) {
-      toast.error("Có lỗi trong quá trình cập nhât");
+      toast.error(config.AdminMessageNotice.UpdateFailed);
       handleClose();
       console.error(error);
     }
