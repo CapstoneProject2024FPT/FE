@@ -25,21 +25,7 @@ import {
 import HeaderBreadcrumbs from "../../components/HeaderBreadcrumbs";
 import { ApiAdminDashboard } from "../../api/services/apiAdminDashboard";
 import { DashboardProp } from "../../models/dashboard";
-
-// const data = [
-//   { name: "Tháng 1", value: 2400 },
-//   { name: "Tháng 2", value: 1398 },
-//   { name: "Tháng 3", value: 9800 },
-//   { name: "Tháng 4", value: 3908 },
-//   { name: "Tháng 5", value: 4800 },
-//   { name: "Tháng 6", value: 3800 },
-//   { name: "Tháng 7", value: 4300 },
-//   { name: "Tháng 8", value: 9800 },
-//   { name: "Tháng 9", value: 3908 },
-//   { name: "Tháng 10", value: 4800 },
-//   { name: "Tháng 11", value: 3800 },
-//   { name: "Tháng 12", value: 4300 },
-// ];
+import { AttachMoney, MonetizationOn, ShoppingCart } from "@mui/icons-material";
 
 const RADIAN = Math.PI / 180;
 const renderCustomizedLabel = ({
@@ -71,41 +57,13 @@ const COLORS = ["#2980b9", "#27ae60", "#e74c3c", "#f1c40f", "#f0932b"];
 
 const Dashboard: React.FC = () => {
   const { apiGetData } = ApiAdminDashboard();
-  // const [total, setTotal] = useState(0);
-  // const [dataPie, setDataPie] = useState(0);
   const [dashboardData, setDashboardData] = useState<DashboardProp>();
-  // const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchDashboardData = async () => {
       const response = await apiGetData("2024");
       console.log(response.data);
       setDashboardData(response.data);
-      // const paid = response?.data?.ordersByStatus.Paid || 0;
-      // const unPaid = response?.data?.ordersByStatus.UnPaid || 0;
-      // const completed = response?.data?.ordersByStatus.Completed || 0;
-      // const canceled = response?.data?.ordersByStatus.Canceled || 0;
-      // const deliver = response?.data?.ordersByStatus.Deliver || 0;
-      // setTotal(paid + unPaid + completed + canceled + deliver);
-
-      // setDataPie(
-      //   [
-      //     { name: "Đã thanh toán", value: paid },
-      //     {
-      //       name: "Đã hủy thanh toán",
-      //       value: unPaid,
-      //     },
-      //     {
-      //       name: "Đã hoàn thành",
-      //       value: completed,
-      //     },
-      //     {
-      //       name: "Đã hủy đơn hàng",
-      //       value: canceled,
-      //     },
-      //     { name: "Đã vận chuyển", value: deliver },
-      //   ].filter(({ value }) => value !== 0)
-
       return response.data;
     };
 
@@ -134,7 +92,11 @@ const Dashboard: React.FC = () => {
     })
   );
 
-  const CustomTooltip2 = ({ active, payload, label }: any) => {
+  const formatCurrency = (value: any) => {
+    return new Intl.NumberFormat("vi-VN").format(value) + " VND";
+  };
+
+  const CustomTooltipBarChart1 = ({ active, payload, label }: any) => {
     if (active && payload && payload.length) {
       return (
         <div
@@ -147,8 +109,9 @@ const Dashboard: React.FC = () => {
           }}
         >
           <p className="label">{`Tháng ${label}`}</p>
-          <p className="intro">{`Lợi nhuận: ${payload[0].value}`}</p>
-          <p className="intro">{`Doanh thu: ${payload[1].value}`}</p>
+          <p className="intro">{`Tổng đơn: ${formatCurrency(
+            payload[0].value
+          )}`}</p>
         </div>
       );
     }
@@ -156,7 +119,7 @@ const Dashboard: React.FC = () => {
     return null;
   };
 
-  const CustomTooltip1 = ({ active, payload, label }: any) => {
+  const CustomTooltipBarChart2 = ({ active, payload, label }: any) => {
     if (active && payload && payload.length) {
       return (
         <div
@@ -169,15 +132,19 @@ const Dashboard: React.FC = () => {
           }}
         >
           <p className="label">{`Tháng ${label}`}</p>
-          <p className="intro">{`Tổng đơn: ${payload[0].value}`}</p>
+          <p className="intro">{`Lợi nhuận: ${formatCurrency(
+            payload[0].value
+          )}`}</p>
+          <p className="intro">{`Doanh thu: ${formatCurrency(
+            payload[1].value
+          )}`}</p>
         </div>
       );
     }
-
     return null;
   };
 
-  const CustomXAxisTick = (props: any) => {
+  const CustomXAxisTickBarChart1 = (props: any) => {
     const { x, y, payload } = props;
     return (
       <g transform={`translate(${x},${y})`}>
@@ -185,9 +152,9 @@ const Dashboard: React.FC = () => {
           x={0}
           y={0}
           dy={16}
-          textAnchor="start"
+          textAnchor="end"
           fill="#666"
-          transform="rotate(30)"
+          transform="rotate(-45)"
         >
           {payload.value}
         </text>
@@ -195,15 +162,30 @@ const Dashboard: React.FC = () => {
     );
   };
 
-  // const formatMonthTick = (month: any) => {
-  //   return `Tháng ${month}`;
-  // };
+  // Custom YAxisTick formatter function
+  const formatYAxisTick = (value: any) => {
+    if (value >= 1_000_000) {
+      return `${(value / 1_000_000).toFixed(1)}M`;
+    } else if (value >= 1_000) {
+      return `${(value / 1_000).toFixed(1)}K`;
+    }
+    return value;
+  };
+
+  // Custom XAxisTick formatter function
+  const CustomXAxisTickBarChart2 = ({ x, y, payload }: any) => {
+    return (
+      <text x={x} y={y} dy={16} textAnchor="middle" fill="#666">
+        {payload.value}
+      </text>
+    );
+  };
 
   return (
     <Box sx={{ width: "100%", height: "100%" }}>
       <HeaderBreadcrumbs
         heading="Thống kê"
-        links={[{ name: "Thống kê doanh thu" }]}
+        links={[{ name: "Thống kê" }, { name: "Thống kê doanh thu" }]}
       />
       <Box
         sx={{
@@ -215,21 +197,11 @@ const Dashboard: React.FC = () => {
       >
         <Box
           sx={{
-            // display: "grid",
-            // gap: "20px",
-            // rowGap: 3,
-            // columnGap: 3,
-            // gridTemplateColumns: {
-            //   xs: "repeat(1, 1fr)",
-            //   sm: "repeat(2, 1fr)",
-            //   md: "repeat(3, 1fr)",
-            //   lg: "repeat(3, 1fr)",
-            // },
             width: "100%",
             display: "flex",
             alignItems: "center",
             justifyContent: "space-evenly",
-            gap: "10px",
+            gap: "20px",
           }}
         >
           <Card
@@ -239,19 +211,33 @@ const Dashboard: React.FC = () => {
               height: 130,
               boxShadow:
                 "rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px",
+              background: "#4caf50",
+              color: "#fff",
+              transition: "transform 0.2s",
+              "&:hover": {
+                transform: "scale(1.05)",
+              },
             }}
           >
             <CardActionArea sx={{ height: 130 }}>
-              <CardContent>
-                <Typography variant="body2" color="text.secondary">
+              <CardContent
+                sx={{
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                }}
+              >
+                <ShoppingCart sx={{ fontSize: 40, color: "#fff" }} />
+                <Typography sx={{ fontSize: 18, color: "#fff" }}>
                   Tổng số đơn hàng
                 </Typography>
-                <Typography gutterBottom variant="h5">
-                  {dashboardData?.totalOrders}
+                <Typography gutterBottom variant="h6">
+                  {formatCurrency(dashboardData?.totalOrders)}
                 </Typography>
               </CardContent>
             </CardActionArea>
           </Card>
+
           <Card
             sx={{
               width: 300,
@@ -259,19 +245,33 @@ const Dashboard: React.FC = () => {
               height: 130,
               boxShadow:
                 "rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px",
+              background: "#ff9800",
+              color: "#fff",
+              transition: "transform 0.2s",
+              "&:hover": {
+                transform: "scale(1.05)",
+              },
             }}
           >
             <CardActionArea sx={{ height: 130 }}>
-              <CardContent>
-                <Typography variant="body2" color="text.secondary">
+              <CardContent
+                sx={{
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                }}
+              >
+                <AttachMoney sx={{ fontSize: 40, color: "#fff" }} />
+                <Typography sx={{ fontSize: 18, color: "#fff" }}>
                   Tổng lợi nhuận
                 </Typography>
-                <Typography gutterBottom variant="h5">
-                  {dashboardData?.totalProfit}
+                <Typography gutterBottom variant="h6">
+                  {formatCurrency(dashboardData?.totalProfit)}
                 </Typography>
               </CardContent>
             </CardActionArea>
           </Card>
+
           <Card
             sx={{
               width: 300,
@@ -279,15 +279,28 @@ const Dashboard: React.FC = () => {
               height: 130,
               boxShadow:
                 "rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px",
+              background: "#f44336",
+              color: "#fff",
+              transition: "transform 0.2s",
+              "&:hover": {
+                transform: "scale(1.05)",
+              },
             }}
           >
             <CardActionArea sx={{ height: 130 }}>
-              <CardContent>
-                <Typography variant="body2" color="text.secondary">
+              <CardContent
+                sx={{
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                }}
+              >
+                <MonetizationOn sx={{ fontSize: 40, color: "#fff" }} />
+                <Typography sx={{ fontSize: 18, color: "#fff" }}>
                   Tổng doanh thu
                 </Typography>
-                <Typography gutterBottom variant="h5">
-                  {dashboardData?.totalRevenue}
+                <Typography gutterBottom variant="h6">
+                  {formatCurrency(dashboardData?.totalRevenue)}
                 </Typography>
               </CardContent>
             </CardActionArea>
@@ -316,12 +329,12 @@ const Dashboard: React.FC = () => {
                 <CartesianGrid />
                 <XAxis
                   dataKey="month"
-                  tick={<CustomXAxisTick />}
+                  tick={<CustomXAxisTickBarChart1 />}
                   interval={0}
                   padding={{ left: 25, right: 25 }}
                 />
-                <YAxis />
-                <Tooltip content={<CustomTooltip1 />} />
+                <YAxis allowDecimals={false}/>
+                <Tooltip content={<CustomTooltipBarChart1 />} />
                 <Legend
                   payload={[
                     {
@@ -331,6 +344,7 @@ const Dashboard: React.FC = () => {
                     },
                   ]}
                   wrapperStyle={{
+                    marginTop: "10px",
                     position: "relative",
                     fontSize: "14px",
                   }}
@@ -372,49 +386,54 @@ const Dashboard: React.FC = () => {
         <Divider
           orientation="horizontal"
           flexItem
-          sx={{ margin: "10px", border: "1px solid #d9d9d9" }}
+          sx={{ margin: "40px 0 20px", border: "1px solid #d9d9d9" }}
         />
-        <Box>
-          <Box sx={{ width: "100%" }}>
-            <ResponsiveContainer width={1000} height={400}>
-              <BarChart
-                data={totalProfitAndTotalRevenue}
-                barSize="3%"
-                barGap="6"
-                barCategoryGap="3%"
-              >
-                <CartesianGrid />
-                <XAxis
-                  dataKey="month"
-                  tick={<CustomXAxisTick />}
-                  interval={0}
-                  padding={{ left: 25, right: 25 }}
-                />
-                <YAxis />
-                <Tooltip content={<CustomTooltip2 />} />
-                <Legend
-                  payload={[
-                    {
-                      value: "Lợi nhuận",
-                      type: "square",
-                      color: "#8884d8",
-                    },
-                    {
-                      value: "Doanh thu",
-                      type: "square",
-                      color: "#82ca9d",
-                    },
-                  ]}
-                  wrapperStyle={{
-                    position: "relative",
-                    fontSize: "14px",
-                  }}
-                />
-                <Bar dataKey="totalProfit" fill="#8884d8" />
-                <Bar dataKey="totalRevenue" fill="#82ca9d" />
-              </BarChart>
-            </ResponsiveContainer>
-          </Box>
+        <Box
+          sx={{
+            width: "100%",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <ResponsiveContainer width={1000} height={400}>
+            <BarChart
+              data={totalProfitAndTotalRevenue}
+              barSize="3%"
+              barGap="6"
+              barCategoryGap="3%"
+            >
+              <CartesianGrid />
+              <XAxis
+                dataKey="month"
+                tick={<CustomXAxisTickBarChart2 />}
+                interval={0}
+                padding={{ left: 25, right: 25 }}
+              />
+              <YAxis tickFormatter={formatYAxisTick} />
+              <Tooltip content={<CustomTooltipBarChart2 />} />
+              <Legend
+                payload={[
+                  {
+                    value: "Lợi nhuận",
+                    type: "square",
+                    color: "#8884d8",
+                  },
+                  {
+                    value: "Doanh thu",
+                    type: "square",
+                    color: "#82ca9d",
+                  },
+                ]}
+                wrapperStyle={{
+                  position: "relative",
+                  fontSize: "14px",
+                }}
+              />
+              <Bar dataKey="totalProfit" fill="#8884d8" />
+              <Bar dataKey="totalRevenue" fill="#82ca9d" />
+            </BarChart>
+          </ResponsiveContainer>
         </Box>
       </Box>
     </Box>
