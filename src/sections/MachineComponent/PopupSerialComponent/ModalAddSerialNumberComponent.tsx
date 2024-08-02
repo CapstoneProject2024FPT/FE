@@ -79,7 +79,7 @@ const ModalAddSerialComponent: React.FC<ModalSerialNumber> = ({
   };
   return (
     <Modal
-      title="Thêm bộ phận máy"
+      title="Thêm bộ phận máy vào kho"
       open={open}
       onOk={handleCLose}
       onCancel={handleCLose}
