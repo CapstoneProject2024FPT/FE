@@ -16,7 +16,9 @@ const AccountSection = () => {
   const jsonString = localStorage.getItem("loginInfo");
   const user = JSON.parse(jsonString || "{}");
   const { setAuthUser } = useAuthContext();
-  const [name, setName] = React.useState(user?.fullName ? user.fullName : "U");
+  const [name, setName] = React.useState(
+    user?.data?.fullName ? user?.data?.fullName : "U"
+  );
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const navigate = useNavigate();
 
@@ -50,7 +52,9 @@ const AccountSection = () => {
   return (
     <>
       <Box sx={{ display: "flex", alignItems: "center", textAlign: "center" }}>
-        <Typography>{user.name ? user.name : "Hồ Minh Dũng"}</Typography>
+        <Typography>
+          {user?.data?.fullName ? user?.data?.fullName : ""}
+        </Typography>
         <IconButton
           onClick={handleClick}
           size="small"

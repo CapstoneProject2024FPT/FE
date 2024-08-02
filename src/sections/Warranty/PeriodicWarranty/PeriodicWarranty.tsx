@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useEffect, useState } from "react";
 import type { MenuProps } from "antd";
 import type { TableProps } from "antd";
@@ -5,7 +6,7 @@ import { DownOutlined } from "@ant-design/icons";
 import { Table, Space, Dropdown, DatePicker } from "antd";
 import { toast } from "react-toastify";
 import { ApiWarranty } from "../../../api/services/apiWarranty";
-import { WarrantyProps } from "../../../models/warranty";
+import { WarrantyProps, warrantyStatusMapping } from "../../../models/warranty";
 import { formatDateFunc } from "../../../utils/fn";
 import config from "../../../configs";
 import { useNavigate } from "react-router-dom";
@@ -197,6 +198,32 @@ const TablePeriodicWarranty: React.FC = () => {
         </div>
       ),
       dataIndex: "status",
+      render: (status, record) => {
+        const defaultStatus = "Đang chờ xác nhận";
+        const upComming = "Sắp tới";
+        const notCome = "Chưa tới";
+
+        // Check startDate
+        const startDate = moment(record.startDate);
+        const today = moment();
+        const daysDifference = startDate.diff(today, "days");
+
+        const statusName = status
+          ? warrantyStatusMapping?.find((item) => item.id === status)?.name
+          : defaultStatus;
+
+        if (daysDifference >= 0 && daysDifference <= 3) {
+          return (
+            <div>
+              <div style={{ color: "orange" }}>{upComming}</div>
+            </div>
+          );
+        } else if (daysDifference >= 4) {
+          return <div>{notCome}</div>;
+        } else {
+          return <div>{statusName}</div>;
+        }
+      },
       align: "center",
     },
     {

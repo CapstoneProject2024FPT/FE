@@ -31,29 +31,31 @@ export default function RHFRadioGroup({ name, options, ...other }: Props) {
   const { control } = useFormContext();
 
   return (
-    <Controller
-      name={name}
-      control={control}
-      render={({ field, fieldState: { error } }) => (
-        <div style={{ display: "flex", flexDirection: "column" }}>
-          <RadioGroup {...field} row={false} {...other}>
-            {options.map((option) => (
-              <FormControlLabel
-                key={option.value}
-                value={option.value}
-                control={<Radio />}
-                label={`${option.label} (Đang tiến hành: ${option.taskStatusCount?.Process} nhiệm vụ)`}
-              />
-            ))}
-          </RadioGroup>
+    <>
+      <Controller
+        name={name}
+        control={control}
+        render={({ field, fieldState: { error } }) => (
+          <div style={{ display: "flex", flexDirection: "column" }}>
+            <RadioGroup {...field} row={false} {...other}>
+              {options.map((option) => (
+                <FormControlLabel
+                  key={option.value}
+                  value={option.value}
+                  control={<Radio />}
+                  label={`${option.label} (Đang tiến hành: ${option.taskStatusCount?.Process} nhiệm vụ)`}
+                />
+              ))}
+            </RadioGroup>
 
-          {!!error && (
-            <FormHelperText error sx={{ px: 2 }}>
-              {error.message}
-            </FormHelperText>
-          )}
-        </div>
-      )}
-    />
+            {!!error && (
+              <FormHelperText error sx={{ px: 2 }}>
+                {error.message}
+              </FormHelperText>
+            )}
+          </div>
+        )}
+      />
+    </>
   );
 }

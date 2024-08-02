@@ -3,14 +3,31 @@ import React, { useEffect, useState } from "react";
 import type { MenuProps } from "antd";
 import type { TableProps, TablePaginationConfig } from "antd";
 import { DownOutlined } from "@ant-design/icons";
+import {
+  OrderCount,
+  OrderProps,
+  OrderStatus,
+  statusMapping,
+  StatusType,
+} from "../../models/order";
 import { Table, Space, Dropdown, DatePicker } from "antd";
-import { OrderProps, statusMapping, StatusType } from "../../models/order";
 import { ApiOrder } from "../../api/services/apiOrder";
 import { toast } from "react-toastify";
 import { formatDateFunc, formatMoney } from "../../utils/fn";
 import ModalDetailOrder from "./OrderModal/ModalDetailOrder";
 import ModalCancelOrder from "./OrderModal/ModalCancelOrder";
 import ModalDeliveryTask from "./OrderModal/ModalDeliveryTask";
+import {
+  Box,
+  Card,
+  Divider,
+  MenuItem,
+  Stack,
+  TextField,
+  Typography,
+} from "@mui/material";
+import { ApiAdminDashboard } from "../../api/services/apiAdminDashboard";
+import SquareIcon from "@mui/icons-material/Square";
 import moment from "moment";
 type ColumnsType<T> = TableProps<T>["columns"];
 
@@ -34,8 +51,12 @@ const TableOrder: React.FC = () => {
   const [openCancelPopup, setOpenCancelPopup] = useState<boolean>(false);
   const [openTaskPopup, setOpenTaskPopup] = useState<boolean>(false);
   const [selectedData, setSelectedData] = useState<OrderProps | null>(null);
+  const [orderCounts, setOrderCounts] = useState<OrderCount>();
+  const [selectStatus, setSelectStatus] = useState<string>("");
+  const [selectStatusUi, setSelectStatusUi] = useState<string>("");
 
   const { loading, apiGetOrder } = ApiOrder();
+  const { apiGetCountOrders } = ApiAdminDashboard();
 
   const handleActionDetail = (record: OrderProps) => {
     setOpen(!open);
@@ -76,16 +97,22 @@ const TableOrder: React.FC = () => {
         return { backgroundColor: "red", color: "white" };
       case "Delivery":
         return { backgroundColor: "yellow", color: "white" };
+      case "ReDelivery":
+        return { backgroundColor: "#704c5e", color: "white" };
       default:
         return { backgroundColor: "transparent", color: "black" };
     }
   };
-
+  const fetchOrderCount = async () => {
+    const response = await apiGetCountOrders();
+    setOrderCounts(response.data);
+  };
   const fetchOrder = async (
     page: number = 1,
     pageSize: number = defaultPageSize,
     createDate = selectedCreateDate,
-    CompletedDate = selectedCompletedDate
+    CompletedDate = selectedCompletedDate,
+    Status = selectStatus
   ) => {
     try {
       const params = {
@@ -93,6 +120,7 @@ const TableOrder: React.FC = () => {
         page: page,
         createDate: createDate,
         CompletedDate: CompletedDate,
+        Status: Status,
       };
       const response = await apiGetOrder(params);
 
@@ -110,18 +138,21 @@ const TableOrder: React.FC = () => {
 
   useEffect(() => {
     fetchOrder(pagination.current, pagination.pageSize);
+    fetchOrderCount();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleCancelSuccess = (response: string) => {
     handleCLoseCancel();
     fetchOrder(pagination.current, pagination.pageSize);
+    fetchOrderCount();
     toast.success(response);
   };
 
   const handleTaskSuccess = (response: string) => {
     handleCLoseTask();
     fetchOrder(pagination.current, pagination.pageSize);
+    fetchOrderCount();
     toast.success(response);
   };
 
@@ -132,6 +163,7 @@ const TableOrder: React.FC = () => {
       pageSize: pageSize,
     }));
     fetchOrder(page, pageSize);
+    fetchOrderCount();
   };
 
   const customPagination = {
@@ -157,8 +189,10 @@ const TableOrder: React.FC = () => {
       pagination.current,
       pagination.pageSize,
       formattedDate,
-      selectedCompletedDate
+      selectedCompletedDate,
+      selectStatus
     );
+    fetchOrderCount();
   };
 
   const handleCompletedDateChange = (
@@ -174,10 +208,33 @@ const TableOrder: React.FC = () => {
       pagination.current,
       pagination.pageSize,
       selectedCreateDate,
-      formattedDate
+      formattedDate,
+      selectStatus
     );
+    fetchOrderCount();
   };
   const dateFormatList = ["DD/MM/YYYY", "DD/MM/YY", "DD-MM-YYYY", "DD-MM-YY"];
+
+  const handleSelect = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    let valueStatus = e.target.value;
+    const valueStatusUi = e.target.value;
+
+    if (valueStatus === "all") {
+      valueStatus = "";
+    }
+    setSelectStatus(valueStatus);
+    setSelectStatusUi(valueStatusUi);
+    fetchOrder(
+      pagination.current,
+      pagination.pageSize,
+      selectedCreateDate,
+      selectedCompletedDate,
+      valueStatus
+    );
+    fetchOrderCount();
+  };
   const items: MenuProps["items"] = [
     {
       key: "1",
@@ -310,7 +367,7 @@ const TableOrder: React.FC = () => {
         </div>
       ),
       key: "operation",
-      render: (record) => (
+      render: (record: OrderProps) => (
         <Space size="middle">
           <Dropdown
             menu={{
@@ -323,6 +380,8 @@ const TableOrder: React.FC = () => {
                     return !["2", "3"].includes(item.key as string);
                   } else if (record.status === StatusType.DELIVERY) {
                     return item.key !== "2";
+                  } else if (String(record.noteStatus.FAILED) === "3") {
+                    return !["2"].includes(item.key as string);
                   } else {
                     return true;
                   }
@@ -356,8 +415,83 @@ const TableOrder: React.FC = () => {
     },
   ];
 
+  //Color mapping order
+  const colorMapping: Record<OrderStatus, string> = {
+    Paid: "#2196F3",
+    UnPaid: "grey",
+    Completed: "green",
+    Canceled: "red",
+    Delivery: "yellow",
+    ReDelivery: "#704c5e",
+  };
+
+  const orderStatusValues: OrderStatus[] = [
+    "Paid",
+    "UnPaid",
+    "Completed",
+    "Canceled",
+    "Delivery",
+    "ReDelivery",
+  ];
+
   return (
-    <>
+    <React.Fragment>
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "row",
+          justifyContent: "space-between",
+        }}
+      >
+        <Card sx={{ p: 3, mb: 2, display: "flex", flexDirection: "row" }}>
+          {orderCounts?.ordersByStatus &&
+            Object.entries(orderCounts?.ordersByStatus).map(
+              ([status, count], index) => {
+                const statusName = (
+                  statusMapping.find((item) => item.id === status) || {}
+                ).name;
+                const statusColor = orderStatusValues.includes(
+                  status as OrderStatus
+                )
+                  ? colorMapping[status as OrderStatus]
+                  : "transparent";
+
+                return (
+                  <Box key={index}>
+                    <Stack display="flex" direction="row" spacing={1}>
+                      <SquareIcon
+                        sx={{
+                          color: statusColor,
+                          mr: 1,
+                          width: "15px",
+                          height: "15px",
+                        }}
+                      />
+                      <Typography>
+                        {statusName}: {count}
+                      </Typography>
+                      <Divider orientation="vertical" flexItem sx={{ mr: 8 }} />
+                    </Stack>
+                  </Box>
+                );
+              }
+            )}
+        </Card>
+        <TextField
+          id="status"
+          select
+          label="Trạng thái đơn"
+          value={selectStatusUi}
+          sx={{ width: "200px" }}
+          onChange={(e) => handleSelect(e)}
+        >
+          {statusMapping.map((option) => (
+            <MenuItem key={option.id} value={option.id}>
+              {option.name}
+            </MenuItem>
+          ))}
+        </TextField>
+      </Box>
       <Table
         columns={columns}
         rowKey={(record) => record.orderId}
@@ -393,7 +527,7 @@ const TableOrder: React.FC = () => {
           openTaskPopup={openTaskPopup}
         />
       )}
-    </>
+    </React.Fragment>
   );
 };
 

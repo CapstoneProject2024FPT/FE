@@ -13,6 +13,7 @@ import { OrderProps } from "../../../models/order";
 import { ApiOrder } from "../../../api/services/apiOrder";
 import { Card, Stack } from "@mui/material";
 import { LoadingButton } from "@mui/lab";
+import config from "../../../configs";
 
 interface ModalOrder {
   OrderData: OrderProps | null;
@@ -63,10 +64,10 @@ const ModalCancelOrder: React.FC<ModalOrder> = ({
         if (response.status === 200) {
           if (onCancelSuccess) {
             reset();
-            onCancelSuccess("Cập nhật đơn hàng thành công");
+            onCancelSuccess(config.AdminMessageNotice.OrderUpdateSuccess);
           }
         } else {
-          toast.error("Cập nhật đơn hàng thất bại");
+          toast.error(config.AdminMessageNotice.OrderUpdateFailed);
         }
       }
     } catch (error) {

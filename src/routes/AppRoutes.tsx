@@ -53,6 +53,8 @@ import WarrantyRequestDetail from "../pages/Admin/Warranty/Request/WarrantyReque
 import Bill from "../pages/Bill/Bill";
 import WarrantyRequestManagent from "../pages/Admin/Warranty/Request/WarrantyRequestManagement";
 import WarrantyPeriodicDetail from "../pages/Admin/Warranty/Periodic/WarrantyPeriodicDetail";
+import WarrantyDetailPeriodic from "../pages/UserProfile/WarantyDetailPeriodic";
+import WarrantyDetailRequest from "../pages/UserProfile/WarrantyDetailRequest";
 
 const AppRoute: React.FC = () => {
   return (
@@ -119,6 +121,16 @@ const AppRoute: React.FC = () => {
           key="maintenance"
           path={config.routes.maintenance}
           element={<Maintenance />}
+        />
+        <Route
+          key="maintenancePeriodict"
+          path={config.routes.maintenancePeriodic}
+          element={<WarrantyDetailPeriodic />}
+        />
+        <Route
+          key="maintenanceRequest"
+          path={config.routes.maintenanceRequest}
+          element={<WarrantyDetailRequest />}
         />
         <Route
           key="orderManagement"

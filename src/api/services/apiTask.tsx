@@ -3,17 +3,19 @@ import { TASK, TASK_ID, TASK_STAFF } from "../pathApiName";
 import { useState } from "react";
 import axios from "axios";
 import { DeliveryPropsPost } from "../../models/task";
+import config from "../../configs";
 
 export const ApiTask = () => {
   const [loading, setLoading] = useState(false);
 
   interface TaskProps {
     OrderId?: string;
+    Type?: string;
   }
-  const apiGetTask = async () => {
+  const apiGetTask = async (params: TaskProps) => {
     setLoading(true);
     try {
-      const response = await axiosPublic.get(TASK);
+      const response = await axiosPublic.get(TASK, { params });
 
       return response;
 
@@ -22,7 +24,7 @@ export const ApiTask = () => {
       if (axios.isAxiosError(error) && error.response) {
         return error.response.data;
       } else {
-        return { statusCode: 500, Error: "Lỗi lấy dữ liệu" };
+        return { statusCode: 500, Error: config.MessageNotice.Error500 };
       }
     } finally {
       setLoading(false);
@@ -41,7 +43,7 @@ export const ApiTask = () => {
       if (axios.isAxiosError(error) && error.response) {
         return error.response.data;
       } else {
-        return { statusCode: 500, Error: "Lỗi lấy dữ liệu" };
+        return { statusCode: 500, Error: config.MessageNotice.Error500 };
       }
     } finally {
       setLoading(false);
@@ -67,7 +69,7 @@ export const ApiTask = () => {
       if (axios.isAxiosError(error) && error.response) {
         return error.response.data;
       } else {
-        return { statusCode: 500, Error: "Lỗi lấy dữ liệu" };
+        return { statusCode: 500, Error: config.MessageNotice.Error500 };
       }
     } finally {
       setLoading(false);
@@ -89,7 +91,7 @@ export const ApiTask = () => {
       if (axios.isAxiosError(error) && error.response) {
         return error.response.data;
       } else {
-        return { statusCode: 500, Error: "Lỗi lấy dữ liệu" };
+        return { statusCode: 500, Error: config.MessageNotice.Error500 };
       }
     } finally {
       setLoading(false);
@@ -108,7 +110,7 @@ export const ApiTask = () => {
       if (axios.isAxiosError(error) && error.response) {
         return error.response.data;
       } else {
-        return { statusCode: 500, Error: "Lỗi lấy dữ liệu" };
+        return { statusCode: 500, Error: config.MessageNotice.Error500 };
       }
     } finally {
       setLoading(false);

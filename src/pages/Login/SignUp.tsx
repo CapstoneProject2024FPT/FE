@@ -12,6 +12,7 @@ import { AuthApi } from "../../api/services/apiAuth";
 import classNames from "classnames/bind";
 import { RegisterData } from "../../models/UserData";
 import { toast } from "react-toastify";
+import config from "../../configs";
 
 const cx = classNames.bind(styles);
 
@@ -29,10 +30,7 @@ const SignUpForm: React.FC = () => {
     password: Yup.string()
       .required("bắt buộc")
       .min(8, "Tối thiểu 8 kí tự")
-      .matches(
-        patternValidate.password,
-        "Độ dài từ 8 tới 19, cần có kí tự, số, kí tự đặc biệt"
-      ),
+      .max(19, "Tối đa 19 kí tự"),
     confirmPassword: Yup.string()
       .required("Bắt buộc")
       .oneOf([Yup.ref("password")], "Phải giống mật khẩu"),
@@ -69,14 +67,19 @@ const SignUpForm: React.FC = () => {
         email: data.email,
         fullname: data.fullname,
       };
-
+      console.log(params);
       const response = await apiRegister(params);
 
+      console.log(response);
       if (response.StatusCode === 400) {
         toast.error(response.Error);
-      } else {
-        toast.success("Đăng kí thành công");
+      } else if (response.StatusCode === 500) {
+        toast.error(response.Error || config.MessageNotice.Error500);
+      } else if (response.status === 200) {
+        toast.success(config.MessageNotice.RegisterSuccess);
         reset();
+      } else {
+        toast.error(response.Error);
       }
 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any

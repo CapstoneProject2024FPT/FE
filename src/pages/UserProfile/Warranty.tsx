@@ -4,8 +4,8 @@ import Paper from "@mui/material/Paper";
 import Grid from "@mui/material/Unstable_Grid2";
 import { Container, Tabs, Tab } from "@mui/material";
 import SideBarUserProfile from "./SideBar/SideBarUserProfile";
-import WarrantyManagement from "./Warranty/WarrantyManagement";
-import WarrantyRequest from "./Warranty/WarrantyRequest";
+import WarrantyManagement from "./Warranty/Periodic/WarrantyManagement";
+import WarrantyRequest from "./Warranty/Request/WarrantyRequest";
 
 const Warranty: React.FC = () => {
   const [tabValue, setTabValue] = useState(0);

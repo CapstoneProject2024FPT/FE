@@ -26,6 +26,7 @@ import { toast } from "react-toastify";
 import { NewsCategoryProps } from "../../models/newCategories";
 import { ApiNewsCategories } from "../../api/services/apiNewsCategories";
 import { ApiNews } from "../../api/services/apiNews";
+import config from "../../configs";
 //
 
 // ----------------------------------------------------------------------
@@ -126,11 +127,11 @@ export default function BlogNewPostForm() {
 
       const response = await apiPostNews(transformedData);
       if (response.status === 200) {
-        toast.success("Thêm tin tức mới thành công");
+        toast.success(config.AdminMessageNotice.AddBlogSucces);
         handleClosePreview();
         reset();
       } else {
-        toast.error("Xảy ra lỗi trong quá trình thêm");
+        toast.error(config.AdminMessageNotice.AddBlogFailed);
       }
     } catch (error) {
       console.error(error);

@@ -19,7 +19,6 @@ import {
 } from "@mui/material";
 
 // @types
-
 import config from "../../configs";
 import { useNavigate } from "react-router-dom";
 import { OrderProps } from "../../models/order";
@@ -27,6 +26,8 @@ import { ApiOrder } from "../../api/services/apiOrder";
 import { formatAddress, formatDateFunc, formatMoney } from "../../utils/fn";
 import { ApiWarranty } from "../../api/services/apiWarranty";
 import { WarrantyResponse } from "../../models/warranty";
+import ExportPDF from "./Exportpdf/ExportPDF";
+import WarrantyPDF from "./Exportpdf/WarrantyPDF";
 
 // ----------------------------------------------------------------------
 
@@ -142,6 +143,7 @@ const Bill: React.FC = () => {
                       <TableCell>Tên sản phẩm</TableCell>
                       <TableCell>Mã số máy</TableCell>
                       <TableCell>Giá sản phẩm</TableCell>
+                      <TableCell>Phiếu bảo hành</TableCell>
                     </TableRow>
                   </TableHead>
                   <TableBody>
@@ -159,6 +161,9 @@ const Bill: React.FC = () => {
                               detail.warrantyDetails.inventory.machinery
                                 .sellingPrice
                             )}
+                          </TableCell>
+                          <TableCell>
+                            <WarrantyPDF order={orderData} product={detail} />
                           </TableCell>
                         </>
                       </TableRow>
@@ -189,6 +194,9 @@ const Bill: React.FC = () => {
                 direction="row"
               >
                 <Box>
+                  <Button sx={{ mr: 2 }} variant="contained">
+                    <ExportPDF row={orderData} />
+                  </Button>
                   <Button
                     variant="contained"
                     onClick={() => {

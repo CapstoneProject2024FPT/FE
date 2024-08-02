@@ -24,6 +24,7 @@ import { MachineryComponentApi } from "../../api/services/apiMachineComponent";
 import { CategoryComponentApi } from "../../api/services/apiCategoriesComponent";
 //toast
 import { toast } from "react-toastify";
+import config from "../../configs";
 
 const LabelStyle = styled(Typography)(({ theme }) => ({
   ...theme.typography.subtitle2,
@@ -124,7 +125,7 @@ export default function ProductNewComponent() {
       const response = await apiAddMachineryComponent(values);
 
       if (response.status === 200) {
-        toast.success("Thêm máy thành công");
+        toast.success(config.AdminMessageNotice.AddMachineComponent);
       }
       reset();
     } catch (error) {

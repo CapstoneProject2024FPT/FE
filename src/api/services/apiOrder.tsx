@@ -2,6 +2,7 @@ import { axiosPublic } from "../axiosInstance";
 import { ORDER, ORDER_ID } from "../pathApiName";
 import { useState } from "react";
 import axios from "axios";
+import config from "../../configs";
 
 export const ApiOrder = () => {
   const [loading, setLoading] = useState(false);
@@ -12,6 +13,7 @@ export const ApiOrder = () => {
     size?: number;
     CreateDate?: string | null;
     CompletedDate?: string | null;
+    Status?: string;
   }
 
   const apiGetOrder = async (params: GetOrderProps) => {
@@ -25,7 +27,7 @@ export const ApiOrder = () => {
       if (axios.isAxiosError(error) && error.response) {
         return error.response.data;
       } else {
-        return { statusCode: 500, Error: "Internal Server Error" };
+        return { statusCode: 500, Error: config.MessageNotice.Error500 };
       }
     } finally {
       setLoading(false);
@@ -45,7 +47,7 @@ export const ApiOrder = () => {
       if (axios.isAxiosError(error) && error.response) {
         return error.response.data;
       } else {
-        return { statusCode: 500, Error: "Internal Server Error" };
+        return { statusCode: 500, Error: config.MessageNotice.Error500 };
       }
     } finally {
       setLoading(false);
@@ -71,7 +73,7 @@ export const ApiOrder = () => {
       if (axios.isAxiosError(error) && error.response) {
         return error.response.data;
       } else {
-        return { statusCode: 500, Error: "Internal Server Error" };
+        return { statusCode: 500, Error: config.MessageNotice.Error500 };
       }
     } finally {
       setLoading(false);
@@ -92,7 +94,7 @@ export const ApiOrder = () => {
       if (axios.isAxiosError(error) && error.response) {
         return error.response.data;
       } else {
-        return { statusCode: 500, Error: "Internal Server Error" };
+        return { statusCode: 500, Error: config.MessageNotice.Error500 };
       }
     } finally {
       setLoading(false);
@@ -112,7 +114,7 @@ export const ApiOrder = () => {
       if (axios.isAxiosError(error) && error.response) {
         return error.response.data;
       } else {
-        return { statusCode: 500, Error: "Internal Server Error" };
+        return { statusCode: 500, Error: config.MessageNotice.Error500 };
       }
     } finally {
       setLoading(false);
@@ -129,7 +131,7 @@ export const ApiOrder = () => {
       if (axios.isAxiosError(error) && error.response) {
         return error.response.data;
       } else {
-        return { statusCode: 500, Error: "Internal Server Error" };
+        return { statusCode: 500, Error: config.MessageNotice.Error500 };
       }
     } finally {
       setLoading(false);

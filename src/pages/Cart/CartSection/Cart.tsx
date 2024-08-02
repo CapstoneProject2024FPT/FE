@@ -72,7 +72,7 @@ const Cart: React.FC<CartProp> = ({ handleNext }) => {
         );
         setCartItems(updatedCart);
       } catch (error) {
-        console.error("Error fetching product quantities", error);
+        console.error("Error get product quantities", error);
       }
     };
 

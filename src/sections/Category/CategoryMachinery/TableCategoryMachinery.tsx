@@ -6,9 +6,9 @@ import { Table, Input, Space, Dropdown, Button } from "antd";
 import { GetCategoryProps } from "../../../models/category";
 import { CategoryApi } from "../../../api/services/apiCategories";
 import ModalCategoryPopup from "./PopupCategory/popupDetailCategory";
-import ModalCategoryPopupDelete from "./PopupCategory/popupDeleteCategory";
 import ModalCategoryPopupAdd from "./PopupCategory/popupAddCategory";
 import { toast } from "react-toastify";
+import config from "../../../configs";
 
 type ColumnsType<T> = TableProps<T>["columns"];
 const { Search } = Input;
@@ -25,7 +25,6 @@ const TableCategoryMachinery: React.FC = () => {
 
   //popup
   const [open, setOpen] = useState<boolean>(false);
-  const [openDeletePopup, setOpenDeletePopup] = useState<boolean>(false);
   const [openAddPopup, setOpenAddPopup] = useState<boolean>(false);
   const [selectedData, setSelectedData] = useState<GetCategoryProps | null>(
     null
@@ -39,12 +38,7 @@ const TableCategoryMachinery: React.FC = () => {
     setOpen(true);
     setSelectedData(record);
   };
-  const handleActionDelete = (record: GetCategoryProps) => {
-    setOpenDeletePopup(true);
-    setSelectedData(record);
-  };
   const handleCLose = () => setOpen(false);
-  const handleCLoseDelete = () => setOpenDeletePopup(false);
   const handleCloseAdd = () => setOpenAddPopup(false);
 
   const fetchCategories = async () => {
@@ -64,13 +58,7 @@ const TableCategoryMachinery: React.FC = () => {
   const handleAddCategorySuccess = () => {
     handleCloseAdd();
     fetchCategories();
-    toast.success("Thêm loại máy thành công");
-  };
-
-  const handleDeleteCategorySuccess = (response: string) => {
-    handleCLoseDelete();
-    fetchCategories();
-    toast.success(response);
+    toast.success(config.AdminMessageNotice.AddCategory);
   };
 
   const handleUpdateCategorySuccess = (response: string) => {
@@ -138,21 +126,29 @@ const TableCategoryMachinery: React.FC = () => {
       key: "1",
       label: "Chi tiết",
     },
-    {
-      key: "2",
-      label: "Xoá",
-    },
   ];
 
   const columns: ColumnsType<GetCategoryProps> = [
     {
-      title: <div style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}>Loại máy</div>,
+      title: (
+        <div
+          style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}
+        >
+          Loại máy
+        </div>
+      ),
       dataIndex: "name",
       sorter: (a, b) => a.name.length - b.name.length,
       width: "40%",
     },
     {
-      title: <div style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}>Hành Động</div>,
+      title: (
+        <div
+          style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}
+        >
+          Hành Động
+        </div>
+      ),
       key: "operation",
       render: (record) => (
         <Space size="middle">
@@ -163,9 +159,6 @@ const TableCategoryMachinery: React.FC = () => {
                 switch (key) {
                   case "1":
                     handleActionDetail(record);
-                    break;
-                  case "2":
-                    handleActionDelete(record);
                     break;
                   default:
                     break;
@@ -215,15 +208,6 @@ const TableCategoryMachinery: React.FC = () => {
           open={open}
           handleClose={handleCLose}
           onUpdateSuccess={handleUpdateCategorySuccess}
-        />
-      )}
-
-      {openDeletePopup && (
-        <ModalCategoryPopupDelete
-          CategoryData={selectedData}
-          openDeletePopup={openDeletePopup}
-          handleCLoseDelete={handleCLoseDelete}
-          onDeleteSuccess={handleDeleteCategorySuccess}
         />
       )}
 

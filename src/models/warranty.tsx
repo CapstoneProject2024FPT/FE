@@ -69,6 +69,11 @@ export interface WarrantyDetailProps {
   comments: string;
   accountId: string;
   warrantyId: string;
+  staff: {
+    fullName: string;
+    role: string;
+    id: string;
+  };
 }
 
 export interface WarrantyPropsRequest {
@@ -113,6 +118,11 @@ interface WarrantyDetail {
   comments: string | null;
   warrantyId: string;
   accountId: string | null;
+  staff: {
+    fullName: string;
+    role: string;
+    id: string;
+  };
 }
 
 interface Inventory {
@@ -171,10 +181,46 @@ export interface WarrantyDetails {
   customer: Customer;
   address: Address;
 }
-interface Warranty {
+export interface Warranty {
   warrantyDetails: WarrantyDetails;
 }
 
 export interface WarrantyResponse {
   warranty: Warranty[];
+}
+
+//---------------------------------------
+
+export interface WarrantyDetailGetProps {
+  id: string;
+  type: string;
+  createDate: Date;
+  startDate: Date;
+  completionDate: string;
+  status: string;
+  description: string;
+  comments: string;
+  nextMaintenanceDate: Date;
+  warrantyId: string;
+  staff: Staff;
+  inventoryChanges: InventoryChange[];
+}
+
+interface Staff {
+  id: string;
+  fullName: string;
+  role: string;
+}
+
+interface InventoryChange {
+  warrantyDetailId: string;
+  oldInventory: Inventory;
+  newInventory: Inventory;
+}
+
+interface Inventory {
+  id: string;
+  serialNumber: string;
+  type: string;
+  componentName: string;
 }

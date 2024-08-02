@@ -16,6 +16,7 @@ import { ApiAddress } from "../../../api/services/apiAddress";
 import { addressProps } from "../../../models/address";
 import { toast } from "react-toastify";
 import { formatAddress } from "../../../utils/fn";
+import config from "../../../configs";
 
 // ----------------------------------------------------------------------
 
@@ -67,7 +68,7 @@ const CheckoutBillingAddress: React.FC<checkoutBillingAndAddress> = ({
 
   const onCreateSuccess = () => {
     handleClose();
-    toast.success("Tạo địa chỉ mới thành công");
+    toast.success(config.MessageNotice.CreateAddressSuccess);
     fetchListAddress();
   };
   return (
