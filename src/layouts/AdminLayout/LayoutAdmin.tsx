@@ -96,7 +96,7 @@ const LayoutAdmin: React.FC = () => {
           </div>
         </Content>
         <Footer style={{ textAlign: "center" }}>
-          Ant Design ©{new Date().getFullYear()} Created by Ant UED
+            WELCOME TO SMMMS Team
         </Footer>
       </Layout>
     </Layout>

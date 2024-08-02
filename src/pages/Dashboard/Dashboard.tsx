@@ -340,7 +340,7 @@ const Dashboard: React.FC = () => {
                     {
                       value: "Đơn hàng",
                       type: "square",
-                      color: "#3498db",
+                      color: "#4caf50",
                     },
                   ]}
                   wrapperStyle={{
@@ -349,7 +349,7 @@ const Dashboard: React.FC = () => {
                     fontSize: "14px",
                   }}
                 />
-                <Bar dataKey="totalOrders" fill="#3498db" />
+                <Bar dataKey="totalOrders" fill="#4caf50" />
               </BarChart>
             </ResponsiveContainer>
           </Box>
@@ -417,21 +417,21 @@ const Dashboard: React.FC = () => {
                   {
                     value: "Lợi nhuận",
                     type: "square",
-                    color: "#8884d8",
+                    color: "#ff9800",
                   },
                   {
                     value: "Doanh thu",
                     type: "square",
-                    color: "#82ca9d",
+                    color: "#f44336",
                   },
                 ]}
                 wrapperStyle={{
                   position: "relative",
-                  fontSize: "14px",
+                  fontSize: "16px",
                 }}
               />
-              <Bar dataKey="totalProfit" fill="#8884d8" />
-              <Bar dataKey="totalRevenue" fill="#82ca9d" />
+              <Bar dataKey="totalProfit" fill="#ff9800" />
+              <Bar dataKey="totalRevenue" fill="#f44336" />
             </BarChart>
           </ResponsiveContainer>
         </Box>
