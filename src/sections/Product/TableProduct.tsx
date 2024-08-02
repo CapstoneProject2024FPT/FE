@@ -127,8 +127,6 @@ const TableProduct: React.FC = () => {
   };
 
   const dateFormatList = ["DD/MM/YYYY", "DD/MM/YY", "DD-MM-YYYY", "DD-MM-YY"];
-  //nhớ xoá
-  console.log(handleDateChange, dateFormatList);
 
   const filteredRows = products
     ?.filter((item) => item.name?.toLowerCase().includes(query.toLowerCase()))
@@ -137,7 +135,6 @@ const TableProduct: React.FC = () => {
         ? moment(item.createDate).format("DD/MM/YYYY") === selectedDate
         : true
     );
-  console.log(filteredRows);
   const items: MenuProps["items"] = [
     {
       key: "1",
