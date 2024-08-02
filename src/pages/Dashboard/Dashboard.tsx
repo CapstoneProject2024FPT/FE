@@ -20,12 +20,18 @@ import {
   CardActionArea,
   CardContent,
   Divider,
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select,
+  SelectChangeEvent,
   Typography,
 } from "@mui/material";
 import HeaderBreadcrumbs from "../../components/HeaderBreadcrumbs";
 import { ApiAdminDashboard } from "../../api/services/apiAdminDashboard";
 import { DashboardProp } from "../../models/dashboard";
 import { AttachMoney, MonetizationOn, ShoppingCart } from "@mui/icons-material";
+import EmptyData from "../../components/EmptyData";
 
 const RADIAN = Math.PI / 180;
 const renderCustomizedLabel = ({
@@ -54,22 +60,30 @@ const renderCustomizedLabel = ({
 };
 
 const COLORS = ["#2980b9", "#27ae60", "#e74c3c", "#f1c40f", "#f0932b"];
-
+const years = [2025 ,2024, 2023];
 const Dashboard: React.FC = () => {
   const { apiGetData } = ApiAdminDashboard();
   const [dashboardData, setDashboardData] = useState<DashboardProp>();
+  const [selectedYear, setSelectedYear] = useState<number>(2024); // Default year
 
   useEffect(() => {
     const fetchDashboardData = async () => {
-      const response = await apiGetData("2024");
+      const response = await apiGetData(selectedYear.toString());
       console.log(response.data);
       setDashboardData(response.data);
-      return response.data;
     };
 
     fetchDashboardData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [selectedYear]);
+
+  const handleYearChange = (event: SelectChangeEvent<number>) => {
+    setSelectedYear(event.target.value as number);
+  };
+
+  const hasData = (data: any) => {
+    return data && data.totalOrders && data.totalOrders > 0;
+  };
 
   const dataPie = [
     { name: "Đã thanh toán", value: dashboardData?.ordersByStatus.Paid },
@@ -183,11 +197,43 @@ const Dashboard: React.FC = () => {
 
   return (
     <Box sx={{ width: "100%", height: "100%" }}>
-      <HeaderBreadcrumbs
-        heading="Thống kê"
-        links={[{ name: "Thống kê" }, { name: "Thống kê doanh thu" }]}
-      />
-      <Box
+      <Box         sx={{
+          display: "flex",
+          flexDirection: "row",
+          alignItems: "center",
+          justifyContent: "space-between"
+        }}>
+        <HeaderBreadcrumbs
+          heading="Thống kê"
+          links={[{ name: "Thống kê" }, { name: "Thống kê doanh thu" }]}
+        />
+
+        <FormControl sx={{ m: 1, minWidth: 120 }} size="small">
+          <InputLabel>Năm</InputLabel>
+          <Select
+            label="Năm"
+            value={selectedYear}
+            onChange={handleYearChange}
+          >
+            {years.map((year) => (
+              <MenuItem key={year} value={year}>
+                {year}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+      </Box>
+      {!hasData(dashboardData) ? (
+        <EmptyData
+        style={{
+          display: "flex",
+          alignItems: 'center',
+          justifyContent: "unset"
+        }}
+          title="Chưa có dữ liệu sẵn có"
+        />
+      ) : (
+        <Box
         sx={{
           display: "flex",
           flexDirection: "column",
@@ -333,14 +379,14 @@ const Dashboard: React.FC = () => {
                   interval={0}
                   padding={{ left: 25, right: 25 }}
                 />
-                <YAxis allowDecimals={false}/>
+                <YAxis allowDecimals={false} />
                 <Tooltip content={<CustomTooltipBarChart1 />} />
                 <Legend
                   payload={[
                     {
                       value: "Đơn hàng",
                       type: "square",
-                      color: "#3498db",
+                      color: "#4caf50",
                     },
                   ]}
                   wrapperStyle={{
@@ -349,7 +395,7 @@ const Dashboard: React.FC = () => {
                     fontSize: "14px",
                   }}
                 />
-                <Bar dataKey="totalOrders" fill="#3498db" />
+                <Bar dataKey="totalOrders" fill="#4caf50" />
               </BarChart>
             </ResponsiveContainer>
           </Box>
@@ -417,25 +463,26 @@ const Dashboard: React.FC = () => {
                   {
                     value: "Lợi nhuận",
                     type: "square",
-                    color: "#8884d8",
+                    color: "#ff9800",
                   },
                   {
                     value: "Doanh thu",
                     type: "square",
-                    color: "#82ca9d",
+                    color: "#f44336",
                   },
                 ]}
                 wrapperStyle={{
                   position: "relative",
-                  fontSize: "14px",
+                  fontSize: "16px",
                 }}
               />
-              <Bar dataKey="totalProfit" fill="#8884d8" />
-              <Bar dataKey="totalRevenue" fill="#82ca9d" />
+              <Bar dataKey="totalProfit" fill="#ff9800" />
+              <Bar dataKey="totalRevenue" fill="#f44336" />
             </BarChart>
           </ResponsiveContainer>
         </Box>
       </Box>
+      )}
     </Box>
   );
 };
