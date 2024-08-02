@@ -51,7 +51,10 @@ const getStatusStyles = (status: string) => {
   }
 };
 
-function Row(props: { row: WarrantyProps; onCancelWarranty: (warrantyId: string, description?: string) => void; }) {
+function Row(props: {
+  row: WarrantyProps;
+  onCancelWarranty: (warrantyId: string, description?: string) => void;
+}) {
   const { row, onCancelWarranty } = props;
   const [open, setOpen] = useState(false);
   const date = new Date(row.createDate);
@@ -90,6 +93,7 @@ function Row(props: { row: WarrantyProps; onCancelWarranty: (warrantyId: string,
   };
 
   const handleOpenWarranty = (record: WarrantyProps) => {
+    handleCloseMenu();
     setSelectWarranty(record);
     setOpenRequestWarranty(!openRequestWarranty);
   };
@@ -111,8 +115,9 @@ function Row(props: { row: WarrantyProps; onCancelWarranty: (warrantyId: string,
         </TableCell>
         <TableCell align="right">{row.inventory.serialNumber}</TableCell>
         <TableCell align="right">{row.inventory.machinery.name}</TableCell>
-        <TableCell align="right">{`${date.getDate()}/${date.getMonth() + 1
-          }/${date.getFullYear()}`}</TableCell>
+        <TableCell align="right">{`${date.getDate()}/${
+          date.getMonth() + 1
+        }/${date.getFullYear()}`}</TableCell>
         <TableCell align="center">
           <IconButton
             aria-label="more actions"
@@ -300,7 +305,11 @@ const WarrantyManagement: React.FC = () => {
               {requests
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map((row: WarrantyProps) => (
-                  <Row key={row.id} row={row} onCancelWarranty={handleOpenDialog} />
+                  <Row
+                    key={row.id}
+                    row={row}
+                    onCancelWarranty={handleOpenDialog}
+                  />
                 ))}
             </TableBody>
           ) : (
