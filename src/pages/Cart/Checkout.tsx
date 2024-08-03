@@ -91,33 +91,35 @@ const Checkout: React.FC = () => {
     const stepFromUrl = parseInt(urlParams.get("step") || "0", 10);
 
     if (stepFromUrl >= minActiveStep && stepFromUrl <= maxActiveStep) {
-      setActiveStep(stepFromUrl);
-      if (stepFromUrl < maxActiveStep) {
-        navigate(`${config.routes.cart}/?step=${stepFromUrl}`, {
-          replace: true,
-        });
+      if (stepFromUrl !== activeStep) {
+        setActiveStep(stepFromUrl);
       }
     } else {
       navigate("/notFound");
     }
-  }, [location.search, activeStep, navigate]);
+  }, [location.search, activeStep, navigate, minActiveStep, maxActiveStep]);
 
   //handle step
   const handleNext = () => {
     if (authUser) {
-      setActiveStep((prevActiveStep) => prevActiveStep + 1);
+      const nextStep = activeStep + 1;
+      setActiveStep(nextStep);
+      navigate(`${config.routes.cart}/?step=${nextStep}`, { replace: true });
     } else {
-      localStorage.setItem("historyPath", location.pathname);
+      localStorage.setItem("historyPath", location.pathname + location.search);
       navigate(config.routes.login);
     }
   };
 
   const handleBack = () => {
-    setActiveStep((prevActiveStep) => prevActiveStep - 1);
+    const prevStep = activeStep - 1;
+    setActiveStep(prevStep);
+    navigate(`${config.routes.cart}/?step=${prevStep}`, { replace: true });
   };
 
   const handleGotoStep = (step: number) => {
     setActiveStep(step);
+    navigate(`${config.routes.cart}/?step=${step}`, { replace: true });
   };
   const isComplete = activeStep === STEPS.length;
   return (
