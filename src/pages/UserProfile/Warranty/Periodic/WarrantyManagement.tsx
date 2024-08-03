@@ -32,9 +32,10 @@ import CancelWarrantyDialog from "../Modal/ModalCancelWarranty";
 import { toast } from "react-toastify";
 import { formatDateFunc } from "../../../../utils/fn";
 import EmptyOrder from "../../../../components/EmptyOrder";
-import ModalTransactionDetail from "../Modal/ModalRequestWarranty";
+
 import { useNavigate } from "react-router-dom";
 import config from "../../../../configs";
+import ModalRequestDetail from "../Modal/ModalRequestWarranty";
 
 const getStatusStyles = (status: string) => {
   switch (status) {
@@ -203,7 +204,7 @@ function Row(props: {
         </TableCell>
       </TableRow>
       {openRequestWarranty && (
-        <ModalTransactionDetail
+        <ModalRequestDetail
           onClose={handleClosetWarranty}
           open={openRequestWarranty}
           warrantyData={selectWarranty}

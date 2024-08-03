@@ -38,7 +38,6 @@ import config from "../../../configs";
 import moment from "moment";
 import { ApiCheckout } from "../../../api/services/apiCheckout";
 import { handleSendEmail } from "../../../utils/sendEmail";
-import PopupDetailOrder from "./Modal/PopupDetailOrder";
 
 const getStatusStyles = (status: string) => {
   switch (status) {
@@ -79,9 +78,6 @@ const Row = (props: {
     ? statusMapping?.find((status) => status.id === row?.status)?.name
     : defaultStatus;
 
-  const [openOrderDetail, setOpenOrderDetail] = useState<boolean>(false);
-  const [selectedData, setSelectedData] = useState<OrderProps>();
-
   const handleCancelOrder = () => {
     const getUserInfoString = localStorage.getItem("getUserInfo");
     if (getUserInfoString) {
@@ -105,12 +101,7 @@ const Row = (props: {
   };
   //popup detail
   const handleDetailOrder = (record: OrderProps) => {
-    setOpenOrderDetail(!openOrderDetail);
-    handleCloseMenu();
-    setSelectedData(record);
-  };
-  const handleDetailOrderClose = () => {
-    setOpenOrderDetail(!openOrderDetail);
+    navigate(config.routes.orderManagementId.replace(":id", record.orderId));
   };
 
   useEffect(() => {
@@ -334,13 +325,6 @@ const Row = (props: {
           </Collapse>
         </TableCell>
       </TableRow>
-      {openOrderDetail && (
-        <PopupDetailOrder
-          OrderData={selectedData}
-          handleClose={handleDetailOrderClose}
-          open={openOrderDetail}
-        />
-      )}
     </React.Fragment>
   );
 };
