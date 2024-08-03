@@ -10,6 +10,7 @@ import { CheckboxChangeEvent } from "antd/es/checkbox";
 import useDebounce from "../../../hooks/useDebounce";
 import { Box } from "@mui/material";
 import ModalSubmitComponent from "./ModalSubmitComponent";
+import ModalCreateComponent from "./ModalCreateComponent";
 
 type ColumnsType<T> = TableProps<T>["columns"];
 const { Search } = Input;
@@ -41,16 +42,28 @@ const ModalAddComponentOfMachineTable: React.FC<AddComponentOfMachine> = ({
   const debounceQuery = useDebounce({ value: query, delay: 300 });
   //popup
   const [openAdd, setOpenAdd] = useState<boolean>(false);
+  const [openCreate, setOpenCreate] = useState<boolean>(false);
+  const [pendingIdCheck, setPendingIdCheck] = useState<string | null>(null);
 
   //api
   const { apiGetListComponent, loading } = MachineryComponentApi();
 
+  //modal add
   const handleOpen = () => {
     setOpenAdd(!openAdd);
   };
 
   const handleClose = () => {
     setOpenAdd(!openAdd);
+  };
+
+  //modal create
+  const handleOpenCreate = () => {
+    setOpenCreate(!openCreate);
+  };
+
+  const handleCloseCreate = () => {
+    setOpenCreate(!openCreate);
   };
 
   const fetchComponent = async () => {
@@ -60,11 +73,31 @@ const ModalAddComponentOfMachineTable: React.FC<AddComponentOfMachine> = ({
     }
   };
 
+  const onSuccess = async (id: string) => {
+    handleCloseCreate();
+    await fetchComponent();
+    setPendingIdCheck(id);
+  };
+
+  useEffect(() => {
+    if (pendingIdCheck) {
+      checkId(pendingIdCheck);
+      setPendingIdCheck(null);
+    }
+  }, [components, pendingIdCheck]);
+
+  const checkId = (id: string) => {
+    const componentsCheck = components.find((component) => component.id === id);
+    if (componentsCheck) {
+      setChooseComponents((prev) => [...prev, componentsCheck]);
+    }
+  };
+
+  // Fetch components on mount
   useEffect(() => {
     fetchComponent();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
   //checkbox
   const handleCheck =
     (record: GetMachineComponents) => (e: CheckboxChangeEvent) => {
@@ -148,9 +181,16 @@ const ModalAddComponentOfMachineTable: React.FC<AddComponentOfMachine> = ({
               onChange={handleSearch}
               style={{ width: 200, marginBottom: 16 }}
             />
-            <Button onClick={handleOpen} icon={<PlusOutlined />}>
-              Lưu bộ phận
-            </Button>
+            <Box>
+              <Button
+                onClick={handleOpenCreate}
+                icon={<PlusOutlined />}
+                style={{ marginRight: "5px" }}
+              >
+                Tạo bộ phận máy
+              </Button>
+              <Button onClick={handleOpen}>Lưu bộ phận</Button>
+            </Box>
           </div>
 
           <Table
@@ -174,6 +214,14 @@ const ModalAddComponentOfMachineTable: React.FC<AddComponentOfMachine> = ({
               open={openAdd}
               productData={chooseComponents}
               onSubmit={onSubmit}
+            />
+          )}
+
+          {openCreate && (
+            <ModalCreateComponent
+              handleClose={handleCloseCreate}
+              open={openCreate}
+              onSuccess={onSuccess}
             />
           )}
         </Box>

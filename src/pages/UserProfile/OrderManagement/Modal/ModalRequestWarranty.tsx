@@ -16,7 +16,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm } from "react-hook-form";
 import * as Yup from "yup";
 import { LoadingButton } from "@mui/lab";
-import { CreateWarranty, WarrantyProps } from "../../../../models/warranty";
+import { CreateWarranty, Warranty } from "../../../../models/warranty";
 import { formatAddress } from "../../../../utils/fn";
 import { toast } from "react-toastify";
 import { ApiWarranty } from "../../../../api/services/apiWarranty";
@@ -27,7 +27,7 @@ import config from "../../../../configs";
 // ----------------------------------------------------------------------
 
 type Props = {
-  warrantyData: WarrantyProps | undefined;
+  warrantyData: Warranty | undefined;
   open: boolean;
   onClose: VoidFunction;
 };
@@ -36,7 +36,7 @@ interface NoteProps {
   description: string;
 }
 
-export default function ModalRequestDetail({
+export default function ModalRequestOrderDetail({
   warrantyData,
   open,
   onClose,
@@ -66,10 +66,10 @@ export default function ModalRequestDetail({
     try {
       if (warrantyData) {
         const params: CreateWarranty = {
-          accountId: warrantyData.customer.id,
-          addressId: warrantyData.address.id,
+          accountId: warrantyData.warrantyDetails.customer.id,
+          addressId: warrantyData.warrantyDetails.address.id,
           description: data.description,
-          inventoryId: warrantyData.inventory.id,
+          inventoryId: warrantyData.warrantyDetails.inventory.id,
         };
 
         const response = await apiCreateRequestWaranty(params);
@@ -89,7 +89,7 @@ export default function ModalRequestDetail({
 
   return (
     <Dialog fullWidth maxWidth="md" open={open} onClose={onClose}>
-      <DialogTitle>Chi tiết đơn hàng</DialogTitle>
+      <DialogTitle>Chi tiết đơn bảo hành</DialogTitle>
       <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
         <DialogContent>
           <Box sx={{ mt: 2 }}>
@@ -98,7 +98,9 @@ export default function ModalRequestDetail({
                 <TextField
                   fullWidth
                   label="Mã máy"
-                  value={warrantyData?.inventory?.serialNumber || ""}
+                  value={
+                    warrantyData?.warrantyDetails?.inventory?.serialNumber || ""
+                  }
                   InputProps={{
                     readOnly: true,
                   }}
@@ -108,7 +110,10 @@ export default function ModalRequestDetail({
                 <TextField
                   fullWidth
                   label="Tên máy"
-                  value={warrantyData?.inventory?.machinery?.name || ""}
+                  value={
+                    warrantyData?.warrantyDetails?.inventory?.machinery?.name ||
+                    ""
+                  }
                   InputProps={{
                     readOnly: true,
                   }}
@@ -119,7 +124,9 @@ export default function ModalRequestDetail({
             <Box sx={{ mt: 2 }}>
               <TextField
                 label="Địa chỉ bảo hành"
-                value={formatAddress(warrantyData?.address) || ""}
+                value={
+                  formatAddress(warrantyData?.warrantyDetails?.address) || ""
+                }
                 InputProps={{
                   readOnly: true,
                 }}

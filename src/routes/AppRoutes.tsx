@@ -55,6 +55,7 @@ import WarrantyRequestManagent from "../pages/Admin/Warranty/Request/WarrantyReq
 import WarrantyPeriodicDetail from "../pages/Admin/Warranty/Periodic/WarrantyPeriodicDetail";
 import WarrantyDetailPeriodic from "../pages/UserProfile/WarantyDetailPeriodic";
 import WarrantyDetailRequest from "../pages/UserProfile/WarrantyDetailRequest";
+import OrderDetailCustomer from "../pages/UserProfile/OrderDetail";
 
 const AppRoute: React.FC = () => {
   return (
@@ -141,6 +142,11 @@ const AppRoute: React.FC = () => {
           key="orderPayment"
           path={config.routes.paymentOrderID}
           element={<PaymentOrder />}
+        />
+        <Route
+          key="orderDetailId"
+          path={config.routes.orderManagementId}
+          element={<OrderDetailCustomer />}
         />
         <Route
           key="newDetail"

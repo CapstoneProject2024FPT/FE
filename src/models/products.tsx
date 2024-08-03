@@ -75,8 +75,13 @@ export interface ProductAdminSpecification {
 }
 
 //add product
+export type SpecificationList = {
+  name: string;
+  value: string;
+  unit: string;
+};
 export interface CreateProductFormSchema {
-  specificationList: Specification[] | undefined;
+  specificationList: SpecificationList[] | undefined;
   name: string;
   originId: string;
   model: string;

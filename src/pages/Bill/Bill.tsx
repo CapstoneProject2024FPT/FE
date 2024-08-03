@@ -45,6 +45,8 @@ const Bill: React.FC = () => {
   //api
   const fetchOrderId = useCallback(async () => {
     setLoading(true);
+    console.log(orderID);
+
     if (orderID) {
       try {
         const response = await apiGetOrderId(orderID);
@@ -78,7 +80,6 @@ const Bill: React.FC = () => {
               };
             })
           );
-
           setWarranty(response2);
         }
       } catch (error) {
