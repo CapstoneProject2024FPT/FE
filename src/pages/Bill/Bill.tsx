@@ -59,6 +59,7 @@ const Bill: React.FC = () => {
                 InventoryId: item.inventoryId,
               };
               const warranty = await apiGetWarranty(params);
+              console.log("warranty", warranty);
 
               const warrantyDetailsPromises = warranty.data.map(
                 async (warrantyItem: any) => {
@@ -80,6 +81,8 @@ const Bill: React.FC = () => {
               };
             })
           );
+          console.log("res2", response2);
+
           setWarranty(response2);
         }
       } catch (error) {

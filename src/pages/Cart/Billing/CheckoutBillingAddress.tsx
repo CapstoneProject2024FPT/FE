@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 // @mui
-import { Box, Grid, Card, Button, Typography, Container } from "@mui/material";
+import { Box, Grid, Button, Container } from "@mui/material";
 
 // _mock_
 
@@ -15,22 +15,37 @@ import CheckoutNewAddressForm from "./CheckoutNewAddressForm";
 import { ApiAddress } from "../../../api/services/apiAddress";
 import { addressProps } from "../../../models/address";
 import { toast } from "react-toastify";
-import { formatAddress } from "../../../utils/fn";
+// import { formatAddress } from "../../../utils/fn";
 import config from "../../../configs";
+import AddressButon from "./AddressRadio";
+import { FormProvider } from "../../../components/hook-form";
+import * as Yup from "yup";
+// form
+import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { LoadingButton } from "@mui/lab";
 
 // ----------------------------------------------------------------------
 
 interface checkoutBillingAndAddress {
   handleBack: () => void;
   handleNextStep: () => void;
+  handleGoToStep: (step: number) => void;
 }
+
+type FormValuesProps = {
+  idAddress: string;
+};
+
 const CheckoutBillingAddress: React.FC<checkoutBillingAndAddress> = ({
   handleBack,
   handleNextStep,
+  handleGoToStep,
 }) => {
   const { total } = useCheckout();
   const { apiGetAddress } = ApiAddress();
   const [addresses, setAddresses] = useState<addressProps[]>([]);
+  const { setSelectedAddress } = useAddress();
 
   //user info
   const loginInfo = localStorage.getItem("loginInfo");
@@ -71,104 +86,103 @@ const CheckoutBillingAddress: React.FC<checkoutBillingAndAddress> = ({
     toast.success(config.MessageNotice.CreateAddressSuccess);
     fetchListAddress();
   };
+
+  const PaymentSchema = Yup.object().shape({
+    idAddress: Yup.string().required("Chọn địa chỉ giao hàng"),
+  });
+
+  const defaultValues = {
+    idAddress: "",
+  };
+
+  const methods = useForm<FormValuesProps>({
+    resolver: yupResolver(PaymentSchema),
+    defaultValues,
+  });
+
+  const {
+    handleSubmit,
+    setValue,
+    formState: { isSubmitting },
+  } = methods;
+
+  useEffect(() => {
+    if (addresses.length > 0) {
+      setValue("idAddress", addresses[0].id);
+    }
+  }, [addresses, setValue]);
+
+  const onSubmit = async (data: FormValuesProps) => {
+    try {
+      const selectAddress = addresses.find(
+        (item) => (item.id = data.idAddress)
+      );
+      if (selectAddress) {
+        setSelectedAddress(selectAddress);
+        handleNextStep();
+      }
+    } catch (error) {
+      toast.error(config.MessageNotice.CreateOrderFailed);
+      console.error(error);
+    }
+  };
   return (
     <>
-      <Container sx={{ background: "#ECF0F1" }} maxWidth="xl">
-        <Grid container spacing={3}>
-          <Grid item xs={12} md={8}>
-            <Box maxHeight={500} sx={{ overflow: "auto" }}>
-              {addresses.map((address, index) => (
-                <AddressItem
-                  key={index}
-                  onNextStep={handleNextStep}
-                  address={address}
-                />
-              ))}
-            </Box>
-            <Box sx={{ display: "flex", justifyContent: "space-between" }}>
-              <Button
-                size="small"
-                color="inherit"
-                onClick={handleBack}
-                startIcon={<Iconify icon={"eva:arrow-ios-back-fill"} />}
-              >
-                Về Giỏ Hàng
-              </Button>
-              <Button
-                size="small"
-                onClick={handleClickOpen}
-                startIcon={<Iconify icon={"eva:plus-fill"} />}
-                variant="contained"
-              >
-                Thêm Mới Địa Chỉ
-              </Button>
-            </Box>
-          </Grid>
+      <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
+        <Container sx={{ background: "#ECF0F1", mt: 0 }} maxWidth="xl">
+          <Grid container spacing={3}>
+            <Grid item xs={12} md={6}>
+              <Box maxHeight={500} sx={{ overflow: "auto" }}>
+                <AddressButon addressOption={addresses} />
+              </Box>
+              <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+                <Button
+                  size="small"
+                  color="inherit"
+                  onClick={handleBack}
+                  startIcon={<Iconify icon={"eva:arrow-ios-back-fill"} />}
+                >
+                  Về Giỏ Hàng
+                </Button>
+                <Button
+                  size="small"
+                  onClick={handleClickOpen}
+                  startIcon={<Iconify icon={"eva:plus-fill"} />}
+                  variant="contained"
+                >
+                  Thêm Mới Địa Chỉ
+                </Button>
+              </Box>
+            </Grid>
 
-          <Grid item xs={12} md={4}>
-            <CartSummary total={total} />
+            <Grid item xs={12} md={6} sx={{ mt: 3 }}>
+              <CartSummary
+                total={total}
+                enableEdit
+                onEdit={() => handleGoToStep(0)}
+              />
+              <LoadingButton
+                fullWidth
+                size="large"
+                type="submit"
+                variant="contained"
+                loading={isSubmitting}
+              >
+                Chọn phương thức thanh toán
+              </LoadingButton>
+            </Grid>
           </Grid>
-        </Grid>
-      </Container>
-      {open && (
-        <CheckoutNewAddressForm
-          onClose={handleClose}
-          open={open}
-          onSuccess={onCreateSuccess}
-        />
-      )}
+        </Container>
+        {open && (
+          <CheckoutNewAddressForm
+            onClose={handleClose}
+            open={open}
+            onSuccess={onCreateSuccess}
+          />
+        )}
+      </FormProvider>
     </>
   );
 };
 
 export default CheckoutBillingAddress;
-// ----------------------------------------------------------------------
-
-type AddressItemProps = {
-  address: addressProps;
-  onNextStep: VoidFunction;
-};
-
-function AddressItem({ onNextStep, address }: AddressItemProps) {
-  const { account, name } = address;
-
-  const { setSelectedAddress } = useAddress();
-
-  const handleCreateBilling = () => {
-    setSelectedAddress(address);
-    onNextStep();
-  };
-  return (
-    <>
-      <Card sx={{ p: 3, mb: 3, position: "relative" }}>
-        <Box
-          sx={{
-            mb: 1,
-            display: "flex",
-            alignItems: "flex-start",
-            flexDirection: "column",
-          }}
-        >
-          <Typography variant="subtitle1">Tên: {account.fullName}</Typography>
-          <Typography variant="subtitle1">Tên địa chỉ: {name}</Typography>
-          <Typography variant="body2" gutterBottom>
-            Địa chỉ: {formatAddress(address)}
-          </Typography>
-        </Box>
-
-        <Box
-          sx={{
-            mt: 3,
-            display: "flex",
-            justifyContent: "flex-end",
-          }}
-        >
-          <Box sx={{ mx: 0.5 }} />
-          <Button variant="outlined" size="small" onClick={handleCreateBilling}>
-            Giao hàng tại Địa Chỉ này
-          </Button>
-        </Box>
-      </Card>
-    </>
-  );
-}
