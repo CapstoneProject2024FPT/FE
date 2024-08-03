@@ -87,12 +87,20 @@ const Checkout: React.FC = () => {
   const { authUser } = useAuthContext();
 
   useEffect(() => {
-    if (activeStep < maxActiveStep && activeStep >= minActiveStep) {
-      navigate(`${config.routes.cart}/?step=${activeStep}`, { replace: true });
+    const urlParams = new URLSearchParams(location.search);
+    const stepFromUrl = parseInt(urlParams.get("step") || "0", 10);
+
+    if (stepFromUrl >= minActiveStep && stepFromUrl <= maxActiveStep) {
+      setActiveStep(stepFromUrl);
+      if (stepFromUrl < maxActiveStep) {
+        navigate(`${config.routes.cart}/?step=${stepFromUrl}`, {
+          replace: true,
+        });
+      }
     } else {
-      navigate(config.routes.notFound);
+      navigate("/notFound");
     }
-  }, [activeStep, navigate]);
+  }, [location.search, activeStep, navigate]);
 
   //handle step
   const handleNext = () => {
@@ -150,6 +158,7 @@ const Checkout: React.FC = () => {
               <CheckoutBillingAddress
                 handleNextStep={handleNext}
                 handleBack={handleBack}
+                handleGoToStep={handleGotoStep}
               />
             )}
             {activeStep === 2 && (

@@ -297,7 +297,7 @@ const Cart: React.FC<CartProp> = ({ handleNext }) => {
                   disabled={CartItems.length === 0}
                   onClick={handleNext}
                 >
-                  Thanh Toán
+                  Chọn địa chỉ
                 </Button>
               </Grid>
             </Grid>
@@ -336,7 +336,7 @@ const Cart: React.FC<CartProp> = ({ handleNext }) => {
                 disabled={CartItems.length === 0}
                 onClick={handleNext}
               >
-                Thanh Toán
+                Chọn địa chỉ
               </Button>
             </Grid>
           </Grid>
