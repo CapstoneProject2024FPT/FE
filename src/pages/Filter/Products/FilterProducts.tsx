@@ -12,6 +12,7 @@ import {
 import "./FilterProducts.scss";
 import { ProductsFilterType } from "../../../constants/filter";
 import { debounce } from "../../../utils/debounce";
+import { useFilterContext } from "../../../context/FilterContext";
 
 interface ProductFilterProps {
   filter: any;
@@ -34,6 +35,7 @@ const ProductFilteredRow: React.FC<ProductFilterProps> = ({
   productListCategoryName,
   productListBrandName,
 }) => {
+  const { setSearchBarData } = useFilterContext();
   const [filterOrigin, setFilterOrigin] = useState<string[]>(
     filter[ProductsFilterType.OriginId] || []
   );
@@ -47,6 +49,8 @@ const ProductFilteredRow: React.FC<ProductFilterProps> = ({
   const handleFilterProducts = useCallback(
     debounce(
       (filterType: ProductsFilterType, value: string, checked: boolean) => {
+        const searchName = { ...filter, Name: undefined };
+        setSearchBarData("");
         switch (filterType) {
           case ProductsFilterType.BrandId:
             // eslint-disable-next-line no-case-declarations
@@ -55,7 +59,7 @@ const ProductFilteredRow: React.FC<ProductFilterProps> = ({
               : filterBrand?.filter((item) => item !== value);
 
             setFilterBrand(brandIds);
-            setFilter({ ...filter, BrandId: brandIds });
+            setFilter({ ...searchName, BrandId: brandIds });
 
             break;
           case ProductsFilterType.OriginId:
@@ -65,7 +69,7 @@ const ProductFilteredRow: React.FC<ProductFilterProps> = ({
               : filterOrigin?.filter((item) => item !== value);
 
             setFilterOrigin(originIds);
-            setFilter({ ...filter, OriginId: originIds });
+            setFilter({ ...searchName, OriginId: originIds });
 
             break;
           case ProductsFilterType.CategoryId:
@@ -75,7 +79,7 @@ const ProductFilteredRow: React.FC<ProductFilterProps> = ({
               : filterCategory?.filter((item) => item !== value);
 
             setFilterCategory(categoryIds);
-            setFilter({ ...filter, CategoryId: categoryIds });
+            setFilter({ ...searchName, CategoryId: categoryIds });
 
             break;
 

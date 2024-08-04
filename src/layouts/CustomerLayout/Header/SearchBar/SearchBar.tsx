@@ -1,4 +1,4 @@
-import React, { KeyboardEvent, useState, useRef } from "react";
+import React, { KeyboardEvent, useState, useRef, useEffect } from "react";
 import { Box, InputBase } from "@mui/material";
 import { KeyboardAlt, Search } from "@mui/icons-material";
 import { MachineryApi } from "../../../../api/services/apiMachinery";
@@ -9,7 +9,7 @@ import { useNavigate } from "react-router-dom";
 const SearchBar: React.FC = () => {
   const [search, setSearch] = useState("");
   const { apiGetList } = MachineryApi(); // assuming `loading` isn't used directly
-  const { setData } = useFilterContext();
+  const { setData, searchBarData, setSearchBarData } = useFilterContext();
   const navigate = useNavigate();
   const inputRef = useRef<HTMLInputElement>(null); // Reference for InputBase
 
@@ -44,6 +44,10 @@ const SearchBar: React.FC = () => {
     performSearch();
   };
 
+  useEffect(() => {
+    setSearch(searchBarData);
+  }, [searchBarData]);
+
   return (
     <Box sx={{ display: "flex", alignItems: "center" }}>
       <InputBase
@@ -61,7 +65,10 @@ const SearchBar: React.FC = () => {
           width: "500px",
         }}
         value={search}
-        onChange={(e) => setSearch(e.target.value)}
+        onChange={(e) => {
+          setSearch(e.target.value);
+          setSearchBarData(e.target.value);
+        }}
         onKeyDown={handleSearch}
       />
       <Box
