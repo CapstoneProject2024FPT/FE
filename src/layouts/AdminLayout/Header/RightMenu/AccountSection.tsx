@@ -11,6 +11,7 @@ import Logout from "@mui/icons-material/Logout";
 import config from "../../../../configs";
 import { Typography } from "@mui/material";
 import { useAuthContext } from "../../../../context/AuthContext";
+import { RoleType } from "../../../../models/UserData";
 
 const AccountSection = () => {
   const jsonString = localStorage.getItem("loginInfo");
@@ -52,9 +53,19 @@ const AccountSection = () => {
   return (
     <>
       <Box sx={{ display: "flex", alignItems: "center", textAlign: "center" }}>
-        <Typography>
-          {user?.data?.fullName ? user?.data?.fullName : ""}
-        </Typography>
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            textAlign: "center",
+          }}
+        >
+          <Typography>
+            {user?.data?.fullName ? user?.data?.fullName : ""}
+          </Typography>
+          <Typography sx={{fontSize: "12px", color: "#95a5a6"}}>{user?.data?.role === RoleType.MANAGER ? "Quản lý" : ""}</Typography>
+        </Box>
         <IconButton
           onClick={handleClick}
           size="small"
