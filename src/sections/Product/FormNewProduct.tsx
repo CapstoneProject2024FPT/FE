@@ -129,7 +129,6 @@ export default function ProductNewEditForm() {
               function (value) {
                 if (!value) return true; // Skip empty values
 
-                // Safely access specificationList
                 const specList = this.from?.[1]?.value?.specificationList;
 
                 if (!specList || !Array.isArray(specList)) return true;
@@ -178,6 +177,7 @@ export default function ProductNewEditForm() {
     watch,
     handleSubmit,
     control,
+    getValues,
     formState: { isSubmitting },
   } = methods;
 
@@ -228,7 +228,7 @@ export default function ProductNewEditForm() {
   const onSubmit = async (values: CreateProductFormSchema) => {
     try {
       if (selectedComponents.length > 0) {
-        // Transform specificationList to the desired format
+        // transform specifiaciotn
         const transformedSpecifications = values?.specificationList?.map(
           (spec) => ({
             name: spec.name,
@@ -312,16 +312,28 @@ export default function ProductNewEditForm() {
     const rows = clipboardData
       .split("\n")
       .filter((row: string) => row.trim() !== "");
+
+    //get default value
+    const existedData = getValues("specificationList") || [];
+
+    //filter empty
+    const filteDataExisted = existedData.filter(
+      (spec) => spec.name || spec.unit || spec.value
+    );
+
     const newFields = rows.map((row: string, index: number) => {
       const columns = row.split("\t");
       return {
-        id: index + 1,
+        id: filteDataExisted.length + index + 1,
         name: columns[0],
         value: columns[1],
         unit: columns[2],
       };
     });
-    setValue("specificationList", newFields);
+
+    const updatedData = [...filteDataExisted, ...newFields];
+
+    setValue("specificationList", updatedData);
   };
   // modal add component
   const handleOpenModal = () => {
