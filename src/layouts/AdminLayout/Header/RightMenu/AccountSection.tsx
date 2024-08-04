@@ -50,16 +50,17 @@ const AccountSection = () => {
     }, 500);
   };
 
-  const roleNames: Record<RoleType, string> = {
-    [RoleType.ADMIN]: "Quản trị viên",
-    [RoleType.USER]: "Người dùng",
-    [RoleType.SALE]: "Nhân viên bán hàng",
-    [RoleType.MANAGER]: "Quản lý",
-    [RoleType.TECHNICAL]: "Nhân viên kĩ thuật",
-  };
-
-  const getRoleName = (role: RoleType | undefined): string => {
-    return role ? roleNames[role] : "";
+  const getRoleType = (role: RoleType) => {
+    switch(role) {
+      case RoleType.ADMIN:
+        return "Quản trị viên";
+      case RoleType.MANAGER:
+        return "Quản lý";
+      case RoleType.SALE:
+        return "Nhân viên Bán hàng";
+      case RoleType.TECHNICAL:
+        return "Nhân viên kỹ thuật"
+    }
   };
 
   return (
@@ -76,7 +77,7 @@ const AccountSection = () => {
           <Typography>
             {user?.data?.fullName ? user?.data?.fullName : ""}
           </Typography>
-          <Typography sx={{fontSize: "12px", color: "#95a5a6"}}>{getRoleName(user?.data?.role)}</Typography>
+          <Typography sx={{ fontSize: "12px", color: "#95a5a6" }}>{getRoleType(user?.data?.role)}</Typography>
         </Box>
         <IconButton
           onClick={handleClick}
