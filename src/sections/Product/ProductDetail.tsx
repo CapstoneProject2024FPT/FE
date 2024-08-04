@@ -111,7 +111,7 @@ const ProductDetail = () => {
             </Stack>
           </Box>
           <Grid container spacing={3}>
-            <Grid item xs={12} md={8}>
+            <Grid item xs={12} md={7}>
               <Card sx={{ p: 3 }}>
                 <Stack spacing={3}>
                   <TextField
@@ -203,7 +203,7 @@ const ProductDetail = () => {
               </Card>
             </Grid>
 
-            <Grid item xs={12} md={4}>
+            <Grid item xs={12} md={5}>
               <Stack spacing={3}>
                 <Card sx={{ p: 3 }}>
                   <Stack spacing={3} mt={2}>
@@ -306,6 +306,44 @@ const ProductDetail = () => {
                       }}
                     />
                   </Stack>
+                </Card>
+                <Card sx={{ p: 3 }}>
+                  <div>
+                    <LabelStyle>Bộ phận máy</LabelStyle>
+                    <TableContainer component={Paper}>
+                      <Table aria-label="simple table">
+                        <TableHead>
+                          <TableRow>
+                            <TableCell
+                              sx={{
+                                borderRight: "1px solid rgba(224, 224, 224, 1)",
+                              }}
+                            >
+                              Thứ tự
+                            </TableCell>
+                            <TableCell align="left">Tên Bộ phận</TableCell>
+                          </TableRow>
+                        </TableHead>
+                        <TableBody>
+                          {machine?.component?.map((row, index) => (
+                            <TableRow key={index}>
+                              <TableCell
+                                component="th"
+                                scope="row"
+                                sx={{
+                                  borderRight:
+                                    "1px solid rgba(224, 224, 224, 1)",
+                                }}
+                              >
+                                {index}
+                              </TableCell>
+                              <TableCell align="left">{row.name}</TableCell>
+                            </TableRow>
+                          ))}
+                        </TableBody>
+                      </Table>
+                    </TableContainer>
+                  </div>
                 </Card>
               </Stack>
             </Grid>
