@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useEffect, useState } from "react";
 import type { MenuProps } from "antd";
 import type { TableProps } from "antd";
@@ -164,6 +165,7 @@ const TableComponent: React.FC = () => {
       dataIndex: "quantity",
       render: (quantity) => quantity.Available || 0,
       align: "center",
+      sorter: (a, b) => a.quantity.Available - b.quantity.Available,
     },
     {
       title: (

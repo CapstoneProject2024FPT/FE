@@ -7,6 +7,7 @@ export interface brandProps {
 export interface brandTable extends brandProps {
   id: string;
   createDate: Date;
+  status: string;
 }
 
 export interface brandUpdateProps extends brandProps {

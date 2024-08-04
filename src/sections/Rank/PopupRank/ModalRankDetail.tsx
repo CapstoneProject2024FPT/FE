@@ -32,7 +32,7 @@ const ModalRankDetail: React.FC<ModalRank> = ({
 }) => {
   const { apiUpdateRank } = ApiRank();
   const RankSchema = Yup.object().shape({
-    name: Yup.string().required("Bắt buộc"),
+    name: Yup.string().required("Bắt buộc").trim(),
     range: Yup.number().required("Bắt buộc").moreThan(500, "Lớn hơn 500"),
   });
 

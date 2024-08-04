@@ -143,8 +143,17 @@ export type ProductDetailProps = {
   serialNumber: number;
   status: string;
   monthWarrantyNumber: number;
+  component: ComponentDetail[];
 };
 
+interface ComponentDetail {
+  id: string;
+  name: string;
+  description: string;
+  status: string;
+  stockPrice: number;
+  sellingPrice: number;
+}
 //update product
 export interface UpdateProduct {
   name: string;

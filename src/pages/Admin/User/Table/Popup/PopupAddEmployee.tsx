@@ -40,12 +40,15 @@ const ModalAddEmployee: React.FC<ModalUser> = ({
 }) => {
   const { apiCreateEmployee } = ApiAccount();
   const RoleSchema = Yup.object().shape({
-    fullName: Yup.string().required("bắt buộc").min(1, "Tối thiểu 1 kí tự"),
+    fullName: Yup.string()
+      .required("bắt buộc")
+      .min(1, "Tối thiểu 1 kí tự")
+      .trim(),
     role: Yup.string().required("bắt buộc"),
-    password: Yup.string().required("bắt buộc"),
-    username: Yup.string().required("bắt buộc"),
-    phoneNumber: Yup.string().required("bắt buộc"),
-    email: Yup.string().required("bắt buộc"),
+    password: Yup.string().required("bắt buộc").trim(),
+    username: Yup.string().required("bắt buộc").trim(),
+    phoneNumber: Yup.string().required("bắt buộc").trim(),
+    email: Yup.string().required("bắt buộc").trim(),
   });
 
   const defaultValues = {
@@ -107,7 +110,12 @@ const ModalAddEmployee: React.FC<ModalUser> = ({
             </Grid>
             <Grid item xs={12} md={6}>
               <Stack spacing={3}>
-                <RHFTextField name="password" label="Mật khẩu" autoFocus />
+                <RHFTextField
+                  type="password"
+                  name="password"
+                  label="Mật khẩu"
+                  autoFocus
+                />
                 <RHFTextField
                   name="phoneNumber"
                   label="Số điện thoại"

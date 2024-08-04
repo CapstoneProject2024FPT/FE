@@ -4,6 +4,14 @@ export interface addressForm {
   cityId: string;
   districtId: string;
   wardId: string;
+  namePersonal: string;
+  phoneNumber: string;
+}
+
+export interface updateAddress {
+  namePersonal: string;
+  phoneNumber: string;
+  name: string;
 }
 
 export interface provincesProps {
@@ -33,6 +41,8 @@ export interface addressProps {
   name: string;
   status: string;
   note: string;
+  namePersonal: string;
+  phoneNumber: string;
   city: {
     id: string;
     unitId: number;

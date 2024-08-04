@@ -61,7 +61,8 @@ type AddressItemProps = {
   address: addressProps;
 };
 function AddressItem({ address }: AddressItemProps) {
-  const { account, city, district, name, note, ward } = address;
+  const { city, district, name, note, ward, namePersonal, phoneNumber } =
+    address;
   return (
     <>
       <Card
@@ -76,7 +77,12 @@ function AddressItem({ address }: AddressItemProps) {
             flexDirection: "column",
           }}
         >
-          <Typography variant="subtitle1">Tên: {account.fullName}</Typography>
+          <Typography variant="subtitle1">
+            Tên người nhận: {namePersonal}
+          </Typography>
+          <Typography variant="subtitle1">
+            Số điện thoại: {phoneNumber}
+          </Typography>
           <Typography variant="subtitle1">Tên địa chỉ: {name}</Typography>
           <Typography variant="body2" gutterBottom>
             Địa chỉ: {note}, {ward.name}, {district.name}, {city.name}
