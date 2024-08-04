@@ -37,7 +37,7 @@ const ProductList: React.FC = () => {
   const [filter, setFilter] = useState<ProductFilter>();
   const { apiGetList } = MachineryApi();
   const [currentPage, setCurrentPage] = useState(1);
-  const productsPerPage = 8;
+  const productsPerPage = 9;
   const { apiGetOrigin } = ApiOrigin();
   const { getCategoryName } = CategoryApi();
   const { getBrandName } = BrandApi();
