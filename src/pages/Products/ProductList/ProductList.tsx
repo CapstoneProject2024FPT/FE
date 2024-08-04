@@ -19,7 +19,7 @@ import { Skeleton } from "antd";
 import { ApiOrigin } from "../../../api/services/apiOrigin";
 import { CategoryApi } from "../../../api/services/apiCategories";
 import { BrandApi } from "../../../api/services/apiBrand";
-import { CloseOutlined } from "@mui/icons-material";
+import { CloseOutlined, DeleteForeverSharp } from "@mui/icons-material";
 import { ProductsFilterType } from "../../../constants/filter";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useFilterContext } from "../../../context/FilterContext";
@@ -37,7 +37,7 @@ const ProductList: React.FC = () => {
   const [filter, setFilter] = useState<ProductFilter>();
   const { apiGetList } = MachineryApi();
   const [currentPage, setCurrentPage] = useState(1);
-  const productsPerPage = 8;
+  const productsPerPage = 9;
   const { apiGetOrigin } = ApiOrigin();
   const { getCategoryName } = CategoryApi();
   const { getBrandName } = BrandApi();
@@ -260,9 +260,9 @@ const ProductList: React.FC = () => {
           <Box
             sx={{
               display: "flex",
-              justifyContent: "space-between",
               alignItems: "center",
               margin: "8px",
+              width: "100%",
             }}
           >
             <Typography
@@ -288,36 +288,17 @@ const ProductList: React.FC = () => {
                   key={key + value}
                   label={getChipLabel(key, value)}
                   onDelete={() => handleClearFilter(key, value)}
-                  sx={{ margin: "5px" }}
+                  sx={{ margin: "5px", fontSize: "16px" }}
                 />
               ))}
             </Box>
-            <Box
-              sx={{
-                display: "flex",
-                border: "1px solid rgba(25, 118, 210, 0.5)",
-                padding: "4px",
-                color: "#1976d2",
-                borderRadius: "5px",
-                "&:hover": {
-                  cursor: "pointer",
-                  border: "1px solid #1976d2",
-                  backgroundColor: "rgba(25, 118, 210, 0.04)",
-                },
-              }}
+            <Button
+              startIcon={<DeleteForeverSharp />}
+              variant="outlined"
               onClick={handleResetFilters}
             >
-              <CloseOutlined />
-              <Typography
-                sx={{
-                  fontSize: "18px",
-                  fontWeight: "800",
-                  letterSpacing: "-1px",
-                }}
-              >
-                Xóa tất cả
-              </Typography>
-            </Box>
+              Xóa tất cả
+            </Button>
           </Box>
         )}
       </>
@@ -506,7 +487,7 @@ const ProductList: React.FC = () => {
             </Box>
           ) : (
             <EmptyCart
-              sx={{ display: "flex", height: "50%" }}
+              sx={{ display: "flex", height: "unset" }}
               title="Không tìm thấy sản phẩm"
             />
           )}

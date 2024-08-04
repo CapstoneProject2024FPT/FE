@@ -440,10 +440,16 @@ const TableOrder: React.FC = () => {
         sx={{
           display: "flex",
           flexDirection: "row",
-          justifyContent: "space-between",
+          justifyContent: "space-around",
+          alignItems: "center"
         }}
       >
-        <Card sx={{ p: 3, mb: 2, display: "flex", flexDirection: "row" }}>
+        <Card sx={{
+          display: "flex",
+          alignItems: "center",
+          justifyItems: "center",
+          minHeight: "50px"
+        }}>
           {orderCounts?.ordersByStatus &&
             Object.entries(orderCounts?.ordersByStatus).map(
               ([status, count], index) => {
@@ -482,7 +488,7 @@ const TableOrder: React.FC = () => {
           select
           label="Trạng thái đơn"
           value={selectStatusUi}
-          sx={{ width: "200px" }}
+          sx={{ width: "200px", minHeight: "50px" }}
           onChange={(e) => handleSelect(e)}
         >
           {statusMapping.map((option) => (

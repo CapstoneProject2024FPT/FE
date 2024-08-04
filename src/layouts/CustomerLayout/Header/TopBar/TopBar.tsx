@@ -157,7 +157,9 @@ const TopBar: React.FC = () => {
         <nav className={cx("main-nav")}>
           {renderMenu(menuData)}
 
-          <a href={config.routes.news}>TIN TỨC</a>
+          <a className={cx("header-navbar")} href={config.routes.news}>TIN TỨC</a>
+          <a className={cx("header-navbar")} href={config.routes.termsOfService}>ĐIỀU KHOẢN</a>
+          <a className={cx("header-navbar")} href={config.routes.privacyPolicy}>CHÍNH SÁCH</a>
         </nav>
       </header>
     </>
