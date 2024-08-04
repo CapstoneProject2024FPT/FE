@@ -123,9 +123,18 @@ export interface specificationDetail {
   name: string;
   value: string;
 }
+export interface componentDetail {
+  componentId: string;
+  name: string;
+  description: string;
+  status: string;
+  stockPrice: number;
+  sellingPrice: number;
+}
 
 export type ProductDetailProps = {
   specifications: [specificationDetail];
+  component: [componentDetail];
   image: [{ imageURL: string; createDate: string }];
   category: CategoryMachineDetail;
   quantity?: QuantityProps;
@@ -143,6 +152,8 @@ export type ProductDetailProps = {
   serialNumber: number;
   status: string;
   monthWarrantyNumber: number;
+  originalPrice: number;
+  discountPercentage: number;
 };
 
 //update product
