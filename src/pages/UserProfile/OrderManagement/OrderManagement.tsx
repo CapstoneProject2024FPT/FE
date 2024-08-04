@@ -240,13 +240,13 @@ const Row = (props: {
             </MenuItem>
             {(row.status === StatusType.COMPLETED ||
               row.status === StatusType.PAID) && (
-              <MenuItem>
-                <ExportPDF row={row} />
-              </MenuItem>
-            )}
+                <MenuItem>
+                  <ExportPDF row={row} />
+                </MenuItem>
+              )}
           </Menu>
         </TableCell>
-        <TableCell>
+        <TableCell style={{ width: '100px' }}>
           {row.status === StatusType.UNPAID && remainingTime !== null && (
             <Box
               sx={{
@@ -255,12 +255,15 @@ const Row = (props: {
                 display: "inline-block",
                 backgroundColor: "#FFD700",
                 color: "black",
+                textAlign: 'center',
+                width: '100%',
               }}
             >
               {formatRemainingTime(remainingTime)}
             </Box>
           )}
         </TableCell>
+
       </TableRow>
       <TableRow>
         <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={8}>
@@ -462,7 +465,7 @@ const OrderManagement: React.FC = () => {
               <TableCell>Trạng thái</TableCell>
               <TableCell>Hành động</TableCell>
               <TableCell></TableCell>
-              <TableCell></TableCell>
+
             </TableRow>
           </TableHead>
           <TableBody>
