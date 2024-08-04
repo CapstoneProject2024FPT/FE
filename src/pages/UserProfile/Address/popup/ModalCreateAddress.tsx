@@ -53,13 +53,16 @@ export default function ModalCreateAddress({
   const { apiGetCity, apiDistrict, apiWard, apiCreateAddress } = ApiAddress();
 
   const NewAddressSchema = Yup.object().shape({
-    name: Yup.string().required("Cần đặt tên cho địa chỉ"),
+    name: Yup.string().required("Cần đặt tên cho địa chỉ").trim(),
     note: Yup.string()
       .required("Cần mô tả số nhà, tên đường")
-      .min(2, "Nhiều hơn 2"),
+      .min(2, "Nhiều hơn 2")
+      .trim(),
     cityId: Yup.string().required("Bắt buộc"),
     districtId: Yup.string().required("Bắt buộc"),
     wardId: Yup.string().required("bắt buộc"),
+    namePersonal: Yup.string().required("Cần tên người nhận").trim(),
+    phoneNumber: Yup.string().required("Cần số điện thoại người nhận").trim(),
   });
 
   const defaultValues = {
@@ -68,6 +71,8 @@ export default function ModalCreateAddress({
     cityId: "",
     districtId: "",
     wardId: "",
+    namePersonal: "",
+    phoneNumber: "",
   };
 
   const methods = useForm<addressForm>({
@@ -143,7 +148,8 @@ export default function ModalCreateAddress({
         <DialogContent>
           <Stack spacing={3}>
             <RHFTextField name="name" label="Tên địa chỉ" />
-
+            <RHFTextField name="namePersonal" label="Tên người nhận" />
+            <RHFTextField name="phoneNumber" label="Số điện thoại" />
             <Box
               sx={{
                 display: "grid",

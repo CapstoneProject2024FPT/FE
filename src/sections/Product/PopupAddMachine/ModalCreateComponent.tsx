@@ -98,9 +98,12 @@ export default function ModalCreateComponent({
 
   const fetchData = async () => {
     try {
+      const params = {
+        status: "Active",
+      };
       const [category, brand, origin] = await Promise.allSettled([
         getCategoryComponentChild(),
-        getBrand(),
+        getBrand(params),
         apiGetOrigin(),
       ]);
 

@@ -79,7 +79,15 @@ export default function AddressButon({ addressOption }: Props) {
                             <Box sx={{ ml: 1 }}>
                               <Typography variant="subtitle2">
                                 {" "}
-                                Tên người nhận: {address.name}
+                                Tên người nhận: {address.namePersonal}
+                              </Typography>
+                              <Typography variant="subtitle2">
+                                {" "}
+                                Số điện thoại: {address.phoneNumber}
+                              </Typography>
+                              <Typography variant="subtitle2">
+                                {" "}
+                                Tên địa chỉ: {address.name}
                               </Typography>
                               <Typography
                                 variant="body2"

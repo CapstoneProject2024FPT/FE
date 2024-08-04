@@ -29,10 +29,11 @@ const ModalNewsCategoryPopupAdd: React.FC<ModalCategory> = ({
   const { addNewsCategories } = ApiNewsCategories();
 
   const CategorySchema = Yup.object().shape({
-    name: Yup.string().required("bắt buộc").min(5, "Tối thiểu 5 kí tự"),
+    name: Yup.string().required("bắt buộc").min(5, "Tối thiểu 5 kí tự").trim(),
     description: Yup.string()
       .required("bắt buộc")
-      .min(20, "Tối thiểu 20 kí tự"),
+      .min(20, "Tối thiểu 20 kí tự")
+      .trim(),
   });
 
   const defaultValues: NewsCategoryProps = {

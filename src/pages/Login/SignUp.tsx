@@ -26,18 +26,27 @@ interface SignUpForm {
 const SignUpForm: React.FC = () => {
   const { apiRegister } = AuthApi();
   const RegisterSchema = Yup.object().shape({
-    username: Yup.string().required("bắt buộc").min(5, "Tối thiểu 5 kí tự"),
+    username: Yup.string()
+      .required("bắt buộc")
+      .min(5, "Tối thiểu 5 kí tự")
+      .trim(),
     password: Yup.string()
       .required("bắt buộc")
       .min(8, "Tối thiểu 8 kí tự")
-      .max(19, "Tối đa 19 kí tự"),
+      .max(19, "Tối đa 19 kí tự")
+      .trim(),
     confirmPassword: Yup.string()
       .required("Bắt buộc")
-      .oneOf([Yup.ref("password")], "Phải giống mật khẩu"),
+      .oneOf([Yup.ref("password")], "Phải giống mật khẩu")
+      .trim(),
     email: Yup.string()
       .required("Bắt buộc")
-      .matches(patternValidate.email, "Phải đúng định dạng"),
-    fullname: Yup.string().required("Bắt buộc").min(5, "Tối thiểu 5 kí tự"),
+      .matches(patternValidate.email, "Phải đúng định dạng")
+      .trim(),
+    fullname: Yup.string()
+      .required("Bắt buộc")
+      .min(5, "Tối thiểu 5 kí tự")
+      .trim(),
   });
 
   const defaultValues: SignUpForm = {
@@ -137,7 +146,7 @@ const SignUpForm: React.FC = () => {
             <Grid container>
               <Grid item xs={6}>
                 <RHFTextField
-                  type="text"
+                  type="password"
                   name="password"
                   label="Mật khẩu"
                   sx={{

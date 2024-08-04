@@ -31,10 +31,11 @@ const ModalCategoryPopupAddComponent: React.FC<ModalCategory> = ({
   const [selectCategory, setSelectCategory] = useState<string>();
 
   const CategorySchema = Yup.object().shape({
-    name: Yup.string().required("bắt buộc").min(5, "Tối thiểu 5 kí tự"),
+    name: Yup.string().required("bắt buộc").min(5, "Tối thiểu 5 kí tự").trim(),
     description: Yup.string()
       .required("bắt buộc")
-      .min(10, "Tối thiểu 10 kí tự"),
+      .min(10, "Tối thiểu 10 kí tự")
+      .trim(),
   });
 
   const defaultValues: CategoryProps = {

@@ -24,6 +24,7 @@ import * as Yup from "yup";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { LoadingButton } from "@mui/lab";
+import { useNavigate } from "react-router-dom";
 
 // ----------------------------------------------------------------------
 
@@ -46,6 +47,7 @@ const CheckoutBillingAddress: React.FC<checkoutBillingAndAddress> = ({
   const { apiGetAddress } = ApiAddress();
   const [addresses, setAddresses] = useState<addressProps[]>([]);
   const { setSelectedAddress } = useAddress();
+  const navigate = useNavigate();
 
   //user info
   const loginInfo = localStorage.getItem("loginInfo");
@@ -126,6 +128,14 @@ const CheckoutBillingAddress: React.FC<checkoutBillingAndAddress> = ({
       console.error(error);
     }
   };
+
+  //check product in cart
+  useEffect(() => {
+    if (!total) {
+      navigate(config.routes.cart.concat("/?step=0"));
+      toast.error("Bạn chưa có hàng trong giỏ");
+    }
+  }, [total, navigate]);
   return (
     <>
       <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>

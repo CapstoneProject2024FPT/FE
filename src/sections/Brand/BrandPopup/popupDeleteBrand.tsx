@@ -20,14 +20,24 @@ const ModalBrandPopupDelete: React.FC<ModalBrand> = ({
   handleCLoseDelete,
   onDeleteSuccess,
 }) => {
-  const { loading, deleteBrand } = BrandApi();
+  const { loading, deleteBrand, updateActiveBrand } = BrandApi();
 
   const onSubmit = async () => {
     try {
-      if (BrandData) {
+      if (BrandData?.status === "Active") {
         const response = await deleteBrand(BrandData?.id);
         if (onDeleteSuccess) {
           onDeleteSuccess(response);
+        }
+      } else {
+        if (BrandData) {
+          const params = {
+            status: "Active",
+          };
+          const response = await updateActiveBrand(BrandData?.id, params);
+          if (onDeleteSuccess) {
+            onDeleteSuccess(response);
+          }
         }
       }
     } catch (error) {
@@ -55,9 +65,16 @@ const ModalBrandPopupDelete: React.FC<ModalBrand> = ({
         </Button>,
       ]}
     >
-      <Typography.Text>
-        Bạn có muốn xoá loại máy tên: {BrandData?.name}
-      </Typography.Text>
+      {BrandData?.status === "Active" && (
+        <Typography.Text>
+          Bạn có muốn xoá thương hiệu máy tên: {BrandData?.name}
+        </Typography.Text>
+      )}
+      {BrandData?.status === "Inactive" && (
+        <Typography.Text>
+          Bạn có muốn mở lại thương hiệu máy tên: {BrandData?.name}
+        </Typography.Text>
+      )}
     </Modal>
   );
 };

@@ -66,10 +66,12 @@ const BlogNewUpdateForm: React.FC<BLogUpdate> = ({
     title: Yup.string().required("Phải có chủ đề").min(10, "Tối thiểu 10 từ"),
     description: Yup.string()
       .required("phải có mô tả")
-      .min(10, "Tối thiểu 10 từ"),
+      .min(10, "Tối thiểu 10 từ")
+      .trim(),
     newsContent: Yup.string()
       .min(200, "Tổi thiểu 200 từ")
-      .required("Content is required"),
+      .required("Content is required")
+      .trim(),
     cover: Yup.string().required("Bắt Buộc có hình"),
     newsCategoryId: Yup.string().required("Bắt chọn loại tin tức"),
   });

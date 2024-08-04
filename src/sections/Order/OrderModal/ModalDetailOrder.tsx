@@ -141,12 +141,16 @@ const ModalDetailOrder: React.FC<ModalBrand> = ({
               <Table size="small" aria-label="additional-info">
                 <TableBody>
                   <TableRow>
-                    <TableCell sx={{ width: "30%" }}>Người nhận</TableCell>
+                    <TableCell sx={{ width: "30%" }}>Khách hàng</TableCell>
                     <TableCell>{customer?.fullName}</TableCell>
                   </TableRow>
                   <TableRow>
+                    <TableCell sx={{ width: "30%" }}>Người nhận hàng</TableCell>
+                    <TableCell>{OrderData?.address?.namePersonal}</TableCell>
+                  </TableRow>
+                  <TableRow>
                     <TableCell sx={{ width: "30%" }}>Số điện thoại</TableCell>
-                    <TableCell>{customer?.phoneNumber}</TableCell>
+                    <TableCell>{OrderData?.address?.phoneNumber}</TableCell>
                   </TableRow>
                   <TableRow>
                     <TableCell>Ghi chú đơn hàng</TableCell>
