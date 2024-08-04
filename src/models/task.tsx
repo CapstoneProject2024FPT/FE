@@ -31,6 +31,8 @@ export interface GetTaskProps {
     name: string;
     status: string;
     note: string;
+    namePersonal: string;
+    phoneNumber: string;
     city: {
       id: string;
       unitId: number;

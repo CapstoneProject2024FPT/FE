@@ -108,10 +108,10 @@ export const BrandApi = () => {
     }
   };
 
-  const getBrandName = async (params: brandProps) => {
+  const getBrandName = async () => {
     try {
       setLoading(true);
-      const response = await axiosPublic.get(GET_BRAND, { params });
+      const response = await axiosPublic.get(GET_BRAND);
       setLoading(false);
       return response.data;
     } catch (error: any) {
