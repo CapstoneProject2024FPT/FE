@@ -18,7 +18,7 @@ import {
 
 // @types
 import config from "../../../configs";
-import { useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { OrderProps } from "../../../models/order";
 import { ApiOrder } from "../../../api/services/apiOrder";
 import { formatAddress, formatDateFunc, formatMoney } from "../../../utils/fn";
@@ -41,6 +41,7 @@ const OrderDetailBill: React.FC = () => {
   const { apiGetOrderId } = ApiOrder();
   const { apiGetWarranty, apiGetWarrantyById } = ApiWarranty();
   const { id } = useParams<{ id: string }>();
+  const location = useLocation();
 
   //api
   const fetchOrderId = useCallback(async () => {
@@ -80,8 +81,6 @@ const OrderDetailBill: React.FC = () => {
               };
             })
           );
-          console.log(response2);
-
           setWarranty(response2);
         }
       } catch (error) {
@@ -119,6 +118,11 @@ const OrderDetailBill: React.FC = () => {
 
   const handleCloseWarranty = () => {
     setOpenWarranty(!openWarranty);
+  };
+
+  const handleNavigate = (record: string) => {
+    sessionStorage.setItem("orderPath", location.pathname);
+    navigate(config.routes.orderManagementIdWarranty.replace(":id", record));
   };
   return (
     <>
@@ -164,85 +168,129 @@ const OrderDetailBill: React.FC = () => {
               <Card sx={{ p: 2 }}>
                 <CardHeader title="Thông tin đơn hàng" />
                 <Stack display="flex" direction="column" spacing={2}>
+                  <Typography>Mã đơn hàng: {orderData?.invoiceCode}</Typography>
                   <Typography>
-                    {" "}
-                    Mã đơn hàng : {orderData?.invoiceCode}
+                    Tên chủ đơn: {orderData?.userInfo?.fullName}
                   </Typography>
                   <Typography>
-                    Tên chủ đơn :{orderData?.userInfo?.fullName}
-                  </Typography>
-                  <Typography>
-                    Ngày tạo đơn :
+                    Ngày tạo đơn: {""}
                     {formatDateFunc.formatDateTime(orderData?.createDate)}
                   </Typography>
                   <Typography>
-                    Tổng thành tiền :{formatMoney(orderData?.finalAmount)}
+                    Tổng thành tiền: {formatMoney(orderData?.finalAmount)}
                   </Typography>
                   <Typography>
-                    Địa chỉ :{formatAddress(orderData?.address)}
+                    Địa chỉ: {formatAddress(orderData?.address)}
                   </Typography>
                 </Stack>
                 <Divider sx={{ mt: 2 }} />
                 <Typography variant="h5" sx={{ mt: 4 }}>
                   Chi tiết sản phẩm
                 </Typography>
-                {warranty?.map((product, idx) => (
-                  <Table size="small" aria-label="products" key={idx}>
+                {orderData?.status !== "Canceled" &&
+                orderData?.status !== "UnPaid" ? (
+                  <>
+                    {warranty?.map((product, idx) => (
+                      <Table size="small" aria-label="products" key={idx}>
+                        <TableHead>
+                          <TableRow>
+                            <TableCell>Tên sản phẩm</TableCell>
+                            <TableCell>Mã số máy</TableCell>
+                            <TableCell>Giá sản phẩm</TableCell>
+                            <TableCell>Bảo hành</TableCell>
+                            <TableCell>Tạo bảo hành</TableCell>
+                          </TableRow>
+                        </TableHead>
+                        <TableBody>
+                          {product.warranty.map((detail) => (
+                            <TableRow key={detail.warrantyDetails.id}>
+                              <>
+                                <TableCell width="40%">
+                                  {
+                                    detail.warrantyDetails.inventory.machinery
+                                      .name
+                                  }
+                                </TableCell>
+                                <TableCell>
+                                  {
+                                    detail.warrantyDetails.inventory
+                                      .serialNumber
+                                  }
+                                </TableCell>
+                                <TableCell>
+                                  {formatMoney(
+                                    detail.warrantyDetails.inventory.machinery
+                                      .sellingPrice
+                                  )}
+                                </TableCell>
+                                <TableCell>
+                                  <Button
+                                    variant="contained"
+                                    onClick={() =>
+                                      handleNavigate(
+                                        detail.warrantyDetails.inventory.id
+                                      )
+                                    }
+                                  >
+                                    Chi tiết
+                                  </Button>
+                                </TableCell>
+                                <TableCell>
+                                  <Button
+                                    variant="contained"
+                                    onClick={() => handleOpenWarranty(detail)}
+                                  >
+                                    Tạo yêu cầu bảo hành
+                                  </Button>
+                                </TableCell>
+                              </>
+                            </TableRow>
+                          ))}
+
+                          {product.warranty.map((detail, detailIdx) => (
+                            <React.Fragment key={detailIdx}>
+                              {detail.warrantyDetails.warrantyDetail.map(
+                                (warrantyItem, idx) => (
+                                  <TableRow key={warrantyItem.id}>
+                                    <TableCell>
+                                      Bảo trì định kì lần {idx + 1} :{" "}
+                                      {formatDateFunc.formatDate(
+                                        warrantyItem.startDate
+                                      )}
+                                    </TableCell>
+                                  </TableRow>
+                                )
+                              )}
+                            </React.Fragment>
+                          ))}
+                        </TableBody>
+                      </Table>
+                    ))}
+                  </>
+                ) : (
+                  <Table size="small" aria-label="order-data">
                     <TableHead>
                       <TableRow>
+                        <TableCell></TableCell>
                         <TableCell>Tên sản phẩm</TableCell>
-                        <TableCell>Mã số máy</TableCell>
+                        <TableCell>Số lượng</TableCell>
                         <TableCell>Giá sản phẩm</TableCell>
-                        <TableCell>Tạo bảo hành</TableCell>
                       </TableRow>
                     </TableHead>
                     <TableBody>
-                      {product.warranty.map((detail) => (
-                        <TableRow key={detail.warrantyDetails.id}>
-                          <>
-                            <TableCell width="40%">
-                              {detail.warrantyDetails.inventory.machinery.name}
-                            </TableCell>
-                            <TableCell>
-                              {detail.warrantyDetails.inventory.serialNumber}
-                            </TableCell>
-                            <TableCell>
-                              {formatMoney(
-                                detail.warrantyDetails.inventory.machinery
-                                  .sellingPrice
-                              )}
-                            </TableCell>
-                            <TableCell>
-                              <Button
-                                variant="contained"
-                                onClick={() => handleOpenWarranty(detail)}
-                              >
-                                Tạo yêu cầu bảo hành
-                              </Button>
-                            </TableCell>
-                          </>
+                      {orderData?.productList?.map((machine, index) => (
+                        <TableRow key={index}>
+                          <TableCell>{index + 1}</TableCell>
+                          <TableCell>{machine.productName}</TableCell>
+                          <TableCell>{machine.quantity}</TableCell>
+                          <TableCell>
+                            {formatMoney(machine.totalAmount)}
+                          </TableCell>
                         </TableRow>
-                      ))}
-
-                      {product.warranty.map((detail, detailIdx) => (
-                        <React.Fragment key={detailIdx}>
-                          {detail.warrantyDetails.warrantyDetail.map(
-                            (warrantyItem, idx) => (
-                              <TableRow key={warrantyItem.id}>
-                                <TableCell>
-                                  Bảo trì định kì lần {idx + 1} :{" "}
-                                  {formatDateFunc.formatDate(
-                                    warrantyItem.startDate
-                                  )}
-                                </TableCell>
-                              </TableRow>
-                            )
-                          )}
-                        </React.Fragment>
                       ))}
                     </TableBody>
                   </Table>
-                ))}
+                )}
               </Card>
               {/* lịch sủ giao hàng */}
               {open && (

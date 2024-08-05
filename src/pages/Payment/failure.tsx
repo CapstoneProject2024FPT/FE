@@ -67,8 +67,8 @@ const PaymentFailure: React.FC = () => {
         }}
       />
 
-      <StyledButton onClick={() => navigate(routes.home)}>
-        Trở về trang chủ
+      <StyledButton onClick={() => navigate(routes.orderManagement)}>
+        Về lịch sử mua hàng
       </StyledButton>
     </Box>
   );
