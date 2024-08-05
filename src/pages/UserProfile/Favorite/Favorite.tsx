@@ -8,7 +8,7 @@ import Image from "../../../components/Image";
 import config from "../../../configs";
 import { Link } from "react-router-dom";
 import { formatMoney } from "../../../utils/fn";
-import { FavoriteSharp, ThumbUpRounded } from "@mui/icons-material";
+import { ThumbUpRounded } from "@mui/icons-material";
 import CustomPagination from "../../../components/pagination/CustomPagination";
 import RemoveFavorite from "./Modal/RemoveFavorite";
 

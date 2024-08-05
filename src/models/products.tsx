@@ -134,7 +134,6 @@ export interface componentDetail {
 
 export type ProductDetailProps = {
   specifications: [specificationDetail];
-  component: [componentDetail];
   image: [{ imageURL: string; createDate: string }];
   category: CategoryMachineDetail;
   quantity?: QuantityProps;
@@ -154,6 +153,7 @@ export type ProductDetailProps = {
   monthWarrantyNumber: number;
   originalPrice: number;
   discountPercentage: number;
+  component: ComponentDetail[];
 };
 
 interface ComponentDetail {

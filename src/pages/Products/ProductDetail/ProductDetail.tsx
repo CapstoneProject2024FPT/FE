@@ -16,7 +16,6 @@ import {
   Refresh,
   Verified,
   LocalPolice,
-  FavoriteSharp,
   ThumbUpRounded,
 } from "@mui/icons-material";
 import "./ProductDetail.scss";
@@ -339,7 +338,7 @@ const Detail: React.FC = () => {
               padding: "0 12px",
               display: "flex",
               alignItems: "center",
-              justifyContent: "center"
+              justifyContent: "center",
             }}
             cols={Math.min((product?.image || []).length, 3)}
             rowHeight={164}
