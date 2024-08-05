@@ -78,7 +78,7 @@ const CheckoutPayment: React.FC<checkoutPaymentProps> = ({
     machineryId: cart.id,
     quantity: cart.currentQuantities,
     sellingPrice: cart.sellingPrice,
-    stockPrice: cart.sellingPrice,
+    stockPrice: cart.stockPrice,
   }));
   let email: string = "";
   let username: string = "";
@@ -183,6 +183,7 @@ const CheckoutPayment: React.FC<checkoutPaymentProps> = ({
           machineryList: machineList,
           addressId: address.id,
         };
+
         const response = await apiCheckout(params);
 
         if (response.status === 200) {
