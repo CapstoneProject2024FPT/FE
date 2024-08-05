@@ -19,7 +19,7 @@ import {
 
 // @types
 import config from "../../../configs";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import { OrderProps } from "../../../models/order";
 import { ApiOrder } from "../../../api/services/apiOrder";
 import { formatAddress, formatDateFunc, formatMoney } from "../../../utils/fn";
@@ -231,10 +231,22 @@ const OrderDetailBill: React.FC = () => {
                             <TableRow key={detail.warrantyDetails.id}>
                               <>
                                 <TableCell width="40%">
-                                  {
-                                    detail.warrantyDetails.inventory.machinery
-                                      .name
-                                  }
+                                  <Link
+                                    to={config.routes.productDetail.replace(
+                                      ":id",
+                                      detail.warrantyDetails.inventory.machinery
+                                        .id
+                                    )}
+                                    style={{
+                                      textDecoration: "none",
+                                      color: "black",
+                                    }}
+                                  >
+                                    {
+                                      detail.warrantyDetails.inventory.machinery
+                                        .name
+                                    }
+                                  </Link>
                                 </TableCell>
                                 <TableCell>
                                   {
@@ -306,7 +318,17 @@ const OrderDetailBill: React.FC = () => {
                       {orderData?.productList?.map((machine, index) => (
                         <TableRow key={index}>
                           <TableCell>{index + 1}</TableCell>
-                          <TableCell>{machine.productName}</TableCell>
+                          <TableCell>
+                            <Link
+                              to={config.routes.productDetail.replace(
+                                ":id",
+                                machine.productId
+                              )}
+                              style={{ textDecoration: "none", color: "black" }}
+                            >
+                              {machine.productName}
+                            </Link>
+                          </TableCell>
                           <TableCell>{machine.quantity}</TableCell>
                           <TableCell>
                             {formatMoney(machine.totalAmount)}
