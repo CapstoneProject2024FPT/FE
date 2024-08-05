@@ -90,21 +90,15 @@ const SignInForm: React.FC = () => {
   return (
     <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
       <div className={cx("form-container", "sign-in-container")}>
-        <div className={cx("form")}>
+        <div className={cx("form")} style={{ height: "100%" }}>
           <h1>Đăng nhập</h1>
-          <div className={cx("social-container")}>
-            <a href="#" className={cx("social", "link")}>
-              <FaFacebookF />
-            </a>
-            <a href="#" className={cx("social", "link")}>
-              <FaGooglePlusG />
-            </a>
-            <a href="#" className={cx("social", "link")}>
-              <FaLinkedinIn />
-            </a>
-          </div>
-          <span>hoặc sử dụng tài khoản</span>
-          <Stack display="flex" direction="column" spacing={2} sx={{ mt: 3 }}>
+          <Stack
+            display="flex"
+            direction="column"
+            gap="20px"
+            spacing={2}
+            sx={{ mt: 3 }}
+          >
             <RHFTextField
               name="username"
               label="Tài khoản"

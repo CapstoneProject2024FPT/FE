@@ -100,22 +100,13 @@ const SignUpForm: React.FC = () => {
   return (
     <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
       <div className={cx("form-container", "sign-up-container")}>
-        <div className={cx("form")} style={{ marginTop: "20px" }}>
+        <div
+          className={cx("form")}
+          style={{ marginTop: "20px", height: "100%" }}
+        >
           <Typography variant="h4" sx={{ fontWeight: "bold" }}>
             Tạo Tài Khoản
           </Typography>
-          <div className={cx("social-container")}>
-            <a href="#" className={cx("social", "link")}>
-              <FaFacebookF />
-            </a>
-            <a href="#" className={cx("social", "link")}>
-              <FaGooglePlusG />
-            </a>
-            <a href="#" className={cx("social", "link")}>
-              <FaLinkedinIn />
-            </a>
-          </div>
-          <span>hoặc tạo tài khoản mới</span>
           <Stack display="flex" direction="column" spacing={2} sx={{ mt: 3 }}>
             <RHFTextField
               name="fullname"
