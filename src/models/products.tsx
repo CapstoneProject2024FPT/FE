@@ -138,6 +138,7 @@ export type ProductDetailProps = {
   category: CategoryMachineDetail;
   quantity?: QuantityProps;
   sellingPrice: number;
+  stockPrice: number;
   id: string;
   name: string;
   origin: originProduct;

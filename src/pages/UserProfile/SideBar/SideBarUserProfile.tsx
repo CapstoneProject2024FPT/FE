@@ -9,14 +9,12 @@ import {
   ListItemButton,
   ListItemIcon,
   ListItemText,
-  ListSubheader,
 } from "@mui/material";
 import Iconify from "../../../components/Iconify";
 import config from "../../../configs";
 
 const SideBarUserProfile: React.FC = () => {
   const location = useLocation();
-
   const getActiveStyle = (path: string) => ({
     backgroundColor:
       location.pathname === path ? "rgba(0, 0, 0, 0.08)" : "inherit",
@@ -33,16 +31,6 @@ const SideBarUserProfile: React.FC = () => {
         }}
         component="nav"
         aria-labelledby="nested-list-subheader"
-        subheader={
-          <ListSubheader
-            component="div"
-            id="nested-list-subheader"
-            style={{ borderRadius: "10px" }}
-            sx={{ position: "static" }}
-          >
-            Tên người dùng
-          </ListSubheader>
-        }
       >
         <div style={{ width: "auto" }}>
           <ListItemButton

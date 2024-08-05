@@ -14,6 +14,7 @@ export const routes = {
   maintenanceRequest: "/maintenance/request/:id",
   orderManagement: "/order-management",
   orderManagementId: "/order-management/:id",
+  orderManagementIdWarranty: "/order-management/warranty/:id",
   paymentOrderID: "/order-management/payment/:id",
   favoriteProduct: "/favorite-product",
   notFound: "notFound",
