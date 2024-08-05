@@ -32,6 +32,7 @@ import {
 } from "../../../models/address";
 import { useEffect, useState } from "react";
 import { ApiAddress } from "../../../api/services/apiAddress";
+import { toast } from "react-toastify";
 
 // ----------------------------------------------------------------------
 
@@ -52,13 +53,16 @@ export default function CheckoutNewAddressForm({
   const { apiGetCity, apiDistrict, apiWard, apiCreateAddress } = ApiAddress();
 
   const NewAddressSchema = Yup.object().shape({
-    name: Yup.string().required("Bắt buộc"),
+    name: Yup.string().required("Cần đặt tên cho địa chỉ").trim(),
     note: Yup.string()
       .required("Cần mô tả số nhà, tên đường")
-      .min(2, "Tối thiểu 2 kí tự"),
+      .min(2, "Nhiều hơn 2")
+      .trim(),
     cityId: Yup.string().required("Bắt buộc"),
     districtId: Yup.string().required("Bắt buộc"),
-    wardId: Yup.string().required("Bắt buộc"),
+    wardId: Yup.string().required("bắt buộc"),
+    namePersonal: Yup.string().required("Cần tên người nhận").trim(),
+    phoneNumber: Yup.string().required("Cần số điện thoại người nhận").trim(),
   });
 
   const defaultValues = {
@@ -67,6 +71,8 @@ export default function CheckoutNewAddressForm({
     cityId: "",
     districtId: "",
     wardId: "",
+    namePersonal: "",
+    phoneNumber: "",
   };
 
   const methods = useForm<addressForm>({
@@ -88,6 +94,10 @@ export default function CheckoutNewAddressForm({
       const response = await apiCreateAddress(data);
       if (response.status === 200) {
         if (onSuccess) onSuccess();
+      } else if (response.StatusCode === 500) {
+        toast.error(response.Error);
+      } else {
+        toast.error(response.Error);
       }
     } catch (error) {
       onClose();
@@ -138,7 +148,8 @@ export default function CheckoutNewAddressForm({
         <DialogContent>
           <Stack spacing={3}>
             <RHFTextField name="name" label="Tên địa chỉ" />
-
+            <RHFTextField name="namePersonal" label="Tên người nhận" />
+            <RHFTextField name="phoneNumber" label="Số điện thoại" />
             <Box
               sx={{
                 display: "grid",

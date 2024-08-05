@@ -43,8 +43,8 @@ import { useAuthContext } from "../../../context/AuthContext";
 const PAYMENT_OPTIONS: PaymentOption[] = [
   {
     value: "VNPAY",
-    title: "Thanh toán qua cộng Vnpay",
-    description: "Bạn sẽ được chuyển đi đến cổng thanh toán Vnpay.",
+    title: "Thanh toán qua cổng VNPAY",
+    description: "Bạn sẽ được chuyển đi đến cổng thanh toán VNPAY.",
   },
 ];
 

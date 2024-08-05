@@ -62,7 +62,8 @@ const TableBrand: React.FC = () => {
   //----------------------------------------------------------------------------
   const fetchBrand = async () => {
     try {
-      const data = await getBrand();
+      const param = {};
+      const data = await getBrand(param);
       setBrands(data);
     } catch (error) {
       toast.error("lỗi");
@@ -188,6 +189,11 @@ const TableBrand: React.FC = () => {
       dataIndex: "createDate",
       render: (createDate) => formatDateFunc.formatDate(createDate),
       align: "center",
+    },
+    {
+      title: "Trạng thái",
+      dataIndex: "status",
+      render: (status) => (status === "Active" ? "Hữu hiệu" : "Vô hiệu"),
     },
     {
       title: (

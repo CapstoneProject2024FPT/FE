@@ -57,10 +57,10 @@ export default function ProductNewComponent() {
   };
 
   const validationSchema = Yup.object().shape({
-    name: Yup.string().required("Bắt buộc có tên sản phẩm"),
+    name: Yup.string().required("Bắt buộc có tên sản phẩm").trim(),
     originId: Yup.string().required("Bắt buộc có xuất xứ"),
     brandId: Yup.string().required("Bắt buộc có hãng"),
-    description: Yup.string().required("Bắt buộc có mô tả"),
+    description: Yup.string().required("Bắt buộc có mô tả").trim(),
     stockPrice: Yup.number()
       .moreThan(0, "Giá tiền lớn hơn 0")
       .required("Không để trống"),
@@ -87,9 +87,12 @@ export default function ProductNewComponent() {
 
   const fetchData = async () => {
     try {
+      const params = {
+        status: "Active",
+      };
       const [category, brand, origin] = await Promise.allSettled([
         getCategoryComponentChild(),
-        getBrand(),
+        getBrand(params),
         apiGetOrigin(),
       ]);
 

@@ -191,9 +191,12 @@ export default function ProductNewEditForm() {
 
   const fetchData = async () => {
     try {
+      const params = {
+        status: "Active",
+      };
       const [category, brand, origin] = await Promise.allSettled([
         getCategoryChild(),
-        getBrand(),
+        getBrand(params),
         apiGetOrigin(),
       ]);
 
