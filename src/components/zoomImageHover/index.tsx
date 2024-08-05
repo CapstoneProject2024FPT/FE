@@ -3,7 +3,7 @@ import React, { useState, CSSProperties, MouseEvent } from "react";
 
 interface Props {
   src: string;
-  width: string | number;
+  width?: string | number;
   zoomScale?: number;
   height?: string | number;
   className?: string;
@@ -13,8 +13,6 @@ interface Props {
 
 const Zoom: React.FC<Props> = ({
   src,
-  width,
-  height,
   zoomScale = 2,
   className,
   transitionTime = 0,

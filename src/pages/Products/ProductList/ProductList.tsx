@@ -19,7 +19,7 @@ import { Skeleton } from "antd";
 import { ApiOrigin } from "../../../api/services/apiOrigin";
 import { CategoryApi } from "../../../api/services/apiCategories";
 import { BrandApi } from "../../../api/services/apiBrand";
-import { CloseOutlined, DeleteForeverSharp } from "@mui/icons-material";
+import { DeleteForeverSharp } from "@mui/icons-material";
 import { ProductsFilterType } from "../../../constants/filter";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useFilterContext } from "../../../context/FilterContext";
