@@ -281,7 +281,7 @@ const Dashboard: React.FC = () => {
                   Tổng số đơn hàng
                 </Typography>
                 <Typography gutterBottom variant="h6">
-                  {formatCurrency(dashboardData?.totalOrders)}
+                  {formatOrder(dashboardData?.totalOrders)}
                 </Typography>
               </CardContent>
             </CardActionArea>
