@@ -8,6 +8,7 @@ import DialogTitle from "@mui/material/DialogTitle";
 import { useAuthContext } from "../../../../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import config from "../../../../configs";
+import { Box } from "@mui/material";
 
 interface LogoutProps {
   open: boolean;
@@ -34,22 +35,40 @@ export default function LogoutModal({ open, handleClose }: LogoutProps) {
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >
-        <DialogTitle id="alert-dialog-title" sx={{ color: "red" }}>
-          Đăng xuất
-        </DialogTitle>
-        <DialogContent>
-          <DialogContentText id="alert-dialog-description">
-            Bạn có muốn đăng xuất?
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions
-          sx={{ display: "flex", justifyContent: "space-between" }}
+        <Box
+          sx={{
+            minWidth: "320px",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            padding: "10px",
+          }}
         >
-          <Button onClick={handleClose}>Huỷ</Button>
-          <Button onClick={handleLogout} autoFocus>
-            Đồng ý
-          </Button>
-        </DialogActions>
+          <DialogTitle id="alert-dialog-title" sx={{ color: "red" }}>
+            Đăng xuất
+          </DialogTitle>
+          <DialogContent>
+            <DialogContentText id="alert-dialog-description">
+              Bạn có muốn đăng xuất?
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions
+            sx={{
+              width: "100%",
+              display: "flex",
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "space-evenly",
+            }}
+          >
+            <Button variant="outlined" onClick={handleClose}>
+              Huỷ
+            </Button>
+            <Button variant="outlined" onClick={handleLogout} autoFocus>
+              Đồng ý
+            </Button>
+          </DialogActions>
+        </Box>
       </Dialog>
     </React.Fragment>
   );
