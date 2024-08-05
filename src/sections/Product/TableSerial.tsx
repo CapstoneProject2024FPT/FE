@@ -2,7 +2,15 @@ import React, { useEffect, useState } from "react";
 import type { MenuProps } from "antd";
 import type { TableProps } from "antd";
 import { DownOutlined } from "@ant-design/icons";
-import { Table, Input, Space, Dropdown, Button, Typography } from "antd";
+import {
+  Table,
+  Input,
+  Space,
+  Dropdown,
+  Button,
+  Typography,
+  Select,
+} from "antd";
 
 import { serialProps } from "../../models/serialNumber";
 import { ApiSerial } from "../../api/services/apiSerialNumber";
@@ -40,6 +48,7 @@ const TableSerial: React.FC<TableSerial> = ({ handleSetName }) => {
   const [openAdd, setOpenAdd] = useState<boolean>(false);
   const [openDeletePopup, setOpenDeletePopup] = useState<boolean>(false);
   const [selectedData, setSelectedData] = useState<serialProps | null>(null);
+  const [selectedFilter, setSelectedFilter] = useState<string>("");
 
   //api
   const { apiGetSerialbyMachineId, loading } = ApiSerial();
@@ -69,10 +78,14 @@ const TableSerial: React.FC<TableSerial> = ({ handleSetName }) => {
     }
   };
   //----------------------------------------------------------------------------
-  const fetchSerialMachine = async () => {
+  const fetchSerialMachine = async (status = selectedFilter) => {
     try {
       if (id) {
-        const response = await apiGetSerialbyMachineId(id);
+        const params = {
+          MachineryId: id,
+          Status: status,
+        };
+        const response = await apiGetSerialbyMachineId(params);
 
         setSerialNumbers(response.data);
         setSelectedData(response.data[0]);
@@ -152,7 +165,7 @@ const TableSerial: React.FC<TableSerial> = ({ handleSetName }) => {
           ? "Còn"
           : status === "Sold"
           ? "Đã bán"
-          : "Tạm dừng";
+          : "Có người mua";
       },
     },
     {
@@ -190,6 +203,14 @@ const TableSerial: React.FC<TableSerial> = ({ handleSetName }) => {
     },
   ];
 
+  const handleChange = (value: string) => {
+    let valueSelect = value;
+    if (valueSelect === "all") {
+      valueSelect = "";
+    }
+    setSelectedFilter(valueSelect);
+    fetchSerialMachine(valueSelect);
+  };
   return (
     <>
       <Typography.Text>Tên máy: {machinery?.name}</Typography.Text>
@@ -199,9 +220,22 @@ const TableSerial: React.FC<TableSerial> = ({ handleSetName }) => {
           onChange={handleSearch}
           style={{ width: 200, marginBottom: 16 }}
         />
-        <Button onClick={handleOpen} icon={<PlusOutlined />}>
-          Thêm máy vào kho
-        </Button>
+        <div>
+          <Select
+            defaultValue="Tất cả"
+            style={{ width: 150, marginRight: "5px" }}
+            onChange={handleChange}
+            options={[
+              { value: "all", label: "Tất cả" },
+              { value: "Available", label: "Còn" },
+              { value: "Sold", label: "Đã bán" },
+              { value: "Pending", label: "Có người mua" },
+            ]}
+          />
+          <Button onClick={handleOpen} icon={<PlusOutlined />}>
+            Thêm máy vào kho
+          </Button>
+        </div>
       </div>
 
       <Table

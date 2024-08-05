@@ -38,7 +38,6 @@ import config from "../../../configs";
 import moment from "moment";
 import { ApiCheckout } from "../../../api/services/apiCheckout";
 import { handleSendEmail } from "../../../utils/sendEmail";
-import PopupDetailOrder from "./Modal/PopupDetailOrder";
 
 const getStatusStyles = (status: string) => {
   switch (status) {
@@ -79,9 +78,6 @@ const Row = (props: {
     ? statusMapping?.find((status) => status.id === row?.status)?.name
     : defaultStatus;
 
-  const [openOrderDetail, setOpenOrderDetail] = useState<boolean>(false);
-  const [selectedData, setSelectedData] = useState<OrderProps>();
-
   const handleCancelOrder = () => {
     const getUserInfoString = localStorage.getItem("getUserInfo");
     if (getUserInfoString) {
@@ -105,12 +101,7 @@ const Row = (props: {
   };
   //popup detail
   const handleDetailOrder = (record: OrderProps) => {
-    setOpenOrderDetail(!openOrderDetail);
-    handleCloseMenu();
-    setSelectedData(record);
-  };
-  const handleDetailOrderClose = () => {
-    setOpenOrderDetail(!openOrderDetail);
+    navigate(config.routes.orderManagementId.replace(":id", record.orderId));
   };
 
   useEffect(() => {
@@ -249,13 +240,13 @@ const Row = (props: {
             </MenuItem>
             {(row.status === StatusType.COMPLETED ||
               row.status === StatusType.PAID) && (
-              <MenuItem>
-                <ExportPDF row={row} />
-              </MenuItem>
-            )}
+                <MenuItem>
+                  <ExportPDF row={row} />
+                </MenuItem>
+              )}
           </Menu>
         </TableCell>
-        <TableCell>
+        <TableCell style={{ width: '100px' }}>
           {row.status === StatusType.UNPAID && remainingTime !== null && (
             <Box
               sx={{
@@ -264,12 +255,15 @@ const Row = (props: {
                 display: "inline-block",
                 backgroundColor: "#FFD700",
                 color: "black",
+                textAlign: 'center',
+                width: '100%',
               }}
             >
               {formatRemainingTime(remainingTime)}
             </Box>
           )}
         </TableCell>
+
       </TableRow>
       <TableRow>
         <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={8}>
@@ -334,13 +328,6 @@ const Row = (props: {
           </Collapse>
         </TableCell>
       </TableRow>
-      {openOrderDetail && (
-        <PopupDetailOrder
-          OrderData={selectedData}
-          handleClose={handleDetailOrderClose}
-          open={openOrderDetail}
-        />
-      )}
     </React.Fragment>
   );
 };
@@ -478,7 +465,7 @@ const OrderManagement: React.FC = () => {
               <TableCell>Trạng thái</TableCell>
               <TableCell>Hành động</TableCell>
               <TableCell></TableCell>
-              <TableCell></TableCell>
+
             </TableRow>
           </TableHead>
           <TableBody>

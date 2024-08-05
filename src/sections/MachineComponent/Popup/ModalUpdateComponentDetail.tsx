@@ -59,9 +59,12 @@ const ModalComponentDetail: React.FC<ModalProduct> = ({
 
   const fetchData = async () => {
     try {
+      const params = {
+        status: "Active",
+      };
       const [origin, brand] = await Promise.allSettled([
         apiGetOrigin(),
-        getBrand(),
+        getBrand(params),
       ]);
 
       if (origin.status === "fulfilled") {
@@ -85,10 +88,11 @@ const ModalComponentDetail: React.FC<ModalProduct> = ({
   }, []);
 
   const ProductSchema = Yup.object().shape({
-    name: Yup.string().required("bắt buộc").min(5, "Tối thiểu 5 kí tự"),
+    name: Yup.string().required("bắt buộc").min(5, "Tối thiểu 5 kí tự").trim(),
     description: Yup.string()
       .required("bắt buộc")
-      .min(20, "Tối thiểu 20 kí tự"),
+      .min(20, "Tối thiểu 20 kí tự")
+      .trim(),
     originId: Yup.string().required("Bắt buộc có xuất xứ"),
     brandId: Yup.string().required("Bắt buộc có hãng"),
     sellingPrice: Yup.number()

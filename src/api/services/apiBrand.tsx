@@ -9,10 +9,13 @@ import config from "../../configs";
 export const BrandApi = () => {
   const [loading, setLoading] = useState(false);
 
-  const getBrand = async () => {
+  interface BrandProps {
+    status?: string;
+  }
+  const getBrand = async (params: BrandProps) => {
     try {
       setLoading(true);
-      const response = await axiosPublic.get(GET_BRAND);
+      const response = await axiosPublic.get(BRAND, { params });
 
       setLoading(false);
       return response.data;
@@ -31,6 +34,27 @@ export const BrandApi = () => {
     try {
       setLoading(true);
       const response = await axiosPublic.delete(BRAND_ID.replace(":id", id));
+
+      setLoading(false);
+      return response.data;
+    } catch (error: any) {
+      if (axios.isAxiosError(error) && error.response) {
+        return error.response.data;
+      } else {
+        return { statusCode: 500, Error: config.MessageNotice.Error500 };
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const updateActiveBrand = async (id: string, params: BrandProps) => {
+    try {
+      setLoading(true);
+      const response = await axiosPublic.put(
+        BRAND_ID.replace(":id", id),
+        params
+      );
 
       setLoading(false);
       return response.data;
@@ -108,5 +132,6 @@ export const BrandApi = () => {
     addBrand,
     updateBrand,
     getBrandName,
+    updateActiveBrand,
   };
 };

@@ -16,7 +16,9 @@ import {
   Refresh,
   Verified,
   LocalPolice,
-  FavoriteSharp,
+  ThumbUpRounded,
+  AddShoppingCartTwoTone,
+  ProductionQuantityLimitsTwoTone,
 } from "@mui/icons-material";
 import "./ProductDetail.scss";
 import { toast } from "react-toastify";
@@ -43,7 +45,7 @@ const Detail: React.FC = () => {
   const navigate = useNavigate();
   const [favouriteList, setFavouriteList] = useState<FavoriteListProps>();
   //favurite
-  const [isRed, setIsRed] = useState(false);
+  const [isFavourite, setIsFavourite] = useState(false);
 
   let initQuantity = 0;
 
@@ -100,7 +102,7 @@ const Detail: React.FC = () => {
   //add favourite
   const handleAddfavorite = async () => {
     if (authUser) {
-      if (isRed) {
+      if (isFavourite) {
         handleRemoveFavorite();
         return;
       } else {
@@ -135,9 +137,9 @@ const Detail: React.FC = () => {
     );
 
     if (isFavourite === true) {
-      setIsRed(true);
+      setIsFavourite(true);
     } else {
-      setIsRed(false);
+      setIsFavourite(false);
     }
   };
 
@@ -166,10 +168,6 @@ const Detail: React.FC = () => {
   }, [favouriteList]);
 
   const addToCart = () => {
-    if (selectProductQuantity === 0) {
-      toast.error(config.MessageNotice.OutOfStock);
-      return;
-    }
     const existCart = localStorage.getItem("cart");
     const productQuantity = { ...product, currentQuantities, id: id };
     if (existCart) {
@@ -178,7 +176,7 @@ const Detail: React.FC = () => {
         (p: { id: string | undefined }) => p.id === productQuantity.id
       );
       if (existProduct !== -1) {
-        if (selectProductQuantity <= 0) {
+        if (selectProductQuantity === 0) {
           toast.error(config.MessageNotice.OutOfStock);
           return;
         } else {
@@ -207,7 +205,7 @@ const Detail: React.FC = () => {
     border: "none",
     background: "none",
     outline: "none",
-    color: isRed ? "red" : "gray",
+    color: isFavourite ? "blue" : "gray",
   };
   const onChangeQuantities = (e: React.ChangeEvent<HTMLInputElement>) => {
     const re = /^[0-9\b]+$/;
@@ -241,7 +239,7 @@ const Detail: React.FC = () => {
   return (
     <Box
       sx={{
-        width: "90%",
+        width: "80%",
         marginTop: "auto",
         display: "flex",
         flexDirection: "column",
@@ -256,13 +254,20 @@ const Detail: React.FC = () => {
       >
         <Box
           sx={{
-            width: "35%",
+            width: "25%",
             height: "100%",
             boxShadow:
               "rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px",
           }}
         >
-          <Box sx={{ position: "relative" }}>
+          <Box
+            sx={{
+              position: "relative",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-around",
+            }}
+          >
             <ArrowBackIos
               sx={{
                 position: "absolute",
@@ -323,14 +328,23 @@ const Detail: React.FC = () => {
           </Box>
 
           <ImageList
-            sx={{ width: "100%", height: "100%", overflow: "hidden" }}
-            cols={3}
+            sx={{
+              width: "100%",
+              height: "50%",
+              overflow: "hidden",
+              padding: "0 12px",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+            cols={Math.min((product?.image || []).length, 3)}
             rowHeight={164}
           >
             {(product?.image || [])?.map(({ imageURL }, index) => (
               <ImageListItem
                 key={index}
                 sx={{
+                  width: "170px",
                   cursor: "pointer",
                   boxShadow: "rgba(99, 99, 99, 0.2) 0px 2px 8px 0px",
                 }}
@@ -345,20 +359,25 @@ const Detail: React.FC = () => {
             ))}
           </ImageList>
         </Box>
+        <Divider
+          orientation="horizontal"
+          flexItem
+          sx={{ margin: "10px", border: "1px solid #d9d9d9" }}
+        />
 
-        <Box sx={{ width: "60%", display: "flex", flexDirection: "column" }}>
+        <Box sx={{ width: "70%", display: "flex", flexDirection: "column" }}>
           <Box sx={{ display: "flex", justifyContent: "space-between" }}>
             <Box>
               <Typography variant="h4">{product?.name}</Typography>
             </Box>
             <IconButton onClick={handleAddfavorite} aria-label="favourite">
-              <FavoriteSharp style={buttonStyle} />
+              <ThumbUpRounded style={buttonStyle} />
             </IconButton>
           </Box>
 
           <Box sx={{ display: "flex", margin: "10px 0" }}>
             <Typography sx={{ paddingRight: "30px" }}>
-              Thương hiệu:
+              {`Thương hiệu: `}
               <Typography
                 component={"span"}
                 sx={{ cursor: "pointer", color: "blue" }}
@@ -378,7 +397,7 @@ const Detail: React.FC = () => {
           <Box sx={{ display: "flex", height: "100%" }}>
             <Box
               sx={{
-                width: "60%",
+                width: "50%",
                 display: "flex",
                 flexDirection: "column",
                 justifyContent: "space-around",
@@ -395,30 +414,34 @@ const Detail: React.FC = () => {
                 {/* {(product?.sellingPrice * (100 - product.discountPercentage)) / 100} */}
                 {formatMoney(product?.sellingPrice)}
               </Typography>
-              {/* Original Price */}
-              <Typography
-                sx={{
-                  color: "gray",
-                  textDecoration: "line-through",
-                  "&:after": { content: "' VNĐ'" },
-                }}
-                variant="h5"
-              >
-                {product?.sellingPrice}
-              </Typography>
-              <Typography
-                sx={{
-                  color: "red",
-                  "&:after": { content: "'%'" },
-                  "&:before": { content: "'-'" },
-                }}
-                variant="h5"
-              >
-                {/* TODO: sau có promotion thì update lại */}
-                {/* {product?.discountPercentage} */}
-                50
-              </Typography>
 
+              {product?.discountPercentage ? (
+                <>
+                  {/* Original Price */}
+                  <Typography
+                    sx={{
+                      color: "gray",
+                      textDecoration: "line-through",
+                      "&:after": { content: "' VNĐ'" },
+                    }}
+                    variant="h5"
+                  >
+                    {product?.originalPrice}
+                  </Typography>
+                  <Typography
+                    sx={{
+                      color: "red",
+                      "&:after": { content: "'%'" },
+                      "&:before": { content: "'-'" },
+                    }}
+                    variant="h5"
+                  >
+                    {/* TODO: sau có promotion thì update lại */}
+                    50
+                    {product?.discountPercentage}
+                  </Typography>
+                </>
+              ) : null}
               <Box
                 sx={{ display: "flex", flexDirection: "column", gap: "20px" }}
               >
@@ -493,34 +516,43 @@ const Detail: React.FC = () => {
                 </Box>
                 Hiện có: {selectProductQuantity}
               </Box>
-
-              <Button
-                onClick={addToCart}
-                sx={{
-                  marginTop: "20px",
-                  position: "relative",
-                  width: "200px",
-                  height: "60px",
-                  border: "0",
-                  borderRadius: "10px",
-                  backgroundColor: "#4834d4",
-                  outline: "none",
-                  color: "#fff",
-                  transition: "0.3s ease-in-out",
-                  overflow: "hidden",
-                  cursor:
-                    selectProductQuantity === 0 ? "not-allowed" : "pointer",
-                  "&:hover": {
-                    backgroundColor: "#35269b",
-                  },
-
-                  "&:active": {
-                    transform: "scale(0.9)",
-                  },
-                }}
-              >
-                <span className="add-to-cart">Thêm vào giỏ</span>
-              </Button>
+              {selectProductQuantity === 0 ? (
+                <Button
+                  variant="outlined"
+                  onClick={addToCart}
+                  disabled={selectProductQuantity === 0}
+                  sx={{
+                    marginTop: "20px",
+                    border: "1px solid red !important",
+                    borderRadius: "10px",
+                    width: "200px",
+                    height: "60px",
+                    transition: "0.3s ease-in-out",
+                  }}
+                  startIcon={
+                    <ProductionQuantityLimitsTwoTone sx={{ color: "red" }} />
+                  }
+                >
+                  <Typography sx={{ color: "red" }}>Đã hết hàng</Typography>
+                </Button>
+              ) : (
+                <Button
+                  variant="outlined"
+                  onClick={addToCart}
+                  disabled={selectProductQuantity === 0}
+                  sx={{
+                    marginTop: "20px",
+                    borderRadius: "10px",
+                    width: "200px",
+                    height: "60px",
+                    transition: "0.3s ease-in-out",
+                    cursor: "pointer",
+                  }}
+                  startIcon={<AddShoppingCartTwoTone />}
+                >
+                  <Typography>Thêm vào giỏ</Typography>
+                </Button>
+              )}
             </Box>
             <Divider orientation="vertical" flexItem sx={{ margin: "0 8px" }} />
             <Box
@@ -643,7 +675,40 @@ const Detail: React.FC = () => {
             }}
           >
             <Typography>{item.name}</Typography>
+            <Divider orientation="vertical" flexItem />
             <Typography>{item.value}</Typography>
+          </Box>
+        ))}
+      </Box>
+      <Box sx={{ mt: 2 }}>
+        <Divider sx={{ borderBottomWidth: "5px", margin: "20px 0" }} />
+        <Box>
+          <Typography
+            variant="h5"
+            sx={{ margin: "10px 0", fontWeight: "bold" }}
+          >
+            Bộ phận máy: {product?.name}
+          </Typography>
+        </Box>
+        {product?.component.map((item, index) => (
+          <Box
+            key={index}
+            sx={{
+              display: "flex",
+              border: "1px solid #dee2e6",
+              alignItems: "center",
+
+              "& p": { flex: "1 1 50%", padding: "5px" },
+              "& ": {
+                backgroundColor: "#F2F2F2",
+                borderRight: "1px solid #dee2e6",
+                textTransform: "capitalize",
+              },
+            }}
+          >
+            <Typography>{item.name}</Typography>
+            <Divider orientation="vertical" flexItem />
+            <Typography>{item.description}</Typography>
           </Box>
         ))}
       </Box>

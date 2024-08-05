@@ -2,23 +2,11 @@ import React from "react";
 import Box from "@mui/material/Box";
 import Paper from "@mui/material/Paper";
 import Grid from "@mui/material/Unstable_Grid2";
-import { Button, Container } from "@mui/material";
+import { Container } from "@mui/material";
 import SideBarUserProfile from "./SideBar/SideBarUserProfile";
-import DetailWarrantyPeriodic from "./Warranty/Periodic/DetailWarrantyPeriodic";
-import { useNavigate } from "react-router-dom";
+import OrderDetailBill from "./OrderManagement/OrderDetailId";
 
-const WarrantyDetailPeriodic: React.FC = () => {
-  const navigate = useNavigate();
-  const BackOrder: string | undefined =
-    sessionStorage.getItem("orderPath") || undefined;
-
-  const handleBack = () => {
-    if (BackOrder) {
-      navigate(BackOrder);
-      sessionStorage.removeItem("orderPath");
-    }
-  };
-
+const OrderDetailCustomer: React.FC = () => {
   return (
     <>
       <Container
@@ -42,14 +30,7 @@ const WarrantyDetailPeriodic: React.FC = () => {
                     borderRadius: "10px",
                   }}
                 >
-                  {BackOrder && (
-                    <Button variant="outlined" onClick={handleBack}>
-                      Quay lại đơn hàng
-                    </Button>
-                  )}
-                  <Grid container spacing={2}>
-                    <DetailWarrantyPeriodic />
-                  </Grid>
+                  <OrderDetailBill />
                 </Paper>
               </Box>
             </Grid>
@@ -60,4 +41,4 @@ const WarrantyDetailPeriodic: React.FC = () => {
   );
 };
 
-export default WarrantyDetailPeriodic;
+export default OrderDetailCustomer;

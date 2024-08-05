@@ -84,6 +84,8 @@ export interface ProductProps {
 export interface AddressDetail {
   id: string;
   name: string;
+  namePersonal: string;
+  phoneNumber: string;
   status: string;
   note: string;
   city: CityDetail;

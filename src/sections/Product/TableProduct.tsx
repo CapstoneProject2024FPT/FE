@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useEffect, useState } from "react";
 import type { MenuProps, TablePaginationConfig } from "antd";
 import type { TableProps } from "antd";

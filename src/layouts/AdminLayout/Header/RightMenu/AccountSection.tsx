@@ -11,6 +11,7 @@ import Logout from "@mui/icons-material/Logout";
 import config from "../../../../configs";
 import { Typography } from "@mui/material";
 import { useAuthContext } from "../../../../context/AuthContext";
+import { RoleType } from "../../../../models/UserData";
 
 const AccountSection = () => {
   const jsonString = localStorage.getItem("loginInfo");
@@ -49,12 +50,35 @@ const AccountSection = () => {
     }, 500);
   };
 
+  const getRoleType = (role: RoleType) => {
+    switch(role) {
+      case RoleType.ADMIN:
+        return "Quản trị viên";
+      case RoleType.MANAGER:
+        return "Quản lý";
+      case RoleType.SALE:
+        return "Nhân viên Bán hàng";
+      case RoleType.TECHNICAL:
+        return "Nhân viên kỹ thuật"
+    }
+  };
+
   return (
     <>
       <Box sx={{ display: "flex", alignItems: "center", textAlign: "center" }}>
-        <Typography>
-          {user?.data?.fullName ? user?.data?.fullName : ""}
-        </Typography>
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            textAlign: "center",
+          }}
+        >
+          <Typography>
+            {user?.data?.fullName ? user?.data?.fullName : ""}
+          </Typography>
+          <Typography sx={{ fontSize: "12px", color: "#95a5a6" }}>{getRoleType(user?.data?.role)}</Typography>
+        </Box>
         <IconButton
           onClick={handleClick}
           size="small"

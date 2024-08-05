@@ -30,7 +30,7 @@ export default function ComponentOfMachine() {
   return (
     <Container>
       <HeaderBreadcrumbs
-        heading="Số seri sản phẩm"
+        heading="Bộ phận máy"
         links={[
           { name: "Thống kê", href: config.adminRoutes.dashboard },
           { name: "Sản phẩm", href: config.adminRoutes.product },

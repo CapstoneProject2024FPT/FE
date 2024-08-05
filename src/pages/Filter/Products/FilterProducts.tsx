@@ -12,6 +12,7 @@ import {
 import "./FilterProducts.scss";
 import { ProductsFilterType } from "../../../constants/filter";
 import { debounce } from "../../../utils/debounce";
+import { useFilterContext } from "../../../context/FilterContext";
 
 interface ProductFilterProps {
   filter: any;
@@ -34,6 +35,7 @@ const ProductFilteredRow: React.FC<ProductFilterProps> = ({
   productListCategoryName,
   productListBrandName,
 }) => {
+  const { setSearchBarData } = useFilterContext();
   const [filterOrigin, setFilterOrigin] = useState<string[]>(
     filter[ProductsFilterType.OriginId] || []
   );
@@ -47,6 +49,8 @@ const ProductFilteredRow: React.FC<ProductFilterProps> = ({
   const handleFilterProducts = useCallback(
     debounce(
       (filterType: ProductsFilterType, value: string, checked: boolean) => {
+        const searchName = { ...filter, Name: undefined };
+        setSearchBarData("");
         switch (filterType) {
           case ProductsFilterType.BrandId:
             // eslint-disable-next-line no-case-declarations
@@ -55,7 +59,7 @@ const ProductFilteredRow: React.FC<ProductFilterProps> = ({
               : filterBrand?.filter((item) => item !== value);
 
             setFilterBrand(brandIds);
-            setFilter({ ...filter, BrandId: brandIds });
+            setFilter({ ...searchName, BrandId: brandIds });
 
             break;
           case ProductsFilterType.OriginId:
@@ -65,7 +69,7 @@ const ProductFilteredRow: React.FC<ProductFilterProps> = ({
               : filterOrigin?.filter((item) => item !== value);
 
             setFilterOrigin(originIds);
-            setFilter({ ...filter, OriginId: originIds });
+            setFilter({ ...searchName, OriginId: originIds });
 
             break;
           case ProductsFilterType.CategoryId:
@@ -75,7 +79,7 @@ const ProductFilteredRow: React.FC<ProductFilterProps> = ({
               : filterCategory?.filter((item) => item !== value);
 
             setFilterCategory(categoryIds);
-            setFilter({ ...filter, CategoryId: categoryIds });
+            setFilter({ ...searchName, CategoryId: categoryIds });
 
             break;
 
@@ -114,16 +118,21 @@ const ProductFilteredRow: React.FC<ProductFilterProps> = ({
         <Box>
           <FormLabel
             sx={{
-              fontSize: "16px",
+              fontSize: "18px",
               fontWeight: "bold",
               color: "black !important",
             }}
           >
             Xuất xứ
           </FormLabel>
-          <Box
+          <FormGroup
             sx={{
-              maxHeight: "200px",
+              paddingLeft: "8px",
+              display: "flex",
+              flexDirection: "column",
+              flexWrap: "nowrap",
+              maxHeight: "260px",
+              marginTop: "8px",
               overflowY: "auto",
               "&::-webkit-scrollbar": {
                 width: "8px",
@@ -141,45 +150,51 @@ const ProductFilteredRow: React.FC<ProductFilterProps> = ({
               },
             }}
           >
-            <FormGroup sx={{ paddingLeft: "20px" }}>
-              {productListOriginName?.map((origin: any) => (
-                <FormControlLabel
-                  key={`${origin?.id}`}
-                  control={
-                    <Checkbox
-                      checked={!!filterOrigin?.includes(origin.id)}
-                      onChange={(checked) =>
-                        handleFilterProducts(
-                          ProductsFilterType.OriginId,
-                          origin.id,
-                          checked.target.checked
-                        )
-                      }
-                      name={`${origin?.name}`}
-                    />
-                  }
-                  label={`${origin?.name}`}
-                  style={{ fontSize: "10px" }}
-                />
-              ))}
-            </FormGroup>
-          </Box>
+            {productListOriginName?.map((origin: any) => (
+              <FormControlLabel
+                key={`${origin?.id}`}
+                control={
+                  <Checkbox
+                    sx={{
+                      padding: "4px",
+                    }}
+                    checked={!!filterOrigin?.includes(origin.id)}
+                    onChange={(checked) =>
+                      handleFilterProducts(
+                        ProductsFilterType.OriginId,
+                        origin.id,
+                        checked.target.checked
+                      )
+                    }
+                    name={`${origin?.name}`}
+                  />
+                }
+                label={`${origin?.name}`}
+                style={{ fontSize: "10px" }}
+              />
+            ))}
+          </FormGroup>
         </Box>
 
         {/* showProductsCategoryFilter */}
         <Box>
           <FormLabel
             sx={{
-              fontSize: "16px",
+              fontSize: "18px",
               fontWeight: "bold",
               color: "black !important",
             }}
           >
             Loại máy
           </FormLabel>
-          <Box
+          <FormGroup
             sx={{
-              maxHeight: "200px",
+              paddingLeft: "8px",
+              display: "flex",
+              flexDirection: "column",
+              flexWrap: "nowrap",
+              maxHeight: "260px",
+              marginTop: "8px",
               overflowY: "auto",
               "&::-webkit-scrollbar": {
                 width: "8px",
@@ -197,45 +212,52 @@ const ProductFilteredRow: React.FC<ProductFilterProps> = ({
               },
             }}
           >
-            <FormGroup sx={{ paddingLeft: "20px" }}>
-              {productListCategoryName?.map((category: any) => (
-                <FormControlLabel
-                  key={`${category?.id}`}
-                  control={
-                    <Checkbox
-                      checked={!!filterCategory?.includes(category.id)}
-                      onChange={(checked) =>
-                        handleFilterProducts(
-                          ProductsFilterType.CategoryId,
-                          category.id,
-                          checked.target.checked
-                        )
-                      }
-                      name={`${category?.name}`}
-                    />
-                  }
-                  label={`${category?.name}`}
-                  style={{ fontSize: "10px" }}
-                />
-              ))}
-            </FormGroup>
-          </Box>
+            {productListCategoryName?.map((category: any) => (
+              <FormControlLabel
+                key={`${category?.id}`}
+                control={
+                  <Checkbox
+                    sx={{
+                      padding: "4px",
+                    }}
+                    checked={!!filterCategory?.includes(category.id)}
+                    onChange={(checked) =>
+                      handleFilterProducts(
+                        ProductsFilterType.CategoryId,
+                        category.id,
+                        checked.target.checked
+                      )
+                    }
+                    name={`${category?.name}`}
+                  />
+                }
+                label={`${category?.name}`}
+                style={{ fontSize: "10px" }}
+              />
+            ))}
+          </FormGroup>
         </Box>
 
         {/* showProductsBrandFilter */}
         <Box>
           <FormLabel
             sx={{
-              fontSize: "16px",
+              fontSize: "18px",
               fontWeight: "bold",
               color: "black !important",
             }}
           >
             Thương hiệu
           </FormLabel>
-          <Box
+
+          <FormGroup
             sx={{
-              maxHeight: "200px",
+              paddingLeft: "8px",
+              display: "flex",
+              flexDirection: "column",
+              flexWrap: "nowrap",
+              maxHeight: "260px",
+              marginTop: "8px",
               overflowY: "auto",
               "&::-webkit-scrollbar": {
                 width: "8px",
@@ -253,28 +275,30 @@ const ProductFilteredRow: React.FC<ProductFilterProps> = ({
               },
             }}
           >
-            <FormGroup sx={{ paddingLeft: "20px" }}>
-              {productListBrandName?.map((brand: any) => (
-                <FormControlLabel
-                  key={`${brand?.id}`}
-                  control={
-                    <Checkbox
-                      checked={!!filterBrand?.includes(brand.id)}
-                      onChange={(checked) =>
-                        handleFilterProducts(
-                          ProductsFilterType.BrandId,
-                          brand.id,
-                          checked.target.checked
-                        )
-                      }
-                      name={`${brand?.name}`}
-                    />
-                  }
-                  label={`${brand?.name}`}
-                />
-              ))}
-            </FormGroup>
-          </Box>
+            {productListBrandName?.map((brand: any) => (
+              <FormControlLabel
+                key={`${brand?.id}`}
+                control={
+                  <Checkbox
+                    sx={{
+                      padding: "4px",
+                    }}
+                    checked={!!filterBrand?.includes(brand.id)}
+                    onChange={(checked) =>
+                      handleFilterProducts(
+                        ProductsFilterType.BrandId,
+                        brand.id,
+                        checked.target.checked
+                      )
+                    }
+                    name={`${brand?.name}`}
+                  />
+                }
+                label={`${brand?.name}`}
+              />
+            ))}
+          </FormGroup>
+          {/* </Box> */}
         </Box>
       </FormControl>
     </Box>

@@ -9,6 +9,7 @@ import { Button } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
 import { formatAddress } from "../../../utils/fn";
 import config from "../../../configs";
+import ModalUpdateAddress from "./popup/ModalUpdateAddress";
 
 // ----------------------------------------------------------------------
 
@@ -69,7 +70,11 @@ export default function UserAddress() {
         </Stack>
         <Box maxHeight={500} sx={{ overflow: "auto", mt: 2 }}>
           {addresses.map((address, index) => (
-            <AddressItem key={index} address={address} />
+            <AddressItem
+              key={index}
+              address={address}
+              fetchApi={fetchListAddress}
+            />
           ))}
         </Box>
       </Card>
@@ -87,9 +92,21 @@ export default function UserAddress() {
 //--------------------------------------
 type AddressItemProps = {
   address: addressProps;
+  fetchApi: VoidFunction;
 };
-function AddressItem({ address }: AddressItemProps) {
-  const { account, name } = address;
+function AddressItem({ address, fetchApi }: AddressItemProps) {
+  const { name, namePersonal, phoneNumber } = address;
+  const [openUpdate, setOpenUpdate] = useState<boolean>(false);
+
+  const handleClose = () => {
+    setOpenUpdate(!openUpdate);
+  };
+
+  const onCreateSuccess = () => {
+    handleClose();
+    toast.success(config.MessageNotice.UpdateAddressSuccess);
+    fetchApi();
+  };
   return (
     <>
       <Card
@@ -104,7 +121,12 @@ function AddressItem({ address }: AddressItemProps) {
             flexDirection: "column",
           }}
         >
-          <Typography variant="subtitle1">Tên: {account.fullName}</Typography>
+          <Typography variant="subtitle1">
+            Tên người nhận: {namePersonal}
+          </Typography>
+          <Typography variant="subtitle1">
+            Số điện thoại người nhận: {phoneNumber}
+          </Typography>
           <Typography variant="subtitle1">Tên địa chỉ: {name}</Typography>
           <Typography variant="body2" gutterBottom>
             Địa chỉ: {formatAddress(address)}
@@ -115,8 +137,22 @@ function AddressItem({ address }: AddressItemProps) {
           flexDirection="row"
           sx={{ justifyContent: "flex-end" }}
         >
-          {/* <Button>Chi Tiết</Button> */}
+          <Button
+            onClick={() => {
+              setOpenUpdate(!openUpdate);
+            }}
+          >
+            Sửa tên người nhận
+          </Button>
         </Stack>
+        {openUpdate && (
+          <ModalUpdateAddress
+            addressData={address}
+            onClose={handleClose}
+            onSuccess={onCreateSuccess}
+            open={openUpdate}
+          />
+        )}
       </Card>
     </>
   );

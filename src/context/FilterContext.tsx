@@ -4,15 +4,20 @@ import React, { createContext, useState, useContext } from "react";
 interface FilterContext {
   data: any;
   setData: (newData: any) => void;
+  searchBarData: string;
+  setSearchBarData: (newData: any) => void;
 }
 
 const FilterContext = createContext<FilterContext | null>(null);
 
 export const FitlerProvider = ({ children }: { children: React.ReactNode }) => {
   const [data, setData] = useState();
+  const [searchBarData, setSearchBarData] = useState<string>("");
 
   return (
-    <FilterContext.Provider value={{ data, setData }}>
+    <FilterContext.Provider
+      value={{ data, setData, searchBarData, setSearchBarData }}
+    >
       {children}
     </FilterContext.Provider>
   );

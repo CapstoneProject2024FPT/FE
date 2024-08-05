@@ -7,12 +7,14 @@ import config from "../../configs";
 export const ApiSerial = () => {
   const [loading, setLoading] = useState(false);
 
-  const apiGetSerialbyMachineId = async (query: string) => {
+  interface SerialProps {
+    MachineryId: string;
+    Status: string;
+  }
+  const apiGetSerialbyMachineId = async (params: SerialProps) => {
     setLoading(true);
     try {
-      const response = await axiosPublic.get(
-        `${SERIALNUMBER}?MachineryId=${query}`
-      );
+      const response = await axiosPublic.get(SERIALNUMBER, { params });
 
       return response;
 
@@ -117,12 +119,16 @@ export const ApiSerial = () => {
     }
   };
 
-  const apiGetSerialbyMachineComponentId = async (query: string) => {
+  interface MachineComponentProps {
+    MachineComponentsId: string;
+    Status: string;
+  }
+  const apiGetSerialbyMachineComponentId = async (
+    params: MachineComponentProps
+  ) => {
     setLoading(true);
     try {
-      const response = await axiosPublic.get(
-        `${SERIALNUMBER}?MachineComponentsId=${query}`
-      );
+      const response = await axiosPublic.get(SERIALNUMBER, { params });
 
       return response;
 

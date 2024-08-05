@@ -279,9 +279,9 @@ const Cart: React.FC<CartProp> = ({ handleNext }) => {
                     </TableBody>
                   </Table>
                 </TableContainer>
-                <Link to={config.routes.productList} style={{ color: "black" }}>
+                <Link to={config.routes.productList} style={{ color: "black"}}>
                   <Button
-                    sx={{ mt: 2 }}
+                    sx={{ mt: 2, border: "1px solid #d9d9d9"}}
                     color="inherit"
                     startIcon={<Iconify icon={"eva:arrow-ios-back-fill"} />}
                   >
@@ -297,7 +297,7 @@ const Cart: React.FC<CartProp> = ({ handleNext }) => {
                   disabled={CartItems.length === 0}
                   onClick={handleNext}
                 >
-                  Thanh Toán
+                  Chọn địa chỉ
                 </Button>
               </Grid>
             </Grid>
@@ -323,6 +323,7 @@ const Cart: React.FC<CartProp> = ({ handleNext }) => {
                 <Button
                   color="inherit"
                   startIcon={<Iconify icon={"eva:arrow-ios-back-fill"} />}
+                  sx={{ border: "1px solid #d9d9d9", margin: "15px 0" }}
                 >
                   Tiếp Tục Mua Sắm
                 </Button>
@@ -336,7 +337,7 @@ const Cart: React.FC<CartProp> = ({ handleNext }) => {
                 disabled={CartItems.length === 0}
                 onClick={handleNext}
               >
-                Thanh Toán
+                Chọn địa chỉ
               </Button>
             </Grid>
           </Grid>

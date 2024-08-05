@@ -75,8 +75,13 @@ export interface ProductAdminSpecification {
 }
 
 //add product
+export type SpecificationList = {
+  name: string;
+  value: string;
+  unit: string;
+};
 export interface CreateProductFormSchema {
-  specificationList: Specification[] | undefined;
+  specificationList: SpecificationList[] | undefined;
   name: string;
   originId: string;
   model: string;
@@ -118,6 +123,14 @@ export interface specificationDetail {
   name: string;
   value: string;
 }
+export interface componentDetail {
+  componentId: string;
+  name: string;
+  description: string;
+  status: string;
+  stockPrice: number;
+  sellingPrice: number;
+}
 
 export type ProductDetailProps = {
   specifications: [specificationDetail];
@@ -125,6 +138,7 @@ export type ProductDetailProps = {
   category: CategoryMachineDetail;
   quantity?: QuantityProps;
   sellingPrice: number;
+  stockPrice: number;
   id: string;
   name: string;
   origin: originProduct;
@@ -138,8 +152,19 @@ export type ProductDetailProps = {
   serialNumber: number;
   status: string;
   monthWarrantyNumber: number;
+  originalPrice: number;
+  discountPercentage: number;
+  component: ComponentDetail[];
 };
 
+interface ComponentDetail {
+  id: string;
+  name: string;
+  description: string;
+  status: string;
+  stockPrice: number;
+  sellingPrice: number;
+}
 //update product
 export interface UpdateProduct {
   name: string;

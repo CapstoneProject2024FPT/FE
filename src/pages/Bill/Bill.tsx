@@ -16,6 +16,7 @@ import {
   Container,
   Button,
   CircularProgress,
+  Grid,
 } from "@mui/material";
 
 // @types
@@ -57,7 +58,6 @@ const Bill: React.FC = () => {
                 InventoryId: item.inventoryId,
               };
               const warranty = await apiGetWarranty(params);
-
               const warrantyDetailsPromises = warranty.data.map(
                 async (warrantyItem: any) => {
                   const warrantyDetails = await apiGetWarrantyById(
@@ -117,20 +117,42 @@ const Bill: React.FC = () => {
             <Card sx={{ p: 2 }}>
               <CardHeader title="Thông tin đơn hàng" />
               <Stack display="flex" direction="column" spacing={2}>
-                <Typography> Mã đơn hàng : {orderData?.invoiceCode}</Typography>
-                <Typography>
-                  Tên chủ đơn :{orderData?.userInfo?.fullName}
-                </Typography>
-                <Typography>
-                  Ngày tạo đơn :
-                  {formatDateFunc.formatDateTime(orderData?.createDate)}
-                </Typography>
-                <Typography>
-                  Tổng thành tiền :{formatMoney(orderData?.finalAmount)}
-                </Typography>
-                <Typography>
-                  Địa chỉ :{formatAddress(orderData?.address)}
-                </Typography>
+                <Grid container spacing={1}>
+                  <Grid item xs={2}>
+                    <Typography>Mã đơn hàng:</Typography>
+                  </Grid>
+                  <Grid item xs={10}>
+                    <Typography>{orderData?.invoiceCode}</Typography>
+                  </Grid>
+                  <Grid item xs={2}>
+                    <Typography>Tên chủ đơn:</Typography>
+                  </Grid>
+                  <Grid item xs={10}>
+                    <Typography>{orderData?.userInfo?.fullName}</Typography>
+                  </Grid>
+                  <Grid item xs={2}>
+                    <Typography>Ngày tạo đơn:</Typography>
+                  </Grid>
+                  <Grid item xs={10}>
+                    <Typography>
+                      {formatDateFunc.formatDateTime(orderData?.createDate)}
+                    </Typography>
+                  </Grid>
+                  <Grid item xs={2}>
+                    <Typography>Tổng thành tiền:</Typography>
+                  </Grid>
+                  <Grid item xs={10}>
+                    <Typography>
+                      {formatMoney(orderData?.finalAmount)}
+                    </Typography>
+                  </Grid>
+                  <Grid item xs={2}>
+                    <Typography>Địa chỉ:</Typography>
+                  </Grid>
+                  <Grid item xs={10}>
+                    <Typography>{formatAddress(orderData?.address)}</Typography>
+                  </Grid>
+                </Grid>
               </Stack>
               <Divider sx={{ mt: 2 }} />
               <Typography variant="h5" sx={{ mt: 4 }}>

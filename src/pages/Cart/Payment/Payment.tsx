@@ -43,8 +43,8 @@ import { useAuthContext } from "../../../context/AuthContext";
 const PAYMENT_OPTIONS: PaymentOption[] = [
   {
     value: "VNPAY",
-    title: "Thanh toán qua cộng Vnpay",
-    description: "Bạn sẽ được chuyển đi đến cổng thanh toán Vnpay.",
+    title: "Thanh toán qua cổng VNPAY",
+    description: "Bạn sẽ được chuyển đi đến cổng thanh toán VNPAY.",
   },
 ];
 
@@ -78,7 +78,7 @@ const CheckoutPayment: React.FC<checkoutPaymentProps> = ({
     machineryId: cart.id,
     quantity: cart.currentQuantities,
     sellingPrice: cart.sellingPrice,
-    stockPrice: cart.sellingPrice,
+    stockPrice: cart.stockPrice,
   }));
   let email: string = "";
   let username: string = "";
@@ -155,8 +155,25 @@ const CheckoutPayment: React.FC<checkoutPaymentProps> = ({
 
   const {
     handleSubmit,
+    setValue,
     formState: { isSubmitting },
   } = methods;
+
+  useEffect(() => {
+    if (total && address && PAYMENT_OPTIONS.length > 0) {
+      setValue("payment", PAYMENT_OPTIONS[0].value);
+    } else if (!total) {
+      navigate(config.routes.cart.concat("/?step=0"));
+      toast.error("Bạn chưa có hàng trong giỏ");
+    } else if (!address) {
+      setTimeout(() => {
+        navigate(config.routes.cart.concat("/?step=1"));
+        console.log(config.routes.cart.concat("/?step=1"));
+
+        toast.error("Bạn chưa chọn địa chỉ giao hàng");
+      }, 200);
+    }
+  }, [total, address, setValue]);
 
   const onSubmit = async (data: FormValuesProps) => {
     try {
@@ -166,6 +183,7 @@ const CheckoutPayment: React.FC<checkoutPaymentProps> = ({
           machineryList: machineList,
           addressId: address.id,
         };
+
         const response = await apiCheckout(params);
 
         if (response.status === 200) {

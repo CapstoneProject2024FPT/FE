@@ -155,9 +155,12 @@ const TopBar: React.FC = () => {
           <RightMenu />
         </div>
         <nav className={cx("main-nav")}>
+          <a className={cx("header-navbar")} href={config.routes.home}> TRANG CHỦ </a>
           {renderMenu(menuData)}
 
-          <a href={config.routes.news}>TIN TỨC</a>
+          <a className={cx("header-navbar")} href={config.routes.news}> TIN TỨC </a>
+          <a className={cx("header-navbar")} href={config.routes.termsOfService}> ĐIỀU KHOẢN </a>
+          <a className={cx("header-navbar")} href={config.routes.privacyPolicy}> CHÍNH SÁCH </a>
         </nav>
       </header>
     </>

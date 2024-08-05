@@ -1,13 +1,16 @@
-import React from "react";
+import React, { useState } from "react";
 import Box from "@mui/material/Box";
 import Paper from "@mui/material/Paper";
 import Grid from "@mui/material/Unstable_Grid2";
-import { Button, Container } from "@mui/material";
+import { Container, Tabs, Tab, Button } from "@mui/material";
 import SideBarUserProfile from "./SideBar/SideBarUserProfile";
-import DetailWarrantyPeriodic from "./Warranty/Periodic/DetailWarrantyPeriodic";
+import WarrantyRequestMachine from "./OrderManagement/RequestMachine/WarrantyRequestMachine";
+import WarrantyManagementMachine from "./OrderManagement/PeriodicMachine/WarrantyManagementMachine";
 import { useNavigate } from "react-router-dom";
 
-const WarrantyDetailPeriodic: React.FC = () => {
+const WarrantyMachine: React.FC = () => {
+  const [tabValue, setTabValue] = useState(0);
+
   const navigate = useNavigate();
   const BackOrder: string | undefined =
     sessionStorage.getItem("orderPath") || undefined;
@@ -19,6 +22,9 @@ const WarrantyDetailPeriodic: React.FC = () => {
     }
   };
 
+  const handleTabChange = (_event: React.SyntheticEvent, newValue: number) => {
+    setTabValue(newValue);
+  };
   return (
     <>
       <Container
@@ -47,9 +53,17 @@ const WarrantyDetailPeriodic: React.FC = () => {
                       Quay lại đơn hàng
                     </Button>
                   )}
-                  <Grid container spacing={2}>
-                    <DetailWarrantyPeriodic />
-                  </Grid>
+                  <Tabs
+                    value={tabValue}
+                    style={{ marginLeft: "2rem" }}
+                    onChange={handleTabChange}
+                  >
+                    <Tab label="Bảo hành định kỳ" />
+                    <Tab label="Yêu cầu bảo hành" />
+                  </Tabs>
+
+                  {tabValue === 0 && <WarrantyManagementMachine />}
+                  {tabValue === 1 && <WarrantyRequestMachine />}
                 </Paper>
               </Box>
             </Grid>
@@ -60,4 +74,4 @@ const WarrantyDetailPeriodic: React.FC = () => {
   );
 };
 
-export default WarrantyDetailPeriodic;
+export default WarrantyMachine;

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useCallback, useEffect, useState } from "react";
 //mui
 import {
@@ -14,7 +15,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import { styled } from "@mui/material/styles";
 import { LoadingButton } from "@mui/lab";
 //models
-import { CreateProductFormSchema, Specification } from "../../models/products";
+import { CreateProductFormSchema } from "../../models/products";
 // form
 import {
   FormProvider,
@@ -46,6 +47,11 @@ const LabelStyle = styled(Typography)(({ theme }) => ({
   marginBottom: theme.spacing(1),
 }));
 
+interface specificationProps {
+  name: string;
+  value: string;
+  unit: string;
+}
 export default function ProductNewEditForm() {
   const { apiAddMachinery } = MachineryApi();
   const { getCategoryChild } = CategoryApi();
@@ -59,9 +65,10 @@ export default function ProductNewEditForm() {
   const minTimeMonthWarranty = 3;
   const maxTimeMonthWarranty = 6;
 
-  const initialSpecifications: Specification = {
+  const initialSpecifications: specificationProps = {
     name: "",
     value: "",
+    unit: "",
   };
 
   const [categories, setCategories] = useState<GetCategoryProps[]>();
@@ -90,12 +97,18 @@ export default function ProductNewEditForm() {
   };
 
   const validationSchema = Yup.object().shape({
-    name: Yup.string().required("Bắt buộc có tên sản phẩm"),
+    name: Yup.string()
+      .trim()
+      .required("Bắt buộc có tên sản phẩm")
+      .min(1, "Tối thiểu 1 kí tự"),
     originId: Yup.string().required("Bắt buộc có xuất xứ"),
     brandId: Yup.string().required("Bắt buộc có hãng"),
-    description: Yup.string().required("Bắt buộc có mô tả"),
+    description: Yup.string()
+      .trim()
+      .required("Bắt buộc có mô tả")
+      .min(10, "Tối thiểu 10 kí tự"),
     imageURL: Yup.array().of(Yup.string()).min(1, "Bắt buộc có hình"),
-    model: Yup.string().required("Bắt buộc có mẫu sản phẩm"),
+    model: Yup.string().trim().required("Bắt buộc có mẫu sản phẩm"),
     stockPrice: Yup.number()
       .moreThan(0, "Giá tiền lớn hơn 0")
       .required("Không để trống"),
@@ -106,8 +119,34 @@ export default function ProductNewEditForm() {
     specificationList: Yup.array()
       .of(
         Yup.object({
-          name: Yup.string().required("bắt buộc"),
-          value: Yup.string().required("bắt buộc"),
+          name: Yup.string()
+            .trim()
+            .required("bắt buộc")
+            .min(1, "Tối thiểu 1 kí tự")
+            .test(
+              "unique-name",
+              "Tên thông số không được trùng lặp",
+              function (value) {
+                if (!value) return true; // Skip empty values
+
+                const specList = this.from?.[1]?.value?.specificationList;
+
+                if (!specList || !Array.isArray(specList)) return true;
+
+                return (
+                  specList.filter(
+                    (spec: any) =>
+                      spec.name.trim().toLowerCase() ===
+                      value.trim().toLowerCase()
+                  ).length <= 1
+                );
+              }
+            ),
+          value: Yup.string()
+            .trim()
+            .required("bắt buộc")
+            .min(1, "Tối thiểu 1 kí tự"),
+          unit: Yup.string().required("bắt buộc").min(1, "Tối thiểu 1 kí tự"),
         })
       )
       .min(1, "Ít nhất một thông số kỹ thuật là bắt buộc"),
@@ -138,6 +177,7 @@ export default function ProductNewEditForm() {
     watch,
     handleSubmit,
     control,
+    getValues,
     formState: { isSubmitting },
   } = methods;
 
@@ -146,13 +186,17 @@ export default function ProductNewEditForm() {
   const { fields, append, remove } = useFieldArray({
     control,
     name: "specificationList",
+    shouldUnregister: true,
   });
 
   const fetchData = async () => {
     try {
+      const params = {
+        status: "Active",
+      };
       const [category, brand, origin] = await Promise.allSettled([
         getCategoryChild(),
-        getBrand(),
+        getBrand(params),
         apiGetOrigin(),
       ]);
 
@@ -187,12 +231,23 @@ export default function ProductNewEditForm() {
   const onSubmit = async (values: CreateProductFormSchema) => {
     try {
       if (selectedComponents.length > 0) {
+        // transform specifiaciotn
+        const transformedSpecifications = values?.specificationList?.map(
+          (spec) => ({
+            name: spec.name,
+            value: `${spec.value} ${spec.unit}`.replace(/\r/g, ""),
+          })
+        );
+
+        // Prepare transformed data
         const transformedData = {
           ...values,
           image: values.imageURL?.map((image) => ({
             imageURL: image,
           })),
+          specificationList: transformedSpecifications, // Replace with transformed list
         };
+
         delete transformedData.imageURL;
 
         const component = selectedComponents.map((item) => item.id);
@@ -260,11 +315,28 @@ export default function ProductNewEditForm() {
     const rows = clipboardData
       .split("\n")
       .filter((row: string) => row.trim() !== "");
+
+    //get default value
+    const existedData = getValues("specificationList") || [];
+
+    //filter empty
+    const filteDataExisted = existedData.filter(
+      (spec) => spec.name || spec.unit || spec.value
+    );
+
     const newFields = rows.map((row: string, index: number) => {
       const columns = row.split("\t");
-      return { id: index + 1, name: columns[0], value: columns[1] };
+      return {
+        id: filteDataExisted.length + index + 1,
+        name: columns[0],
+        value: columns[1],
+        unit: columns[2],
+      };
     });
-    setValue("specificationList", newFields);
+
+    const updatedData = [...filteDataExisted, ...newFields];
+
+    setValue("specificationList", updatedData);
   };
   // modal add component
   const handleOpenModal = () => {
@@ -286,13 +358,7 @@ export default function ProductNewEditForm() {
 
               <div>
                 <LabelStyle>Mô tả</LabelStyle>
-                <RHFTextField
-                  required
-                  fullWidth
-                  multiline
-                  rows={4}
-                  name="description"
-                />
+                <RHFTextField fullWidth multiline rows={4} name="description" />
               </div>
 
               <div>
@@ -323,15 +389,18 @@ export default function ProductNewEditForm() {
                       sx={{ mt: 2 }}
                     >
                       <RHFTextField
-                        required
                         sx={{ width: 250 }}
                         name={`specificationList[${index}].name`}
                         label="Tên thông số"
                       />
                       <RHFTextField
-                        required
                         sx={{ width: 250 }}
                         name={`specificationList[${index}].value`}
+                        label="Giá trị"
+                      />
+                      <RHFTextField
+                        sx={{ width: 250 }}
+                        name={`specificationList[${index}].unit`}
                         label="Giá trị"
                       />
 

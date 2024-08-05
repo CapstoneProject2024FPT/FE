@@ -6,6 +6,7 @@ export const MessageNotice = {
   RegisterSuccess: "Đăng kí thành công",
   Error500: "Gặp vấn đề quá trình lấy dữ liệu",
   CreateAddressSuccess: "Tạo địa chỉ mới thành công",
+  UpdateAddressSuccess: "Cập nhật địa chỉ thành công",
   CreateOrderFailed: "Xảy ra lỗi trong quá trình tạo đơn hàng",
   CreateVnpayFailed: "Khởi tạo vnpay lỗi",
   OutOfStock: "Sản phẩm hiện không còn",
