@@ -17,6 +17,8 @@ import {
   Verified,
   LocalPolice,
   ThumbUpRounded,
+  AddShoppingCartTwoTone,
+  ProductionQuantityLimitsTwoTone,
 } from "@mui/icons-material";
 import "./ProductDetail.scss";
 import { toast } from "react-toastify";
@@ -64,7 +66,6 @@ const Detail: React.FC = () => {
         const response = await apiGetMachineryID(id);
         if (response.status === 200) {
           setProduct(response.data);
-          console.log("discountPercentage: ", response.data.discountPercentage);
           setSelectProductQuantity(
             remainingQuantity(
               response.data.quantity?.Available,
@@ -167,10 +168,6 @@ const Detail: React.FC = () => {
   }, [favouriteList]);
 
   const addToCart = () => {
-    if (selectProductQuantity === 0) {
-      toast.error(config.MessageNotice.OutOfStock);
-      return;
-    }
     const existCart = localStorage.getItem("cart");
     const productQuantity = { ...product, currentQuantities, id: id };
     if (existCart) {
@@ -179,7 +176,7 @@ const Detail: React.FC = () => {
         (p: { id: string | undefined }) => p.id === productQuantity.id
       );
       if (existProduct !== -1) {
-        if (selectProductQuantity <= 0) {
+        if (selectProductQuantity === 0) {
           toast.error(config.MessageNotice.OutOfStock);
           return;
         } else {
@@ -242,7 +239,7 @@ const Detail: React.FC = () => {
   return (
     <Box
       sx={{
-        width: "90%",
+        width: "80%",
         marginTop: "auto",
         display: "flex",
         flexDirection: "column",
@@ -400,7 +397,7 @@ const Detail: React.FC = () => {
           <Box sx={{ display: "flex", height: "100%" }}>
             <Box
               sx={{
-                width: "60%",
+                width: "50%",
                 display: "flex",
                 flexDirection: "column",
                 justifyContent: "space-around",
@@ -519,23 +516,43 @@ const Detail: React.FC = () => {
                 </Box>
                 Hiện có: {selectProductQuantity}
               </Box>
-
-              <Button
-                variant="outlined"
-                onClick={addToCart}
-                disabled={selectProductQuantity === 0}
-                sx={{
-                  marginTop: "20px",
-                  borderRadius: "10px",
-                  width: "200px",
-                  height: "60px",
-                  transition: "0.3s ease-in-out",
-                  cursor:
-                    selectProductQuantity === 0 ? "not-allowed" : "pointer",
-                }}
-              >
-                {selectProductQuantity === 0 ? "Đã hết hàng" : "Thêm vào giỏ"}
-              </Button>
+              {selectProductQuantity === 0 ? (
+                <Button
+                  variant="outlined"
+                  onClick={addToCart}
+                  disabled={selectProductQuantity === 0}
+                  sx={{
+                    marginTop: "20px",
+                    border: "1px solid red !important",
+                    borderRadius: "10px",
+                    width: "200px",
+                    height: "60px",
+                    transition: "0.3s ease-in-out",
+                  }}
+                  startIcon={
+                    <ProductionQuantityLimitsTwoTone sx={{ color: "red" }} />
+                  }
+                >
+                  <Typography sx={{ color: "red" }}>Đã hết hàng</Typography>
+                </Button>
+              ) : (
+                <Button
+                  variant="outlined"
+                  onClick={addToCart}
+                  disabled={selectProductQuantity === 0}
+                  sx={{
+                    marginTop: "20px",
+                    borderRadius: "10px",
+                    width: "200px",
+                    height: "60px",
+                    transition: "0.3s ease-in-out",
+                    cursor: "pointer",
+                  }}
+                  startIcon={<AddShoppingCartTwoTone />}
+                >
+                  <Typography>Thêm vào giỏ</Typography>
+                </Button>
+              )}
             </Box>
             <Divider orientation="vertical" flexItem sx={{ margin: "0 8px" }} />
             <Box

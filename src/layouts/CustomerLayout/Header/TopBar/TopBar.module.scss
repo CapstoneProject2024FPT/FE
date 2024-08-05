@@ -23,7 +23,9 @@
   background-color: #333;
   text-align: center;
   display: flex;
-  justify-content: space-around;
+  justify-content: center;
+  align-items: center;
+  gap: 100px;
 }
 
 .main-nav a {
