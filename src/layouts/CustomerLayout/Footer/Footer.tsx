@@ -1,12 +1,5 @@
 import React from "react";
 import "./Footer.scss";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faFacebookF,
-  faTwitter,
-  faInstagram,
-  faYoutube,
-} from "@fortawesome/free-brands-svg-icons";
 import { Link } from "react-router-dom";
 
 const Footer: React.FC = () => {
@@ -39,23 +32,6 @@ const Footer: React.FC = () => {
             <li>Chính sách đổi, trả & hoàn tiền</li>
             <li>Chính sách giải quyết khiếu nại</li>
           </ul>
-        </div>
-        <div className="column">
-          <h3>KẾT NỐI VỚI CHÚNG TÔI</h3>
-          <div className="social-icons">
-            <a href="#">
-              <FontAwesomeIcon icon={faFacebookF} />
-            </a>
-            <a href="#">
-              <FontAwesomeIcon icon={faTwitter} />
-            </a>
-            <a href="#">
-              <FontAwesomeIcon icon={faInstagram} />
-            </a>
-            <a href="#">
-              <FontAwesomeIcon icon={faYoutube} />
-            </a>
-          </div>
         </div>
       </div>
       <div className="copyright">

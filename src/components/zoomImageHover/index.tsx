@@ -3,7 +3,7 @@ import React, { useState, CSSProperties, MouseEvent } from "react";
 
 interface Props {
   src: string;
-  width: string | number;
+  width?: string | number;
   zoomScale?: number;
   height?: string | number;
   className?: string;
@@ -13,8 +13,6 @@ interface Props {
 
 const Zoom: React.FC<Props> = ({
   src,
-  width,
-  height,
   zoomScale = 2,
   className,
   transitionTime = 0,
@@ -44,8 +42,8 @@ const Zoom: React.FC<Props> = ({
         backgroundImage: `url(${src})`,
         backgroundSize: `${zoomScale * 100}%`,
         backgroundPosition,
-        width,
-        height,
+        width: "250px",
+        height: "250px",
         backgroundRepeat: "no-repeat",
         transition: `background-position ${transitionTime}s ease`,
         ...style,

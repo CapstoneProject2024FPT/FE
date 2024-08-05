@@ -109,6 +109,9 @@ const Dashboard: React.FC = () => {
   const formatCurrency = (value: any) => {
     return new Intl.NumberFormat("vi-VN").format(value) + " VND";
   };
+  const formatOrder = (value: any) => {
+    return new Intl.NumberFormat("vi-VN").format(value) + " Đơn";
+  };
 
   const CustomTooltipBarChart1 = ({ active, payload, label }: any) => {
     if (active && payload && payload.length) {
@@ -123,7 +126,7 @@ const Dashboard: React.FC = () => {
           }}
         >
           <p className="label">{`Tháng ${label}`}</p>
-          <p className="intro">{`Tổng đơn: ${formatCurrency(
+          <p className="intro">{`Tổng đơn: ${formatOrder(
             payload[0].value
           )}`}</p>
         </div>
