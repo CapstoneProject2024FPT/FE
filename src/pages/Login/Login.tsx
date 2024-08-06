@@ -42,6 +42,7 @@ const Login: React.FC = () => {
                 className={cx("btn", "ghost")}
                 id="signIn"
                 onClick={() => handleOnClick("signIn")}
+                style={{ cursor: "pointer" }}
               >
                 Đăng Nhập
               </button>
@@ -56,6 +57,7 @@ const Login: React.FC = () => {
                 className={cx("btn", "ghost")}
                 id="signUp"
                 onClick={() => handleOnClick("signUp")}
+                style={{ cursor: "pointer" }}
               >
                 Đăng kí
               </button>
