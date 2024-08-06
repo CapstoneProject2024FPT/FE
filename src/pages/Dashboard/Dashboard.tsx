@@ -87,20 +87,20 @@ const Dashboard: React.FC = () => {
 
   const dataPie = [
     { name: "Đã thanh toán", value: dashboardData?.ordersByStatus.Paid },
-    { name: "Đã hủy thanh toán", value: dashboardData?.ordersByStatus.UnPaid },
     { name: "Đã hoàn thành", value: dashboardData?.ordersByStatus.Completed },
+    { name: "Đã hủy thanh toán", value: dashboardData?.ordersByStatus.UnPaid },
     { name: "Đã hủy đơn hàng", value: dashboardData?.ordersByStatus.Canceled },
     { name: "Đã vận chuyển", value: dashboardData?.ordersByStatus.Deliver },
   ].filter(({ value }) => !!value);
 
   const totalOrdersArray = dashboardData?.monthlyStatistics.map((item) => ({
-    month: `Tháng ${item.month}`,
+    month: ` ${item.month}`,
     totalOrders: item.totalOrders,
   }));
 
   const totalProfitAndTotalRevenue = dashboardData?.monthlyStatistics.map(
     (item) => ({
-      month: `Tháng ${item.month}`,
+      month: `${item.month}`,
       totalProfit: item.totalProfit,
       totalRevenue: item.totalRevenue,
     })

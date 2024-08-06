@@ -106,12 +106,10 @@ const DetailWarrantyRequest = () => {
                 <Stack spacing={3}>
                   <TextField
                     name="name"
-                    label="Ngày tạo"
+                    label="Ngày bảo hành"
                     value={
                       requestWarranty?.createDate
-                        ? formatDateFunc.formatDateTime(
-                            requestWarranty?.createDate
-                          )
+                        ? formatDateFunc.formatDate(requestWarranty?.createDate)
                         : ""
                     }
                     InputProps={{

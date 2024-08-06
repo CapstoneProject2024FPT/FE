@@ -82,10 +82,6 @@ const TableRequestWarranty: React.FC = () => {
       key: "1",
       label: "Chi tiết",
     },
-    {
-      key: "2",
-      label: "Cử nhân viên",
-    },
   ];
 
   const columns: ColumnsType<WarrantyProps> = [

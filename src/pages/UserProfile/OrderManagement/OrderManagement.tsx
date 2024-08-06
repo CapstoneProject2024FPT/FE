@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState, useEffect, useCallback } from "react";
 import {
   Container,
@@ -50,7 +51,7 @@ const getStatusStyles = (status: string) => {
     case "Canceled":
       return { backgroundColor: "#F44336", color: "white" }; // đỏ
     case "Delivery":
-      return { backgroundColor: "#FFD700", color: "black" }; // vàng
+      return { backgroundColor: "#f39c12", color: "black" }; // cam
     case "ReDelivery":
       return { backgroundColor: "#704c5e", color: "white" }; // Tím
     default:
@@ -60,7 +61,7 @@ const getStatusStyles = (status: string) => {
 
 const Row = (props: {
   row: OrderProps;
-  onCancelOrder: (orderId: string, note?: string) => void;
+  onCancelOrder: (orderId: string, note: string, invoiceCode?: string) => void;
 }) => {
   const { row, onCancelOrder } = props;
   const [open, setOpen] = useState(false);
@@ -79,17 +80,8 @@ const Row = (props: {
     : defaultStatus;
 
   const handleCancelOrder = () => {
-    const getUserInfoString = localStorage.getItem("getUserInfo");
-    if (getUserInfoString) {
-      const userInfo = JSON.parse(getUserInfoString);
-      email = userInfo?.email;
-      username = userInfo?.username;
-    } else {
-      console.error("No user info found in localStorage");
-    }
-    onCancelOrder(row.orderId);
+    onCancelOrder(row.orderId, row.invoiceCode);
     handleCloseMenu();
-    handleSendEmail(isSucess, email, username);
   };
 
   const handleOpenMenu = (event: React.MouseEvent<HTMLElement>) => {
@@ -143,7 +135,6 @@ const Row = (props: {
 
     const handleTransactionStatus = async () => {
       const id = sessionStorage.getItem("paymmentID");
-
       if (transactionId === "00" && id) {
         const params = { status: "SUCCESS" };
         try {
@@ -152,6 +143,14 @@ const Row = (props: {
           if (response.status === 200) {
             toast.success("Thanh toán thành công");
             // send mail for payment success
+            const getUserInfoString = localStorage.getItem("getUserInfo");
+            if (getUserInfoString) {
+              const userInfo = JSON.parse(getUserInfoString);
+              email = userInfo?.email;
+              username = userInfo?.username;
+            } else {
+              console.error("No user info found in localStorage");
+            }
             isSucess = true;
             handleSendEmail(isSucess, email, username);
           }
@@ -176,7 +175,6 @@ const Row = (props: {
     if (transactionId) {
       handleTransactionStatus();
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [location, navigate]);
 
   const handlePayment = async (row: OrderProps) => {
@@ -240,13 +238,13 @@ const Row = (props: {
             </MenuItem>
             {(row.status === StatusType.COMPLETED ||
               row.status === StatusType.PAID) && (
-                <MenuItem>
-                  <ExportPDF row={row} />
-                </MenuItem>
-              )}
+              <MenuItem>
+                <ExportPDF row={row} />
+              </MenuItem>
+            )}
           </Menu>
         </TableCell>
-        <TableCell style={{ width: '100px' }}>
+        <TableCell style={{ width: "100px" }}>
           {row.status === StatusType.UNPAID && remainingTime !== null && (
             <Box
               sx={{
@@ -255,15 +253,14 @@ const Row = (props: {
                 display: "inline-block",
                 backgroundColor: "#FFD700",
                 color: "black",
-                textAlign: 'center',
-                width: '100%',
+                textAlign: "center",
+                width: "100%",
               }}
             >
               {formatRemainingTime(remainingTime)}
             </Box>
           )}
         </TableCell>
-
       </TableRow>
       <TableRow>
         <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={8}>
@@ -278,9 +275,7 @@ const Row = (props: {
                     <TableCell>Tên sản phẩm</TableCell>
                     <TableCell>Số lượng</TableCell>
                     <TableCell>Giá sản phẩm</TableCell>
-                    {row.status === StatusType.COMPLETED && (
-                      <TableCell>Hành động</TableCell>
-                    )}
+                    <TableCell>Hành động</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
@@ -299,11 +294,10 @@ const Row = (props: {
                       </TableCell>
                       <TableCell>{product.quantity}</TableCell>
                       <TableCell>{formatMoney(product.totalAmount)}</TableCell>
-                      {row.status === StatusType.COMPLETED && (
-                        <TableCell>
-                          <WarrantyPDF order={row} product={product} />
-                        </TableCell>
-                      )}
+
+                      <TableCell>
+                        <WarrantyPDF order={row} product={product} />
+                      </TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
@@ -338,7 +332,7 @@ const OrderManagement: React.FC = () => {
   const [rowsPerPage, setRowsPerPage] = useState(15);
   const [openDialog, setOpenDialog] = useState(false);
   const [selectedOrderId, setSelectedOrderId] = useState<string | null>(null);
-
+  const [selectedInvoiceCode, setSelectedInvoiceCode] = useState<string | null>(null); 
   const routePage = [15, 20, 25, 30];
 
   const handleChangePage = (
@@ -381,18 +375,20 @@ const OrderManagement: React.FC = () => {
     }
   }, [apiGetOrderById]);
 
-  const handleOpenDialog = (orderId: string) => {
+  const handleOpenDialog = (orderId: string , invoiceCode: string) => {
     setSelectedOrderId(orderId);
+    setSelectedInvoiceCode(invoiceCode); // New state for invoiceCode
     setOpenDialog(true);
   };
 
   const handleCloseDialog = () => {
     setOpenDialog(false);
     setSelectedOrderId(null);
+    setSelectedInvoiceCode(null);
   };
 
   const handleConfirmCancel = async (note: string) => {
-    if (selectedOrderId) {
+    if (selectedOrderId && selectedInvoiceCode) {
       try {
         await apiCancelOrder({
           orderId: selectedOrderId,
@@ -408,6 +404,22 @@ const OrderManagement: React.FC = () => {
         handleCloseDialog();
       }
     }
+  };
+
+  const handAutoSendMail = (invoiceCode: string) => {
+    let email: string = "";
+    let username: string = "";
+    console.log(invoiceCode)
+    const getUserInfoString = localStorage.getItem("getUserInfo");
+    if (getUserInfoString) {
+      const userInfo = JSON.parse(getUserInfoString);
+      email = userInfo?.email;
+      username = userInfo?.username;
+    } else {
+      console.error("No user info found in localStorage");
+      return;
+    }
+    handleSendEmail(undefined, email, username, invoiceCode);
   };
 
   const handleAutoCancel = (orders: OrderProps[]) => {
@@ -431,6 +443,7 @@ const OrderManagement: React.FC = () => {
                   order.invoiceCode
                 )
               );
+              handAutoSendMail(order.invoiceCode);
               fetchOrders();
             })
             .catch((error) => {
@@ -465,7 +478,6 @@ const OrderManagement: React.FC = () => {
               <TableCell>Trạng thái</TableCell>
               <TableCell>Hành động</TableCell>
               <TableCell></TableCell>
-
             </TableRow>
           </TableHead>
           <TableBody>
@@ -501,6 +513,7 @@ const OrderManagement: React.FC = () => {
         open={openDialog}
         onClose={handleCloseDialog}
         onConfirm={handleConfirmCancel}
+        invoiceCode={selectedInvoiceCode}
       />
     </Container>
   );

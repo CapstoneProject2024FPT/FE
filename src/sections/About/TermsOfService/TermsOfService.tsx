@@ -38,7 +38,7 @@ const TermsOfService: React.FC = () => {
       <h2>5. Liên hệ</h2>
       <p>
         Nếu bạn có bất kỳ câu hỏi nào về điều khoản sử dụng, vui lòng liên hệ
-        với chúng tôi qua email info@smmms.com
+        với chúng tôi qua email ad.smmms.gsu24se44@gmail.com
       </p>
     </div>
   );
