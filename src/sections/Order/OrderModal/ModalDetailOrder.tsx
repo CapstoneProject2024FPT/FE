@@ -87,7 +87,7 @@ const ModalDetailOrder: React.FC<ModalBrand> = ({
       case "Canceled":
         return { backgroundColor: "#F44336", color: "white" }; // đỏ
       case "Delivery":
-        return { backgroundColor: "#FFD700", color: "white" }; // vàng
+        return { backgroundColor: "#f39c12", color: "white" }; // vàng
       case "ReDelivery":
         return { backgroundColor: "#704c5e", color: "white" };
       default:

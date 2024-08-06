@@ -14,10 +14,10 @@ export default function MachineComponent() {
   return (
     <Container sx={{ width: "100% !important", maxWidth: "none !important" }}>
       <HeaderBreadcrumbs
-        heading="Tất cả chi tiết"
+        heading="Tất cả chi tiết máy"
         links={[
           { name: "Thống kê", href: config.adminRoutes.dashboard },
-          { name: "Sản phẩm" },
+          { name: "Chi tiết máy" },
         ]}
       />
       <TableComponent />

@@ -9,7 +9,9 @@ const axiosPublic = axios.create({
 });
 
 let loginInfoString = localStorage.getItem("loginInfo");
-let loginInfo: LoginInfo = loginInfoString ? JSON.parse(loginInfoString).data : null;
+let loginInfo: LoginInfo = loginInfoString
+  ? JSON.parse(loginInfoString).data
+  : null;
 
 let accessToken = loginInfo?.tokenModel?.accessToken || "";
 let refreshToken = loginInfo?.tokenModel?.refreshToken || "";

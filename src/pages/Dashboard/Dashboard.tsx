@@ -94,13 +94,13 @@ const Dashboard: React.FC = () => {
   ].filter(({ value }) => !!value);
 
   const totalOrdersArray = dashboardData?.monthlyStatistics.map((item) => ({
-    month: `Tháng ${item.month}`,
+    month: ` ${item.month}`,
     totalOrders: item.totalOrders,
   }));
 
   const totalProfitAndTotalRevenue = dashboardData?.monthlyStatistics.map(
     (item) => ({
-      month: `Tháng ${item.month}`,
+      month: `${item.month}`,
       totalProfit: item.totalProfit,
       totalRevenue: item.totalRevenue,
     })

@@ -80,10 +80,13 @@ function Row(props: { row: WarrantyProps }) {
         </TableCell>
         <TableCell align="right">{row.inventory.serialNumber}</TableCell>
         <TableCell align="right">{row.inventory.machinery.name}</TableCell>
-        <TableCell align="right">{`${date.getDate()}/${date.getMonth() + 1
-          }/${date.getFullYear()}`}</TableCell>
+        <TableCell align="right">{`${date.getDate()}/${
+          date.getMonth() + 1
+        }/${date.getFullYear()}`}</TableCell>
         <TableCell align="right">
-          <Button onClick={() => handleNavigateId(row.id)}>Chi tiết</Button>
+          <Button onClick={() => handleNavigateId(row.id)} variant="outlined">
+            Chi tiết
+          </Button>
         </TableCell>
       </TableRow>
       <TableRow>
@@ -99,7 +102,8 @@ function Row(props: { row: WarrantyProps }) {
                     <TableCell>Ngày bắt đầu</TableCell>
                     <TableCell align="right">Mô tả</TableCell>
                     <TableCell align="right">Trạng thái</TableCell>
-                    {warrantyDetail?.warrantyDetail[0]?.status === StatusType.AWAITINGASSIGNMENT && (
+                    {warrantyDetail?.warrantyDetail[0]?.status ===
+                      StatusType.AWAITINGASSIGNMENT && (
                       <TableCell align="right">Hành động</TableCell>
                     )}
                   </TableRow>

@@ -13,6 +13,7 @@ import {
   FormProvider,
   RHFAutoComplete,
   RHFTextField,
+  RHFTextFieldNumber,
 } from "../../../components/hook-form";
 import * as Yup from "yup";
 import { useForm } from "react-hook-form";
@@ -180,7 +181,7 @@ export default function ModalCreateComponent({
             </Card>
             <Card sx={{ p: 3, mt: 2 }}>
               <Stack spacing={3} mb={2}>
-                <RHFTextField
+                <RHFTextFieldNumber
                   required
                   name="stockPrice"
                   label="Giá máy"
@@ -195,7 +196,7 @@ export default function ModalCreateComponent({
                   }}
                 />
 
-                <RHFTextField
+                <RHFTextFieldNumber
                   required
                   name="sellingPrice"
                   type="number"

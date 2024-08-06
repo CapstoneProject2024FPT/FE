@@ -84,7 +84,9 @@ function Row(props: { row: WarrantyProps }) {
           date.getMonth() + 1
         }/${date.getFullYear()}`}</TableCell>
         <TableCell align="right">
-          <Button onClick={() => handleNavigateId(row.id)}>Chi tiết</Button>
+          <Button onClick={() => handleNavigateId(row.id)} variant="outlined">
+            Chi tiết
+          </Button>
         </TableCell>
       </TableRow>
       <TableRow>

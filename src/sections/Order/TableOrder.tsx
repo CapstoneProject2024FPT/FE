@@ -87,8 +87,8 @@ const TableOrder: React.FC = () => {
 
   const getStatusStyles = (status: string) => {
     switch (status) {
-      case "Unpaid":
-        return { backgroundColor: "yellow", color: "black" };
+      case "UnPaid":
+        return { backgroundColor: "grey", color: "white" };
       case "Completed":
         return { backgroundColor: "green", color: "white" };
       case "Paid":
@@ -96,7 +96,7 @@ const TableOrder: React.FC = () => {
       case "Canceled":
         return { backgroundColor: "red", color: "white" };
       case "Delivery":
-        return { backgroundColor: "yellow", color: "white" };
+        return { backgroundColor: "#f39c12", color: "white" };
       case "ReDelivery":
         return { backgroundColor: "#704c5e", color: "white" };
       default:
@@ -441,15 +441,17 @@ const TableOrder: React.FC = () => {
           display: "flex",
           flexDirection: "row",
           justifyContent: "space-around",
-          alignItems: "center"
+          alignItems: "center",
         }}
       >
-        <Card sx={{
-          display: "flex",
-          alignItems: "center",
-          justifyItems: "center",
-          minHeight: "50px"
-        }}>
+        <Card
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            justifyItems: "center",
+            minHeight: "50px",
+          }}
+        >
           {orderCounts?.ordersByStatus &&
             Object.entries(orderCounts?.ordersByStatus).map(
               ([status, count], index) => {

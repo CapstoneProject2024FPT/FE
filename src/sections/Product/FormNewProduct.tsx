@@ -21,6 +21,7 @@ import {
   FormProvider,
   RHFAutoComplete,
   RHFTextField,
+  RHFTextFieldNumber,
   RHFUploadMultiFile,
 } from "../../components/hook-form";
 import * as Yup from "yup";
@@ -497,7 +498,7 @@ export default function ProductNewEditForm() {
             {/* ---------------------------------------- */}
             <Card sx={{ p: 3 }}>
               <Stack spacing={3} mb={2}>
-                <RHFTextField
+                <RHFTextFieldNumber
                   required
                   name="stockPrice"
                   label="Giá máy"
@@ -513,7 +514,7 @@ export default function ProductNewEditForm() {
                   }}
                 />
 
-                <RHFTextField
+                <RHFTextFieldNumber
                   required
                   name="sellingPrice"
                   label="Giá bán"

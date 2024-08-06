@@ -79,7 +79,9 @@ const PaymentOrderId: React.FC = () => {
       case "Canceled":
         return { backgroundColor: "#F44336", color: "white" }; // đỏ
       case "Delivery":
-        return { backgroundColor: "#FFD700", color: "black" }; // vàng
+        return { backgroundColor: "#f39c12", color: "black" }; // vàng
+      case "ReDelivery":
+        return { backgroundColor: "#704c5e", color: "white" }; // Tím
       default:
         return { backgroundColor: "transparent", color: "black" };
     }
