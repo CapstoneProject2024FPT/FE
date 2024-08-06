@@ -63,6 +63,7 @@ const AppRoute: React.FC = () => {
     <Routes>
       {/* authen */}
       <Route key="login" path={config.routes.login} element={<Login />} />
+      <Route key="login" path={config.routes.register} element={<Login />} />
 
       {/* customer */}
       <Route key="customer" path={config.routes.home} element={<Layout />}>

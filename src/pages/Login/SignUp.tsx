@@ -12,6 +12,7 @@ import classNames from "classnames/bind";
 import { RegisterData } from "../../models/UserData";
 import { toast } from "react-toastify";
 import config from "../../configs";
+import { useNavigate } from "react-router-dom";
 
 const cx = classNames.bind(styles);
 
@@ -24,6 +25,7 @@ interface SignUpForm {
 }
 const SignUpForm: React.FC = () => {
   const { apiRegister } = AuthApi();
+  const navigate = useNavigate(); // Initialize useNavigate
   const RegisterSchema = Yup.object().shape({
     username: Yup.string()
       .required("bắt buộc")
@@ -85,6 +87,8 @@ const SignUpForm: React.FC = () => {
         toast.error(response.Error || config.MessageNotice.Error500);
       } else if (response.status === 200) {
         toast.success(config.MessageNotice.RegisterSuccess);
+        navigate("/login");
+        window.location.reload();
         reset();
       } else {
         toast.error(response.Error);
