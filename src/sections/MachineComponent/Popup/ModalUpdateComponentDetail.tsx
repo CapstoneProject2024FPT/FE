@@ -5,6 +5,7 @@ import {
   FormProvider,
   RHFTextField,
   RHFAutoComplete,
+  RHFTextFieldNumber,
 } from "../../../components/hook-form";
 // form
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -203,7 +204,7 @@ const ModalComponentDetail: React.FC<ModalProduct> = ({
               </Grid>
               <Grid item xs={6}>
                 <Stack direction="column" display="flex" spacing={2}>
-                  <RHFTextField
+                  <RHFTextFieldNumber
                     name="sellingPrice"
                     type="number"
                     label="Giá bán"

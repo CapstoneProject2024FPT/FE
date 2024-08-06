@@ -13,6 +13,7 @@ import {
   FormProvider,
   RHFAutoComplete,
   RHFTextField,
+  RHFTextFieldNumber,
 } from "../../components/hook-form";
 import * as Yup from "yup";
 import { useForm } from "react-hook-form";
@@ -158,7 +159,7 @@ export default function ProductNewComponent() {
           </Card>
           <Card sx={{ p: 3, mt: 2 }}>
             <Stack spacing={3} mb={2}>
-              <RHFTextField
+              <RHFTextFieldNumber
                 required
                 type="number"
                 name="stockPrice"
@@ -174,7 +175,7 @@ export default function ProductNewComponent() {
                 }}
               />
 
-              <RHFTextField
+              <RHFTextFieldNumber
                 required
                 type="number"
                 name="sellingPrice"
