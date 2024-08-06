@@ -18,6 +18,7 @@ import {
   Menu,
   MenuItem,
   TablePagination,
+  TextField,
 } from "@mui/material";
 import { ApiWarranty } from "../../../../api/services/apiWarranty";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
@@ -36,6 +37,7 @@ import EmptyOrder from "../../../../components/EmptyOrder";
 import { useNavigate } from "react-router-dom";
 import config from "../../../../configs";
 import ModalRequestDetail from "../Modal/ModalRequestWarranty";
+import useDebounce from "../../../../hooks/useDebounce";
 
 const getStatusStyles = (status: string) => {
   switch (status) {
@@ -220,7 +222,9 @@ const WarrantyManagement: React.FC = () => {
   const [openDialog, setOpenDialog] = useState(false);
   const [selectWarrantyId, setSelectWarrantyId] = useState<string | null>(null);
   const [rowsPerPage, setRowsPerPage] = useState(15);
+  const [query, setQuery] = useState<string>("");
   const routePage = [15, 20, 25, 30];
+  const debouce = useDebounce({ delay: 300, value: query });
 
   const handleChangePage = (
     _event: React.MouseEvent<HTMLButtonElement> | null,
@@ -283,13 +287,32 @@ const WarrantyManagement: React.FC = () => {
     }
   };
 
+  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setQuery(e.target.value);
+  };
+
   useEffect(() => {
     fetchWarranty();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const filteredRequests = requests.filter((request) =>
+    request.inventory.serialNumber
+      .toLowerCase()
+      .includes(debouce.toLocaleLowerCase().trim())
+  );
+
   return (
     <Container>
+      <TextField
+        label="Tìm kiếm"
+        variant="outlined"
+        value={query}
+        onChange={handleSearch}
+        sx={{ width: "300px" }}
+        margin="normal"
+        placeholder="Nhập số seri máy"
+      />
       <TableContainer component={Paper}>
         <Table sx={{ minWidth: 650 }}>
           <TableHead>
@@ -301,9 +324,9 @@ const WarrantyManagement: React.FC = () => {
               <TableCell align="right">Tạo yêu cầu bảo hành</TableCell>
             </TableRow>
           </TableHead>
-          {requests.length > 0 ? (
+          {filteredRequests.length > 0 ? (
             <TableBody>
-              {requests
+              {filteredRequests
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map((row: WarrantyProps) => (
                   <Row
