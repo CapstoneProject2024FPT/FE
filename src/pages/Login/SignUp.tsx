@@ -1,6 +1,5 @@
 import React from "react";
 import styles from "./SignIn.module.scss";
-import { FaFacebookF, FaGooglePlusG, FaLinkedinIn } from "react-icons/fa";
 import { FormProvider, RHFTextField } from "../../components/hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm } from "react-hook-form";

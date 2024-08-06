@@ -1,7 +1,6 @@
 import React from "react";
 import styles from "./SignIn.module.scss";
 import classNames from "classnames/bind";
-import { FaFacebookF, FaGooglePlusG, FaLinkedinIn } from "react-icons/fa";
 import { LoadingButton } from "@mui/lab";
 import { FormProvider, RHFTextField } from "../../components/hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
