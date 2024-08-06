@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useFormContext, Controller } from "react-hook-form";
 import { TextField, TextFieldProps } from "@mui/material";
 
@@ -18,14 +18,23 @@ const formatNumberWithSpaces = (value: string) => {
 };
 
 export default function RHFTextFieldNumber({ name, ...other }: Props) {
-  const { control, setValue } = useFormContext();
+  const { control, setValue, getValues } = useFormContext();
   const [displayValue, setDisplayValue] = useState("");
+
+  useEffect(() => {
+    const initialValue = getValues(name);
+
+    if (initialValue && other.type === "number") {
+      setDisplayValue(formatNumberWithSpaces(String(initialValue)));
+    } else {
+      setDisplayValue(initialValue || "");
+    }
+  }, [getValues, name, other.type]);
 
   const handleChange = (
     event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     const value = event.target.value;
-
     if (other.type === "number") {
       const formattedValue = formatNumberWithSpaces(value);
       setDisplayValue(formattedValue);

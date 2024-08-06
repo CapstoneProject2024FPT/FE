@@ -50,7 +50,7 @@ const getStatusStyles = (status: string) => {
     case "Canceled":
       return { backgroundColor: "#F44336", color: "white" }; // đỏ
     case "Delivery":
-      return { backgroundColor: "#FFD700", color: "black" }; // vàng
+      return { backgroundColor: "#f39c12", color: "black" }; // cam
     case "ReDelivery":
       return { backgroundColor: "#704c5e", color: "white" }; // Tím
     default:
@@ -240,13 +240,13 @@ const Row = (props: {
             </MenuItem>
             {(row.status === StatusType.COMPLETED ||
               row.status === StatusType.PAID) && (
-                <MenuItem>
-                  <ExportPDF row={row} />
-                </MenuItem>
-              )}
+              <MenuItem>
+                <ExportPDF row={row} />
+              </MenuItem>
+            )}
           </Menu>
         </TableCell>
-        <TableCell style={{ width: '100px' }}>
+        <TableCell style={{ width: "100px" }}>
           {row.status === StatusType.UNPAID && remainingTime !== null && (
             <Box
               sx={{
@@ -255,15 +255,14 @@ const Row = (props: {
                 display: "inline-block",
                 backgroundColor: "#FFD700",
                 color: "black",
-                textAlign: 'center',
-                width: '100%',
+                textAlign: "center",
+                width: "100%",
               }}
             >
               {formatRemainingTime(remainingTime)}
             </Box>
           )}
         </TableCell>
-
       </TableRow>
       <TableRow>
         <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={8}>
@@ -278,9 +277,7 @@ const Row = (props: {
                     <TableCell>Tên sản phẩm</TableCell>
                     <TableCell>Số lượng</TableCell>
                     <TableCell>Giá sản phẩm</TableCell>
-                    {row.status === StatusType.COMPLETED && (
-                      <TableCell>Hành động</TableCell>
-                    )}
+                    <TableCell>Hành động</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
@@ -299,11 +296,10 @@ const Row = (props: {
                       </TableCell>
                       <TableCell>{product.quantity}</TableCell>
                       <TableCell>{formatMoney(product.totalAmount)}</TableCell>
-                      {row.status === StatusType.COMPLETED && (
-                        <TableCell>
-                          <WarrantyPDF order={row} product={product} />
-                        </TableCell>
-                      )}
+
+                      <TableCell>
+                        <WarrantyPDF order={row} product={product} />
+                      </TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
@@ -465,7 +461,6 @@ const OrderManagement: React.FC = () => {
               <TableCell>Trạng thái</TableCell>
               <TableCell>Hành động</TableCell>
               <TableCell></TableCell>
-
             </TableRow>
           </TableHead>
           <TableBody>

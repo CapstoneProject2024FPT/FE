@@ -116,10 +116,10 @@ const DetailWarrantyPeriodic = () => {
                 <Stack spacing={3}>
                   <TextField
                     name="name"
-                    label="Ngày tạo"
+                    label="Ngày bảo hành"
                     value={
                       warrantyPeriodic?.createDate
-                        ? formatDateFunc.formatDateTime(
+                        ? formatDateFunc.formatDate(
                             warrantyPeriodic?.createDate
                           )
                         : ""
@@ -178,16 +178,6 @@ const DetailWarrantyPeriodic = () => {
                       label="Mã số máy"
                       placeholder="0.00"
                       value={warrantyPeriodic?.inventory.serialNumber || ""}
-                      InputLabelProps={{ shrink: true }}
-                    />
-                    <TextField
-                      label="Trạng thái đơn"
-                      placeholder="0.00"
-                      value={
-                        requestWarranty?.status === "Process"
-                          ? "Đang tiến hành"
-                          : "Hoàn Thành" || ""
-                      }
                       InputLabelProps={{ shrink: true }}
                     />
                   </Stack>

@@ -190,7 +190,10 @@ function Row(props: {
                             Hủy
                           </Button>
                         )}
-                        <Button onClick={() => handleNavigateId(detail)}>
+                        <Button
+                          onClick={() => handleNavigateId(detail)}
+                          variant="outlined"
+                        >
                           Chi tiết
                         </Button>
                       </TableCell>

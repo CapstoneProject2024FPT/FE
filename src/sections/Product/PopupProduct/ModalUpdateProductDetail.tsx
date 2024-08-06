@@ -224,12 +224,12 @@ const ModalProductDetailPopup: React.FC<ModalProduct> = ({
                   <RHFTextFieldNumber
                     name="sellingPrice"
                     label="Giá bán"
+                    type="number"
                     autoFocus
                     InputProps={{
                       startAdornment: (
                         <InputAdornment position="start">VNĐ</InputAdornment>
                       ),
-                      type: "number",
                       inputProps: { min: 0 },
                     }}
                   />
