@@ -60,7 +60,7 @@ const renderCustomizedLabel = ({
 };
 
 const COLORS = ["#2980b9", "#27ae60", "#e74c3c", "#f1c40f", "#f0932b"];
-const years = [2025 ,2024, 2023];
+const years = [2025, 2024, 2023];
 const Dashboard: React.FC = () => {
   const { apiGetData } = ApiAdminDashboard();
   const [dashboardData, setDashboardData] = useState<DashboardProp>();
@@ -200,12 +200,14 @@ const Dashboard: React.FC = () => {
 
   return (
     <Box sx={{ width: "100%", height: "100%" }}>
-      <Box         sx={{
+      <Box
+        sx={{
           display: "flex",
           flexDirection: "row",
           alignItems: "center",
-          justifyContent: "space-between"
-        }}>
+          justifyContent: "space-between",
+        }}
+      >
         <HeaderBreadcrumbs
           heading="Thống kê"
           links={[{ name: "Thống kê" }, { name: "Thống kê doanh thu" }]}
@@ -213,11 +215,7 @@ const Dashboard: React.FC = () => {
 
         <FormControl sx={{ m: 1, minWidth: 120 }} size="small">
           <InputLabel>Năm</InputLabel>
-          <Select
-            label="Năm"
-            value={selectedYear}
-            onChange={handleYearChange}
-          >
+          <Select label="Năm" value={selectedYear} onChange={handleYearChange}>
             {years.map((year) => (
               <MenuItem key={year} value={year}>
                 {year}
@@ -228,149 +226,227 @@ const Dashboard: React.FC = () => {
       </Box>
       {!hasData(dashboardData) ? (
         <EmptyData
-        style={{
-          display: "flex",
-          alignItems: 'center',
-          justifyContent: "unset"
-        }}
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "unset",
+          }}
           title="Chưa có dữ liệu sẵn có"
         />
       ) : (
         <Box
-        sx={{
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          gap: "20px",
-        }}
-      >
-        <Box
           sx={{
-            width: "100%",
             display: "flex",
+            flexDirection: "column",
             alignItems: "center",
-            justifyContent: "space-evenly",
             gap: "20px",
           }}
         >
-          <Card
+          <Box
             sx={{
-              width: 300,
-              minWidth: 150,
-              height: 130,
-              boxShadow:
-                "rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px",
-              background: "#4caf50",
-              color: "#fff",
-              transition: "transform 0.2s",
-              "&:hover": {
-                transform: "scale(1.05)",
-              },
+              width: "100%",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-evenly",
+              gap: "20px",
             }}
           >
-            <CardActionArea sx={{ height: 130 }}>
-              <CardContent
-                sx={{
-                  display: "flex",
-                  flexDirection: "column",
-                  alignItems: "center",
-                }}
-              >
-                <ShoppingCart sx={{ fontSize: 40, color: "#fff" }} />
-                <Typography sx={{ fontSize: 18, color: "#fff" }}>
-                  Tổng số đơn hàng
-                </Typography>
-                <Typography gutterBottom variant="h6">
-                  {formatCurrency(dashboardData?.totalOrders)}
-                </Typography>
-              </CardContent>
-            </CardActionArea>
-          </Card>
+            <Card
+              sx={{
+                width: 300,
+                minWidth: 150,
+                height: 130,
+                boxShadow:
+                  "rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px",
+                background: "#4caf50",
+                color: "#fff",
+                transition: "transform 0.2s",
+                "&:hover": {
+                  transform: "scale(1.05)",
+                },
+              }}
+            >
+              <CardActionArea sx={{ height: 130 }}>
+                <CardContent
+                  sx={{
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                  }}
+                >
+                  <ShoppingCart sx={{ fontSize: 40, color: "#fff" }} />
+                  <Typography sx={{ fontSize: 18, color: "#fff" }}>
+                    Tổng số đơn hàng
+                  </Typography>
+                  <Typography gutterBottom variant="h6">
+                    {formatOrder(dashboardData?.totalOrders)}
+                  </Typography>
+                </CardContent>
+              </CardActionArea>
+            </Card>
 
-          <Card
-            sx={{
-              width: 300,
-              minWidth: 150,
-              height: 130,
-              boxShadow:
-                "rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px",
-              background: "#ff9800",
-              color: "#fff",
-              transition: "transform 0.2s",
-              "&:hover": {
-                transform: "scale(1.05)",
-              },
-            }}
-          >
-            <CardActionArea sx={{ height: 130 }}>
-              <CardContent
-                sx={{
-                  display: "flex",
-                  flexDirection: "column",
-                  alignItems: "center",
-                }}
-              >
-                <AttachMoney sx={{ fontSize: 40, color: "#fff" }} />
-                <Typography sx={{ fontSize: 18, color: "#fff" }}>
-                  Tổng lợi nhuận
-                </Typography>
-                <Typography gutterBottom variant="h6">
-                  {formatCurrency(dashboardData?.totalProfit)}
-                </Typography>
-              </CardContent>
-            </CardActionArea>
-          </Card>
+            <Card
+              sx={{
+                width: 300,
+                minWidth: 150,
+                height: 130,
+                boxShadow:
+                  "rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px",
+                background: "#ff9800",
+                color: "#fff",
+                transition: "transform 0.2s",
+                "&:hover": {
+                  transform: "scale(1.05)",
+                },
+              }}
+            >
+              <CardActionArea sx={{ height: 130 }}>
+                <CardContent
+                  sx={{
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                  }}
+                >
+                  <AttachMoney sx={{ fontSize: 40, color: "#fff" }} />
+                  <Typography sx={{ fontSize: 18, color: "#fff" }}>
+                    Tổng lợi nhuận
+                  </Typography>
+                  <Typography gutterBottom variant="h6">
+                    {formatCurrency(dashboardData?.totalProfit)}
+                  </Typography>
+                </CardContent>
+              </CardActionArea>
+            </Card>
 
-          <Card
+            <Card
+              sx={{
+                width: 300,
+                minWidth: 150,
+                height: 130,
+                boxShadow:
+                  "rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px",
+                background: "#f44336",
+                color: "#fff",
+                transition: "transform 0.2s",
+                "&:hover": {
+                  transform: "scale(1.05)",
+                },
+              }}
+            >
+              <CardActionArea sx={{ height: 130 }}>
+                <CardContent
+                  sx={{
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                  }}
+                >
+                  <MonetizationOn sx={{ fontSize: 40, color: "#fff" }} />
+                  <Typography sx={{ fontSize: 18, color: "#fff" }}>
+                    Tổng doanh thu
+                  </Typography>
+                  <Typography gutterBottom variant="h6">
+                    {formatCurrency(dashboardData?.totalRevenue)}
+                  </Typography>
+                </CardContent>
+              </CardActionArea>
+            </Card>
+          </Box>
+          <Divider
+            orientation="horizontal"
+            flexItem
+            sx={{ margin: "10px", border: "1px solid #d9d9d9" }}
+          />
+          <Box
             sx={{
-              width: 300,
-              minWidth: 150,
-              height: 130,
-              boxShadow:
-                "rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px",
-              background: "#f44336",
-              color: "#fff",
-              transition: "transform 0.2s",
-              "&:hover": {
-                transform: "scale(1.05)",
-              },
+              width: "100%",
+              display: "flex",
+              gap: "20px",
             }}
           >
-            <CardActionArea sx={{ height: 130 }}>
-              <CardContent
-                sx={{
-                  display: "flex",
-                  flexDirection: "column",
-                  alignItems: "center",
-                }}
-              >
-                <MonetizationOn sx={{ fontSize: 40, color: "#fff" }} />
-                <Typography sx={{ fontSize: 18, color: "#fff" }}>
-                  Tổng doanh thu
-                </Typography>
-                <Typography gutterBottom variant="h6">
-                  {formatCurrency(dashboardData?.totalRevenue)}
-                </Typography>
-              </CardContent>
-            </CardActionArea>
-          </Card>
-        </Box>
-        <Divider
-          orientation="horizontal"
-          flexItem
-          sx={{ margin: "10px", border: "1px solid #d9d9d9" }}
-        />
-        <Box
-          sx={{
-            width: "100%",
-            display: "flex",
-            gap: "20px",
-          }}
-        >
-          <Box sx={{ width: "50%" }}>
-            <ResponsiveContainer width="100%" height={400}>
+            <Box sx={{ width: "50%" }}>
+              <ResponsiveContainer width="100%" height={400}>
+                <BarChart
+                  data={totalOrdersArray}
+                  barSize="3%"
+                  barGap="6"
+                  barCategoryGap="3%"
+                >
+                  <CartesianGrid />
+                  <XAxis
+                    dataKey="month"
+                    tick={<CustomXAxisTickBarChart1 />}
+                    interval={0}
+                    padding={{ left: 25, right: 25 }}
+                  />
+                  <YAxis allowDecimals={false} />
+                  <Tooltip content={<CustomTooltipBarChart1 />} />
+                  <Legend
+                    payload={[
+                      {
+                        value: "Đơn hàng",
+                        type: "square",
+                        color: "#4caf50",
+                      },
+                    ]}
+                    wrapperStyle={{
+                      marginTop: "10px",
+                      position: "relative",
+                      fontSize: "14px",
+                    }}
+                  />
+                  <Bar dataKey="totalOrders" fill="#4caf50" />
+                </BarChart>
+              </ResponsiveContainer>
+            </Box>
+            <Divider
+              orientation="vertical"
+              flexItem
+              sx={{ margin: "5px", border: "1px solid #d9d9d9" }}
+            />
+            <Box sx={{ width: "40%" }}>
+              <ResponsiveContainer width="100%" height={300}>
+                <PieChart>
+                  <Pie
+                    data={dataPie}
+                    outerRadius={120}
+                    labelLine={false}
+                    label={renderCustomizedLabel}
+                    fill="#8884d8"
+                    dataKey="value"
+                  >
+                    {dataPie.map((_entry, index) => (
+                      <Cell
+                        key={`cell-${index}`}
+                        fill={COLORS[index % COLORS.length]}
+                      />
+                    ))}
+                  </Pie>
+                  <Tooltip />
+                  <Legend />
+                </PieChart>
+              </ResponsiveContainer>
+            </Box>
+          </Box>
+
+          <Divider
+            orientation="horizontal"
+            flexItem
+            sx={{ margin: "40px 0 20px", border: "1px solid #d9d9d9" }}
+          />
+          <Box
+            sx={{
+              width: "100%",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              marginBottom: "20px",
+            }}
+          >
+            <ResponsiveContainer width={1000} height={400}>
               <BarChart
-                data={totalOrdersArray}
+                data={totalProfitAndTotalRevenue}
                 barSize="3%"
                 barGap="6"
                 barCategoryGap="3%"
@@ -378,113 +454,36 @@ const Dashboard: React.FC = () => {
                 <CartesianGrid />
                 <XAxis
                   dataKey="month"
-                  tick={<CustomXAxisTickBarChart1 />}
+                  tick={<CustomXAxisTickBarChart2 />}
                   interval={0}
                   padding={{ left: 25, right: 25 }}
                 />
-                <YAxis allowDecimals={false} />
-                <Tooltip content={<CustomTooltipBarChart1 />} />
+                <YAxis tickFormatter={formatYAxisTick} />
+                <Tooltip content={<CustomTooltipBarChart2 />} />
                 <Legend
                   payload={[
                     {
-                      value: "Đơn hàng",
+                      value: "Lợi nhuận",
                       type: "square",
-                      color: "#4caf50",
+                      color: "#ff9800",
+                    },
+                    {
+                      value: "Doanh thu",
+                      type: "square",
+                      color: "#f44336",
                     },
                   ]}
                   wrapperStyle={{
-                    marginTop: "10px",
                     position: "relative",
-                    fontSize: "14px",
+                    fontSize: "16px",
                   }}
                 />
-                <Bar dataKey="totalOrders" fill="#4caf50" />
+                <Bar dataKey="totalProfit" fill="#ff9800" />
+                <Bar dataKey="totalRevenue" fill="#f44336" />
               </BarChart>
             </ResponsiveContainer>
           </Box>
-          <Divider
-            orientation="vertical"
-            flexItem
-            sx={{ margin: "5px", border: "1px solid #d9d9d9" }}
-          />
-          <Box sx={{ width: "40%" }}>
-            <ResponsiveContainer width="100%" height={300}>
-              <PieChart>
-                <Pie
-                  data={dataPie}
-                  outerRadius={120}
-                  labelLine={false}
-                  label={renderCustomizedLabel}
-                  fill="#8884d8"
-                  dataKey="value"
-                >
-                  {dataPie.map((_entry, index) => (
-                    <Cell
-                      key={`cell-${index}`}
-                      fill={COLORS[index % COLORS.length]}
-                    />
-                  ))}
-                </Pie>
-                <Tooltip />
-                <Legend />
-              </PieChart>
-            </ResponsiveContainer>
-          </Box>
         </Box>
-
-        <Divider
-          orientation="horizontal"
-          flexItem
-          sx={{ margin: "40px 0 20px", border: "1px solid #d9d9d9" }}
-        />
-        <Box
-          sx={{
-            width: "100%",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        >
-          <ResponsiveContainer width={1000} height={400}>
-            <BarChart
-              data={totalProfitAndTotalRevenue}
-              barSize="3%"
-              barGap="6"
-              barCategoryGap="3%"
-            >
-              <CartesianGrid />
-              <XAxis
-                dataKey="month"
-                tick={<CustomXAxisTickBarChart2 />}
-                interval={0}
-                padding={{ left: 25, right: 25 }}
-              />
-              <YAxis tickFormatter={formatYAxisTick} />
-              <Tooltip content={<CustomTooltipBarChart2 />} />
-              <Legend
-                payload={[
-                  {
-                    value: "Lợi nhuận",
-                    type: "square",
-                    color: "#ff9800",
-                  },
-                  {
-                    value: "Doanh thu",
-                    type: "square",
-                    color: "#f44336",
-                  },
-                ]}
-                wrapperStyle={{
-                  position: "relative",
-                  fontSize: "16px",
-                }}
-              />
-              <Bar dataKey="totalProfit" fill="#ff9800" />
-              <Bar dataKey="totalRevenue" fill="#f44336" />
-            </BarChart>
-          </ResponsiveContainer>
-        </Box>
-      </Box>
       )}
     </Box>
   );

@@ -205,6 +205,7 @@ const ModalComponentDetail: React.FC<ModalProduct> = ({
                 <Stack direction="column" display="flex" spacing={2}>
                   <RHFTextField
                     name="sellingPrice"
+                    type="number"
                     label="Giá bán"
                     autoFocus
                     InputProps={{

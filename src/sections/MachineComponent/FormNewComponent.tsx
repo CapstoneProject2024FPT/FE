@@ -160,6 +160,7 @@ export default function ProductNewComponent() {
             <Stack spacing={3} mb={2}>
               <RHFTextField
                 required
+                type="number"
                 name="stockPrice"
                 label="Giá máy"
                 placeholder="0.00"
@@ -175,6 +176,7 @@ export default function ProductNewComponent() {
 
               <RHFTextField
                 required
+                type="number"
                 name="sellingPrice"
                 label="Giá bán"
                 placeholder="0.00"

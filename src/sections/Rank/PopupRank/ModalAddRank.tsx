@@ -69,7 +69,12 @@ const ModalRankAdd: React.FC<ModalRank> = ({
         <Card sx={{ p: 3 }}>
           <Stack spacing={3}>
             <RHFTextField name="name" label="Tên hạng" autoFocus />
-            <RHFTextField name="range" label="Mức tiền" multiline />
+            <RHFTextField
+              name="range"
+              label="Mức tiền"
+              multiline
+              type="number"
+            />
           </Stack>
           <div style={{ display: "flex", justifyContent: "flex-end" }}>
             <LoadingButton

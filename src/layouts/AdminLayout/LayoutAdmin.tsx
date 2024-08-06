@@ -61,7 +61,7 @@ const LayoutAdmin: React.FC = () => {
   }, []);
 
   return (
-    <Layout>
+    <Layout className="layout-admin">
       <Sider
         breakpoint="lg"
         collapsedWidth="0"
@@ -81,9 +81,9 @@ const LayoutAdmin: React.FC = () => {
           items={filteredMenuItems}
         />
       </Sider>
-      <Layout>
+      <Layout >
         <HeaderAdmin isCollapse={collapsed} handleCollapsed={handleCollapsed} />
-        <Content style={{ margin: "24px 16px 0", height: "100%" }}>
+        <Content className="content">
           <div
             style={{
               padding: 24,
@@ -95,7 +95,7 @@ const LayoutAdmin: React.FC = () => {
             <Outlet />
           </div>
         </Content>
-        <Footer style={{ textAlign: "center", fontSize: "25px" }}>
+        <Footer className="footer">
             Welcome To SMMMS Team
         </Footer>
       </Layout>
