@@ -198,6 +198,7 @@ export default function ModalCreateComponent({
                 <RHFTextField
                   required
                   name="sellingPrice"
+                  type="number"
                   label="Giá bán"
                   placeholder="0.00"
                   InputLabelProps={{ shrink: true }}
@@ -205,7 +206,6 @@ export default function ModalCreateComponent({
                     startAdornment: (
                       <InputAdornment position="start">VNĐ</InputAdornment>
                     ),
-                    type: "number",
                     inputProps: { min: 0 },
                   }}
                 />

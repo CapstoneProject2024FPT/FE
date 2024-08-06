@@ -502,12 +502,13 @@ export default function ProductNewEditForm() {
                   name="stockPrice"
                   label="Giá máy"
                   placeholder="0.00"
+                  type="number"
                   InputLabelProps={{ shrink: true }}
                   InputProps={{
                     startAdornment: (
                       <InputAdornment position="start">VNĐ</InputAdornment>
                     ),
-                    type: "number",
+
                     inputProps: { min: 0 },
                   }}
                 />
@@ -517,12 +518,13 @@ export default function ProductNewEditForm() {
                   name="sellingPrice"
                   label="Giá bán"
                   placeholder="0.00"
+                  type="number"
                   InputLabelProps={{ shrink: true }}
                   InputProps={{
                     startAdornment: (
                       <InputAdornment position="start">VNĐ</InputAdornment>
                     ),
-                    type: "number",
+
                     inputProps: { min: 0 },
                   }}
                 />
