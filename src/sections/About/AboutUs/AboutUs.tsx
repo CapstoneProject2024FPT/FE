@@ -5,7 +5,7 @@ const AboutUs: React.FC = () => {
   return (
     <div className="about-us-container">
       <h1>Giới thiệu SMMMS</h1>
-      <p>
+      <p style={{fontSize: "16px"}}>
         SMMMS là công ty hàng đầu trong lĩnh vực cung cấp máy móc cơ khí. Chúng
         tôi cam kết cung cấp các dịch vụ chất lượng cao và giải pháp tối ưu cho
         khách hàng. Với đội ngũ nhân viên chuyên nghiệp và giàu kinh nghiệm,
@@ -15,11 +15,11 @@ const AboutUs: React.FC = () => {
 
       <img src={images.logo} className="img_logo" />
 
-      <p>
+      <p style={{fontSize: "16px"}}>
         Liên hệ với chúng tôi để biết thêm chi tiết:
         <ul>
           <li>Hotline: 1800-6118 / 091-521-08-69</li>
-          <li>Email: info@smmms.com</li>
+          <li>Email: ad.smmms.gsu24se44@gmail.com</li>
         </ul>
       </p>
     </div>

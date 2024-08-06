@@ -5,18 +5,25 @@ import SignUpForm from "./SignUp";
 import classNames from "classnames/bind";
 import Logo from "../../components/Logo/Logo";
 import config from "../../configs";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const cx = classNames.bind(styles);
+
 const Login: React.FC = () => {
   const [type, setType] = useState("signIn");
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const handleOnClick = (text: any) => {
+  const navigate = useNavigate(); // Initialize useNavigate
+
+  const handleOnClick = (text: string) => {
     if (text !== type) {
       setType(text);
-      return;
+      if (text === "signUp") {
+        navigate("/register"); // Navigate to /register
+      } else {
+        navigate("/login"); // Navigate to /login
+      }
     }
   };
+
   return (
     <div className={cx("App")}>
       <div
@@ -25,8 +32,7 @@ const Login: React.FC = () => {
         })}
         id="container"
       >
-        <SignUpForm />
-        <SignInForm />
+        {type === "signIn" ? <SignInForm /> : <SignUpForm />}
         <div className={cx("overlay-container")}>
           <div className={cx("overlay")}>
             <div className={cx("overlay-panel", "overlay-left")}>

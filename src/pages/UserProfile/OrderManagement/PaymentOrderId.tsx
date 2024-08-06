@@ -32,12 +32,12 @@ import { FormProvider } from "../../../components/hook-form";
 import { ApiCheckout } from "../../../api/services/apiCheckout";
 import config from "../../../configs";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
-import emailjs from "@emailjs/browser";
 import { OrderProps, statusMapping, StatusType } from "../../../models/order";
 import CheckoutPaymentMethods from "../../Cart/Payment/CheckoutPaymentMethods";
 import { ApiOrder } from "../../../api/services/apiOrder";
 import { formatAddress, formatDateFunc, formatMoney } from "../../../utils/fn";
 import { useAuthContext } from "../../../context/AuthContext";
+import { handleSendEmail } from "../../../utils/sendEmail";
 
 // ----------------------------------------------------------------------
 
@@ -102,9 +102,8 @@ const PaymentOrderId: React.FC = () => {
     const queryParams = new URLSearchParams(location.search);
     const transactionId = queryParams.get("vnp_TransactionStatus");
 
-    const handleTransactionStatus = async () => {
+    const handleTransactionStatus = async (invoiceCode: string) => {
       const id = sessionStorage.getItem("paymmentID");
-
       if (transactionId === "00" && id) {
         const params = { status: "SUCCESS" };
         try {
@@ -122,7 +121,8 @@ const PaymentOrderId: React.FC = () => {
 
           if (response.status === 200) {
             navigate(config.routes.paymentSuccessful);
-            sendSuccessEmail();
+            const isSucess = true;
+            handleSendEmail(isSucess, email, username, invoiceCode);
           }
         } catch (error) {
           console.error("Error updating payment status:", error);
@@ -144,11 +144,11 @@ const PaymentOrderId: React.FC = () => {
       sessionStorage.removeItem("address");
     };
 
-    if (transactionId) {
-      handleTransactionStatus();
+    if (transactionId && orderData?.invoiceCode) {
+      handleTransactionStatus(orderData?.invoiceCode);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [location, navigate]);
+  }, [location, navigate, orderData]);
 
   //payment
 
@@ -197,24 +197,6 @@ const PaymentOrderId: React.FC = () => {
       //   toast.error("Xảy ra lỗi trong quá trình tạo đơn hàng");
       console.error(error);
     }
-  };
-
-  const sendSuccessEmail = () => {
-    const templateParams = {
-      from_name: "Admin SMMMS", // You can customize this field
-      from_email: "ad.smmms.gsu24se44@gmail.com",
-      to_email: email,
-      message: `Chào, ${username} bạn đã thanh toán đơn hàng thành công!`,
-      reply_to: "NoReply",
-      user_name: username,
-    };
-
-    emailjs.send(
-      "service_gm8vuij", // Replace with your EmailJS service ID
-      "template_x9vsymt", // Replace with your EmailJS template ID
-      templateParams,
-      "plAq1eN98XuLLSYlh" // Replace with your EmailJS user ID
-    );
   };
 
   //api

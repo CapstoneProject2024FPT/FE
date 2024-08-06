@@ -54,9 +54,9 @@ const TopBar: React.FC = () => {
       <ul className={cx("menu")}>
         <li
           className={cx("menu-item")}
-          style={{ height: "54px", alignContent: "center" }}
+          style={{ height: "100%", alignContent: "center" }}
         >
-          <a href={config.routes.productList}>LOẠI MÁY</a>
+          <a href={config.routes.productList} style={{padding: "unset"}}>LOẠI MÁY</a>
           <ul className={cx("submenu")}>
             {data
               .filter(

@@ -4,11 +4,17 @@ const SERVICE_ID_EMAILJS = import.meta.env.VITE_serviceId_EMAILJS;
 const TEMPLATE_ID_EMAILJS = import.meta.env.VITE_templateId_EMAILJS;
 const USER_ID_EMAILJS = import.meta.env.VITE_userId_EMAILJS;
 
-export function handleSendEmail (isSuccess:boolean, email: string, username: string) {
-
-    const message = isSuccess
+export function handleSendEmail(
+  isSuccess?: boolean,
+  email?: string,
+  username?: string,
+  invoiceCode?: string
+) {
+  const message = isSuccess === true
     ? `Chào, ${username} bạn đã thanh toán đơn hàng thành công!`
-    : `Chào, ${username} bạn đã hủy đơn hàng thành công!`;
+    : isSuccess === false 
+    ? `Chào, ${username} bạn đã hủy đơn hàng thành công đơn hàng ${invoiceCode}!`
+    : `Chào, ${username} đơn hàng ${invoiceCode} của bạn đã bị hủy do quá hạn chờ thanh toán!`;
 
   const templateParams = {
     from_name: "Admin SMMMS", // You can customize this field
@@ -18,7 +24,7 @@ export function handleSendEmail (isSuccess:boolean, email: string, username: str
     reply_to: "NoReply",
     user_name: username,
   };
-
+  console.log('Template Parameters:', templateParams);
   emailjs.send(
     SERVICE_ID_EMAILJS, // Replace with your EmailJS service ID
     TEMPLATE_ID_EMAILJS, // Replace with your EmailJS template ID
