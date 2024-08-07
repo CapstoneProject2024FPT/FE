@@ -127,9 +127,6 @@ const SignInForm: React.FC = () => {
               placeholder="Nhập mật khẩu"
             />
           </Stack>
-          <a href="#" className={cx("link")}>
-            Quên Mật Khẩu
-          </a>
           <LoadingButton
             type="submit"
             loading={isSubmitting}
