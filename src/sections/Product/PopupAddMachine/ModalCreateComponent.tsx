@@ -183,6 +183,7 @@ export default function ModalCreateComponent({
               <Stack spacing={3} mb={2}>
                 <RHFTextFieldNumber
                   required
+                  type="number"
                   name="stockPrice"
                   label="Giá máy"
                   placeholder="0.00"
@@ -191,7 +192,6 @@ export default function ModalCreateComponent({
                     startAdornment: (
                       <InputAdornment position="start">VNĐ</InputAdornment>
                     ),
-                    type: "number",
                     inputProps: { min: 0 },
                   }}
                 />
