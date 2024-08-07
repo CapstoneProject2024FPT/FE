@@ -25,14 +25,8 @@ const SignInForm: React.FC = () => {
   const { apiLogin } = AuthApi();
   const { apiUserProfile } = CustomerApi();
   const LoginSchema = Yup.object().shape({
-    username: Yup.string()
-      .required("bắt buộc")
-      .min(5, "Tối thiểu 5 kí tự")
-      .trim(),
-    password: Yup.string()
-      .required("bắt buộc")
-      .min(8, "Tối thiểu 8 kí tự")
-      .trim(),
+    username: Yup.string().required("bắt buộc").trim(),
+    password: Yup.string().required("bắt buộc").trim(),
   });
 
   const role = ["Sale", "Admin", "Manager"];
