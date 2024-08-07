@@ -421,7 +421,7 @@ const TableOrder: React.FC = () => {
     UnPaid: "grey",
     Completed: "green",
     Canceled: "red",
-    Delivery: "yellow",
+    Delivery: "#f39c12",
     ReDelivery: "#704c5e",
   };
 
