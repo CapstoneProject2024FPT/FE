@@ -110,7 +110,8 @@ const CheckoutPayment: React.FC<checkoutPaymentProps> = ({
             navigate(config.routes.paymentSuccessful);
             //handle send email
             isSucess = true;
-            handleSendEmail(isSucess, email, username);
+            // TODO:
+            // handleSendEmail(isSucess, email, username);
           }
         } catch (error) {
           console.error("Error updating payment status:", error);
