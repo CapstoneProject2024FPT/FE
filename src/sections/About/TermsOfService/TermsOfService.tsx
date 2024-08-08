@@ -46,39 +46,39 @@ const TermsOfService: React.FC = () => {
         <h1>QUY ĐỊNH BẢO HÀNH</h1>
         <h2>1. Điều khoản chung về bảo hành</h2>
         <p>
-          1. Chúng tôi chỉ chịu trách nhiệm bảo hành sau khi đã xác định lỗi thuộc về sản xuất.
+          - Chúng tôi chỉ chịu trách nhiệm bảo hành sau khi đã xác định lỗi thuộc về sản xuất.
         </p>
         <p>
-          2. Phiếu bảo hành phải được giữ nguyên, không bị tẩy xóa, sửa đổi trong thời gian bảo hành.
+          - Phiếu bảo hành phải được giữ nguyên, không bị tẩy xóa, sửa đổi trong thời gian bảo hành.
         </p>
         <p>
-          3. Thiết bị được sửa chữa miễn phí tại trung tâm trong suốt thời gian bảo hành của nhà sản xuất.
+          - Thiết bị được sửa chữa miễn phí tại trung tâm trong suốt thời gian bảo hành của nhà sản xuất.
         </p>
         <p>
-          4. Những sản phẩm bảo hành ngoài nội thành Thành Phố Hồ Chí Minh, chi phí đi lại khách hàng chịu trách nhiệm.
+          - Những sản phẩm bảo hành ngoài nội thành Thành Phố Hồ Chí Minh, chi phí đi lại khách hàng chịu trách nhiệm.
         </p>
         <p>
-          5. Đối với những sản phẩm có giá trị dưới 8 triệu bảo hành tại công ty.
+          - Đối với những sản phẩm có giá trị dưới 8 triệu bảo hành tại công ty.
         </p>
 
         <h2>2. Cách trường hợp không được bảo hành</h2>
         <p>
-          1. Sản phẩm hết thời gian bảo hành ghi trong phiếu bảo hành.
+          - Sản phẩm hết thời gian bảo hành ghi trong phiếu bảo hành.
         </p>
         <p>
-          2. Mất hoặc không còn phiếu bảo hành.
+          - Mất hoặc không còn phiếu bảo hành.
         </p>
         <p>
-          3. Khách hàng tự tháo mở, sửa chữa, thay đổi lại máy ở cơ sở khác khi chưa được sự đồng ý.
+          - Khách hàng tự tháo mở, sửa chữa, thay đổi lại máy ở cơ sở khác khi chưa được sự đồng ý.
         </p>
         <p>
-          4. Máy móc hoặc linh kiện bị hỏng hóc, đứt dây, không đầy đủ linh kiện, sử dụng ngôn ngữ điện áp không phù hợp.
+          - Máy móc hoặc linh kiện bị hỏng hóc, đứt dây, không đầy đủ linh kiện, sử dụng ngôn ngữ điện áp không phù hợp.
         </p>
         <p>
-          5. Sản phẩm bị hư hỏng do bảo quản không tốt, côn trùng, thiên tai, hoả hoạn.
+          - Sản phẩm bị hư hỏng do bảo quản không tốt, côn trùng, thiên tai, hoả hoạn.
         </p>
         <p>
-          6. Chỉ hỗ trợ mua và bảo hành trong khu vực TP.HCM. Nếu máy móc được di chuyển hoặc dời đến địa điểm ngoài TP.HCM, sẽ không hỗ trợ bảo hành.
+          - Chỉ hỗ trợ mua và bảo hành trong khu vực TP.HCM. Nếu máy móc được di chuyển hoặc dời đến địa điểm ngoài TP.HCM, sẽ không hỗ trợ bảo hành.
         </p>
       </div>
     </div>
