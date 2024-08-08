@@ -1,18 +1,22 @@
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 import React, { ReactNode } from "react";
+import { viVN } from "@mui/x-date-pickers/locales";
 // Define your custom theme
-const theme = createTheme({
-  typography: {
-    fontFamily: '"Lora", serif',
-    h2: {
-      fontWeight: 600,
-    },
-    body1: {
-      fontWeight: 600,
+const theme = createTheme(
+  {
+    typography: {
+      fontFamily: '"Lora", serif',
+      h2: {
+        fontWeight: 600,
+      },
+      body1: {
+        fontWeight: 600,
+      },
     },
   },
-});
+  viVN
+);
 
 interface MuiOverideProps {
   children: ReactNode;

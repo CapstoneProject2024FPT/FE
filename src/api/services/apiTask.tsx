@@ -11,6 +11,8 @@ export const ApiTask = () => {
   interface TaskProps {
     OrderId?: string;
     Type?: string;
+    Status?: string;
+    AccountId?: string;
   }
   const apiGetTask = async (params: TaskProps) => {
     setLoading(true);
@@ -53,6 +55,7 @@ export const ApiTask = () => {
   interface updateTaskProps {
     accountId: string;
     addressId: string;
+    excutionDate?: string;
   }
   const apiUpdateTask = async (id: string, params: updateTaskProps) => {
     setLoading(true);
