@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useState } from "react";
 // form
 import { Input, Modal } from "antd";
@@ -12,10 +13,21 @@ import { OrderProps } from "../../../models/order";
 import { Card, Grid, Stack, TextField } from "@mui/material";
 import { LoadingButton } from "@mui/lab";
 import { ApiTask } from "../../../api/services/apiTask";
-import { DeliveryPropsPost, StaffTaskProps } from "../../../models/task";
+import {
+  DeliveryPropsPost,
+  GetTaskProps,
+  StaffTaskProps,
+} from "../../../models/task";
 import config from "../../../configs";
 import CustomPagination from "../../../components/pagination/CustomPagination";
 
+//calender
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import { viVN } from "@mui/x-date-pickers/locales";
+import dayjs, { Dayjs } from "dayjs";
+import CalendarComponent from "../../../components/calender/Calender";
 //api
 
 interface ModalOrder {
@@ -30,13 +42,14 @@ interface DeliveryProps {
 }
 
 const { Search } = Input;
+
 const ModalDeliveryTask: React.FC<ModalOrder> = ({
   OrderData,
   openTaskPopup,
   handleCLose,
   onCreateSuccess,
 }) => {
-  const { apiCreateTask, apiTaskStaff } = ApiTask();
+  const { apiCreateTask, apiTaskStaff, apiGetTask } = ApiTask();
 
   //search
   const [query, setQuery] = useState<string>("");
@@ -44,6 +57,10 @@ const ModalDeliveryTask: React.FC<ModalOrder> = ({
   //paginate
   const rowPerPage = 5;
   const [currentPage, setCurrentPage] = useState<number>(1);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const [tasks, setTasks] = useState<GetTaskProps[]>([]);
+
+  const [dateExecution, setDateExecution] = useState<string>();
 
   const fetchAccountUser = async () => {
     const response = await apiTaskStaff();
@@ -84,11 +101,15 @@ const ModalDeliveryTask: React.FC<ModalOrder> = ({
   const onSubmit = async (data: DeliveryProps) => {
     try {
       if (OrderData) {
+        if (!dateExecution) {
+          toast.error("Chọn ngày thực hiện");
+          return;
+        }
         const params: DeliveryPropsPost = {
           accountId: data.accountId,
-          status: "Process",
           orderId: OrderData.orderId,
           type: "Delivery",
+          excutionDate: dateExecution,
         };
         const response = await apiCreateTask(params);
         if (response.status === 200) {
@@ -128,6 +149,29 @@ const ModalDeliveryTask: React.FC<ModalOrder> = ({
     value: item.staffId,
     taskStatusCount: item.taskStatusCount,
   }));
+
+  const fetchTaskStaff = async (id: string) => {
+    const params = {
+      Status: "Process",
+      AccountId: id,
+    };
+    const response = await apiGetTask(params);
+    setTasks(response.data);
+  };
+
+  useEffect(() => {
+    if (staffID) {
+      fetchTaskStaff(staffID);
+    }
+  }, [staffID]);
+
+  const handleChooseDate = (date: Dayjs | null) => {
+    if (date) {
+      const dateChoose = date.format();
+      setDateExecution(dateChoose);
+    }
+  };
+
   return (
     <Modal
       title={`Chấp nhận đơn hàng mã ${OrderData?.invoiceCode}`}
@@ -160,6 +204,26 @@ const ModalDeliveryTask: React.FC<ModalOrder> = ({
                     shrink: true,
                   }}
                 />
+                <LocalizationProvider
+                  dateAdapter={AdapterDayjs}
+                  localeText={
+                    viVN.components.MuiLocalizationProvider.defaultProps
+                      .localeText
+                  }
+                >
+                  <DatePicker
+                    label="Chọn ngày giao"
+                    onChange={(e) => handleChooseDate(e)}
+                    format="DD/MM/YYYY"
+                    shouldDisableDate={(date) => {
+                      const today = dayjs();
+                      const isWeekend = date.day() === 0 || date.day() === 6;
+                      return (
+                        isWeekend || date.isBefore(today.add(1, "day"), "day")
+                      );
+                    }}
+                  />
+                </LocalizationProvider>
               </Stack>
               <div
                 style={{
@@ -200,6 +264,7 @@ const ModalDeliveryTask: React.FC<ModalOrder> = ({
             </Card>
           </Grid>
         </Grid>
+        <CalendarComponent tasks={tasks} />
       </FormProvider>
     </Modal>
   );

@@ -13,7 +13,7 @@ import {
 import { Table, Space, Dropdown, DatePicker } from "antd";
 import { ApiOrder } from "../../api/services/apiOrder";
 import { toast } from "react-toastify";
-import { formatDateFunc, formatMoney } from "../../utils/fn";
+import { formatAddress, formatDateFunc, formatMoney } from "../../utils/fn";
 import ModalDetailOrder from "./OrderModal/ModalDetailOrder";
 import ModalCancelOrder from "./OrderModal/ModalCancelOrder";
 import ModalDeliveryTask from "./OrderModal/ModalDeliveryTask";
@@ -260,7 +260,6 @@ const TableOrder: React.FC = () => {
         </div>
       ),
       dataIndex: "invoiceCode",
-      width: "20%",
       align: "center",
     },
     {
@@ -315,16 +314,29 @@ const TableOrder: React.FC = () => {
       align: "center",
     },
     {
-      title: (
-        <div
-          style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}
-        >
-          Tổng thành tiền
-        </div>
-      ),
-      dataIndex: "totalAmount",
-      render: (totalAmount) => formatMoney(totalAmount),
-      align: "center",
+      title: "Tổng tiền",
+      dataIndex: "finalAmount",
+      render: (finalAmount) => (finalAmount ? formatMoney(finalAmount) : ""),
+    },
+    {
+      title: "Tên khách hàng",
+      dataIndex: "userInfo",
+      render: (userInfo) => userInfo.fullName,
+    },
+    {
+      title: "Người nhận hàng",
+      dataIndex: "address",
+      render: (address) => address.namePersonal,
+    },
+    {
+      title: "Số điện thoại",
+      dataIndex: "address",
+      render: (address) => address.phoneNumber,
+    },
+    {
+      title: "Địa chỉ",
+      dataIndex: "address",
+      render: (address) => (address ? formatAddress(address) : ""),
     },
     {
       title: (

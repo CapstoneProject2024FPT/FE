@@ -11,11 +11,22 @@ import { toast } from "react-toastify";
 import { Card, Grid, Stack, TextField } from "@mui/material";
 import { LoadingButton } from "@mui/lab";
 import { ApiTask } from "../../../api/services/apiTask";
-import { DeliveryPropsPost, StaffTaskProps } from "../../../models/task";
+import {
+  DeliveryPropsPost,
+  GetTaskProps,
+  StaffTaskProps,
+} from "../../../models/task";
 import { WarrantyPropsById } from "../../../models/warranty";
 import config from "../../../configs";
 import CustomPagination from "../../../components/pagination/CustomPagination";
 //api
+//calender
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import { viVN } from "@mui/x-date-pickers/locales";
+import dayjs, { Dayjs } from "dayjs";
+import CalendarComponent from "../../../components/calender/Calender";
 
 interface ModalOrder {
   OrderData: WarrantyPropsById | undefined;
@@ -37,8 +48,10 @@ const ModalDeliveryTaskPeriodic: React.FC<ModalOrder> = ({
   onCreateSuccess,
   idWarranty,
 }) => {
-  const { apiCreateTask, apiTaskStaff } = ApiTask();
+  const { apiCreateTask, apiTaskStaff, apiGetTask } = ApiTask();
 
+  const [dateExecution, setDateExecution] = useState<string>();
+  const [tasks, setTasks] = useState<GetTaskProps[]>([]);
   //search
   const [query, setQuery] = useState<string>("");
   const [data, setData] = useState<StaffTaskProps[]>([]);
@@ -85,11 +98,15 @@ const ModalDeliveryTaskPeriodic: React.FC<ModalOrder> = ({
     try {
       if (OrderData && OrderData.warrantyDetail) {
         if (idWarranty) {
+          if (!dateExecution) {
+            toast.error("Chọn ngày thực hiện");
+            return;
+          }
           const params: DeliveryPropsPost = {
             accountId: data.accountId,
-            status: "Process",
             warrantyDetailId: idWarranty,
             type: "Warranty",
+            excutionDate: dateExecution,
           };
 
           const response = await apiCreateTask(params);
@@ -131,6 +148,28 @@ const ModalDeliveryTaskPeriodic: React.FC<ModalOrder> = ({
     value: item.staffId,
     taskStatusCount: item.taskStatusCount,
   }));
+
+  const fetchTaskStaff = async (id: string) => {
+    const params = {
+      Status: "Process",
+      AccountId: id,
+    };
+    const response = await apiGetTask(params);
+    setTasks(response.data);
+  };
+
+  useEffect(() => {
+    if (staffID) {
+      fetchTaskStaff(staffID);
+    }
+  }, [staffID]);
+
+  const handleChooseDate = (date: Dayjs | null) => {
+    if (date) {
+      const dateChoose = date.format();
+      setDateExecution(dateChoose);
+    }
+  };
   return (
     <Modal
       title="Chấp nhận đơn hàng"
@@ -177,6 +216,26 @@ const ModalDeliveryTaskPeriodic: React.FC<ModalOrder> = ({
                     shrink: true,
                   }}
                 />
+                <LocalizationProvider
+                  dateAdapter={AdapterDayjs}
+                  localeText={
+                    viVN.components.MuiLocalizationProvider.defaultProps
+                      .localeText
+                  }
+                >
+                  <DatePicker
+                    label="Chọn ngày giao"
+                    onChange={(e) => handleChooseDate(e)}
+                    format="DD/MM/YYYY"
+                    shouldDisableDate={(date) => {
+                      const today = dayjs();
+                      const isWeekend = date.day() === 0 || date.day() === 6;
+                      return (
+                        isWeekend || date.isBefore(today.add(1, "day"), "day")
+                      );
+                    }}
+                  />
+                </LocalizationProvider>
               </Stack>
               <div
                 style={{
@@ -217,6 +276,7 @@ const ModalDeliveryTaskPeriodic: React.FC<ModalOrder> = ({
             </Card>
           </Grid>
         </Grid>
+        <CalendarComponent tasks={tasks} />
       </FormProvider>
     </Modal>
   );

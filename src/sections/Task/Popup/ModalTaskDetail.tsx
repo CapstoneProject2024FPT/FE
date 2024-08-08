@@ -96,7 +96,7 @@ const ModalDetailTask: React.FC<ModalBrand> = ({
               <TableRow>
                 <TableCell sx={{ width: "30%" }}>Loại Nhiệm vụ</TableCell>
                 <TableCell>
-                  {TaskData?.type === "Delivery" ? "Giao Hàng" : "Bảo Trì"}
+                  {TaskData?.type === "Delivery" ? "Giao Hàng" : "Bảo Hành"}
                 </TableCell>
               </TableRow>
               <TableRow>
