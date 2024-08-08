@@ -41,8 +41,8 @@ const WarrantyPDFDocument = ({
         position: "relative",
       }}
     >
-            <View
-         style={{
+      <View
+        style={{
           position: "absolute",
           top: 0,
           left: 0,
@@ -72,7 +72,6 @@ const WarrantyPDFDocument = ({
           </Text>
         ))}
       </View>
-
       <View>
         <Text
           style={{
@@ -81,7 +80,7 @@ const WarrantyPDFDocument = ({
             textAlign: "center",
             fontWeight: "ultrabold",
             marginBottom: "10px",
-          }}> HỆ THÔNG BÁN VÀ BẢO TRÌ MÁY MÓC CƠ KHÍ </Text>
+          }}> HỆ THỐNG BÁN VÀ BẢO TRÌ MÁY MÓC CƠ KHÍ </Text>
       </View>
       <View
         style={{
@@ -314,27 +313,58 @@ const WarrantyPDFDocument = ({
               )
             )}
           </View>
-          <View style={{ 
-            alignSelf: "flex-end",
+          <View style={{
+            marginTop: 50,
             display: "flex",
-            alignItems: "center"
+            flexDirection: "row",
+            justifyContent: "space-between",
+          }}>
+            <View style={{
+              width: "45%",
+              textAlign: "center",
             }}>
-            <Text style={{fontSize: "14px"}}>
-              {formatDateFunc.formatDateVietnamese(order.createDate) || ""}
-            </Text>
-            <Text style={{ margin: "15px 0", fontSize: "14px"}}>
-              Đại diện công ty kí tên
-            </Text>
-            <Text
-              style={{
-                textAlign: "center",
-                fontSize: "18px",
-                fontWeight: "extrabold",
-              }}
-            >
-              SMMMS
-            </Text>
+              <Text style={{ fontSize: "14px" }}>
+                {formatDateFunc.formatDateVietnamese(order.createDate) || ""}
+              </Text>
+              <Text style={{
+                margin: "15px 0", fontSize: "14px"
+              }}>Đại diện khách hàng ký tên</Text>
+              <Text
+                style={{
+                  textAlign: "center",
+                  fontSize: "18px",
+                  fontWeight: "extrabold",
+                  borderBottom: "1px solid #000",
+                  minHeight: "50px"
+                }}
+              >
+                {order.userInfo.fullName || ""}
+              </Text>
+            </View>
+            <View style={{
+              width: "45%",
+              textAlign: "center",
+            }}>
+              <Text style={{ fontSize: "14px" }}>
+                {formatDateFunc.formatDateVietnamese(order.createDate) || ""}
+              </Text>
+              <Text style={{ margin: "15px 0", fontSize: "14px" }}>
+                Đại diện công ty kí tên
+              </Text>
+              <Text
+                style={{
+                  textAlign: "center",
+                  fontSize: "18px",
+                  fontWeight: "extrabold",
+                  borderBottom: "1px solid #000",
+                  minHeight: "50px"
+                }}
+              >
+                SMMMS
+              </Text>
+            </View>
           </View>
+
         </View>
       </View>
       <View
@@ -345,84 +375,88 @@ const WarrantyPDFDocument = ({
           QUY ĐỊNH BẢO HÀNH
         </Text>
         <View style={{ display: "flex" }}>
-            <Text
-              style={{
-                margin: "10px",
-                fontSize: "18px",
-                fontWeight: "ultrabold",
-              }}>
-              I. ĐIỀU KHOẢN CHUNG VỀ BẢO HÀNH
-            </Text>
-            <View
-              style={{
-                fontSize: "12px",
-                marginLeft: "20px",
-                lineHeight: 2
-              }}>
-              <View style={{ display: "flex", flexDirection: "row" }}>
-                <Text style={{ marginRight: "5px" }}>1.</Text>
-                <Text>Chúng tôi chỉ chịu trách nhiệm bảo hành sau khi đã xác định lỗi thuộc về sản xuất.</Text>
-              </View>
-              <View style={{ display: "flex", flexDirection: "row" }}>
-                <Text style={{ marginRight: "5px" }}>2.</Text>
-                <Text>Phiếu bảo hành phải được giữ nguyên, không bị tẩy xóa, sửa đổi trong thời gian bảo hành.</Text>
-              </View>
-              <View style={{ display: "flex", flexDirection: "row" }}>
-                <Text style={{ marginRight: "5px" }}>3.</Text>
-                <Text>Thiết bị được sửa chữa miễn phí tại trung tâm trong suốt thời gian bảo hành của nhà sản xuất.</Text>
-              </View>
-              <View style={{ display: "flex", flexDirection: "row" }}>
-                <Text style={{ marginRight: "5px" }}>4.</Text>
-                <Text>Những sản phẩm bảo hành ngoài nội thành Thành Phố Hồ Chí Minh, chi phí đi lại khách hàng chịu trách nhiệm.</Text>
-              </View>
-              <View style={{ display: "flex", flexDirection: "row" }}>
-                <Text style={{ marginRight: "5px" }}>5.</Text>
-                <Text>Đối với những sản phẩm có giá trị dưới 8 triệu bảo hành tại công ty.</Text>
-              </View>
+          <Text
+            style={{
+              margin: "10px",
+              fontSize: "18px",
+              fontWeight: "ultrabold",
+            }}>
+            I. ĐIỀU KHOẢN CHUNG VỀ BẢO HÀNH
+          </Text>
+          <View
+            style={{
+              fontSize: "12px",
+              marginLeft: "20px",
+              lineHeight: 2
+            }}>
+            <View style={{ display: "flex", flexDirection: "row" }}>
+              <Text style={{ marginRight: "5px" }}>1.</Text>
+              <Text>Chúng tôi chỉ chịu trách nhiệm bảo hành sau khi đã xác định lỗi thuộc về sản xuất.</Text>
             </View>
-          </View>
-          <View style={{ display: "flex" }}>
-            <Text
-              style={{
-                margin: "10px",
-                fontSize: "18px",
-                fontWeight: "ultrabold",
-              }}>
-              II. CÁC TRƯỜNG HỢP KHÔNG ĐƯỢC BẢO HÀNH
-            </Text>
-            <View
-              style={{
-                fontSize: "12px",
-                marginLeft: "20px",
-                lineHeight: 2
-              }}>
-              <View style={{ display: "flex", flexDirection: "row" }}>
-                <Text style={{ marginRight: "5px" }}>1.</Text>
-                <Text>Sản phẩm hết thời gian bảo hành ghi trong phiếu bảo hành.</Text>
-              </View>
-              <View style={{ display: "flex", flexDirection: "row" }}>
-                <Text style={{ marginRight: "5px" }}>2.</Text>
-                <Text>Mất hoặc không còn phiếu bảo hành.</Text>
-              </View>
-              <View style={{ display: "flex", flexDirection: "row" }}>
-                <Text style={{ marginRight: "5px" }}>3.</Text>
-                <Text>Khách hàng tự tháo mở, sửa chữa, thay đổi lại máy ở cơ sở khác khi chưa được sự đồng ý.</Text>
-              </View>
-              <View style={{ display: "flex", flexDirection: "row" }}>
-                <Text style={{ marginRight: "5px" }}>4.</Text>
-                <Text>Máy móc hoặc linh kiện bị hỏng hóc, đứt dây, không đầy đủ linh kiện, sử dụng ngôn ngữ điện áp không phù hợp.</Text>
-              </View>
-              <View style={{ display: "flex", flexDirection: "row" }}>
-                <Text style={{ marginRight: "5px" }}>5.</Text>
-                <Text>Sản phẩm bị hư hỏng do bảo quản không tốt, côn trùng, thiên tai, hoả hoạn.</Text>
-              </View>
+            <View style={{ display: "flex", flexDirection: "row" }}>
+              <Text style={{ marginRight: "5px" }}>2.</Text>
+              <Text>Phiếu bảo hành phải được giữ nguyên, không bị tẩy xóa, sửa đổi trong thời gian bảo hành.</Text>
             </View>
-          </View>
-          <View style={{ marginTop: "10px"}}>
-            <Text style={{ marginRight: "5px", fontSize: "14px" }}>Lưu ý: </Text>
-            <Text style={{ marginLeft: "20px", fontSize: "12px", lineHeight: 2 }}>Tiếp nhận yêu cầu bảo hành vào giờ hành chính từ thứ 2 đến thứ 7 hàng tuần <br /> trừ ngày nghỉ lễ.</Text>
+            <View style={{ display: "flex", flexDirection: "row" }}>
+              <Text style={{ marginRight: "5px" }}>3.</Text>
+              <Text>Thiết bị được sửa chữa miễn phí tại trung tâm trong suốt thời gian bảo hành của nhà sản xuất.</Text>
+            </View>
+            <View style={{ display: "flex", flexDirection: "row" }}>
+              <Text style={{ marginRight: "5px" }}>4.</Text>
+              <Text>Những sản phẩm bảo hành ngoài nội thành Thành Phố Hồ Chí Minh, chi phí đi lại khách hàng chịu trách nhiệm.</Text>
+            </View>
+            <View style={{ display: "flex", flexDirection: "row" }}>
+              <Text style={{ marginRight: "5px" }}>5.</Text>
+              <Text>Đối với những sản phẩm có giá trị dưới 8 triệu bảo hành tại công ty.</Text>
+            </View>
           </View>
         </View>
+        <View style={{ display: "flex" }}>
+          <Text
+            style={{
+              margin: "10px",
+              fontSize: "18px",
+              fontWeight: "ultrabold",
+            }}>
+            II. CÁC TRƯỜNG HỢP KHÔNG ĐƯỢC BẢO HÀNH
+          </Text>
+          <View
+            style={{
+              fontSize: "12px",
+              marginLeft: "20px",
+              lineHeight: 2
+            }}>
+            <View style={{ display: "flex", flexDirection: "row" }}>
+              <Text style={{ marginRight: "5px" }}>1.</Text>
+              <Text>Sản phẩm hết thời gian bảo hành ghi trong phiếu bảo hành.</Text>
+            </View>
+            <View style={{ display: "flex", flexDirection: "row" }}>
+              <Text style={{ marginRight: "5px" }}>2.</Text>
+              <Text>Mất hoặc không còn phiếu bảo hành.</Text>
+            </View>
+            <View style={{ display: "flex", flexDirection: "row" }}>
+              <Text style={{ marginRight: "5px" }}>3.</Text>
+              <Text>Khách hàng tự tháo mở, sửa chữa, thay đổi lại máy ở cơ sở khác khi chưa được sự đồng ý.</Text>
+            </View>
+            <View style={{ display: "flex", flexDirection: "row" }}>
+              <Text style={{ marginRight: "5px" }}>4.</Text>
+              <Text>Máy móc hoặc linh kiện bị hỏng hóc, đứt dây, không đầy đủ linh kiện, sử dụng ngôn ngữ điện áp không phù hợp.</Text>
+            </View>
+            <View style={{ display: "flex", flexDirection: "row" }}>
+              <Text style={{ marginRight: "5px" }}>5.</Text>
+              <Text>Sản phẩm bị hư hỏng do bảo quản không tốt, côn trùng, thiên tai, hoả hoạn.</Text>
+            </View>
+            <View style={{ display: "flex", flexDirection: "row" }}>
+              <Text style={{ marginRight: "5px" }}>6.</Text>
+              <Text>Chỉ hỗ trợ mua và bảo hành trong khu vực TP.HCM. Nếu máy móc được di chuyển hoặc dời đến địa điểm ngoài TP.HCM, sẽ không hỗ trợ bảo hành.</Text>
+            </View>
+          </View>
+        </View>
+        <View style={{ marginTop: "10px" }}>
+          <Text style={{ marginRight: "5px", fontSize: "14px" }}>Lưu ý: </Text>
+          <Text style={{ marginLeft: "20px", fontSize: "12px", lineHeight: 2 }}>Tiếp nhận yêu cầu bảo hành vào giờ hành chính từ thứ 2 đến thứ 7 hàng tuần <br /> trừ ngày nghỉ lễ.</Text>
+        </View>
+      </View>
     </Page>
   </Document>
 );

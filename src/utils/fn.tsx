@@ -24,7 +24,7 @@ export const formatDateFunc = {
     const day = momentDate.format("DD");
     const month = momentDate.format("MM");
     const year = momentDate.format("YYYY");
-    return `Ngày ${day}, tháng ${month}, năm ${year}`;
+    return `Ký ngày ${day}, tháng ${month}, năm ${year}`;
   },
 };
 
