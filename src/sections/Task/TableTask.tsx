@@ -163,7 +163,7 @@ const TableTask: React.FC = () => {
         </div>
       ),
       dataIndex: "type",
-      render: (type) => (type === "Delivery" ? "Giao Hàng" : "Bảo Trì"),
+      render: (type) => (type === "Delivery" ? "Giao Hàng" : "Bảo Hành"),
       align: "center",
     },
     {
