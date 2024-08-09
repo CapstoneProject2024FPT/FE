@@ -120,7 +120,46 @@ const ExportPDFDocument = ({ row }: { row: OrderProps | undefined }) => {
 
   return (
     <Document>
-      <Page style={styles.page}>
+      <Page style={{
+        width: "100%",
+        height: "100%",
+        padding: "20px",
+        fontFamily: "Lora",
+        display: "flex",
+        flexDirection: "column",
+        position: "relative",
+      }}>
+              <View
+        style={{
+          position: "absolute",
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          zIndex: -1,
+          display: "flex",
+          flexWrap: "wrap",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        {Array.from({ length: 100 }).map((_, index) => (
+          <Text
+            key={index}
+            style={{
+              opacity: 0.1,
+              fontSize: "20px",
+              fontWeight: "bold",
+              textAlign: "center",
+              color: "black",
+              margin: "30px",
+              transform: "rotate(45)"
+            }}
+          >
+            SMMMS
+          </Text>
+        ))}
+      </View>
         <Image src={logo} style={styles.watermark} />
         <View style={styles.header}>
           <Text>Hóa đơn</Text>

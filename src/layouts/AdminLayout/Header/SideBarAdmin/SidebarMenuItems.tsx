@@ -24,7 +24,7 @@ const MenuSideBars: CustomMenuItem[] = [
     label: <Link to={config.adminRoutes.dashboard}>Thống Kê</Link>,
     key: config.adminRoutes.dashboard,
     icon: <PieChartOutlined />,
-    roles: AccessType.ALL_ACCESS,
+    roles: AccessType.ADMIN_MANAGER_ACCESS,
   },
   {
     label: <Link to={config.adminRoutes.user}>Người dùng</Link>,

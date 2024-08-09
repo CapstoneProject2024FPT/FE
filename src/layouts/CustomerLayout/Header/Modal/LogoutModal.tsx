@@ -16,13 +16,14 @@ interface LogoutProps {
 }
 
 export default function LogoutModal({ open, handleClose }: LogoutProps) {
-  const { setAuthUser } = useAuthContext();
+  const { setAuthUser, setRole } = useAuthContext();
   const navigate = useNavigate();
 
   const handleLogout = () => {
     localStorage.removeItem("loginInfo");
     localStorage.removeItem("historyPath");
     setAuthUser(null);
+    setRole(null);
     setTimeout(() => {
       navigate(config.routes.home);
     }, 500);

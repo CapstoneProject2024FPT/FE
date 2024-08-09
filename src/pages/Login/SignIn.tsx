@@ -127,8 +127,8 @@ const SignInForm: React.FC = () => {
             sx={{
               mt: 2,
               borderRadius: "20px",
-              border: "1px solid #ff4b2b",
-              backgroundColor: " #ff4b2b",
+              border: "1px solid #0056b3",
+              backgroundColor: " #0056b3",
               color: "#ffffff",
               fontSize: "12px",
               fontWeight: " bold",
@@ -136,7 +136,7 @@ const SignInForm: React.FC = () => {
               letterSpacing: "1px",
               textTransform: "uppercase",
               ":hover": {
-                backgroundColor: "#ff4b2b",
+                backgroundColor: "#0056b3",
                 transform: "scale(1.2)",
                 transition: "transform 100ms ease-out",
               },

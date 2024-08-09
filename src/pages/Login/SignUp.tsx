@@ -192,8 +192,8 @@ const SignUpForm: React.FC = () => {
             sx={{
               mt: 2,
               borderRadius: "20px",
-              border: "1px solid #ff4b2b",
-              backgroundColor: " #ff4b2b",
+              border: "1px solid #007BFF",
+              backgroundColor: " #007BFF",
               color: "#ffffff",
               fontSize: "12px",
               fontWeight: " bold",
@@ -201,7 +201,7 @@ const SignUpForm: React.FC = () => {
               letterSpacing: "1px",
               textTransform: "uppercase",
               ":hover": {
-                backgroundColor: "#ff4b2b",
+                backgroundColor: "#007BFF",
                 transform: "scale(1.2)",
                 transition: "transform 100ms ease-out",
               },

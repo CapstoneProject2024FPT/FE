@@ -18,6 +18,14 @@ export const formatDateFunc = {
   formatTime: (date: Date | undefined): string => {
     return moment(date, moment.ISO_8601).format("HH:mm A");
   },
+  formatDateVietnamese: (date: Date | undefined): string => {
+    if (!date) return "";
+    const momentDate = moment(date, moment.ISO_8601);
+    const day = momentDate.format("DD");
+    const month = momentDate.format("MM");
+    const year = momentDate.format("YYYY");
+    return `Ký ngày ${day}, tháng ${month}, năm ${year}`;
+  },
 };
 
 export function truncate(text: string | undefined) {
