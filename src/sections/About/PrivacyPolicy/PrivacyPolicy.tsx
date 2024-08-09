@@ -28,7 +28,7 @@ const PrivacyPolicy: React.FC = () => {
       <h2>4. Liên hệ</h2>
       <p>
         Nếu bạn có bất kỳ câu hỏi nào về chính sách bảo mật, vui lòng liên hệ
-        với chúng tôi qua email ad.smmms.gsu24se44@gmail.com
+        với chúng tôi qua <br />email: ad.smmms.gsu24se44@gmail.com
       </p>
     </div>
   );

@@ -11,11 +11,13 @@ interface AuthContextProps {
   setAuthUser: React.Dispatch<React.SetStateAction<string | null>>;
   role: string | null;
   setRole: React.Dispatch<React.SetStateAction<string | null>>;
+  isLoading: boolean; // New loading state
 }
 
 interface AuthContextProviderProps {
   children: ReactNode;
 }
+
 export const AuthContext = createContext<AuthContextProps | undefined>(
   undefined
 );
@@ -36,6 +38,8 @@ export const AuthContextProvider: React.FC<AuthContextProviderProps> = ({
 }) => {
   const [authUser, setAuthUser] = useState<string | null>(null);
   const [role, setRole] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+
   useEffect(() => {
     const loginInfoString = localStorage.getItem("loginInfo");
     const auth = loginInfoString ? JSON.parse(loginInfoString) : null;
@@ -43,10 +47,13 @@ export const AuthContextProvider: React.FC<AuthContextProviderProps> = ({
       setAuthUser(auth.data.id);
       setRole(auth.data.role);
     }
-  }, [authUser]); // Empty depen
+    setIsLoading(false);
+  }, [authUser]);
 
   return (
-    <AuthContext.Provider value={{ authUser, setAuthUser, role, setRole }}>
+    <AuthContext.Provider
+      value={{ authUser, setAuthUser, role, setRole, isLoading }}
+    >
       {children}
     </AuthContext.Provider>
   );

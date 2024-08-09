@@ -7,15 +7,16 @@ export interface DashboardProp {
 }
 
 interface OrdersByStatus {
-  Paid: number
-  UnPaid: number,
-  Completed: number,
-  Canceled: number,
-  Deliver: number
+  Paid: number;
+  UnPaid: number;
+  Completed: number;
+  Canceled: number;
+  Deliver: number;
+  ReDelivery: number;
 }
 interface MonthlyStatistics {
-  month: number,
-  totalOrders: number,
-  totalRevenue: number,
-  totalProfit: number
+  month: number;
+  totalOrders: number;
+  totalRevenue: number;
+  totalProfit: number;
 }
