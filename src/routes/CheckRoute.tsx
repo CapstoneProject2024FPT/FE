@@ -7,13 +7,7 @@ import { Role } from "./Roles";
 const CheckRoute: React.FC = () => {
   const { role, isLoading } = useAuthContext();
   const location = useLocation();
-  let redirectTo: string | null = null;
-
-  console.log("Current Path:", location.pathname);
-  console.log("Role:", role);
-  console.log("Is Loading:", isLoading);
-
-  console.log("Redirect1", redirectTo);
+  let redirectTo: string | null = config.routes.home;
 
   if (isLoading) {
     return <div>Loading...</div>;
@@ -36,17 +30,11 @@ const CheckRoute: React.FC = () => {
     }
   }
 
-  console.log("Redirect2", redirectTo);
-
-  console.log("Redirect3", location.pathname !== redirectTo);
-
-  console.log("Redirect4", redirectTo && location.pathname !== redirectTo);
-
-  if (redirectTo && location.pathname !== redirectTo) {
+  if (location.pathname === redirectTo) {
+    return <Outlet />;
+  } else {
     return <Navigate to={redirectTo} state={{ from: location }} replace />;
   }
-
-  return <Outlet />;
 };
 
 export default CheckRoute;

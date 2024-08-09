@@ -14,7 +14,6 @@ const RequireAuth: React.FC<RequireAuthProps> = ({ allowedRoles }) => {
   if (isLoading) {
     return <div>Loading...</div>;
   }
-  console.log(role, "Auth");
 
   if (!role) {
     return (
@@ -23,13 +22,7 @@ const RequireAuth: React.FC<RequireAuthProps> = ({ allowedRoles }) => {
   }
 
   if (!allowedRoles.includes(role)) {
-    return (
-      <Navigate
-        to={config.routes.notFound}
-        replace
-        state={{ from: location }}
-      />
-    );
+    return <Navigate to="/notFound" replace state={{ from: location }} />;
   }
 
   return <Outlet />;
