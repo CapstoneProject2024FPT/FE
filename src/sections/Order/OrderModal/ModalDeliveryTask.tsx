@@ -10,7 +10,7 @@ import * as Yup from "yup";
 import { toast } from "react-toastify";
 //model
 import { OrderProps } from "../../../models/order";
-import { Card, Grid, Stack, TextField } from "@mui/material";
+import { Card, Grid, Stack, TextField, Typography } from "@mui/material";
 import { LoadingButton } from "@mui/lab";
 import { ApiTask } from "../../../api/services/apiTask";
 import {
@@ -20,7 +20,6 @@ import {
 } from "../../../models/task";
 import config from "../../../configs";
 import CustomPagination from "../../../components/pagination/CustomPagination";
-
 //calender
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
@@ -28,6 +27,7 @@ import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { viVN } from "@mui/x-date-pickers/locales";
 import dayjs, { Dayjs } from "dayjs";
 import CalendarComponent from "../../../components/calender/Calender";
+import ModalAcceptDate from "./ModalAcceptDate";
 //api
 
 interface ModalOrder {
@@ -54,13 +54,14 @@ const ModalDeliveryTask: React.FC<ModalOrder> = ({
   //search
   const [query, setQuery] = useState<string>("");
   const [data, setData] = useState<StaffTaskProps[]>([]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [tempDate, setTempDate] = useState<string | null>(null);
   //paginate
   const rowPerPage = 5;
   const [currentPage, setCurrentPage] = useState<number>(1);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [tasks, setTasks] = useState<GetTaskProps[]>([]);
-
-  const [dateExecution, setDateExecution] = useState<string>();
+  const [dateExecution, setDateExecution] = useState<string | null>();
 
   const fetchAccountUser = async () => {
     const response = await apiTaskStaff();
@@ -140,9 +141,16 @@ const ModalDeliveryTask: React.FC<ModalOrder> = ({
     setCurrentPage(page);
   };
 
+  //get value and sort
+  const sortOptions = filteredRows.sort((a, b) => {
+    const processA = a.taskStatusCount?.Process || 0;
+    const processB = b.taskStatusCount?.Process || 0;
+    return processA - processB;
+  });
+
   const lastIndex = rowPerPage * currentPage;
   const indexFirstStaff = lastIndex - rowPerPage;
-  const currentStaff = filteredRows?.slice(indexFirstStaff, lastIndex);
+  const currentStaff = sortOptions?.slice(indexFirstStaff, lastIndex);
 
   const radioOptions = currentStaff?.map((item) => ({
     label: item.staffName,
@@ -168,8 +176,49 @@ const ModalDeliveryTask: React.FC<ModalOrder> = ({
   const handleChooseDate = (date: Dayjs | null) => {
     if (date) {
       const dateChoose = date.format();
-      setDateExecution(dateChoose);
+      const dateCreate = OrderData?.createDate;
+
+      if (dateCreate) {
+        const diffInBusinessDays = calculateBusinessDays(
+          dayjs(dateCreate),
+          dayjs(dateChoose)
+        );
+
+        if (diffInBusinessDays > 2) {
+          setTempDate(dateChoose);
+          setIsModalOpen(true);
+        } else {
+          setDateExecution(dateChoose);
+        }
+      } else {
+        setDateExecution(dateChoose);
+      }
     }
+  };
+
+  const calculateBusinessDays = (startDate: Dayjs, endDate: Dayjs): number => {
+    let count = 0;
+    let currentDate = startDate.startOf("day");
+
+    while (currentDate.isBefore(endDate, "day")) {
+      const dayOfWeek = currentDate.day();
+      if (dayOfWeek !== 0 && dayOfWeek !== 6) {
+        count++;
+      }
+      currentDate = currentDate.add(1, "day");
+    }
+
+    return count;
+  };
+
+  const handleConfirm = () => {
+    setDateExecution(tempDate);
+    setIsModalOpen(false);
+  };
+
+  const handleCancel = () => {
+    setIsModalOpen(false);
+    setTempDate(null);
   };
 
   return (
@@ -252,7 +301,11 @@ const ModalDeliveryTask: React.FC<ModalOrder> = ({
                 />
 
                 {/* {radio} */}
-                <RHFRadioGroup name="accountId" options={radioOptions || []} />
+                <RHFRadioGroup
+                  name="accountId"
+                  options={radioOptions || []}
+                  sx={{ height: "240px" }}
+                />
                 {/* paginate  */}
                 <CustomPagination
                   currentPage={currentPage}
@@ -264,7 +317,18 @@ const ModalDeliveryTask: React.FC<ModalOrder> = ({
             </Card>
           </Grid>
         </Grid>
+        <Typography variant="h5">
+          Tên nhân viên:{" "}
+          {staffID && data?.find((item) => item.staffId === staffID)?.staffName}
+        </Typography>
         <CalendarComponent tasks={tasks} />
+        {isModalOpen && (
+          <ModalAcceptDate
+            openPopup={isModalOpen}
+            handleClosePopup={handleCancel}
+            onConfirm={handleConfirm}
+          />
+        )}
       </FormProvider>
     </Modal>
   );
