@@ -141,9 +141,16 @@ const ModalDeliveryTaskWarranty: React.FC<ModalOrder> = ({
     setCurrentPage(page);
   };
 
+  //get value and sort
+  const sortOptions = filteredRows.sort((a, b) => {
+    const processA = a.taskStatusCount?.Process || 0;
+    const processB = b.taskStatusCount?.Process || 0;
+    return processA - processB;
+  });
+
   const lastIndex = rowPerPage * currentPage;
   const indexFirstStaff = lastIndex - rowPerPage;
-  const currentStaff = filteredRows?.slice(indexFirstStaff, lastIndex);
+  const currentStaff = sortOptions?.slice(indexFirstStaff, lastIndex);
 
   const radioOptions = currentStaff?.map((item) => ({
     label: item.staffName,
@@ -266,7 +273,11 @@ const ModalDeliveryTaskWarranty: React.FC<ModalOrder> = ({
                 />
 
                 {/* {radio} */}
-                <RHFRadioGroup name="accountId" options={radioOptions || []} />
+                <RHFRadioGroup
+                  name="accountId"
+                  options={radioOptions || []}
+                  sx={{ height: "240px" }}
+                />
 
                 <CustomPagination
                   currentPage={currentPage}

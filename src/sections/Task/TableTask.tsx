@@ -148,10 +148,6 @@ const TableTask: React.FC = () => {
       key: "1",
       label: "Chi tiết",
     },
-    {
-      key: "2",
-      label: "Đổi nhân viên",
-    },
   ];
   const columns: ColumnsType<GetTaskProps> = [
     {
