@@ -1,15 +1,18 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useState } from "react";
 import { Calendar } from "antd";
 import dayjs, { Dayjs } from "dayjs";
 import { Badge } from "antd";
 import viVN from "antd/es/calendar/locale/vi_VN";
 import { GetTaskProps } from "../../models/task";
+import ModalDetailTaskCalender from "./ModalDetails";
 
 interface CalenderProps {
   tasks: GetTaskProps[] | [];
 }
 
 const CalendarComponent: React.FC<CalenderProps> = ({ tasks }) => {
+  const [open, setOpen] = useState<boolean>(false);
+  const [selectTasks, setSelectTasks] = useState<GetTaskProps[]>([]);
   //calender
   const cellRender = useCallback(
     (currentDate: Dayjs, info: { type: string }) => {
@@ -39,9 +42,29 @@ const CalendarComponent: React.FC<CalenderProps> = ({ tasks }) => {
     },
     [tasks]
   );
+
+  const onSelect = (date: Dayjs) => {
+    const formattedDate = date.format("YYYY-MM-DD");
+    const selectedTasks = tasks.filter(
+      (task) => dayjs(task.excutionDate).format("YYYY-MM-DD") === formattedDate
+    );
+    if (selectedTasks.length > 0) {
+      setSelectTasks(selectedTasks);
+      setOpen(true);
+      return;
+    }
+    return;
+  };
   return (
     <>
-      <Calendar cellRender={cellRender} locale={viVN} />
+      <Calendar cellRender={cellRender} locale={viVN} onSelect={onSelect} />
+      {open && (
+        <ModalDetailTaskCalender
+          TaskData={selectTasks}
+          handleClose={() => setOpen(false)}
+          open={open}
+        />
+      )}
     </>
   );
 };

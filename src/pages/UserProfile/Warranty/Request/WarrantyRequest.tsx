@@ -28,7 +28,7 @@ import config from "../../../../configs";
 const getStatusStyles = (status: string) => {
   switch (status) {
     case "Process":
-      return { backgroundColor: "#FFD700", color: "black" }; // vàng
+      return { backgroundColor: "#2196F3", color: "black" }; // vàng
     case "Completed":
       return { backgroundColor: "#4CAF50", color: "white" }; // xanh lá
     case "AwaitingAssignment":

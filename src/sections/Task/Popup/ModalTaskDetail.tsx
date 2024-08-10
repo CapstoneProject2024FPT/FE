@@ -110,7 +110,7 @@ const ModalDetailTask: React.FC<ModalBrand> = ({
                 <TableCell>
                   {TaskData?.completedDate
                     ? formatDateFunc.formatDate(TaskData?.completedDate)
-                    : "Chưa Hoàn Thành"}
+                    : "------"}
                 </TableCell>
               </TableRow>
               <TableRow>

@@ -165,7 +165,7 @@ function Row(props: {
                       <TableCell align="right">{detail.description}</TableCell>
 
                       <TableCell align="right">
-                        {detail.status !== StatusType.AWAITINGASSIGNMENT && (
+                        {detail.status !== StatusType.AWAITINGASSIGNMENT ? (
                           <Box
                             sx={{
                               ...getStatusStyles(detail.status),
@@ -180,6 +180,20 @@ function Row(props: {
                               )?.name
                             }
                           </Box>
+                        ) : (
+                          <>
+                            <Box
+                              sx={{
+                                background: "grey",
+                                padding: "8px 16px",
+                                borderRadius: "8px",
+                                display: "inline-block",
+                                color: "white",
+                              }}
+                            >
+                              Chưa tới
+                            </Box>
+                          </>
                         )}
                       </TableCell>
                       <TableCell align="right">
