@@ -39,6 +39,7 @@ const ModalDetailTaskCalender: React.FC<ModalTask> = ({
     if (TaskData) {
       const fetchCustomerData = async () => {
         try {
+          //lấy thông tin khách hàng
           const customerResponses = await Promise.all(
             TaskData.map((task) => apiUserProfile(task.address.account.id))
           );
@@ -52,6 +53,7 @@ const ModalDetailTaskCalender: React.FC<ModalTask> = ({
 
       const fetchWarrantyData = async () => {
         try {
+          //lấy thông tin warranty nếu có
           const warrantyResponses = await Promise.all(
             TaskData.map((task) =>
               task.warrantyDetail?.warrantyId
