@@ -34,6 +34,22 @@ const TablePeriodicWarranty: React.FC = () => {
     navigate(config.adminRoutes.maintenanceDetail.replace(":id", record.id));
   };
 
+  //status
+  const getStatusStyles = (status: string) => {
+    switch (status) {
+      case "Process":
+        return { backgroundColor: "#2196F3", color: "black" }; // xạnh
+      case "Completed":
+        return { backgroundColor: "#4CAF50", color: "white" }; // xanh lá
+      case "AwaitingAssignment":
+        return { backgroundColor: "#FFD700", color: "black" }; // vàng
+      case "Cancele":
+        return { backgroundColor: "#F44336", color: "white" }; // đỏ
+      default:
+        return { backgroundColor: "transparent", color: "black" };
+    }
+  };
+
   const fetchWarrantyPeriodic = async () => {
     try {
       const params = {
@@ -212,14 +228,44 @@ const TablePeriodicWarranty: React.FC = () => {
           ? warrantyStatusMapping?.find((item) => item.id === status)?.name
           : defaultStatus;
 
-        if (daysDifference >= 0 && daysDifference <= 3) {
+        if (record.status !== "AwaitingAssignment") {
+          return (
+            <div
+              style={{
+                ...getStatusStyles(record.status),
+                padding: "8px 16px",
+                borderRadius: "8px",
+                display: "inline-block",
+              }}
+            >
+              {statusName}
+            </div>
+          );
+        }
+        if (
+          daysDifference >= 0 &&
+          daysDifference <= 3 &&
+          record.status === "AwaitingAssignment"
+        ) {
           return (
             <div>
               <div style={{ color: "orange" }}>{upComming}</div>
             </div>
           );
         } else if (daysDifference >= 4) {
-          return <div>{notCome}</div>;
+          return (
+            <div
+              style={{
+                background: "grey",
+                padding: "8px 16px",
+                borderRadius: "8px",
+                display: "inline-block",
+                color: "white",
+              }}
+            >
+              {notCome}
+            </div>
+          );
         } else {
           return <div>{statusName}</div>;
         }
