@@ -122,20 +122,6 @@ const ProductComponentDetail = () => {
               <Card sx={{ p: 3, mt: 2 }}>
                 <Stack spacing={3} mb={2}>
                   <TextField
-                    name="quantity"
-                    label="Số máy khả dụng"
-                    placeholder="0"
-                    value={component?.quantity?.Available || 0}
-                    InputLabelProps={{ shrink: true }}
-                    InputProps={{
-                      type: "number",
-                      inputProps: { min: 0 },
-                      readOnly: true,
-                    }}
-                  />
-                </Stack>
-                <Stack spacing={3} mb={2}>
-                  <TextField
                     name="sellingPrice"
                     label="Giá bán"
                     placeholder="0.00"
