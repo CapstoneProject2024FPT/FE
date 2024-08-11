@@ -205,7 +205,7 @@ export interface WarrantyDetailGetProps {
   nextMaintenanceDate: Date;
   warrantyId: string;
   staff: Staff;
-  inventoryChanges: InventoryChange[];
+  componentChange: ComponentChange[];
 }
 
 interface Staff {
@@ -214,15 +214,29 @@ interface Staff {
   role: string;
 }
 
-interface InventoryChange {
-  warrantyDetailId: string;
-  oldInventory: Inventory;
-  newInventory: Inventory;
-}
+// interface InventoryChange {
+//   warrantyDetailId: string;
+//   oldInventory: Inventory;
+//   newInventory: Inventory;
+// }
 
 interface Inventory {
   id: string;
   serialNumber: string;
   type: string;
   componentName: string;
+}
+
+interface ComponentChange {
+  image: string;
+  createDate: Date;
+  component: ComponentNew;
+}
+interface ComponentNew {
+  id: string;
+  name: string;
+  description: string;
+  status: string;
+  stockPrice: number;
+  sellingPrice: number;
 }
