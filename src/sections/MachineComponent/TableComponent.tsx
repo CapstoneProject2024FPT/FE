@@ -122,10 +122,6 @@ const TableComponent: React.FC = () => {
       key: "1",
       label: "Chi tiết",
     },
-    {
-      key: "2",
-      label: "Xoá",
-    },
   ];
   const columns: ColumnsType<GetMachineComponents> = [
     {
@@ -153,19 +149,6 @@ const TableComponent: React.FC = () => {
         return brand.name;
       },
       align: "center",
-    },
-    {
-      title: (
-        <div
-          style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}
-        >
-          Số lượng
-        </div>
-      ),
-      dataIndex: "quantity",
-      render: (quantity) => quantity.Available || 0,
-      align: "center",
-      sorter: (a, b) => a.quantity.Available - b.quantity.Available,
     },
     {
       title: (

@@ -35,14 +35,15 @@ export default function CheckoutBillingInfo({ onBackStep }: Props) {
       />
       <CardContent>
         <Typography variant="subtitle2" gutterBottom>
-          {address?.account.fullName}
-          <Typography
-            component="span"
-            variant="body2"
-            sx={{ color: "text.secondary" }}
-          ></Typography>
+          Người nhận: {address?.namePersonal}
         </Typography>
-
+        <Typography
+          component="span"
+          variant="body2"
+          sx={{ color: "text.secondary" }}
+        >
+          Số điện thoại: {address?.phoneNumber}
+        </Typography>
         <Typography variant="body2" sx={{ color: "text.secondary" }}>
           {address?.note}, {address?.ward.name}, {address?.district.name},{" "}
           {address?.city.name}

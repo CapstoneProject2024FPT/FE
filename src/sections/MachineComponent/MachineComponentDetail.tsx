@@ -11,7 +11,7 @@ import {
   Box,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 //models
 import { GetMachineComponents } from "../../models/machineComponent";
 //api
@@ -19,7 +19,7 @@ import { MachineryComponentApi } from "../../api/services/apiMachineComponent";
 //components
 import { toast } from "react-toastify";
 import { Button } from "antd";
-import config from "../../configs";
+// import config from "../../configs";
 import ModalComponentDetail from "./Popup/ModalUpdateComponentDetail";
 
 const LabelStyle = styled(Typography)(({ theme }) => ({
@@ -29,7 +29,7 @@ const LabelStyle = styled(Typography)(({ theme }) => ({
 }));
 
 const ProductComponentDetail = () => {
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
   const [component, setComponent] = useState<GetMachineComponents>();
   const [open, setOpen] = useState<boolean>(false);
@@ -63,13 +63,13 @@ const ProductComponentDetail = () => {
     setOpen(!open);
   };
 
-  const handleOpenSerial = () => {
-    if (id) {
-      navigate(
-        config.adminRoutes.viewDetailMachineComponentSerial.replace(":id", id)
-      );
-    }
-  };
+  // const handleOpenSerial = () => {
+  //   if (id) {
+  //     navigate(
+  //       config.adminRoutes.viewDetailMachineComponentSerial.replace(":id", id)
+  //     );
+  //   }
+  // };
   const handleUpdateSuccess = (response: string) => {
     handleClose();
     fetchProductDetail();
@@ -83,9 +83,9 @@ const ProductComponentDetail = () => {
         <>
           <Box sx={{ display: "flex", justifyContent: "flex-end", mb: 2 }}>
             <Stack spacing={2} display="flex" direction="row">
-              <Button onClick={() => handleOpenSerial()}>
+              {/* <Button onClick={() => handleOpenSerial()}>
                 Cập nhật số lượng bộ phận
-              </Button>
+              </Button> */}
               <Button onClick={() => handleClickOpen()}>
                 Cập nhật thông tin bộ phận
               </Button>
@@ -120,20 +120,6 @@ const ProductComponentDetail = () => {
                 </Stack>
               </Card>
               <Card sx={{ p: 3, mt: 2 }}>
-                <Stack spacing={3} mb={2}>
-                  <TextField
-                    name="quantity"
-                    label="Số máy khả dụng"
-                    placeholder="0"
-                    value={component?.quantity?.Available || 0}
-                    InputLabelProps={{ shrink: true }}
-                    InputProps={{
-                      type: "number",
-                      inputProps: { min: 0 },
-                      readOnly: true,
-                    }}
-                  />
-                </Stack>
                 <Stack spacing={3} mb={2}>
                   <TextField
                     name="sellingPrice"

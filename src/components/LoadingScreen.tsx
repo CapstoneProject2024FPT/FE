@@ -7,7 +7,7 @@ import Logo from "./Logo/Logo";
 
 // ----------------------------------------------------------------------
 
-const Root = styled("div")(({ theme }) => ({
+const RootStyle = styled("div")(({ theme }) => ({
   right: 0,
   bottom: 0,
   zIndex: 99999,
@@ -24,7 +24,7 @@ const Root = styled("div")(({ theme }) => ({
 
 export default function LoadingScreen() {
   return (
-    <Root>
+    <RootStyle>
       <m.div
         animate={{
           scale: [1, 0.9, 0.9, 1, 1],
@@ -81,6 +81,6 @@ export default function LoadingScreen() {
             `solid 8px ${alpha(theme.palette.primary.dark, 0.24)}`,
         }}
       />
-    </Root>
+    </RootStyle>
   );
 }

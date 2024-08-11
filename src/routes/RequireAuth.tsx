@@ -2,6 +2,7 @@ import React from "react";
 import { Navigate, Outlet, useLocation } from "react-router-dom";
 import { useAuthContext } from "../context/AuthContext";
 import config from "../configs";
+import LoadingScreen from "../components/LoadingScreen";
 
 interface RequireAuthProps {
   allowedRoles: string[];
@@ -12,7 +13,11 @@ const RequireAuth: React.FC<RequireAuthProps> = ({ allowedRoles }) => {
   const location = useLocation();
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return (
+      <div>
+        <LoadingScreen />
+      </div>
+    );
   }
 
   if (!role) {
