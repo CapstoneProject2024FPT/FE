@@ -3,6 +3,7 @@ import { Navigate, Outlet, useLocation } from "react-router-dom";
 import { useAuthContext } from "../context/AuthContext";
 import config from "../configs";
 import { Role } from "./Roles";
+import LoadingScreen from "../components/LoadingScreen";
 
 const CheckRoute: React.FC = () => {
   const { role, isLoading } = useAuthContext();
@@ -10,7 +11,11 @@ const CheckRoute: React.FC = () => {
   let redirectTo: string | null = config.routes.home;
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return (
+      <div>
+        <LoadingScreen />
+      </div>
+    );
   }
 
   if (role) {
