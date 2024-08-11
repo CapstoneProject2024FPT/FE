@@ -139,7 +139,6 @@ const Row = (props: {
         const params = { status: "SUCCESS" };
         try {
           const response = await apiPaymentUpdate(params, id);
-          console.log(response);
           if (response.status === 200) {
             toast.success("Thanh toán thành công");
             // send mail for payment success
@@ -245,21 +244,23 @@ const Row = (props: {
           </Menu>
         </TableCell>
         <TableCell style={{ width: "100px" }}>
-          {row.status === StatusType.UNPAID && remainingTime !== null && (
-            <Box
-              sx={{
-                padding: "8px 16px",
-                borderRadius: "8px",
-                display: "inline-block",
-                backgroundColor: "#FFD700",
-                color: "black",
-                textAlign: "center",
-                width: "100%",
-              }}
-            >
-              {formatRemainingTime(remainingTime)}
-            </Box>
-          )}
+          {row.status === StatusType.UNPAID &&
+            remainingTime !== null &&
+            row.type === "Order" && (
+              <Box
+                sx={{
+                  padding: "8px 16px",
+                  borderRadius: "8px",
+                  display: "inline-block",
+                  backgroundColor: "#FFD700",
+                  color: "black",
+                  textAlign: "center",
+                  width: "100%",
+                }}
+              >
+                {formatRemainingTime(remainingTime)}
+              </Box>
+            )}
         </TableCell>
       </TableRow>
       <TableRow>
@@ -275,31 +276,49 @@ const Row = (props: {
                     <TableCell>Tên sản phẩm</TableCell>
                     <TableCell>Số lượng</TableCell>
                     <TableCell>Giá sản phẩm</TableCell>
-                    <TableCell>Hành động</TableCell>
+                    {row.type === "Order" && <TableCell>Hành động</TableCell>}
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {row.productList.map((product) => (
-                    <TableRow key={product.orderDetailId}>
-                      <TableCell>
-                        <Link
-                          to={config.routes.productDetail.replace(
-                            ":id",
-                            product.productId
-                          )}
-                          style={{ textDecoration: "none", color: "black" }}
-                        >
-                          {product.productName}
-                        </Link>
-                      </TableCell>
-                      <TableCell>{product.quantity}</TableCell>
-                      <TableCell>{formatMoney(product.totalAmount)}</TableCell>
+                  {row?.type === "Order" ? (
+                    <>
+                      {row.productList.map((product) => (
+                        <TableRow key={product.orderDetailId}>
+                          <TableCell>
+                            <Link
+                              to={config.routes.productDetail.replace(
+                                ":id",
+                                product.productId
+                              )}
+                              style={{ textDecoration: "none", color: "black" }}
+                            >
+                              {product.productName}
+                            </Link>
+                          </TableCell>
+                          <TableCell>{product.quantity}</TableCell>
+                          <TableCell>
+                            {formatMoney(product.totalAmount)}
+                          </TableCell>
 
-                      <TableCell>
-                        <WarrantyPDF order={row} product={product} />
-                      </TableCell>
-                    </TableRow>
-                  ))}
+                          <TableCell>
+                            <WarrantyPDF order={row} product={product} />
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </>
+                  ) : (
+                    <>
+                      {row.productList.map((product) => (
+                        <TableRow key={product.orderDetailId}>
+                          <TableCell>{product.machineComponentName}</TableCell>
+                          <TableCell>{product.quantity}</TableCell>
+                          <TableCell>
+                            {formatMoney(product.totalAmount)}
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </>
+                  )}
                 </TableBody>
               </Table>
 
@@ -332,7 +351,9 @@ const OrderManagement: React.FC = () => {
   const [rowsPerPage, setRowsPerPage] = useState(15);
   const [openDialog, setOpenDialog] = useState(false);
   const [selectedOrderId, setSelectedOrderId] = useState<string | null>(null);
-  const [selectedInvoiceCode, setSelectedInvoiceCode] = useState<string | null>(null); 
+  const [selectedInvoiceCode, setSelectedInvoiceCode] = useState<string | null>(
+    null
+  );
   const routePage = [15, 20, 25, 30];
 
   const handleChangePage = (
@@ -375,7 +396,7 @@ const OrderManagement: React.FC = () => {
     }
   }, [apiGetOrderById]);
 
-  const handleOpenDialog = (orderId: string , invoiceCode: string) => {
+  const handleOpenDialog = (orderId: string, invoiceCode: string) => {
     setSelectedOrderId(orderId);
     setSelectedInvoiceCode(invoiceCode); // New state for invoiceCode
     setOpenDialog(true);
@@ -409,7 +430,7 @@ const OrderManagement: React.FC = () => {
   const handAutoSendMail = (invoiceCode: string) => {
     let email: string = "";
     let username: string = "";
-    console.log(invoiceCode)
+    console.log(invoiceCode);
     const getUserInfoString = localStorage.getItem("getUserInfo");
     if (getUserInfoString) {
       const userInfo = JSON.parse(getUserInfoString);
@@ -424,7 +445,7 @@ const OrderManagement: React.FC = () => {
 
   const handleAutoCancel = (orders: OrderProps[]) => {
     orders.forEach((order) => {
-      if (order.status === "UnPaid") {
+      if (order.status === "UnPaid" && order.type === "Order") {
         const createTime = moment(order.createDate);
         const now = moment();
         const diff = moment.duration(now.diff(createTime));

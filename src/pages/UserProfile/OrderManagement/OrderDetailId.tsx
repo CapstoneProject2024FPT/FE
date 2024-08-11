@@ -50,8 +50,16 @@ const OrderDetailBill: React.FC = () => {
     if (id) {
       try {
         const response = await apiGetOrderId(id);
+
         setOrderData(response.data);
 
+        //type order = warranty
+        if (response.data.type === "Warranty") {
+          setLoading(false);
+          return;
+        }
+
+        //type order = order
         if (response.status === 200) {
           const response2 = await Promise.all(
             response.data.productList.map(async (item: any) => {
@@ -82,6 +90,7 @@ const OrderDetailBill: React.FC = () => {
               };
             })
           );
+
           setWarranty(response2);
         }
       } catch (error) {
@@ -213,7 +222,8 @@ const OrderDetailBill: React.FC = () => {
                   Chi tiết sản phẩm
                 </Typography>
                 {orderData?.status !== "Canceled" &&
-                orderData?.status !== "UnPaid" ? (
+                orderData?.status !== "UnPaid" &&
+                orderData?.type !== "Warranty" ? (
                   <>
                     {warranty?.map((product, idx) => (
                       <Table size="small" aria-label="products" key={idx}>
@@ -315,26 +325,48 @@ const OrderDetailBill: React.FC = () => {
                       </TableRow>
                     </TableHead>
                     <TableBody>
-                      {orderData?.productList?.map((machine, index) => (
-                        <TableRow key={index}>
-                          <TableCell>{index + 1}</TableCell>
-                          <TableCell>
-                            <Link
-                              to={config.routes.productDetail.replace(
-                                ":id",
-                                machine.productId
-                              )}
-                              style={{ textDecoration: "none", color: "black" }}
-                            >
-                              {machine.productName}
-                            </Link>
-                          </TableCell>
-                          <TableCell>{machine.quantity}</TableCell>
-                          <TableCell>
-                            {formatMoney(machine.totalAmount)}
-                          </TableCell>
-                        </TableRow>
-                      ))}
+                      {orderData?.type === "Order" ? (
+                        <>
+                          {orderData?.productList?.map((machine, index) => (
+                            <TableRow key={index}>
+                              <TableCell>{index + 1}</TableCell>
+                              <TableCell>
+                                <Link
+                                  to={config.routes.productDetail.replace(
+                                    ":id",
+                                    machine.productId
+                                  )}
+                                  style={{
+                                    textDecoration: "none",
+                                    color: "black",
+                                  }}
+                                >
+                                  {machine.productName}
+                                </Link>
+                              </TableCell>
+                              <TableCell>{machine.quantity}</TableCell>
+                              <TableCell>
+                                {formatMoney(machine.totalAmount)}
+                              </TableCell>
+                            </TableRow>
+                          ))}
+                        </>
+                      ) : (
+                        <>
+                          {orderData?.productList?.map((machine, index) => (
+                            <TableRow key={index}>
+                              <TableCell>{index + 1}</TableCell>
+                              <TableCell>
+                                {machine.machineComponentName}
+                              </TableCell>
+                              <TableCell>{machine.quantity}</TableCell>
+                              <TableCell>
+                                {formatMoney(machine.totalAmount)}
+                              </TableCell>
+                            </TableRow>
+                          ))}
+                        </>
+                      )}
                     </TableBody>
                   </Table>
                 )}
