@@ -49,9 +49,9 @@ const formatDateFunc = {
   },
 };
 
-const ExportPDFDocument = ({ row }: { row: OrderProps }) => {
+const ExportPDFDocument = ({ row }: { row: OrderProps | undefined }) => {
   // Calculate total amount
-  const totalAmount = row.productList.reduce(
+  const totalAmount = row?.productList.reduce(
     (sum, product) => sum + product.totalAmount,
     0
   );
@@ -242,7 +242,7 @@ const ExportPDFDocument = ({ row }: { row: OrderProps }) => {
               >
                 <Text style={{ marginRight: "10px" }}>•</Text>
                 <Text style={{ minWidth: "120px" }}>Tên khách hàng: </Text>
-                <Text style={{}}>{row.userInfo.fullName || ""}</Text>
+                <Text style={{}}>{row?.userInfo.fullName || ""}</Text>
               </View>
               <View
                 style={{
@@ -254,7 +254,7 @@ const ExportPDFDocument = ({ row }: { row: OrderProps }) => {
               >
                 <Text style={{ marginRight: "10px" }}>•</Text>
                 <Text style={{ minWidth: "120px" }}>Địa chỉ: </Text>
-                <Text style={{}}>{formatAddress(row.address) || ""}</Text>
+                <Text style={{}}>{formatAddress(row?.address) || ""}</Text>
               </View>
               <View
                 style={{
@@ -266,7 +266,7 @@ const ExportPDFDocument = ({ row }: { row: OrderProps }) => {
               >
                 <Text style={{ marginRight: "10px" }}>•</Text>
                 <Text style={{ minWidth: "120px" }}>Mã hóa đơn: </Text>
-                <Text style={{}}>{row.invoiceCode || ""}</Text>
+                <Text style={{}}>{row?.invoiceCode || ""}</Text>
               </View>
               <View
                 style={{
@@ -279,7 +279,7 @@ const ExportPDFDocument = ({ row }: { row: OrderProps }) => {
                 <Text style={{ marginRight: "10px" }}>•</Text>
                 <Text style={{ minWidth: "120px" }}>Ngày mua: </Text>
                 <Text style={{}}>
-                  {formatDateFunc.formatDate(row.createDate) || ""}
+                  {formatDateFunc.formatDate(row?.createDate) || ""}
                 </Text>
               </View>
             </View>
@@ -355,7 +355,7 @@ const ExportPDFDocument = ({ row }: { row: OrderProps }) => {
                   Thành tiền
                 </Text>
               </View>
-              {row.productList.map((product, index) => (
+              {row?.productList.map((product, index) => (
                 <View
                   style={{
                     width: "100%",
@@ -444,7 +444,7 @@ const ExportPDFDocument = ({ row }: { row: OrderProps }) => {
             }}
           >
             <Text style={{ fontSize: "14px" }}>
-              {formatDateFunc.formatDateVietnamese(row.createDate) || ""}
+              {formatDateFunc.formatDateVietnamese(row?.createDate) || ""}
             </Text>
             <Text
               style={{
@@ -463,7 +463,7 @@ const ExportPDFDocument = ({ row }: { row: OrderProps }) => {
                 minHeight: "50px",
               }}
             >
-              {row.userInfo.fullName || ""}
+              {row?.userInfo.fullName || ""}
             </Text>
           </View>
           <View
@@ -473,7 +473,7 @@ const ExportPDFDocument = ({ row }: { row: OrderProps }) => {
             }}
           >
             <Text style={{ fontSize: "14px" }}>
-              {formatDateFunc.formatDateVietnamese(row.createDate) || ""}
+              {formatDateFunc.formatDateVietnamese(row?.createDate) || ""}
             </Text>
             <Text style={{ margin: "15px 0", fontSize: "14px" }}>
               Đại diện công ty kí tên
@@ -496,7 +496,7 @@ const ExportPDFDocument = ({ row }: { row: OrderProps }) => {
   );
 };
 
-const ExportPDF = ({ row }: { row: OrderProps }) => {
+const ExportPDF = ({ row }: { row: OrderProps | undefined }) => {
   const [pdfUrl, setPdfUrl] = useState<string | null>(null);
 
   useEffect(() => {
