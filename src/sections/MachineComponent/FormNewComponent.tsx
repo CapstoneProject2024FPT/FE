@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 //mui
-import { Card, Grid, Stack, Typography, InputAdornment } from "@mui/material";
-import { styled } from "@mui/material/styles";
+import { Card, Grid, Stack, InputAdornment } from "@mui/material";
 import { LoadingButton } from "@mui/lab";
 //models
 import { OriginProps } from "../../models/origin";
@@ -26,12 +25,6 @@ import { CategoryComponentApi } from "../../api/services/apiCategoriesComponent"
 //toast
 import { toast } from "react-toastify";
 import config from "../../configs";
-
-const LabelStyle = styled(Typography)(({ theme }) => ({
-  ...theme.typography.subtitle2,
-  color: theme.palette.text.secondary,
-  marginBottom: theme.spacing(1),
-}));
 
 export default function ProductNewComponent() {
   const { apiAddMachineryComponent } = MachineryComponentApi();
@@ -127,7 +120,6 @@ export default function ProductNewComponent() {
   const onSubmit = async (values: machineComponentProps) => {
     try {
       const response = await apiAddMachineryComponent(values);
-
       if (response.status === 200) {
         toast.success(config.AdminMessageNotice.AddMachineComponent);
       }
@@ -146,9 +138,9 @@ export default function ProductNewComponent() {
               <RHFTextField required name="name" label="Tên chi tiết máy" />
 
               <div>
-                <LabelStyle>Mô tả</LabelStyle>
                 <RHFTextField
                   required
+                  label="Mô tả"
                   fullWidth
                   multiline
                   rows={4}

@@ -200,8 +200,7 @@ const BlogNewUpdateForm: React.FC<BLogUpdate> = ({
                       />
 
                       <div>
-                        <LabelStyle>Nội dung</LabelStyle>
-                        <RHFEditor simple name="newsContent" />
+                        <RHFEditor simple name="newsContent" label="Nội dung" />
                       </div>
                       <div>
                         <LabelStyle>Hình nền</LabelStyle>

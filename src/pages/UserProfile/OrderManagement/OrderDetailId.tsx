@@ -27,6 +27,7 @@ import { ApiWarranty } from "../../../api/services/apiWarranty";
 import { Warranty, WarrantyResponse } from "../../../models/warranty";
 import PopupDetailOrder from "./Modal/PopupDetailOrder";
 import ModalRequestOrderDetail from "./Modal/ModalRequestWarranty";
+import WarrantyPDF from "../../Bill/Exportpdf/WarrantyPDF";
 
 // ----------------------------------------------------------------------
 
@@ -234,6 +235,7 @@ const OrderDetailBill: React.FC = () => {
                             <TableCell>Giá sản phẩm</TableCell>
                             <TableCell>Bảo hành</TableCell>
                             <TableCell>Tạo bảo hành</TableCell>
+                            <TableCell>Phiếu bảo hành</TableCell>
                           </TableRow>
                         </TableHead>
                         <TableBody>
@@ -289,6 +291,12 @@ const OrderDetailBill: React.FC = () => {
                                   >
                                     Tạo yêu cầu bảo hành
                                   </Button>
+                                </TableCell>
+                                <TableCell>
+                                  <WarrantyPDF
+                                    order={orderData}
+                                    product={detail}
+                                  />
                                 </TableCell>
                               </>
                             </TableRow>
@@ -385,6 +393,7 @@ const OrderDetailBill: React.FC = () => {
                   open={openWarranty}
                   onClose={handleCloseWarranty}
                   warrantyData={selectData}
+                  orderData={orderData}
                 />
               )}
             </>

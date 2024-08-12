@@ -214,7 +214,7 @@ const Transaction: React.FC = () => {
                           onClose={handleCloseMenu}
                         >
                           <MenuItem onClick={() => handleOpen(transaction)}>
-                            Chi tiết đơn hàng
+                            Chi tiết giao dịch
                           </MenuItem>
                         </Menu>
                       </TableCell>

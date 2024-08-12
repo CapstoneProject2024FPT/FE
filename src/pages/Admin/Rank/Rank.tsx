@@ -8,7 +8,7 @@ const Rank: React.FC = () => {
   return (
     <Container sx={{ width: "100% !important", maxWidth: "none !important" }}>
       <HeaderBreadcrumbs
-        heading="Tất cả loại máy"
+        heading="Tất cả hạng mức"
         links={[
           { name: "Thống kê", href: config.adminRoutes.dashboard },
           { name: "Hạng" },

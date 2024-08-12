@@ -28,6 +28,7 @@ import { viVN } from "@mui/x-date-pickers/locales";
 import dayjs, { Dayjs } from "dayjs";
 import CalendarComponent from "../../../components/calender/Calender";
 import ModalAcceptDate from "./ModalAcceptDate";
+import { formatDateFunc } from "../../../utils/fn";
 //api
 
 interface ModalOrder {
@@ -55,16 +56,31 @@ const ModalDeliveryTask: React.FC<ModalOrder> = ({
   const [query, setQuery] = useState<string>("");
   const [data, setData] = useState<StaffTaskProps[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [tempDate, setTempDate] = useState<string | null>(null);
+
   //paginate
   const rowPerPage = 5;
   const [currentPage, setCurrentPage] = useState<number>(1);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [tasks, setTasks] = useState<GetTaskProps[]>([]);
-  const [dateExecution, setDateExecution] = useState<string | null>();
 
-  const fetchAccountUser = async () => {
-    const response = await apiTaskStaff();
+  //date
+  const [dateExecution, setDateExecution] = useState<string | null>();
+  const [selectedDateExecution, setSelectedDateExecution] = useState<
+    string | null
+  >();
+  const [daySelect, setDaySelect] = useState<Dayjs | null>();
+
+  //temporary date
+  const [tempDate, setTempDate] = useState<string | null>(null);
+  const [selectedDateExecutionTemp, setSelectedDateExecutionTemp] = useState<
+    string | null
+  >();
+  const [daySelectTemp, setDaySelectTemp] = useState<Dayjs | null>();
+
+  const fetchAccountUser = async (executionDate = selectedDateExecution) => {
+    if (!executionDate) return;
+    const params = { targetDate: executionDate };
+    const response = await apiTaskStaff(params);
     if (response.status === 200) {
       setData(response.data);
     } else {
@@ -73,9 +89,10 @@ const ModalDeliveryTask: React.FC<ModalOrder> = ({
   };
 
   useEffect(() => {
+    if (!dateExecution) return;
     fetchAccountUser();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [dateExecution]);
 
   const DeliverySchema = Yup.object().shape({
     accountId: Yup.string().required("Chọn một nhân viên"),
@@ -94,6 +111,7 @@ const ModalDeliveryTask: React.FC<ModalOrder> = ({
     reset,
     handleSubmit,
     watch,
+    setValue,
     formState: { isSubmitting },
   } = methods;
 
@@ -143,8 +161,8 @@ const ModalDeliveryTask: React.FC<ModalOrder> = ({
 
   //get value and sort
   const sortOptions = filteredRows.sort((a, b) => {
-    const processA = a.taskStatusCount?.Process || 0;
-    const processB = b.taskStatusCount?.Process || 0;
+    const processA = a.todayTaskStatusCount?.Process || 0;
+    const processB = b.todayTaskStatusCount?.Process || 0;
     return processA - processB;
   });
 
@@ -155,13 +173,15 @@ const ModalDeliveryTask: React.FC<ModalOrder> = ({
   const radioOptions = currentStaff?.map((item) => ({
     label: item.staffName,
     value: item.staffId,
-    taskStatusCount: item.taskStatusCount,
+    taskStatusCount: item.todayTaskStatusCount,
   }));
 
   const fetchTaskStaff = async (id: string) => {
+    if (!selectedDateExecution) return;
     const params = {
       Status: "Process",
       AccountId: id,
+      ExcutionDate: selectedDateExecution,
     };
     const response = await apiGetTask(params);
     setTasks(response.data);
@@ -177,7 +197,9 @@ const ModalDeliveryTask: React.FC<ModalOrder> = ({
     if (date) {
       const dateChoose = date.format();
       const dateCreate = OrderData?.createDate;
-
+      const dateFilter = date.format("YYYY/MM/DD");
+      setValue("accountId", "");
+      setTasks([]);
       if (dateCreate) {
         const diffInBusinessDays = calculateBusinessDays(
           dayjs(dateCreate),
@@ -186,16 +208,27 @@ const ModalDeliveryTask: React.FC<ModalOrder> = ({
 
         if (diffInBusinessDays > 2) {
           setTempDate(dateChoose);
+          setSelectedDateExecutionTemp(dateFilter);
+          setDaySelectTemp(date);
           setIsModalOpen(true);
         } else {
+          setDaySelect(date);
+          setSelectedDateExecution(dateFilter);
           setDateExecution(dateChoose);
+          //call api
+          fetchAccountUser(dateFilter);
         }
       } else {
         setDateExecution(dateChoose);
+        setSelectedDateExecution(dateFilter);
+        setDaySelect(date);
+        //call api
+        fetchAccountUser(dateFilter);
       }
     }
   };
 
+  //count date
   const calculateBusinessDays = (startDate: Dayjs, endDate: Dayjs): number => {
     let count = 0;
     let currentDate = startDate.startOf("day");
@@ -212,13 +245,24 @@ const ModalDeliveryTask: React.FC<ModalOrder> = ({
   };
 
   const handleConfirm = () => {
+    setValue("accountId", "");
+    setTasks([]);
     setDateExecution(tempDate);
+    setSelectedDateExecution(selectedDateExecutionTemp);
+    setDaySelect(daySelectTemp);
     setIsModalOpen(false);
   };
-
   const handleCancel = () => {
     setIsModalOpen(false);
+    // Reset the temporary states to null
     setTempDate(null);
+    setSelectedDateExecutionTemp(null);
+    setDaySelectTemp(null);
+
+    // Revert to previous date if any or clear it
+    if (!dateExecution) {
+      setDaySelect(null);
+    }
   };
 
   return (
@@ -241,10 +285,11 @@ const ModalDeliveryTask: React.FC<ModalOrder> = ({
                   InputProps={{ readOnly: true }}
                 />
                 <TextField
-                  label="Tên nhân viên"
+                  label="Ngày tạo đơn"
                   value={
-                    staffID &&
-                    data?.find((item) => item.staffId === staffID)?.staffName
+                    OrderData
+                      ? formatDateFunc.formatDate(OrderData?.createDate)
+                      : ""
                   }
                   InputProps={{
                     readOnly: true,
@@ -263,6 +308,7 @@ const ModalDeliveryTask: React.FC<ModalOrder> = ({
                   <DatePicker
                     label="Chọn ngày giao"
                     onChange={(e) => handleChooseDate(e)}
+                    value={daySelect}
                     format="DD/MM/YYYY"
                     shouldDisableDate={(date) => {
                       const today = dayjs();
@@ -273,6 +319,19 @@ const ModalDeliveryTask: React.FC<ModalOrder> = ({
                     }}
                   />
                 </LocalizationProvider>
+                <TextField
+                  label="Tên nhân viên"
+                  value={
+                    staffID &&
+                    data?.find((item) => item.staffId === staffID)?.staffName
+                  }
+                  InputProps={{
+                    readOnly: true,
+                  }}
+                  InputLabelProps={{
+                    shrink: true,
+                  }}
+                />
               </Stack>
               <div
                 style={{
@@ -321,7 +380,7 @@ const ModalDeliveryTask: React.FC<ModalOrder> = ({
           Tên nhân viên:{" "}
           {staffID && data?.find((item) => item.staffId === staffID)?.staffName}
         </Typography>
-        <CalendarComponent tasks={tasks} />
+        <CalendarComponent tasks={tasks} chooseDate={daySelect} />
         {isModalOpen && (
           <ModalAcceptDate
             openPopup={isModalOpen}

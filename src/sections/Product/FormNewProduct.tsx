@@ -315,7 +315,9 @@ export default function ProductNewEditForm() {
   };
 
   const handleRemoveSpecification = (index: number) => {
-    remove(index);
+    if (fields.length > 1) {
+      remove(index);
+    }
   };
 
   //patse
@@ -366,13 +368,18 @@ export default function ProductNewEditForm() {
               <RHFTextField required name="name" label="Tên sản phẩm" />
 
               <div>
-                <LabelStyle>Mô tả</LabelStyle>
-                <RHFTextField fullWidth multiline rows={4} name="description" />
+                <RHFTextField
+                  fullWidth
+                  multiline
+                  rows={4}
+                  name="description"
+                  label="Mô tả"
+                />
               </div>
 
               <div>
-                <LabelStyle>Hình ảnh</LabelStyle>
                 <RHFUploadMultiFile
+                  label="Hình ảnh"
                   showPreview
                   name="imageURL"
                   maxSize={3145728}
@@ -413,11 +420,13 @@ export default function ProductNewEditForm() {
                         label="Giá trị"
                       />
 
-                      <IconButton
-                        onClick={() => handleRemoveSpecification(index)}
-                      >
-                        <DeleteIcon />
-                      </IconButton>
+                      {fields.length > 1 && (
+                        <IconButton
+                          onClick={() => handleRemoveSpecification(index)}
+                        >
+                          <DeleteIcon />
+                        </IconButton>
+                      )}
                     </Stack>
                   ))}
                   <Button

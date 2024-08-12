@@ -9,7 +9,6 @@ import {
   DialogContent,
   DialogActions,
   Grid,
-  TextField,
 } from "@mui/material";
 import { FormProvider, RHFTextField } from "../../../../components/hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -17,10 +16,13 @@ import { useForm } from "react-hook-form";
 import * as Yup from "yup";
 import { LoadingButton } from "@mui/lab";
 import { CreateWarranty, Warranty } from "../../../../models/warranty";
-import { formatAddress } from "../../../../utils/fn";
+import { formatAddress, formatDateFunc } from "../../../../utils/fn";
 import { toast } from "react-toastify";
 import { ApiWarranty } from "../../../../api/services/apiWarranty";
 import config from "../../../../configs";
+import { Typography } from "antd";
+import { OrderProps } from "../../../../models/order";
+import moment from "moment";
 
 // _mock
 
@@ -30,6 +32,7 @@ type Props = {
   warrantyData: Warranty | undefined;
   open: boolean;
   onClose: VoidFunction;
+  orderData: OrderProps | undefined;
 };
 
 interface NoteProps {
@@ -40,9 +43,11 @@ export default function ModalRequestOrderDetail({
   warrantyData,
   open,
   onClose,
+  orderData,
 }: Props) {
   const { apiCreateRequestWaranty } = ApiWarranty();
 
+  const createDate = moment();
   const RequestSchema = Yup.object().shape({
     description: Yup.string().required("bắt buộc").min(0, "Tối thiểu 5 kí tự"),
   });
@@ -89,50 +94,68 @@ export default function ModalRequestOrderDetail({
 
   return (
     <Dialog fullWidth maxWidth="md" open={open} onClose={onClose}>
-      <DialogTitle>Chi tiết đơn bảo hành</DialogTitle>
+      <DialogTitle>
+        Chi tiết đơn bảo hành máy mã{" "}
+        {warrantyData?.warrantyDetails?.inventory?.serialNumber}
+      </DialogTitle>
       <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
         <DialogContent>
           <Box sx={{ mt: 2 }}>
-            <Grid container spacing={2}>
-              <Grid item md={6} xs={12}>
-                <TextField
-                  fullWidth
-                  label="Mã máy"
-                  value={
-                    warrantyData?.warrantyDetails?.inventory?.serialNumber || ""
-                  }
-                  InputProps={{
-                    readOnly: true,
-                  }}
-                />
+            <Grid container spacing={1}>
+              <Grid item xs={3}>
+                <Typography>Ngày tạo đơn bảo hành:</Typography>
               </Grid>
-              <Grid item md={6} xs={12}>
-                <TextField
-                  fullWidth
-                  label="Tên máy"
-                  value={
-                    warrantyData?.warrantyDetails?.inventory?.machinery?.name ||
-                    ""
-                  }
-                  InputProps={{
-                    readOnly: true,
-                  }}
-                />
+              <Grid item xs={9}>
+                <Typography>
+                  {formatDateFunc.formatDate(createDate.toDate())}
+                </Typography>
+              </Grid>
+              <Grid item xs={3}>
+                <Typography>Máy thuộc mã đơn hàng:</Typography>
+              </Grid>
+              <Grid item xs={9}>
+                <Typography>{orderData?.invoiceCode}</Typography>
+              </Grid>
+              <Grid item xs={3}>
+                <Typography>Tên chủ đơn:</Typography>
+              </Grid>
+              <Grid item xs={9}>
+                <Typography>{orderData?.userInfo?.fullName}</Typography>
+              </Grid>
+              <Grid item xs={3}>
+                <Typography>Ngày mua:</Typography>
+              </Grid>
+              <Grid item xs={9}>
+                <Typography>
+                  {" "}
+                  {formatDateFunc.formatDate(orderData?.createDate)}
+                </Typography>
+              </Grid>
+              <Grid item xs={3}>
+                <Typography>Địa chỉ:</Typography>
+              </Grid>
+              <Grid item xs={9}>
+                <Typography>
+                  {formatAddress(warrantyData?.warrantyDetails?.address) || ""}
+                </Typography>
+              </Grid>
+              <Grid item xs={3}>
+                <Typography>Mã máy:</Typography>
+              </Grid>
+              <Grid item xs={9}>
+                <Typography>
+                  {warrantyData?.warrantyDetails?.inventory?.serialNumber}
+                </Typography>
+              </Grid>
+              <Grid item xs={3}>
+                <Typography>Tên máy:</Typography>
+              </Grid>
+              <Grid item xs={9}>
+                <Typography>
+                  {warrantyData?.warrantyDetails?.inventory?.machinery?.name}
+                </Typography>
               </Grid>
             </Grid>
-
-            <Box sx={{ mt: 2 }}>
-              <TextField
-                label="Địa chỉ bảo hành"
-                value={
-                  formatAddress(warrantyData?.warrantyDetails?.address) || ""
-                }
-                InputProps={{
-                  readOnly: true,
-                }}
-                fullWidth
-              />
-            </Box>
 
             <Box sx={{ mt: 2 }}>
               <RHFTextField

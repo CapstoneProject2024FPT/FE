@@ -126,8 +126,6 @@ const PeriodicWarrantyDetail = () => {
     toast.success(response);
   };
 
-  console.log(requestWarranty);
-
   return (
     <>
       {loading ? (
@@ -148,11 +146,11 @@ const PeriodicWarrantyDetail = () => {
                   <Stack spacing={3}>
                     <TextField
                       name="name"
-                      label="Ngày tạo"
+                      label="Ngày đi bảo hành"
                       value={
-                        warrantyPeriodic?.createDate
-                          ? formatDateFunc.formatDateTime(
-                              warrantyPeriodic?.createDate
+                        requestWarranty?.startDate
+                          ? formatDateFunc.formatDate(
+                              requestWarranty?.startDate
                             )
                           : ""
                       }
@@ -243,68 +241,64 @@ const PeriodicWarrantyDetail = () => {
                 </Stack>
               </Grid>
             </Grid>
-            {requestWarranty?.status === "Completed" ||
-              (requestWarranty?.status === "Repairing" && (
-                <Grid container spacing={3} sx={{ mt: 1 }}>
-                  <Grid item xs={12} md={12}>
-                    <Typography variant="h5">Nội dung sửa</Typography>
-                    <Card sx={{ p: 3 }}>
-                      <TextField
-                        label="Lý do"
-                        value={requestWarranty?.description || ""}
-                        multiline
-                        rows={4}
-                        fullWidth
-                        InputProps={{
-                          readOnly: true,
-                        }}
-                      />
-                    </Card>
-                  </Grid>
-                  <Grid item xs={12} md={12}>
-                    <Typography variant="h5">Bộ phận thay</Typography>
-                    <Card sx={{ p: 3 }}>
-                      {requestWarranty.componentChange.length > 0
-                        ? requestWarranty?.componentChange.map((item) => (
-                            <Grid container spacing={2}>
-                              <Grid item md={6} xs={12}>
-                                <TextField
-                                  sx={{ mt: 1 }}
-                                  label="Tên bộ phận thay thế"
-                                  value={item?.component.name || ""}
-                                  fullWidth
-                                  InputProps={{
-                                    readOnly: true,
-                                  }}
-                                />
-                              </Grid>
-                              <Grid item md={6} xs={12}>
-                                <TextField
-                                  sx={{ mt: 1 }}
-                                  label="Giá tiền "
-                                  value={
-                                    item?.component.sellingPrice
-                                      ? formatMoney(
-                                          item?.component.sellingPrice
-                                        )
-                                      : ""
-                                  }
-                                  fullWidth
-                                  InputProps={{
-                                    readOnly: true,
-                                  }}
-                                />
-                              </Grid>
-                            </Grid>
-                          ))
-                        : "Không thay thế bộ phận nào cả"}
-                    </Card>
-                  </Grid>
+            {(requestWarranty?.status === "Completed" ||
+              requestWarranty?.status === "Repairing") && (
+              <Grid container spacing={3} sx={{ mt: 1 }}>
+                {/* Repair Description */}
+                <Grid item xs={12}>
+                  <Typography variant="h5">Nội dung sửa</Typography>
+                  <Card sx={{ p: 3 }}>
+                    <TextField
+                      label="Lý do"
+                      value={requestWarranty?.description || ""}
+                      multiline
+                      rows={4}
+                      fullWidth
+                      InputProps={{ readOnly: true }}
+                    />
+                  </Card>
                 </Grid>
-              ))}
+
+                {/* Replaced Components */}
+                <Grid item xs={12}>
+                  <Typography variant="h5">Bộ phận thay</Typography>
+                  <Card sx={{ p: 3 }}>
+                    {requestWarranty.componentChange.length > 0
+                      ? requestWarranty.componentChange.map((item, idx) => (
+                          <Grid container spacing={2} key={idx}>
+                            <Grid item md={6} xs={12}>
+                              <TextField
+                                sx={{ mt: 1 }}
+                                label="Tên bộ phận thay thế"
+                                value={item?.component.name || ""}
+                                fullWidth
+                                InputProps={{ readOnly: true }}
+                              />
+                            </Grid>
+                            <Grid item md={6} xs={12}>
+                              <TextField
+                                sx={{ mt: 1 }}
+                                label="Giá tiền"
+                                value={
+                                  item?.component.sellingPrice
+                                    ? formatMoney(item?.component.sellingPrice)
+                                    : ""
+                                }
+                                fullWidth
+                                InputProps={{ readOnly: true }}
+                              />
+                            </Grid>
+                          </Grid>
+                        ))
+                      : "Không thay thế bộ phận nào cả"}
+                  </Card>
+                </Grid>
+              </Grid>
+            )}
           </Box>
           {open && (
             <ModalDeliveryTaskPeriodic
+              requestWarranty={requestWarranty}
               OrderData={warrantyPeriodic}
               idWarranty={idWarranty}
               handleCLose={handleClose}

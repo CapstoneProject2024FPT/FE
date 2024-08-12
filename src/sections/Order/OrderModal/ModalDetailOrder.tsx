@@ -125,13 +125,31 @@ const ModalDetailOrder: React.FC<ModalBrand> = ({
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {OrderData?.productList.map((product) => (
-                    <TableRow key={product.orderDetailId}>
-                      <TableCell>{product.productName}</TableCell>
-                      <TableCell>{product.quantity}</TableCell>
-                      <TableCell>{formatMoney(product.totalAmount)}</TableCell>
-                    </TableRow>
-                  ))}
+                  {OrderData?.type === "Order" ? (
+                    <>
+                      {OrderData?.productList.map((product) => (
+                        <TableRow key={product.orderDetailId}>
+                          <TableCell>{product.productName}</TableCell>
+                          <TableCell>{product.quantity}</TableCell>
+                          <TableCell>
+                            {formatMoney(product.totalAmount)}
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </>
+                  ) : (
+                    <>
+                      {OrderData?.productList.map((product) => (
+                        <TableRow key={product.orderDetailId}>
+                          <TableCell>{product.machineComponentName}</TableCell>
+                          <TableCell>{product.quantity}</TableCell>
+                          <TableCell>
+                            {formatMoney(product.totalAmount)}
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </>
+                  )}
                 </TableBody>
               </Table>
 

@@ -13,6 +13,7 @@ export const ApiTask = () => {
     Type?: string;
     Status?: string;
     AccountId?: string;
+    ExcutionDate?: string;
   }
   const apiGetTask = async (params: TaskProps) => {
     setLoading(true);
@@ -101,10 +102,13 @@ export const ApiTask = () => {
     }
   };
 
-  const apiTaskStaff = async () => {
+  interface StaffTaskProps {
+    targetDate?: string;
+  }
+  const apiTaskStaff = async (params: StaffTaskProps) => {
     setLoading(true);
     try {
-      const response = await axiosPublic.get(TASK_STAFF);
+      const response = await axiosPublic.get(TASK_STAFF, { params });
 
       return response;
 

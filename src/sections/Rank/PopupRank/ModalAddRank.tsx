@@ -1,6 +1,10 @@
 import React from "react";
 import { Modal } from "antd";
-import { FormProvider, RHFTextField } from "../../../components/hook-form";
+import {
+  FormProvider,
+  RHFTextField,
+  RHFTextFieldNumber,
+} from "../../../components/hook-form";
 // form
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm } from "react-hook-form";
@@ -69,7 +73,7 @@ const ModalRankAdd: React.FC<ModalRank> = ({
         <Card sx={{ p: 3 }}>
           <Stack spacing={3}>
             <RHFTextField name="name" label="Tên hạng" autoFocus />
-            <RHFTextField
+            <RHFTextFieldNumber
               name="range"
               label="Mức tiền"
               multiline

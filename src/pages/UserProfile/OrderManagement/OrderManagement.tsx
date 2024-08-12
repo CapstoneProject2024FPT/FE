@@ -17,6 +17,8 @@ import {
   Menu,
   MenuItem,
   Button,
+  TextField,
+  Stack,
 } from "@mui/material";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
@@ -39,6 +41,7 @@ import config from "../../../configs";
 import moment from "moment";
 import { ApiCheckout } from "../../../api/services/apiCheckout";
 import { handleSendEmail } from "../../../utils/sendEmail";
+import useDebounce from "../../../hooks/useDebounce";
 
 const getStatusStyles = (status: string) => {
   switch (status) {
@@ -356,6 +359,10 @@ const OrderManagement: React.FC = () => {
   );
   const routePage = [15, 20, 25, 30];
 
+  const [query, setQuery] = useState<string>("");
+
+  const debouceQuery = useDebounce({ delay: 500, value: query });
+
   const handleChangePage = (
     _event: React.MouseEvent<HTMLButtonElement> | null,
     newPage: number
@@ -385,6 +392,7 @@ const OrderManagement: React.FC = () => {
           AccountId: auth.data.id,
           page: page + 1,
           size: rowsPerPage,
+          InvoiceCode: debouceQuery,
         };
         const apiResponse = await apiGetOrderById(params);
         const orderList = apiResponse.data;
@@ -475,17 +483,39 @@ const OrderManagement: React.FC = () => {
       }
     });
   };
-
+  ///search
+  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setQuery(e.target.value);
+  };
   useEffect(() => {
     fetchOrders();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [page, rowsPerPage]);
+  }, [page, rowsPerPage, debouceQuery]);
 
   return (
     <Container maxWidth="lg">
       <Typography variant="h4" component="h1" gutterBottom>
         Lịch sử mua hàng
       </Typography>
+      <Stack display="flex" direction="row">
+        <TextField
+          label="Tìm kiếm"
+          variant="outlined"
+          value={query}
+          onChange={handleSearch}
+          sx={{ width: "300px" }}
+          margin="normal"
+          placeholder="Nhập mã đơn hàng "
+          InputLabelProps={{
+            shrink: true,
+          }}
+        />
+        {debouceQuery && (
+          <Typography sx={{ mt: 5, ml: 2 }}>
+            Có {orders?.items?.length} kết quả phù hợp
+          </Typography>
+        )}
+      </Stack>
 
       <TableContainer component={Paper}>
         <Table>

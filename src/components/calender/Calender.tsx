@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { Calendar } from "antd";
 import dayjs, { Dayjs } from "dayjs";
 import { Badge } from "antd";
@@ -8,12 +8,18 @@ import ModalDetailTaskCalender from "./ModalDetails";
 
 interface CalenderProps {
   tasks: GetTaskProps[] | [];
+  chooseDate?: Date | undefined | Dayjs | null;
 }
 
-const CalendarComponent: React.FC<CalenderProps> = ({ tasks }) => {
+const CalendarComponent: React.FC<CalenderProps> = ({ tasks, chooseDate }) => {
   const [open, setOpen] = useState<boolean>(false);
   const [selectTasks, setSelectTasks] = useState<GetTaskProps[]>([]);
-  //calender
+  const [currentDate, setCurrentDate] = useState<Dayjs | undefined>(
+    chooseDate ? dayjs(chooseDate) : undefined
+  );
+
+  const chosenDayjsDate = chooseDate ? dayjs(chooseDate) : null;
+
   const cellRender = useCallback(
     (currentDate: Dayjs, info: { type: string }) => {
       if (tasks.length > 0) {
@@ -24,8 +30,18 @@ const CalendarComponent: React.FC<CalenderProps> = ({ tasks }) => {
               dayjs(task.excutionDate).format("YYYY-MM-DD") === formattedDate
           );
 
+          // Check if the current date is the chosen date
+          const isChosenDate = chosenDayjsDate?.isSame(currentDate, "day");
+
           return (
-            <ul style={{ listStyle: "none", padding: 0 }}>
+            <ul
+              style={{
+                listStyle: "none",
+                padding: 0,
+                backgroundColor: isChosenDate ? "#f0f8ff" : "transparent",
+                borderRadius: isChosenDate ? "8px" : "none",
+              }}
+            >
               {dailyTasks.map((task) => (
                 <li key={task.id}>
                   <Badge
@@ -40,9 +56,10 @@ const CalendarComponent: React.FC<CalenderProps> = ({ tasks }) => {
       }
       return null;
     },
-    [tasks]
+    [tasks, chosenDayjsDate]
   );
 
+  // Handle date selection
   const onSelect = (date: Dayjs) => {
     const formattedDate = date.format("YYYY-MM-DD");
     const selectedTasks = tasks.filter(
@@ -53,11 +70,22 @@ const CalendarComponent: React.FC<CalenderProps> = ({ tasks }) => {
       setOpen(true);
       return;
     }
-    return;
   };
+
+  useEffect(() => {
+    if (chooseDate) {
+      setCurrentDate(dayjs(chooseDate));
+    }
+  }, [chooseDate]);
+
   return (
     <>
-      <Calendar cellRender={cellRender} locale={viVN} onSelect={onSelect} />
+      <Calendar
+        cellRender={cellRender}
+        locale={viVN}
+        onSelect={onSelect}
+        value={currentDate}
+      />
       {open && (
         <ModalDetailTaskCalender
           TaskData={selectTasks}

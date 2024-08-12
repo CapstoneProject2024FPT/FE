@@ -5,7 +5,7 @@ export interface DeliveryPropsPost {
   warrantyDetailId?: string;
   orderId?: string;
   accountId: string;
-  excutionDate: string;
+  excutionDate?: string | Date;
 }
 
 export interface GetTaskProps {

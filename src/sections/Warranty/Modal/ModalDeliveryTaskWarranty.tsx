@@ -8,7 +8,7 @@ import { useForm } from "react-hook-form";
 import * as Yup from "yup";
 import { toast } from "react-toastify";
 //model
-import { Card, Grid, Stack, TextField } from "@mui/material";
+import { Card, Grid, Stack, TextField, Typography } from "@mui/material";
 import { LoadingButton } from "@mui/lab";
 import { ApiTask } from "../../../api/services/apiTask";
 import {
@@ -31,6 +31,8 @@ import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { viVN } from "@mui/x-date-pickers/locales";
 import dayjs, { Dayjs } from "dayjs";
 import CalendarComponent from "../../../components/calender/Calender";
+import { formatDateFunc } from "../../../utils/fn";
+import ModalAcceptDateWarranty from "./ModalAcceptDateWarranty";
 
 interface ModalOrder {
   OrderData: WarrantyPropsById | undefined;
@@ -58,9 +60,27 @@ const ModalDeliveryTaskWarranty: React.FC<ModalOrder> = ({
   const rowPerPage = 5;
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [tasks, setTasks] = useState<GetTaskProps[]>([]);
-  const [dateExecution, setDateExecution] = useState<string>();
-  const fetchAccountUser = async () => {
-    const response = await apiTaskStaff();
+
+  const [dateExecution, setDateExecution] = useState<string | null>();
+  const [selectedDateExecution, setSelectedDateExecution] = useState<
+    string | null
+  >();
+  const [daySelect, setDaySelect] = useState<Dayjs | null>();
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [tempDate, setTempDate] = useState<string | null>(null);
+  const [selectedDateExecutionTemp, setSelectedDateExecutionTemp] = useState<
+    string | null
+  >();
+  const [daySelectTemp, setDaySelectTemp] = useState<Dayjs | null>();
+
+  const fetchAccountUser = async (executionDate = selectedDateExecution) => {
+    if (!executionDate) return;
+    const params = {
+      targetDate: executionDate,
+    };
+
+    const response = await apiTaskStaff(params);
     if (response.status === 200) {
       setData(response.data);
     } else {
@@ -68,10 +88,13 @@ const ModalDeliveryTaskWarranty: React.FC<ModalOrder> = ({
     }
   };
 
+  console.log(dateExecution);
+
   useEffect(() => {
+    if (!dateExecution) return;
     fetchAccountUser();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [dateExecution]);
 
   const DeliverySchema = Yup.object().shape({
     accountId: Yup.string().required("bắt buộc"),
@@ -90,6 +113,7 @@ const ModalDeliveryTaskWarranty: React.FC<ModalOrder> = ({
     reset,
     handleSubmit,
     watch,
+    setValue,
     formState: { isSubmitting },
   } = methods;
 
@@ -143,8 +167,8 @@ const ModalDeliveryTaskWarranty: React.FC<ModalOrder> = ({
 
   //get value and sort
   const sortOptions = filteredRows.sort((a, b) => {
-    const processA = a.taskStatusCount?.Process || 0;
-    const processB = b.taskStatusCount?.Process || 0;
+    const processA = a.todayTaskStatusCount?.Process || 0;
+    const processB = b.todayTaskStatusCount?.Process || 0;
     return processA - processB;
   });
 
@@ -155,13 +179,15 @@ const ModalDeliveryTaskWarranty: React.FC<ModalOrder> = ({
   const radioOptions = currentStaff?.map((item) => ({
     label: item.staffName,
     value: item.staffId,
-    taskStatusCount: item.taskStatusCount,
+    taskStatusCount: item.todayTaskStatusCount,
   }));
 
   const fetchTaskStaff = async (id: string) => {
+    if (!selectedDateExecution) return;
     const params = {
       Status: "Process",
       AccountId: id,
+      ExcutionDate: selectedDateExecution,
     };
     const response = await apiGetTask(params);
     setTasks(response.data);
@@ -173,15 +199,95 @@ const ModalDeliveryTaskWarranty: React.FC<ModalOrder> = ({
     }
   }, [staffID]);
 
+  // const handleChooseDate = (date: Dayjs | null) => {
+  //   if (date) {
+  //     const dateChoose = date.format();
+  //     const dateFilter = date.format("YYYY/MM/DD");
+  //     setValue("accountId", "");
+  //     setTasks([]);
+  //     //set
+  //     setDaySelect(date);
+  //     setSelectedDateExecution(dateFilter);
+  //     setDateExecution(dateChoose);
+  //     //api
+  //     fetchAccountUser(dateFilter);
+  //   }
+  // };
+
   const handleChooseDate = (date: Dayjs | null) => {
     if (date) {
       const dateChoose = date.format();
-      setDateExecution(dateChoose);
+      const dateCreate = OrderData?.createDate;
+      const dateFilter = date.format("YYYY/MM/DD");
+      setValue("accountId", "");
+      setTasks([]);
+      if (dateCreate) {
+        const diffInBusinessDays = calculateBusinessDays(
+          dayjs(dateCreate),
+          dayjs(dateChoose)
+        );
+
+        if (diffInBusinessDays > 2) {
+          setTempDate(dateChoose);
+          setSelectedDateExecutionTemp(dateFilter);
+          setDaySelectTemp(date);
+          setIsModalOpen(true);
+        } else {
+          setDaySelect(date);
+          setSelectedDateExecution(dateFilter);
+          setDateExecution(dateChoose);
+          fetchAccountUser(dateFilter);
+        }
+      } else {
+        setDateExecution(dateChoose);
+        setSelectedDateExecution(dateFilter);
+        setDaySelect(date);
+        fetchAccountUser(dateFilter);
+      }
     }
   };
+
+  //count date
+  const calculateBusinessDays = (startDate: Dayjs, endDate: Dayjs): number => {
+    let count = 0;
+    let currentDate = startDate.startOf("day");
+
+    while (currentDate.isBefore(endDate, "day")) {
+      const dayOfWeek = currentDate.day();
+      if (dayOfWeek !== 0 && dayOfWeek !== 6) {
+        count++;
+      }
+      currentDate = currentDate.add(1, "day");
+    }
+
+    return count;
+  };
+
+  const handleConfirm = () => {
+    setValue("accountId", "");
+    setTasks([]);
+    setDateExecution(tempDate);
+    setSelectedDateExecution(selectedDateExecutionTemp);
+    setDaySelect(daySelectTemp);
+    setIsModalOpen(false);
+  };
+  const handleCancel = () => {
+    setIsModalOpen(false);
+    // Reset the temporary states to null
+    setTempDate(null);
+    setSelectedDateExecutionTemp(null);
+    setDaySelectTemp(null);
+    setData([]);
+
+    // Revert to previous date if any or clear it
+    if (!dateExecution) {
+      setDaySelect(null);
+    }
+  };
+
   return (
     <Modal
-      title="Chấp nhận đơn hàng"
+      title="Giao nhiệm vụ bảo hành theo yêu cầu"
       open={openTaskPopup}
       onOk={handleCLose}
       onCancel={handleCLose}
@@ -193,25 +299,64 @@ const ModalDeliveryTaskWarranty: React.FC<ModalOrder> = ({
           <Grid item xs={12} md={6}>
             <Card sx={{ p: 3 }}>
               <Stack spacing={3}>
-                <TextField
-                  value={
-                    OrderData?.type === "CustomerRequest"
-                      ? "Yêu cầu bảo hành"
-                      : "Định kì"
+                <Grid container>
+                  <Grid item xs={12} md={4}>
+                    <Typography>Loại bảo hành: </Typography>
+                  </Grid>
+                  <Grid item xs={12} md={8}>
+                    <Typography>
+                      {OrderData?.type === "CustomerRequest"
+                        ? "Yêu cầu bảo hành"
+                        : "Định kì"}
+                    </Typography>
+                  </Grid>
+                  <Grid item xs={12} md={4}>
+                    <Typography>Ngày tạo yêu cầu: </Typography>
+                  </Grid>
+                  <Grid item xs={12} md={8}>
+                    <Typography>
+                      {OrderData?.startDate
+                        ? formatDateFunc.formatDate(OrderData?.startDate)
+                        : ""}
+                    </Typography>
+                  </Grid>
+                  <Grid item xs={12} md={4}>
+                    <Typography>Mã máy: </Typography>
+                  </Grid>
+                  <Grid item xs={12} md={8}>
+                    <Typography>
+                      {OrderData?.inventory?.serialNumber || ""}
+                    </Typography>
+                  </Grid>
+                  <Grid item xs={12} md={4}>
+                    <Typography> Tên máy: </Typography>
+                  </Grid>
+                  <Grid item xs={12} md={8}>
+                    <Typography>
+                      {OrderData?.inventory?.machinery?.name || ""}
+                    </Typography>
+                  </Grid>
+                </Grid>
+                <LocalizationProvider
+                  dateAdapter={AdapterDayjs}
+                  localeText={
+                    viVN.components.MuiLocalizationProvider.defaultProps
+                      .localeText
                   }
-                  label="Loại bảo hành"
-                  InputProps={{ readOnly: true }}
-                />
-                <TextField
-                  value={OrderData?.inventory?.machinery?.name || ""}
-                  label="Mã máy"
-                  InputProps={{ readOnly: true }}
-                />
-                <TextField
-                  value={OrderData?.inventory?.serialNumber || ""}
-                  label="Tên máy"
-                  InputProps={{ readOnly: true }}
-                />
+                >
+                  <DatePicker
+                    label="Chọn ngày đi bảo hành"
+                    onChange={(e) => handleChooseDate(e)}
+                    format="DD/MM/YYYY"
+                    shouldDisableDate={(date) => {
+                      const today = dayjs();
+                      const isWeekend = date.day() === 0 || date.day() === 6;
+                      return (
+                        isWeekend || date.isBefore(today.add(1, "day"), "day")
+                      );
+                    }}
+                  />
+                </LocalizationProvider>
                 <TextField
                   label="Tên nhân viên"
                   value={
@@ -225,26 +370,6 @@ const ModalDeliveryTaskWarranty: React.FC<ModalOrder> = ({
                     shrink: true,
                   }}
                 />
-                <LocalizationProvider
-                  dateAdapter={AdapterDayjs}
-                  localeText={
-                    viVN.components.MuiLocalizationProvider.defaultProps
-                      .localeText
-                  }
-                >
-                  <DatePicker
-                    label="Chọn ngày giao"
-                    onChange={(e) => handleChooseDate(e)}
-                    format="DD/MM/YYYY"
-                    shouldDisableDate={(date) => {
-                      const today = dayjs();
-                      const isWeekend = date.day() === 0 || date.day() === 6;
-                      return (
-                        isWeekend || date.isBefore(today.add(1, "day"), "day")
-                      );
-                    }}
-                  />
-                </LocalizationProvider>
               </Stack>
               <div
                 style={{
@@ -289,7 +414,18 @@ const ModalDeliveryTaskWarranty: React.FC<ModalOrder> = ({
             </Card>
           </Grid>
         </Grid>
-        <CalendarComponent tasks={tasks} />
+        <Typography variant="h5">
+          Tên nhân viên:{" "}
+          {staffID && data?.find((item) => item.staffId === staffID)?.staffName}
+        </Typography>
+        <CalendarComponent tasks={tasks} chooseDate={daySelect} />
+        {isModalOpen && (
+          <ModalAcceptDateWarranty
+            openPopup={isModalOpen}
+            handleClosePopup={handleCancel}
+            onConfirm={handleConfirm}
+          />
+        )}
       </FormProvider>
     </Modal>
   );

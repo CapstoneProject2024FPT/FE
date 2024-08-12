@@ -78,7 +78,7 @@ const ModalBrandPopupDetail: React.FC<ModalBrand> = ({
   };
   return (
     <Modal
-      title="Chi Tiết Loại Máy"
+      title="Chi Tiết Thương Hiệu"
       open={open}
       onCancel={handleClose}
       footer={[]}
