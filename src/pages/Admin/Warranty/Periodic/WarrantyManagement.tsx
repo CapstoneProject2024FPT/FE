@@ -8,10 +8,10 @@ const WarrantyManagent: React.FC = () => {
   return (
     <Container sx={{ width: "100% !important", maxWidth: "none !important" }}>
       <HeaderBreadcrumbs
-        heading="Bảo trì định kì"
+        heading="Bảo hành định kì"
         links={[
           { name: "Thống kê", href: config.adminRoutes.dashboard },
-          { name: "Bảo trì định kì" },
+          { name: "Bảo hành định kì" },
         ]}
       />
       <TablePeriodicWarranty />

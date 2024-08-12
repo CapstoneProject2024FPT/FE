@@ -60,7 +60,7 @@ export default function ModalTransactionDetail({
 
   return (
     <Dialog fullWidth maxWidth="md" open={open} onClose={onClose}>
-      <DialogTitle>Chi tiết đơn hàng</DialogTitle>
+      <DialogTitle>Chi tiết giao dịch</DialogTitle>
 
       <DialogContent>
         <Box sx={{ mt: 2 }}>

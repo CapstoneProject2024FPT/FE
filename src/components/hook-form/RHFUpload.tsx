@@ -1,7 +1,7 @@
 // form
 import { useFormContext, Controller } from "react-hook-form";
 // @mui
-import { FormHelperText } from "@mui/material";
+import { Box, FormHelperText, Typography } from "@mui/material";
 // type
 import {
   UploadAvatar,
@@ -15,6 +15,7 @@ import {
 
 interface Props extends Omit<UploadProps, "file"> {
   name: string;
+  label?: string;
 }
 
 export function RHFUploadAvatar({ name, ...other }: Props) {
@@ -44,7 +45,7 @@ export function RHFUploadAvatar({ name, ...other }: Props) {
 
 // ----------------------------------------------------------------------
 
-export function RHFUploadSingleFile({ name, ...other }: Props) {
+export function RHFUploadSingleFile({ name, label, ...other }: Props) {
   const { control } = useFormContext();
 
   return (
@@ -55,18 +56,32 @@ export function RHFUploadSingleFile({ name, ...other }: Props) {
         const checkError = !!error && !field.value;
 
         return (
-          <UploadSingleFile
-            file={field.value}
-            error={checkError}
-            helperText={
-              checkError && (
-                <FormHelperText error sx={{ px: 2 }}>
-                  {error.message}
-                </FormHelperText>
-              )
-            }
-            {...other}
-          />
+          <Box>
+            {label && (
+              <Typography
+                variant="body1"
+                component="label"
+                sx={{ display: "flex", alignItems: "center" }}
+              >
+                {label}
+                <Typography component="span" color="red" sx={{ ml: 0.5 }}>
+                  *
+                </Typography>
+              </Typography>
+            )}
+            <UploadSingleFile
+              file={field.value}
+              error={checkError}
+              helperText={
+                checkError && (
+                  <FormHelperText error sx={{ px: 2 }}>
+                    {error.message}
+                  </FormHelperText>
+                )
+              }
+              {...other}
+            />
+          </Box>
         );
       }}
     />
@@ -76,10 +91,12 @@ export function RHFUploadSingleFile({ name, ...other }: Props) {
 //.--------------------------------------------------------------------------------
 interface RHFUploadMultiFileProps extends Omit<UploadMultiFileProps, "files"> {
   name: string;
+  label: string;
 }
 
 export function RHFUploadMultiFile({
   name,
+  label,
   ...other
 }: RHFUploadMultiFileProps) {
   const { control } = useFormContext();
@@ -92,18 +109,32 @@ export function RHFUploadMultiFile({
         const checkError = !!error && field.value?.length === 0;
 
         return (
-          <UploadMultiFile
-            files={field.value}
-            error={checkError}
-            helperText={
-              checkError && (
-                <FormHelperText error sx={{ px: 2 }}>
-                  {error?.message}
-                </FormHelperText>
-              )
-            }
-            {...other}
-          />
+          <Box>
+            {label && (
+              <Typography
+                variant="body1"
+                component="label"
+                sx={{ display: "flex", alignItems: "center" }}
+              >
+                {label}
+                <Typography component="span" color="red" sx={{ ml: 0.5 }}>
+                  *
+                </Typography>
+              </Typography>
+            )}
+            <UploadMultiFile
+              files={field.value}
+              error={checkError}
+              helperText={
+                checkError && (
+                  <FormHelperText error sx={{ px: 2 }}>
+                    {error?.message}
+                  </FormHelperText>
+                )
+              }
+              {...other}
+            />
+          </Box>
         );
       }}
     />

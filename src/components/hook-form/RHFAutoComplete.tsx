@@ -5,7 +5,7 @@ import TextField from "@mui/material/TextField";
 type IProps = {
   name: string;
   label: string;
-  options: { id: string; name: string }[]; // Adjust type according to your data structure
+  options: { id: string; name: string }[];
 };
 
 export default function RHFAutoComplete({
@@ -38,6 +38,12 @@ export default function RHFAutoComplete({
               helperText={error?.message}
               InputLabelProps={{
                 shrink: true,
+                required: true,
+                sx: {
+                  "& .MuiInputLabel-asterisk": {
+                    color: "red",
+                  },
+                },
               }}
             />
           )}

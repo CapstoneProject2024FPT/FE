@@ -109,6 +109,8 @@ const PaymentOrderId: React.FC = () => {
         try {
           const response = await apiPaymentUpdate(params, id);
 
+          console.log(response);
+
           // handle
           const getUserInfoString = localStorage.getItem("getUserInfo");
           if (getUserInfoString) {
@@ -228,20 +230,40 @@ const PaymentOrderId: React.FC = () => {
           <Card sx={{ p: 2 }}>
             <CardHeader title="Thông tin đơn hàng" />
             <Stack display="flex" direction="column" spacing={2}>
-              <Typography> Mã đơn hàng :{orderData?.invoiceCode}</Typography>
-              <Typography>
-                Tên chủ đơn :{orderData?.userInfo?.fullName}
-              </Typography>
-              <Typography>
-                Ngày tạo đơn :
-                {formatDateFunc.formatDateTime(orderData?.createDate)}
-              </Typography>
-              <Typography>
-                Tổng thành tiền :{formatMoney(orderData?.finalAmount)}
-              </Typography>
-              <Typography>
-                Địa chỉ :{formatAddress(orderData?.address)}
-              </Typography>
+              <Grid container spacing={1}>
+                <Grid item xs={3}>
+                  <Typography>Mã đơn hàng:</Typography>
+                </Grid>
+                <Grid item xs={10}>
+                  <Typography>{orderData?.invoiceCode}</Typography>
+                </Grid>
+                <Grid item xs={3}>
+                  <Typography>Tên chủ đơn:</Typography>
+                </Grid>
+                <Grid item xs={10}>
+                  <Typography>{orderData?.userInfo?.fullName}</Typography>
+                </Grid>
+                <Grid item xs={3}>
+                  <Typography>Ngày tạo đơn:</Typography>
+                </Grid>
+                <Grid item xs={10}>
+                  <Typography>
+                    {formatDateFunc.formatDateTime(orderData?.createDate)}
+                  </Typography>
+                </Grid>
+                <Grid item xs={3}>
+                  <Typography>Tổng thành tiền:</Typography>
+                </Grid>
+                <Grid item xs={10}>
+                  <Typography>{formatMoney(orderData?.finalAmount)}</Typography>
+                </Grid>
+                <Grid item xs={3}>
+                  <Typography>Địa chỉ:</Typography>
+                </Grid>
+                <Grid item xs={10}>
+                  <Typography>{formatAddress(orderData?.address)}</Typography>
+                </Grid>
+              </Grid>
               <Box>
                 <Box
                   sx={{
@@ -270,13 +292,31 @@ const PaymentOrderId: React.FC = () => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {orderData?.productList.map((product) => (
-                  <TableRow key={product.orderDetailId}>
-                    <TableCell>{product.productName}</TableCell>
-                    <TableCell>{product.quantity}</TableCell>
-                    <TableCell>{formatMoney(product.totalAmount)}</TableCell>
-                  </TableRow>
-                ))}
+                {orderData?.type === "Order" ? (
+                  <>
+                    {orderData?.productList.map((product) => (
+                      <TableRow key={product.orderDetailId}>
+                        <TableCell>{product.productName}</TableCell>
+                        <TableCell>{product.quantity}</TableCell>
+                        <TableCell>
+                          {formatMoney(product.totalAmount)}
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </>
+                ) : (
+                  <>
+                    {orderData?.productList.map((product) => (
+                      <TableRow key={product.orderDetailId}>
+                        <TableCell>{product.machineComponentName}</TableCell>
+                        <TableCell>{product.quantity}</TableCell>
+                        <TableCell>
+                          {formatMoney(product.totalAmount)}
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </>
+                )}
               </TableBody>
             </Table>
           </Card>

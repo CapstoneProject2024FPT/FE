@@ -206,7 +206,7 @@ const TableRank: React.FC = () => {
           onClick={() => setOpenAddPopup(!openAddPopup)}
           icon={<PlusOutlined />}
         >
-          Thêm loại máy
+          Thêm loại hạng mức
         </Button>
       </div>
 

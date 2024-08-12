@@ -9,6 +9,7 @@ import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import config from "../../../../../configs";
 import ModaBanned from "../Popup/PopupBanned";
+import useDebounce from "../../../../../hooks/useDebounce";
 
 type ColumnsType<T> = TableProps<T>["columns"];
 const { Search } = Input;
@@ -24,10 +25,11 @@ const CustomerData: React.FC = () => {
   });
 
   const navigate = useNavigate();
-  // const [query, setQuery] = useState<string>("");
+  const [query, setQuery] = useState<string>("");
   const [selectedData, setSelectedData] = useState<userModel | null>(null);
   const [open, setOpen] = useState<boolean>(false);
   const { loading, apiGetUserByRole } = ApiAccount();
+  const debounce = useDebounce({ delay: 500, value: query });
 
   // Function to handle action click
   const handleActionClick = (record: userModel) => {
@@ -44,12 +46,14 @@ const CustomerData: React.FC = () => {
   };
   const fetchAccountUser = async (
     page: number = 1,
-    pageSize: number = defaultPageSize
+    pageSize: number = defaultPageSize,
+    fullname: string = debounce
   ) => {
     const params = {
       Role: RoleType.USER,
       size: pageSize,
       page: page,
+      FullName: fullname,
     };
     const response = await apiGetUserByRole(params);
     if (response.status === 200) {
@@ -66,9 +70,9 @@ const CustomerData: React.FC = () => {
   };
 
   useEffect(() => {
-    fetchAccountUser(pagination.current, pagination.pageSize);
+    fetchAccountUser(pagination.current, pagination.pageSize, debounce);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [debounce, pagination.current, pagination.pageSize]);
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleTableChange = (page: number, pageSize: number) => {
@@ -90,9 +94,9 @@ const CustomerData: React.FC = () => {
     onChange: handleTableChange,
   };
 
-  // const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
-  //   setQuery(e.target.value);
-  // };
+  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setQuery(e.target.value);
+  };
 
   const onSuccess = () => {
     handleCLose();
@@ -246,7 +250,7 @@ const CustomerData: React.FC = () => {
     <>
       <Search
         placeholder="Nhập Từ khoá"
-        onChange={() => {}} // Update search value on change
+        onChange={(e) => handleSearch(e)} // Update search value on change
         style={{ width: 200, marginBottom: 16 }}
       />
       <Table

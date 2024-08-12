@@ -355,48 +355,97 @@ const ExportPDFDocument = ({ row }: { row: OrderProps | undefined }) => {
                   Thành tiền
                 </Text>
               </View>
-              {row?.productList.map((product, index) => (
-                <View
-                  style={{
-                    width: "100%",
-                    display: "flex",
-                    flexDirection: "row",
-                    fontSize: "14px",
-                  }}
-                  key={index}
-                >
-                  <Text
-                    style={{
-                      border: "1px solid #ddd",
-                      padding: "4px",
-                      textAlign: "center",
-                      flex: "1",
-                    }}
-                  >
-                    {product.productName || ""}
-                  </Text>
-                  <Text
-                    style={{
-                      border: "1px solid #ddd",
-                      padding: "4px",
-                      textAlign: "center",
-                      flex: "1",
-                    }}
-                  >
-                    {product.quantity || ""}
-                  </Text>
-                  <Text
-                    style={{
-                      border: "1px solid #ddd",
-                      padding: "4px",
-                      textAlign: "center",
-                      flex: "1",
-                    }}
-                  >
-                    {formatMoney(product.totalAmount) || ""}
-                  </Text>
-                </View>
-              ))}
+              {row?.type === "Order" ? (
+                <>
+                  {row?.productList.map((product, index) => (
+                    <View
+                      style={{
+                        width: "100%",
+                        display: "flex",
+                        flexDirection: "row",
+                        fontSize: "14px",
+                      }}
+                      key={index}
+                    >
+                      <Text
+                        style={{
+                          border: "1px solid #ddd",
+                          padding: "4px",
+                          textAlign: "center",
+                          flex: "1",
+                        }}
+                      >
+                        {product.productName || ""}
+                      </Text>
+                      <Text
+                        style={{
+                          border: "1px solid #ddd",
+                          padding: "4px",
+                          textAlign: "center",
+                          flex: "1",
+                        }}
+                      >
+                        {product.quantity || ""}
+                      </Text>
+                      <Text
+                        style={{
+                          border: "1px solid #ddd",
+                          padding: "4px",
+                          textAlign: "center",
+                          flex: "1",
+                        }}
+                      >
+                        {formatMoney(product.totalAmount) || ""}
+                      </Text>
+                    </View>
+                  ))}
+                </>
+              ) : (
+                <>
+                  {row?.productList.map((product, index) => (
+                    <View
+                      style={{
+                        width: "100%",
+                        display: "flex",
+                        flexDirection: "row",
+                        fontSize: "14px",
+                      }}
+                      key={index}
+                    >
+                      <Text
+                        style={{
+                          border: "1px solid #ddd",
+                          padding: "4px",
+                          textAlign: "center",
+                          flex: "1",
+                        }}
+                      >
+                        {product.machineComponentName || ""}
+                      </Text>
+                      <Text
+                        style={{
+                          border: "1px solid #ddd",
+                          padding: "4px",
+                          textAlign: "center",
+                          flex: "1",
+                        }}
+                      >
+                        {product.quantity || ""}
+                      </Text>
+                      <Text
+                        style={{
+                          border: "1px solid #ddd",
+                          padding: "4px",
+                          textAlign: "center",
+                          flex: "1",
+                        }}
+                      >
+                        {formatMoney(product.totalAmount) || ""}
+                      </Text>
+                    </View>
+                  ))}
+                </>
+              )}
               <View
                 style={{
                   width: "100%",

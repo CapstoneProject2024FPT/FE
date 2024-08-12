@@ -104,9 +104,9 @@ const NewsDetail: React.FC = () => {
             </Paper>
           </Grid>
           <Grid item xs={12} md={3}>
-            <Paper elevation={0}>
+            {/* <Paper elevation={0}>
               <Box>Tin tức liên quan</Box>
-            </Paper>
+            </Paper> */}
           </Grid>
         </Grid>
       </Box>

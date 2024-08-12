@@ -64,6 +64,7 @@ export interface OrderProps {
   userInfo: UserInfo;
   description: string;
   address: AddressDetail;
+  type: string;
 }
 
 interface noteDetail {
@@ -99,6 +100,10 @@ interface ProductDetail {
   quantity: number;
   totalAmount: number;
   inventoryId: string;
+  machineComponentId?: string;
+  machineComponentName?: string;
+  sellingPrice: number;
+  createDate: Date;
 }
 
 interface CityDetail {

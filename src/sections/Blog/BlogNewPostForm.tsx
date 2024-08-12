@@ -6,8 +6,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm } from "react-hook-form";
 // @mui
 import { LoadingButton } from "@mui/lab";
-import { styled } from "@mui/material/styles";
-import { Grid, Card, Stack, Button, Typography, Box } from "@mui/material";
+import { Grid, Card, Stack, Button, Box } from "@mui/material";
 // routes
 // @types
 import { NewPostFormValues } from "../../models/blog";
@@ -30,12 +29,6 @@ import config from "../../configs";
 //
 
 // ----------------------------------------------------------------------
-
-const LabelStyle = styled(Typography)(({ theme }) => ({
-  ...theme.typography.subtitle2,
-  color: theme.palette.text.secondary,
-  marginBottom: theme.spacing(1),
-}));
 
 // ----------------------------------------------------------------------
 
@@ -199,12 +192,11 @@ export default function BlogNewPostForm() {
                 />
 
                 <div>
-                  <LabelStyle>Nội dung</LabelStyle>
-                  <RHFEditor simple name="newsContent" />
+                  <RHFEditor simple name="newsContent" label="Nội dung" />
                 </div>
                 <div>
-                  <LabelStyle>Ảnh</LabelStyle>
                   <RHFUploadMultiFile
+                    label="Ảnh"
                     showPreview
                     name="imageURL"
                     maxSize={3145728}
@@ -214,8 +206,8 @@ export default function BlogNewPostForm() {
                   />
                 </div>
                 <div>
-                  <LabelStyle>Hình nền</LabelStyle>
                   <RHFUploadSingleFile
+                    label="Hình nền"
                     name="cover"
                     maxSize={3145728}
                     onDrop={handleDrop}

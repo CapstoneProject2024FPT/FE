@@ -7,6 +7,7 @@ export enum StatusType {
   CANCELED = "Cancel",
   PROCESS = "Process",
   AWAITINGASSIGNMENT = "AwaitingAssignment",
+  REPAIRING = "Repairing",
 }
 
 export const warrantyStatusMapping = [
@@ -28,7 +29,11 @@ export const warrantyStatusMapping = [
   },
   {
     id: StatusType.AWAITINGASSIGNMENT,
-    name: "Đang cử nhân viên",
+    name: "Đang chờ cử nhân viên",
+  },
+  {
+    id: StatusType.REPAIRING,
+    name: "Đang sửa chữa",
   },
 ];
 
@@ -39,6 +44,7 @@ export interface WarrantyProps {
   description: string;
   startDate: Date;
   status: string;
+  orderId: string;
   type: string;
   customer: {
     id: string;
@@ -47,6 +53,12 @@ export interface WarrantyProps {
   };
   inventory: Inventory;
   address: AddressDetail;
+  warrantyDetai: {
+    AwaitingAssignment: number;
+    Process: number;
+    Repairing: number;
+    Completed: number;
+  };
 }
 
 interface Inventory {
@@ -182,6 +194,7 @@ export interface WarrantyDetails {
   inventory: Inventory;
   customer: Customer;
   address: Address;
+  orderId: string;
 }
 export interface Warranty {
   warrantyDetails: WarrantyDetails;
@@ -205,7 +218,7 @@ export interface WarrantyDetailGetProps {
   nextMaintenanceDate: Date;
   warrantyId: string;
   staff: Staff;
-  inventoryChanges: InventoryChange[];
+  componentChange: ComponentChange[];
 }
 
 interface Staff {
@@ -214,15 +227,29 @@ interface Staff {
   role: string;
 }
 
-interface InventoryChange {
-  warrantyDetailId: string;
-  oldInventory: Inventory;
-  newInventory: Inventory;
-}
+// interface InventoryChange {
+//   warrantyDetailId: string;
+//   oldInventory: Inventory;
+//   newInventory: Inventory;
+// }
 
 interface Inventory {
   id: string;
   serialNumber: string;
   type: string;
   componentName: string;
+}
+
+interface ComponentChange {
+  image: string;
+  createDate: Date;
+  component: ComponentNew;
+}
+interface ComponentNew {
+  id: string;
+  name: string;
+  description: string;
+  status: string;
+  stockPrice: number;
+  sellingPrice: number;
 }

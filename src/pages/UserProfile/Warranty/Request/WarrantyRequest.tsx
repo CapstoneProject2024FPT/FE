@@ -33,8 +33,10 @@ const getStatusStyles = (status: string) => {
       return { backgroundColor: "#4CAF50", color: "white" }; // xanh lá
     case "AwaitingAssignment":
       return { backgroundColor: "#FFD700", color: "black" }; // vàng
-    case "Cancele":
+    case "Cancel":
       return { backgroundColor: "#F44336", color: "white" }; // đỏ
+    case "Repairing":
+      return { backgroundColor: "#f39c12", color: "white" }; // cam
     default:
       return { backgroundColor: "transparent", color: "black" };
   }

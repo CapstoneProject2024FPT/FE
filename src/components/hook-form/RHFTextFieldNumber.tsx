@@ -66,6 +66,14 @@ export default function RHFTextFieldNumber({ name, ...other }: Props) {
             type: "text", // Force type to text to allow formatting
             inputProps: { ...other.InputProps?.inputProps, min: 0 },
           }}
+          InputLabelProps={{
+            required: true,
+            sx: {
+              "& .MuiInputLabel-asterisk": {
+                color: "red",
+              },
+            },
+          }}
         />
       )}
     />

@@ -263,6 +263,11 @@ const TableOrder: React.FC = () => {
       align: "center",
     },
     {
+      title: "Loại đơn hàng",
+      dataIndex: "type",
+      render: (type) => (type === "Order" ? "Mua hàng" : "Bảo hành"),
+    },
+    {
       title: (
         <div
           style={{
@@ -394,8 +399,8 @@ const TableOrder: React.FC = () => {
                     return item.key !== "2";
                   } else if (String(record.noteStatus.FAILED) === "3") {
                     return !["2"].includes(item.key as string);
-                  } else {
-                    return true;
+                  } else if (record.type !== "Order") {
+                    return !["2"].includes(item.key as string);
                   }
                 }
                 return true;

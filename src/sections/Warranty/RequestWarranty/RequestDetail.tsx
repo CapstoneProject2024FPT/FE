@@ -20,7 +20,7 @@ import {
   WarrantyPropsById,
 } from "../../../models/warranty";
 import { ApiWarranty } from "../../../api/services/apiWarranty";
-import { formatAddress, formatDateFunc } from "../../../utils/fn";
+import { formatAddress, formatDateFunc, formatMoney } from "../../../utils/fn";
 import ModalDeliveryTaskWarranty from "../Modal/ModalDeliveryTaskWarranty";
 import { PlusOutlined } from "@ant-design/icons";
 import { CustomerApi } from "../../../api/services/apiUser";
@@ -230,9 +230,11 @@ const RequestDetail = () => {
               </Grid>
             </Grid>
 
-            {warrantyDetail?.status === "Completed" && (
+            {(warrantyDetail?.status === "Completed" ||
+              warrantyDetail?.status === "Repairing") && (
               <Grid container spacing={3} sx={{ mt: 1 }}>
-                <Grid item xs={12} md={8}>
+                {/* Repair Description */}
+                <Grid item xs={12}>
                   <Typography variant="h5">Nội dung sửa</Typography>
                   <Card sx={{ p: 3 }}>
                     <TextField
@@ -241,26 +243,41 @@ const RequestDetail = () => {
                       multiline
                       rows={4}
                       fullWidth
-                      InputProps={{
-                        readOnly: true,
-                      }}
+                      InputProps={{ readOnly: true }}
                     />
                   </Card>
                 </Grid>
-                <Grid item xs={12} md={4}>
+
+                {/* Replaced Components */}
+                <Grid item xs={12}>
                   <Typography variant="h5">Bộ phận thay</Typography>
                   <Card sx={{ p: 3 }}>
-                    {warrantyDetail.inventoryChanges.length > 0
-                      ? warrantyDetail?.inventoryChanges.map((item) => (
-                          <TextField
-                            sx={{ mt: 1 }}
-                            label="Tên bộ phận thay thế"
-                            value={item?.newInventory.componentName || ""}
-                            fullWidth
-                            InputProps={{
-                              readOnly: true,
-                            }}
-                          />
+                    {warrantyDetail.componentChange.length > 0
+                      ? warrantyDetail.componentChange.map((item, idx) => (
+                          <Grid container spacing={2} key={idx}>
+                            <Grid item md={6} xs={12}>
+                              <TextField
+                                sx={{ mt: 1 }}
+                                label="Tên bộ phận thay thế"
+                                value={item?.component.name || ""}
+                                fullWidth
+                                InputProps={{ readOnly: true }}
+                              />
+                            </Grid>
+                            <Grid item md={6} xs={12}>
+                              <TextField
+                                sx={{ mt: 1 }}
+                                label="Giá tiền"
+                                value={
+                                  item?.component.sellingPrice
+                                    ? formatMoney(item?.component.sellingPrice)
+                                    : ""
+                                }
+                                fullWidth
+                                InputProps={{ readOnly: true }}
+                              />
+                            </Grid>
+                          </Grid>
                         ))
                       : "Không thay thế bộ phận nào cả"}
                   </Card>

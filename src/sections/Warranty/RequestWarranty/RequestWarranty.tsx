@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useEffect, useState } from "react";
 import type { MenuProps } from "antd";
 import type { TableProps } from "antd";
@@ -5,7 +6,7 @@ import { DownOutlined } from "@ant-design/icons";
 import { Table, Space, Dropdown, DatePicker } from "antd";
 import { toast } from "react-toastify";
 import { ApiWarranty } from "../../../api/services/apiWarranty";
-import { WarrantyProps } from "../../../models/warranty";
+import { WarrantyProps, warrantyStatusMapping } from "../../../models/warranty";
 import { formatDateFunc } from "../../../utils/fn";
 import { useNavigate } from "react-router-dom";
 import config from "../../../configs";
@@ -77,6 +78,23 @@ const TableRequestWarranty: React.FC = () => {
       ? moment(item.createDate).format("DD/MM/YYYY") === selectedDate
       : true
   );
+
+  const getStatusStyles = (status: string) => {
+    switch (status) {
+      case "Process":
+        return { backgroundColor: "#2196F3", color: "black" }; // xạnh
+      case "Completed":
+        return { backgroundColor: "#4CAF50", color: "white" }; // xanh lá
+      case "AwaitingAssignment":
+        return { backgroundColor: "#FFD700", color: "black" }; // vàng
+      case "Cancel":
+        return { backgroundColor: "#F44336", color: "white" }; // đỏ
+      case "Repairing":
+        return { backgroundColor: "#f39c12", color: "white" }; // cam
+      default:
+        return { backgroundColor: "transparent", color: "black" };
+    }
+  };
   const items: MenuProps["items"] = [
     {
       key: "1",
@@ -152,6 +170,42 @@ const TableRequestWarranty: React.FC = () => {
         completionDate
           ? formatDateFunc.formatDateTime(completionDate)
           : "-------",
+    },
+    {
+      title: "Trạng thái",
+      dataIndex: "warrantyDetai",
+      render: (warrantyDetai) => {
+        let status = "Unknown Status"; // Default status
+        if (warrantyDetai.AwaitingAssignment === 1) {
+          status = "AwaitingAssignment";
+        } else if (warrantyDetai.Process === 1) {
+          status = "Process";
+        } else if (warrantyDetai.Repairing === 1) {
+          status = "Repairing";
+        } else if (warrantyDetai.Completed === 1) {
+          status = "Completed";
+        }
+
+        // Get the styles for the identified status
+        const styles = getStatusStyles(status);
+
+        const statusName = warrantyStatusMapping.find(
+          (item) => item.id === status
+        )?.name;
+        // Return the status label with the appropriate styles
+        return (
+          <div
+            style={{
+              ...styles,
+              padding: "8px 16px",
+              borderRadius: "8px",
+              display: "inline-block",
+            }}
+          >
+            {statusName}
+          </div>
+        );
+      },
     },
     {
       title: (

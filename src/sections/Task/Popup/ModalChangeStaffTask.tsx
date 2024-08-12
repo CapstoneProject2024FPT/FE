@@ -49,7 +49,8 @@ export default function ModalChangeStaffTask({
   const [warranty, setWarranty] = useState<WarrantyPropsById>();
 
   const fetchAccountUser = async () => {
-    const response = await apiTaskStaff();
+    const params = {};
+    const response = await apiTaskStaff(params);
     if (response.status === 200) {
       setData(response.data);
     } else {
