@@ -23,6 +23,8 @@ import config from "../../../../configs";
 import { Typography } from "antd";
 import { OrderProps } from "../../../../models/order";
 import moment from "moment";
+import { useEffect, useState } from "react";
+import { ApiOrder } from "../../../../api/services/apiOrder";
 
 // _mock
 
@@ -32,7 +34,7 @@ type Props = {
   warrantyData: Warranty | undefined;
   open: boolean;
   onClose: VoidFunction;
-  orderData: OrderProps | undefined;
+  orderData?: OrderProps | undefined;
 };
 
 interface NoteProps {
@@ -48,6 +50,10 @@ export default function ModalRequestOrderDetail({
   const { apiCreateRequestWaranty } = ApiWarranty();
 
   const createDate = moment();
+  const { apiGetOrderId } = ApiOrder();
+
+  const [orderDetail, setOrderDetail] = useState<OrderProps>();
+
   const RequestSchema = Yup.object().shape({
     description: Yup.string().required("bắt buộc").min(0, "Tối thiểu 5 kí tự"),
   });
@@ -66,6 +72,12 @@ export default function ModalRequestOrderDetail({
     handleSubmit,
     formState: { isSubmitting },
   } = methods;
+
+  const fetchOrder = async () => {
+    if (!warrantyData) return;
+    const response = await apiGetOrderId(warrantyData.warrantyDetails.orderId);
+    setOrderDetail(response.data);
+  };
 
   const onSubmit = async (data: NoteProps) => {
     try {
@@ -92,6 +104,10 @@ export default function ModalRequestOrderDetail({
     }
   };
 
+  useEffect(() => {
+    fetchOrder();
+  }, []);
+
   return (
     <Dialog fullWidth maxWidth="md" open={open} onClose={onClose}>
       <DialogTitle>
@@ -114,13 +130,21 @@ export default function ModalRequestOrderDetail({
                 <Typography>Máy thuộc mã đơn hàng:</Typography>
               </Grid>
               <Grid item xs={9}>
-                <Typography>{orderData?.invoiceCode}</Typography>
+                <Typography>
+                  {orderData
+                    ? orderData?.invoiceCode
+                    : orderDetail?.invoiceCode}
+                </Typography>
               </Grid>
               <Grid item xs={3}>
                 <Typography>Tên chủ đơn:</Typography>
               </Grid>
               <Grid item xs={9}>
-                <Typography>{orderData?.userInfo?.fullName}</Typography>
+                <Typography>
+                  {orderData
+                    ? orderData?.userInfo?.fullName
+                    : orderDetail?.userInfo?.fullName}
+                </Typography>
               </Grid>
               <Grid item xs={3}>
                 <Typography>Ngày mua:</Typography>
@@ -128,7 +152,10 @@ export default function ModalRequestOrderDetail({
               <Grid item xs={9}>
                 <Typography>
                   {" "}
-                  {formatDateFunc.formatDate(orderData?.createDate)}
+                  {orderData
+                    ? formatDateFunc.formatDate(orderData?.createDate)
+                    : formatDateFunc.formatDate(orderDetail?.createDate)}
+                  {}
                 </Typography>
               </Grid>
               <Grid item xs={3}>

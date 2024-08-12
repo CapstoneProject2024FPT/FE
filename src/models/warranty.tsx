@@ -194,6 +194,7 @@ export interface WarrantyDetails {
   inventory: Inventory;
   customer: Customer;
   address: Address;
+  orderId: string;
 }
 export interface Warranty {
   warrantyDetails: WarrantyDetails;

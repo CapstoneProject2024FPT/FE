@@ -9,6 +9,9 @@ export const ApiAccount = () => {
 
   interface getByRole {
     Role?: string;
+    FullName?: string;
+    page?: number;
+    size?: number;
   }
   const apiGetUserByRole = async (params: getByRole) => {
     setLoading(true);
