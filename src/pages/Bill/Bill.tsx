@@ -51,6 +51,10 @@ const Bill: React.FC = () => {
         const response = await apiGetOrderId(orderID);
         setOrderData(response.data);
 
+        if (response.data.type !== "Order") {
+          setLoading(false);
+          return;
+        }
         if (response.status === 200) {
           const response2 = await Promise.all(
             response.data.productList.map(async (item: any) => {
@@ -158,58 +162,115 @@ const Bill: React.FC = () => {
               <Typography variant="h5" sx={{ mt: 4 }}>
                 Chi tiết sản phẩm
               </Typography>
-              {warranty?.map((product, idx) => (
-                <Table size="small" aria-label="products" key={idx}>
+              {orderData?.status !== "Canceled" &&
+              orderData?.status !== "UnPaid" &&
+              orderData?.type !== "Warranty" ? (
+                <>
+                  {warranty?.map((product, idx) => (
+                    <Table size="small" aria-label="products" key={idx}>
+                      <TableHead>
+                        <TableRow>
+                          <TableCell>Tên sản phẩm</TableCell>
+                          <TableCell>Mã số máy</TableCell>
+                          <TableCell>Giá sản phẩm</TableCell>
+                          <TableCell>Bảo hành</TableCell>
+                          <TableCell>Tạo bảo hành</TableCell>
+                          <TableCell>Phiếu bảo hành</TableCell>
+                        </TableRow>
+                      </TableHead>
+                      <TableBody>
+                        {product.warranty.map((detail) => (
+                          <TableRow key={detail.warrantyDetails.id}>
+                            <>
+                              <TableCell width="40%">
+                                {
+                                  detail.warrantyDetails.inventory.machinery
+                                    .name
+                                }
+                              </TableCell>
+                              <TableCell>
+                                {detail.warrantyDetails.inventory.serialNumber}
+                              </TableCell>
+                              <TableCell>
+                                {formatMoney(
+                                  detail.warrantyDetails.inventory.machinery
+                                    .sellingPrice
+                                )}
+                              </TableCell>
+
+                              <TableCell>
+                                <WarrantyPDF
+                                  order={orderData}
+                                  product={detail}
+                                />
+                              </TableCell>
+                            </>
+                          </TableRow>
+                        ))}
+
+                        {product.warranty.map((detail, detailIdx) => (
+                          <React.Fragment key={detailIdx}>
+                            {detail.warrantyDetails.warrantyDetail.map(
+                              (warrantyItem, idx) => (
+                                <TableRow key={warrantyItem.id}>
+                                  <TableCell>
+                                    Bảo trì định kì lần {idx + 1} :{" "}
+                                    {formatDateFunc.formatDate(
+                                      warrantyItem.startDate
+                                    )}
+                                  </TableCell>
+                                </TableRow>
+                              )
+                            )}
+                          </React.Fragment>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  ))}
+                </>
+              ) : (
+                <Table size="small" aria-label="order-data">
                   <TableHead>
                     <TableRow>
+                      <TableCell></TableCell>
                       <TableCell>Tên sản phẩm</TableCell>
-                      <TableCell>Mã số máy</TableCell>
+                      <TableCell>Số lượng</TableCell>
                       <TableCell>Giá sản phẩm</TableCell>
-                      <TableCell>Phiếu bảo hành</TableCell>
                     </TableRow>
                   </TableHead>
                   <TableBody>
-                    {product.warranty.map((detail) => (
-                      <TableRow key={detail.warrantyDetails.id}>
-                        <>
-                          <TableCell width="40%">
-                            {detail.warrantyDetails.inventory.machinery.name}
-                          </TableCell>
-                          <TableCell>
-                            {detail.warrantyDetails.inventory.serialNumber}
-                          </TableCell>
-                          <TableCell>
-                            {formatMoney(
-                              detail.warrantyDetails.inventory.machinery
-                                .sellingPrice
-                            )}
-                          </TableCell>
-                          <TableCell>
-                            <WarrantyPDF order={orderData} product={detail} />
-                          </TableCell>
-                        </>
-                      </TableRow>
-                    ))}
-
-                    {product.warranty.map((detail, detailIdx) => (
-                      <React.Fragment key={detailIdx}>
-                        {detail.warrantyDetails.warrantyDetail.map(
-                          (warrantyItem, idx) => (
-                            <TableRow key={warrantyItem.id}>
-                              <TableCell>
-                                Bảo trì định kì lần {idx + 1} :{" "}
-                                {formatDateFunc.formatDate(
-                                  warrantyItem.startDate
-                                )}
-                              </TableCell>
-                            </TableRow>
-                          )
-                        )}
-                      </React.Fragment>
-                    ))}
+                    {orderData?.type === "Order" ? (
+                      <>
+                        {orderData?.productList?.map((machine, index) => (
+                          <TableRow key={index}>
+                            <TableCell>{index + 1}</TableCell>
+                            <TableCell>{machine.productName}</TableCell>
+                            <TableCell>{machine.quantity}</TableCell>
+                            <TableCell>
+                              {formatMoney(machine.totalAmount)}
+                            </TableCell>
+                          </TableRow>
+                        ))}
+                      </>
+                    ) : (
+                      <>
+                        {orderData?.productList?.map((machine, index) => (
+                          <TableRow key={index}>
+                            <TableCell>{index + 1}</TableCell>
+                            <TableCell>
+                              {machine.machineComponentName}
+                            </TableCell>
+                            <TableCell>{machine.quantity}</TableCell>
+                            <TableCell>
+                              {formatMoney(machine.totalAmount)}
+                            </TableCell>
+                          </TableRow>
+                        ))}
+                      </>
+                    )}
                   </TableBody>
                 </Table>
-              ))}
+              )}
               <Stack
                 sx={{ mt: 2, justifyContent: "flex-end" }}
                 display="flex"
