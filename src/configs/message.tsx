@@ -19,6 +19,7 @@ export const MessageNotice = {
   RequestWarrantySuccess: "Tạo bảo hành thành công",
   FavouriteSucces: "Thêm vào danh sách yêu thích thành công",
   FavouriteFailed: "Bỏ yêu thích thất bại",
+  InvalidRole: "Tài khoản có vai trò không phù hợp",
 };
 
 export const AdminMessageNotice = {
