@@ -115,3 +115,7 @@ export const COUNTORDERS = "admin/dashBoard/countOrders";
 //favourite
 export const FAVOURITE = "favorite";
 export const FAVOURITE_ID = "favorite/:id";
+
+//diccount
+export const DICCOUNT = "discount";
+export const DICCOUNT_ID = "discount/:id";

@@ -76,6 +76,11 @@ const MenuSideBars: CustomMenuItem[] = [
         key: config.adminRoutes.brand,
         roles: AccessType.ALL_ACCESS,
       },
+      {
+        label: <Link to={config.adminRoutes.discount}>Giảm giá</Link>,
+        key: config.adminRoutes.discount,
+        roles: AccessType.ALL_ACCESS,
+      },
     ],
   },
 
