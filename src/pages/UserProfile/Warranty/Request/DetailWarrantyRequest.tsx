@@ -25,6 +25,7 @@ import {
 } from "../../../../utils/fn";
 import { CustomerApi } from "../../../../api/services/apiUser";
 import { RoleType, staffProps } from "../../../../models/UserData";
+import Image from "../../../../components/Image";
 
 const LabelStyle = styled(Typography)(({ theme }) => ({
   ...theme.typography.subtitle2,
@@ -255,6 +256,46 @@ const DetailWarrantyRequest = () => {
                 </Card>
               </Grid>
             </Grid>
+          )}
+          {warrantyDetail && warrantyDetail?.note?.length > 0 && (
+            <Stack>
+              <Typography variant="h5" sx={{ mt: 2 }}>
+                Ghi chú
+              </Typography>
+              <Card sx={{ p: 3 }}>
+                {warrantyDetail.note.length > 0
+                  ? warrantyDetail.note.map((item, idx) => (
+                      <Card key={idx} sx={{ mt: 2, p: 3, boxShadow: 2 }}>
+                        <Grid container>
+                          <Grid item md={4} xs={12}>
+                            <Typography>Ghi chú lần {idx + 1}: </Typography>
+                          </Grid>
+                          <Grid item md={8} xs={12}></Grid>
+                        </Grid>
+                        <Grid container>
+                          <Grid item md={4} xs={12}>
+                            <Typography>Nội dung: </Typography>
+                          </Grid>
+                          <Grid item md={8} xs={12}>
+                            <Typography>{item.description} </Typography>
+                          </Grid>
+                        </Grid>
+                        <Grid container>
+                          <Grid item md={4} xs={12}>
+                            <Typography>Ngày tạo</Typography>
+                          </Grid>
+                          <Grid item md={8} xs={12}>
+                            <Typography>
+                              {formatDateFunc.formatDate(item.createDate)}
+                            </Typography>
+                          </Grid>
+                        </Grid>
+                        <Image src={item.image} />
+                      </Card>
+                    ))
+                  : "Không thay thế bộ phận nào cả"}
+              </Card>
+            </Stack>
           )}
         </>
       )}

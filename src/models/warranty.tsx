@@ -219,6 +219,14 @@ export interface WarrantyDetailGetProps {
   warrantyId: string;
   staff: Staff;
   componentChange: ComponentChange[];
+  note: [
+    {
+      id: string;
+      description: string;
+      createDate: Date;
+      image: string;
+    }
+  ];
 }
 
 interface Staff {
