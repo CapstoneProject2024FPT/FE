@@ -84,87 +84,11 @@ export const CategoryComponentApi = () => {
       setLoading(false);
     }
   };
-  //   const getCategoryName = async () => {
-  //     try {
-  //       setLoading(true);
-  //       const response = await axiosPublic.get(CATEGORY);
-  //       setLoading(false);
-  //       return response.data;
-  //     } catch (error: any) {
-  //       if (axios.isAxiosError(error) && error.response) {
-  //         return error.response.data;
-  //       } else {
-  //         return { statusCode: 500, Error: config.MessageNotice.Error500 };
-  //       }
-  //     } finally {
-  //       setLoading(false);
-  //     }
-  //   };
-
-  //   const getCategoryParent = async () => {
-  //     try {
-  //       setLoading(true);
-  //       const response = await axiosPublic.get(GET_CATEGORY_PARENT);
-
-  //       setLoading(false);
-
-  //       return response.data;
-  //     } catch (error: any) {
-  //       if (axios.isAxiosError(error) && error.response) {
-  //         return error.response.data;
-  //       } else {
-  //         return { statusCode: 500, Error: config.MessageNotice.Error500 };
-  //       }
-  //     } finally {
-  //       setLoading(false);
-  //     }
-  //   };
-
-  //   const getCategoryChild = async () => {
-  //     try {
-  //       setLoading(true);
-  //       const response = await axiosPublic.get(GET_CATEGORY_CHILD);
-
-  //       setLoading(false);
-
-  //       return response.data;
-  //     } catch (error: any) {
-  //       if (axios.isAxiosError(error) && error.response) {
-  //         return error.response.data;
-  //       } else {
-  //         return { statusCode: 500, Error: config.MessageNotice.Error500 };
-  //       }
-  //     } finally {
-  //       setLoading(false);
-  //     }
-  //   };
-  //   const deleteCategory = async (id: string) => {
-  //     try {
-  //       setLoading(true);
-  //       const response = await axiosPublic.delete(CATEGORY_ID.replace(":id", id));
-
-  //       setLoading(false);
-  //       return response.data;
-  //     } catch (error: any) {
-  //       if (axios.isAxiosError(error) && error.response) {
-  //         return error.response.data;
-  //       } else {
-  //         return { statusCode: 500, Error: config.MessageNotice.Error500 };
-  //       }
-  //     } finally {
-  //       setLoading(false);
-  //     }
-  //   };
-
   return {
     loading,
     getCategoryComponent,
     addCategoryComponent,
     updateCategoryComponent,
     getCategoryComponentChild,
-    // getCategoryName,
-    // deleteCategory,
-    // getCategoryParent,
-    // getCategoryChild,
   };
 };
