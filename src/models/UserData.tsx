@@ -45,5 +45,5 @@ export interface staffProps extends Omit<userProps, "rank"> {
 }
 
 export interface userModel extends userProps {
-  amount: number;
+  point: number;
 }

@@ -184,7 +184,26 @@ const TableTask: React.FC = () => {
         </div>
       ),
       dataIndex: "createDate",
-      render: (createDate) => formatDateFunc.formatDateTime(createDate),
+      render: (createDate) => formatDateFunc.formatDate(createDate),
+      align: "center",
+    },
+    {
+      title: (
+        <div
+          style={{
+            textAlign: "center",
+            fontSize: "16px",
+            fontWeight: "bold",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          Ngày thực thi
+        </div>
+      ),
+      dataIndex: "excutionDate",
+      render: (excutionDate) => formatDateFunc.formatDate(excutionDate),
       align: "center",
     },
     {

@@ -60,6 +60,7 @@ import WarrantyMachine from "../pages/UserProfile/WarrantyMachine";
 import CheckRoute from "./CheckRoute";
 import RequireAuth from "./RequireAuth";
 import { Role } from "./Roles";
+import Discount from "../pages/Admin/Discount/Discount";
 
 const AppRoute: React.FC = () => {
   return (
@@ -312,6 +313,12 @@ const AppRoute: React.FC = () => {
             key="profile"
             path={config.adminRoutes.profile}
             element={<ProfileAccount />}
+          />
+
+          <Route
+            key="discount"
+            path={config.adminRoutes.discount}
+            element={<Discount />}
           />
 
           {/* check Admin Manager  */}

@@ -42,6 +42,7 @@ export const BRAND = "brand";
 
 //Customer
 export const CUSTOMER_PROFILE = "/users/:id";
+export const RANK_UPGRADE = "/users/:id/addRank";
 
 //transaction
 export const USER_TRANSACTION = "/transaction";
@@ -115,3 +116,7 @@ export const COUNTORDERS = "admin/dashBoard/countOrders";
 //favourite
 export const FAVOURITE = "favorite";
 export const FAVOURITE_ID = "favorite/:id";
+
+//diccount
+export const DICCOUNT = "discount";
+export const DICCOUNT_ID = "discount/:id";

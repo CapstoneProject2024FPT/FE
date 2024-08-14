@@ -56,7 +56,9 @@ const TopBar: React.FC = () => {
           className={cx("menu-item")}
           style={{ height: "100%", alignContent: "center" }}
         >
-          <a href={config.routes.productList} style={{padding: "unset"}}>LOẠI MÁY</a>
+          <a href={config.routes.productList} style={{ padding: "unset" }}>
+            LOẠI MÁY
+          </a>
           <ul className={cx("submenu")}>
             {data
               .filter(
@@ -81,7 +83,6 @@ const TopBar: React.FC = () => {
                       onClick={(e) => {
                         e.preventDefault();
                         e.stopPropagation();
-                        handleCategoryClick(item.id);
                       }}
                     >
                       {item.name}
@@ -155,12 +156,27 @@ const TopBar: React.FC = () => {
           <RightMenu />
         </div>
         <nav className={cx("main-nav")}>
-          <a className={cx("header-navbar")} href={config.routes.home}> TRANG CHỦ </a>
+          <a className={cx("header-navbar")} href={config.routes.home}>
+            {" "}
+            TRANG CHỦ{" "}
+          </a>
           {renderMenu(menuData)}
 
-          <a className={cx("header-navbar")} href={config.routes.news}> TIN TỨC </a>
-          <a className={cx("header-navbar")} href={config.routes.termsOfService}> ĐIỀU KHOẢN </a>
-          <a className={cx("header-navbar")} href={config.routes.privacyPolicy}> CHÍNH SÁCH </a>
+          <a className={cx("header-navbar")} href={config.routes.news}>
+            {" "}
+            TIN TỨC{" "}
+          </a>
+          <a
+            className={cx("header-navbar")}
+            href={config.routes.termsOfService}
+          >
+            {" "}
+            ĐIỀU KHOẢN{" "}
+          </a>
+          <a className={cx("header-navbar")} href={config.routes.privacyPolicy}>
+            {" "}
+            CHÍNH SÁCH{" "}
+          </a>
         </nav>
       </header>
     </>

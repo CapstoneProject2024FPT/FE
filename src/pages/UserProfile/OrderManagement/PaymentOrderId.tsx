@@ -58,6 +58,7 @@ const PaymentOrderId: React.FC = () => {
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
   const [orderData, setOrderData] = useState<OrderProps>();
+
   //api
   const { apiGetOrderId } = ApiOrder();
   const { apiPayment, apiPaymentUpdate } = ApiCheckout();
@@ -204,6 +205,7 @@ const PaymentOrderId: React.FC = () => {
   //api
   const fetchOrderId = useCallback(async () => {
     if (id) {
+      sessionStorage.setItem("OrderId", id);
       const response = await apiGetOrderId(id);
       setOrderData(response.data);
     }
