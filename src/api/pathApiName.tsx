@@ -42,6 +42,7 @@ export const BRAND = "brand";
 
 //Customer
 export const CUSTOMER_PROFILE = "/users/:id";
+export const RANK_UPGRADE = "/users/:id/addRank";
 
 //transaction
 export const USER_TRANSACTION = "/transaction";

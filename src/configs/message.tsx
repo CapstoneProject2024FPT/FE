@@ -52,4 +52,5 @@ export const AdminMessageNotice = {
   AddMachinerySuccess: "Thêm máy thành công",
   AddMachineToBarn: "Thêm máy vào kho",
   AddRankSuccess: "Thêm hạng thành công",
+  AddRankCustomerSuccess: "Thăng hạng người dùng thành công",
 };

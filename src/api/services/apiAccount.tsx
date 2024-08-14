@@ -1,5 +1,5 @@
 import { axiosPublic } from "../axiosInstance";
-import { STAFF, USER_BY_ROLE, USER_ID } from "../pathApiName";
+import { RANK_UPGRADE, STAFF, USER_BY_ROLE, USER_ID } from "../pathApiName";
 import { useState } from "react";
 import axios from "axios";
 import config from "../../configs";
@@ -133,6 +133,24 @@ export const ApiAccount = () => {
       }
     }
   };
+
+  type RankUpgrade = string[];
+  const apiRankUpgrade = async (id: string, params: RankUpgrade) => {
+    try {
+      const response = await axiosPublic.post(
+        RANK_UPGRADE.replace(":id", id),
+        params
+      );
+      return response;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+      if (axios.isAxiosError(error) && error.response) {
+        return error.response.data;
+      } else {
+        return { statusCode: 500, Error: config.MessageNotice.Error500 };
+      }
+    }
+  };
   return {
     loading,
     apiGetUserByRole,
@@ -140,5 +158,6 @@ export const ApiAccount = () => {
     apiUnbanned,
     apiUpdateRole,
     apiCreateEmployee,
+    apiRankUpgrade,
   };
 };
