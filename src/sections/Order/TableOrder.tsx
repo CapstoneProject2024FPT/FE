@@ -244,10 +244,6 @@ const TableOrder: React.FC = () => {
       key: "2",
       label: "Tạo giao hàng",
     },
-    {
-      key: "3",
-      label: "Huỷ đơn hàng",
-    },
   ];
 
   const columns: ColumnsType<OrderProps> = [
