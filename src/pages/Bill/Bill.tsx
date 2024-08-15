@@ -87,19 +87,28 @@ const Bill: React.FC = () => {
         }
       } catch (error) {
         console.error("Error fetching order data:", error);
-        navigate("/notFound");
+        clearOrderIdAndNavigate("/notFound");
       } finally {
         setLoading(false);
       }
     } else {
-      navigate("/notFound");
+      clearOrderIdAndNavigate("/notFound");
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [apiGetOrderId, apiGetWarranty, apiGetWarrantyById, orderID, navigate]);
 
   useEffect(() => {
     fetchOrderId();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  const clearOrderIdAndNavigate = useCallback(
+    (path: string) => {
+      sessionStorage.removeItem("OrderId");
+      navigate(path);
+    },
+    [navigate]
+  );
 
   return (
     <>
@@ -173,8 +182,6 @@ const Bill: React.FC = () => {
                           <TableCell>Tên sản phẩm</TableCell>
                           <TableCell>Mã số máy</TableCell>
                           <TableCell>Giá sản phẩm</TableCell>
-                          <TableCell>Bảo hành</TableCell>
-                          <TableCell>Tạo bảo hành</TableCell>
                           <TableCell>Phiếu bảo hành</TableCell>
                         </TableRow>
                       </TableHead>
@@ -214,7 +221,7 @@ const Bill: React.FC = () => {
                               (warrantyItem, idx) => (
                                 <TableRow key={warrantyItem.id}>
                                   <TableCell>
-                                    Bảo trì định kì lần {idx + 1} :{" "}
+                                    Bảo hành định kì lần {idx + 1} :{" "}
                                     {formatDateFunc.formatDate(
                                       warrantyItem.startDate
                                     )}
@@ -283,8 +290,7 @@ const Bill: React.FC = () => {
                   <Button
                     variant="contained"
                     onClick={() => {
-                      sessionStorage.removeItem("OrderId");
-                      navigate(config.routes.home);
+                      clearOrderIdAndNavigate(config.routes.home);
                     }}
                   >
                     Về trang chủ

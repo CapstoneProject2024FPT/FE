@@ -18,6 +18,7 @@ export interface GetMachineComponents {
   stockPrice: number;
   sellingPrice: number;
   timeWarranty: number;
+  quantity: number;
   origin: {
     id: string;
     name: string;

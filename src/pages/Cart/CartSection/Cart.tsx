@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useState } from "react";
 import Box from "@mui/material/Box";
 import { styled } from "@mui/material/styles";
@@ -26,6 +27,9 @@ import { Link } from "react-router-dom";
 import config from "../../../configs";
 import { useCheckout } from "../../../zustand/useCheckout";
 import { MachineryApi } from "../../../api/services/apiMachinery";
+import { CustomerApi } from "../../../api/services/apiUser";
+import { useAuthContext } from "../../../context/AuthContext";
+import { userModel } from "../../../models/UserData";
 
 const IncrementerStyle = styled("div")(({ theme }) => ({
   display: "flex",
@@ -55,8 +59,11 @@ const getCartItems = (): cartProps => {
 const Cart: React.FC<CartProp> = ({ handleNext }) => {
   const [CartItems, setCartItems] = useState<cartProps>(getCartItems());
   const { apiGetDetailMachine } = MachineryApi();
+  const { authUser } = useAuthContext();
+  const { apiUserProfile } = CustomerApi();
+  const [userProfile, setUserProfile] = useState<userModel>();
 
-  const { setTotal, total } = useCheckout();
+  const { setTotal, total, setDiscountRank, discountRank } = useCheckout();
 
   useEffect(() => {
     const fetchCorrectQuantities = async () => {
@@ -81,20 +88,36 @@ const Cart: React.FC<CartProp> = ({ handleNext }) => {
   }, []);
 
   useEffect(() => {
-    // Update localStorage whenever CartItems state changes
     localStorage.setItem("cart", JSON.stringify(CartItems));
-
-    // Update the total price in the store
-    setTotal(calculateTotalPrice(CartItems));
+    const totalPrice = calculateTotalPrice(CartItems);
+    setTotal(totalPrice);
   }, [CartItems, setTotal]);
+
+  useEffect(() => {
+    if (userProfile) {
+      const totalPrice = calculateTotalPrice(CartItems);
+      const discountPrice = calculateDiscount(totalPrice);
+      setDiscountRank(discountPrice);
+    }
+  }, [userProfile, total, CartItems]);
 
   const calculateTotalPrice = (CartItems: cartProps) => {
     let totalPrice = 0;
     CartItems.forEach((item) => {
-      totalPrice += item.sellingPrice * item.currentQuantities;
+      totalPrice += item.finalAmount * item.currentQuantities;
     });
 
     return totalPrice;
+  };
+
+  const calculateDiscount = (total: number) => {
+    if (!userProfile || !userProfile.rank || !userProfile.rank.value) return 0;
+
+    let discount = 0;
+    discount = total * (userProfile.rank.value / 100);
+
+    // return Math.floor(discount);
+    return discount;
   };
 
   const increaseQuantity = (id: string) => {
@@ -129,6 +152,19 @@ const Cart: React.FC<CartProp> = ({ handleNext }) => {
     const updateCart = CartItems.filter((item) => item.id != id);
     setCartItems(updateCart);
   };
+
+  const fetchUser = async () => {
+    if (!authUser) return;
+    const response = await apiUserProfile(authUser);
+    if (response.status === 200) {
+      setUserProfile(response.data);
+    }
+  };
+
+  useEffect(() => {
+    fetchUser();
+  }, [authUser]);
+
   return (
     <>
       {CartItems.length > 0 ? (
@@ -209,7 +245,28 @@ const Cart: React.FC<CartProp> = ({ handleNext }) => {
                           </TableCell>
 
                           <TableCell>
-                            {formatMoney(item.sellingPrice)}
+                            <Stack direction="column" spacing={0.5}>
+                              <Typography variant="subtitle1">
+                                {item
+                                  ? formatMoney(
+                                      (item.sellingPrice *
+                                        (100 - item.discount)) /
+                                        100
+                                    )
+                                  : 0}
+                              </Typography>
+                              {item?.discount > 0 && (
+                                <Typography
+                                  component="span"
+                                  sx={{
+                                    color: "text.disabled",
+                                    textDecoration: "line-through",
+                                  }}
+                                >
+                                  {formatMoney(item.sellingPrice)}
+                                </Typography>
+                              )}
+                            </Stack>
                           </TableCell>
 
                           <TableCell>
@@ -261,7 +318,7 @@ const Cart: React.FC<CartProp> = ({ handleNext }) => {
 
                           <TableCell align="right">
                             {formatMoney(
-                              item?.sellingPrice * item.currentQuantities
+                              item?.finalAmount * item.currentQuantities
                             )}
                           </TableCell>
 
@@ -279,9 +336,9 @@ const Cart: React.FC<CartProp> = ({ handleNext }) => {
                     </TableBody>
                   </Table>
                 </TableContainer>
-                <Link to={config.routes.productList} style={{ color: "black"}}>
+                <Link to={config.routes.productList} style={{ color: "black" }}>
                   <Button
-                    sx={{ mt: 2, border: "1px solid #d9d9d9"}}
+                    sx={{ mt: 2, border: "1px solid #d9d9d9" }}
                     color="inherit"
                     startIcon={<Iconify icon={"eva:arrow-ios-back-fill"} />}
                   >
@@ -290,7 +347,7 @@ const Cart: React.FC<CartProp> = ({ handleNext }) => {
                 </Link>
               </Grid>
               <Grid item xs={12} md={4} sx={{ mt: 2 }}>
-                <CartSummary total={total} />
+                <CartSummary total={total} discount={discountRank} />
                 <Button
                   variant="contained"
                   fullWidth
@@ -330,7 +387,7 @@ const Cart: React.FC<CartProp> = ({ handleNext }) => {
               </Link>
             </Grid>
             <Grid item xs={12} md={4}>
-              <CartSummary total={total} />
+              <CartSummary total={total} discount={discountRank} />
               <Button
                 variant="contained"
                 fullWidth

@@ -7,7 +7,7 @@ export const MessageNotice = {
   Error500: "Gặp vấn đề quá trình lấy dữ liệu",
   CreateAddressSuccess: "Tạo địa chỉ mới thành công",
   UpdateAddressSuccess: "Cập nhật địa chỉ thành công",
-  CreateOrderFailed: "Xảy ra lỗi trong quá trình tạo đơn hàng",
+  CreateOrderFailed: "Xảy ra lỗi trong quá trình tạo thanh toán",
   CreateVnpayFailed: "Khởi tạo vnpay lỗi",
   OutOfStock: "Sản phẩm hiện không còn",
   AddProductToCartSuccess: "Thêm sản phẩm thành công",
@@ -20,6 +20,8 @@ export const MessageNotice = {
   FavouriteSucces: "Thêm vào danh sách yêu thích thành công",
   FavouriteFailed: "Bỏ yêu thích thất bại",
   InvalidRole: "Tài khoản có vai trò không phù hợp",
+  ForgotAddress: "Bạn chưa chọn địa chỉ giao hàng",
+  ForgotAddToCart: "Bạn chưa có hàng trong giỏ",
 };
 
 export const AdminMessageNotice = {
@@ -53,4 +55,13 @@ export const AdminMessageNotice = {
   AddMachineToBarn: "Thêm máy vào kho",
   AddRankSuccess: "Thêm hạng thành công",
   AddRankCustomerSuccess: "Thăng hạng người dùng thành công",
+  SuccessAddQuantity: "Thêm số lượng chi tiết thành công",
+  FailAddQuantity: "Thêm số lượng chi tiết thành công",
+  ErrorSerialAdd: "Xảy ra lỗi trong quá trình thêm số lượng máy",
+  AddSerialSuccess: "Thêm số lượng máy mới thành công",
+  CreateDiscount: "Tạo chương trình giảm giá thành công",
+  UpdateDiscount: "Cập nhật Chương trình giảm giá thành công",
+  OpenDiscount: "Mở lại chương trình giảm giá thành công",
+  CloseDiscount: "Đóng lại chương trình giảm giá thành công",
+  ErrorDiscount: "Xảy ra lỗi",
 };

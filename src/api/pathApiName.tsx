@@ -26,6 +26,7 @@ export const GET_CATEGORY_CHILD =
 //Machinery Component
 export const MACHINERY_COMPONENT = "machineryComponent";
 export const GET_MACHINERY_COMPONENT = "machineryComponent/noPaginate";
+export const GET_MACHINERY_COMPONENT_PAGINATE = "machineryComponent";
 export const MACHINERY_COMPONENT_ID = "machineryComponent/:id";
 
 //Category Component
@@ -118,5 +119,5 @@ export const FAVOURITE = "favorite";
 export const FAVOURITE_ID = "favorite/:id";
 
 //diccount
-export const DICCOUNT = "discount";
-export const DICCOUNT_ID = "discount/:id";
+export const DISCOUNT = "discount";
+export const DISCOUNT_ID = "discount/:id";

@@ -81,9 +81,9 @@ export default function ModalCreateComponent({
       .required("Không để trống"),
     categoryId: Yup.string().required("Phải có loại máy"),
     timeWarranty: Yup.number()
-      .min(minTimeWarranty, `Thời gian bảo trì lớn hơn ${minTimeWarranty}`)
-      .max(maxTimeWarranty, `Thời gian bảo trì nhỏ hơn ${maxTimeWarranty}`)
-      .required("Thời gian bảo trì là bắt buộc"),
+      .min(minTimeWarranty, `Thời gian bảo hành lớn hơn ${minTimeWarranty}`)
+      .max(maxTimeWarranty, `Thời gian bảo hành nhỏ hơn ${maxTimeWarranty}`)
+      .required("Thời gian bảo hành là bắt buộc"),
   });
 
   const methods = useForm<machineComponentProps>({
@@ -238,7 +238,7 @@ export default function ModalCreateComponent({
                   <RHFTextField
                     required
                     name="timeWarranty"
-                    label="Thời gian bảo trì"
+                    label="Thời gian bảo hành"
                     placeholder="0"
                     InputLabelProps={{ shrink: true }}
                     InputProps={{

@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useEffect, useState } from "react";
-import type { MenuProps } from "antd";
+import type { MenuProps, TablePaginationConfig } from "antd";
 import type { TableProps } from "antd";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import { Table, Input, Space, Dropdown, Button, DatePicker } from "antd";
@@ -13,30 +13,38 @@ import { GetMachineComponents } from "../../models/machineComponent";
 import { MachineryComponentApi } from "../../api/services/apiMachineComponent";
 import ModalDeleteComponent from "./Popup/ModalDeleteComponent";
 import moment from "moment";
+import useDebounce from "../../hooks/useDebounce";
+import ModalComponentQuantity from "./Popup/ModalComponentQuantity";
 type ColumnsType<T> = TableProps<T>["columns"];
 const { Search } = Input;
 
-const pageSize = 20;
+const defaultPageSize = 20;
 
 const TableComponent: React.FC = () => {
   const navigate = useNavigate();
   const [products, setProducts] = useState<GetMachineComponents[]>();
-  const [pagination, setPagination] = useState({
+  const [pagination, setPagination] = useState<TablePaginationConfig>({
     current: 1,
-    pageSize: pageSize,
+    pageSize: defaultPageSize,
+    total: 0,
   });
+
   //search
   const [query, setQuery] = useState<string>("");
-  const [selectedDate, setSelectedDate] = useState<string | null>(null);
+  const debounce = useDebounce({ delay: 500, value: query });
+  const [selectedCreateDate, setSelectedCreateDate] = useState<string | null>(
+    null
+  );
 
   //popup
+  const [open, setOpen] = useState(false);
   const [openDeletePopup, setOpenDeletePopup] = useState<boolean>(false);
   const [selectedData, setSelectedData] = useState<GetMachineComponents | null>(
     null
   );
 
   //api
-  const { apiGetListComponent, loading } = MachineryComponentApi();
+  const { apiGetListComponentPaginate, loading } = MachineryComponentApi();
 
   //modal popup
   const handleActionDetail = (record: GetMachineComponents) => {
@@ -56,12 +64,29 @@ const TableComponent: React.FC = () => {
   };
 
   //----------------------------------------------------------------------------
-  const fetchProducts = async () => {
+  const fetchProducts = async (
+    page: number = 1,
+    pageSize: number = defaultPageSize,
+    Name: string = debounce,
+    createDate = selectedCreateDate
+  ) => {
     try {
-      const response = await apiGetListComponent();
+      const params = {
+        page: page,
+        size: pageSize,
+        Name: Name,
+        createDate: createDate,
+      };
+      const response = await apiGetListComponentPaginate(params);
 
       if (response && response.status === 200) {
-        setProducts(response.data);
+        setProducts(response.data.items);
+        setPagination((prev) => ({
+          ...prev,
+          total: response.data.total,
+          current: response.data.page,
+          pageSize: response.data.size,
+        }));
       } else {
         //lỗi show thông báo lỗi
         toast.error(response.Error);
@@ -72,9 +97,9 @@ const TableComponent: React.FC = () => {
   };
 
   useEffect(() => {
-    fetchProducts();
+    fetchProducts(pagination.current, pagination.pageSize, debounce);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [debounce, pagination.current, pagination.pageSize]);
 
   const handleDeleteCategorySuccess = (response: string) => {
     handleCLoseDelete();
@@ -83,40 +108,61 @@ const TableComponent: React.FC = () => {
   };
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const handleTableChange = (newPagination: any) => {
-    setPagination({
-      ...pagination,
-      ...newPagination,
-    });
-
-    if (pagination.pageSize !== pagination?.pageSize) {
-      setProducts([]);
-    }
+  const handleTableChange = (page: number, pageSize: number) => {
+    setPagination((prev) => ({
+      ...prev,
+      current: page,
+      pageSize: pageSize,
+    }));
+    fetchProducts(page, pageSize);
   };
 
   const customPagination = {
-    ...pagination,
+    current: pagination.current,
+    pageSize: pagination.pageSize,
+    total: pagination.total,
+    pageSizeOptions: ["20", "25", "50"],
+    showSizeChanger: false,
+    showQuickJumper: false,
     onChange: handleTableChange,
-    pageSizeOptions: ["20", "25", "50"], // Custom page size options
-    showSizeChanger: false, // Show page size changer
-    showQuickJumper: false, // Show quick jumper
   };
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     setQuery(e.target.value);
   };
-  const handleDateChange = (_date: any, dateString: string | string[]) => {
-    setSelectedDate(Array.isArray(dateString) ? dateString[0] : dateString);
+  const handleCreateDateChange = (
+    _date: any,
+    dateString: string | string[]
+  ) => {
+    let formattedDate = Array.isArray(dateString) ? dateString[0] : dateString;
+    if (formattedDate) {
+      formattedDate = moment(formattedDate, "DD/MM/YYYY").format("YYYY/MM/DD");
+    }
+    setSelectedCreateDate(formattedDate);
+    fetchProducts(
+      pagination.current,
+      pagination.pageSize,
+      debounce,
+      formattedDate
+    );
   };
   const dateFormatList = ["DD/MM/YYYY", "DD/MM/YY", "DD-MM-YYYY", "DD-MM-YY"];
 
-  const filteredRows = products
-    ?.filter((item) => item.name?.toLowerCase().includes(query))
-    ?.filter((item) =>
-      selectedDate
-        ? moment(item.createDate).format("DD/MM/YYYY") === selectedDate
-        : true
-    );
+  const handleQuantityClick = (record: any) => {
+    setSelectedData(record);
+    setOpen(true);
+  };
+
+  const handleQuantityClose = () => {
+    setOpen(false);
+  };
+
+  const UpdateSucces = () => {
+    toast.success(config.AdminMessageNotice.SuccessAddQuantity);
+    handleQuantityClose();
+    fetchProducts();
+  };
+
   const items: MenuProps["items"] = [
     {
       key: "1",
@@ -154,6 +200,26 @@ const TableComponent: React.FC = () => {
     {
       title: (
         <div
+          style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}
+        >
+          Số lượng
+        </div>
+      ),
+      sorter: (a, b) => a.quantity - b.quantity,
+      dataIndex: "quantity",
+      render: (quantity, record) => (
+        <div
+          onClick={() => handleQuantityClick(record)}
+          style={{ cursor: "pointer" }}
+        >
+          {quantity ? quantity : 0}
+        </div>
+      ),
+      align: "center",
+    },
+    {
+      title: (
+        <div
           style={{
             textAlign: "center",
             fontSize: "16px",
@@ -166,8 +232,8 @@ const TableComponent: React.FC = () => {
         >
           Ngày tạo
           <DatePicker
-            onChange={handleDateChange}
-            style={{ width: "35%", cursor: "pointer" }}
+            onChange={handleCreateDateChange}
+            style={{ marginLeft: 8, width: "50%" }}
             format={dateFormatList}
             placeholder="Chọn ngày"
           />
@@ -232,11 +298,13 @@ const TableComponent: React.FC = () => {
       <Table
         columns={columns}
         rowKey={(record) => record.id}
-        dataSource={filteredRows}
+        dataSource={products}
         pagination={customPagination}
         bordered
         loading={loading}
-        onChange={handleTableChange}
+        onChange={(pagination) =>
+          handleTableChange(pagination.current!, pagination.pageSize!)
+        }
         locale={{
           triggerDesc: "Sắp xếp giảm dần",
           triggerAsc: "Sắp xếp tăng dần",
@@ -250,6 +318,15 @@ const TableComponent: React.FC = () => {
           handleCLoseDelete={handleCLoseDelete}
           onDeleteSuccess={handleDeleteCategorySuccess}
           openDeletePopup={openDeletePopup}
+        />
+      )}
+
+      {open && (
+        <ModalComponentQuantity
+          ProductData={selectedData}
+          handleCLose={handleQuantityClose}
+          onUpdateSuccess={UpdateSucces}
+          openPopup={open}
         />
       )}
     </>

@@ -22,6 +22,8 @@ export interface CartItem {
   serialNumber: number;
   currentQuantities: number;
   stockPrice: number;
+  discount: number;
+  finalAmount: number;
 }
 
 export type cartProps = CartItem[] | [];

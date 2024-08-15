@@ -173,7 +173,7 @@ const ProductComponentDetail = () => {
 
                     <TextField
                       name="timeWarranty"
-                      label="Thời gian bảo trì"
+                      label="Thời gian bảo hành"
                       placeholder="0"
                       value={component?.timeWarranty || 0}
                       InputLabelProps={{ shrink: true }}

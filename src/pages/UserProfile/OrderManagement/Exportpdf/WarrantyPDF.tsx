@@ -84,7 +84,7 @@ const WarrantyPDFDocument = ({
           }}
         >
           {" "}
-          HỆ THỐNG BÁN VÀ BẢO TRÌ MÁY MÓC CƠ KHÍ{" "}
+          HỆ THỐNG BÁN VÀ BẢO HÀNH MÁY MÓC CƠ KHÍ{" "}
         </Text>
       </View>
       <View

@@ -5,33 +5,50 @@ import { Button, Modal, Typography } from "antd";
 import { toast } from "react-toastify";
 import { ApiDiscount } from "../../../api/services/apiDiscount";
 import { DiscountProps } from "../../../models/discount";
+import config from "../../../configs";
 //api
 
-interface ModalBrand {
-  DiscountData: DiscountProps | null;
+interface ModalDiscount {
+  DiscountData: DiscountProps | undefined;
   openDeletePopup: boolean;
   handleCLoseDelete: () => void;
   onDeleteSuccess: (response: string) => void;
 }
 
-const ModalCloseDiscount: React.FC<ModalBrand> = ({
+const ModalCloseDiscount: React.FC<ModalDiscount> = ({
   DiscountData,
   openDeletePopup,
   handleCLoseDelete,
   onDeleteSuccess,
 }) => {
-  const { loading, apiCloseDiscount } = ApiDiscount();
+  const { loading, apiCloseDiscount, apiOpenDiscount } = ApiDiscount();
 
   const onSubmit = async () => {
     try {
       if (DiscountData?.status === "Active") {
         const response = await apiCloseDiscount(DiscountData?.id);
-        if (onDeleteSuccess) {
-          onDeleteSuccess(response);
+        if (response.status === 200) {
+          if (onDeleteSuccess) {
+            onDeleteSuccess(config.AdminMessageNotice.CloseDiscount);
+          }
+        }
+      } else {
+        if (!DiscountData) return;
+        const params = {
+          name: DiscountData?.name,
+          type: DiscountData?.type,
+          status: "Active",
+          value: DiscountData?.value,
+        };
+        const response = await apiOpenDiscount(DiscountData?.id, params);
+        if (response.status === 200) {
+          if (onDeleteSuccess) {
+            onDeleteSuccess(config.AdminMessageNotice.CloseDiscount);
+          }
         }
       }
     } catch (error) {
-      toast.error("Lỗi xoá");
+      toast.error(config.AdminMessageNotice.ErrorDiscount);
       console.error(error);
     }
   };
@@ -55,9 +72,15 @@ const ModalCloseDiscount: React.FC<ModalBrand> = ({
         </Button>,
       ]}
     >
-      <Typography.Text>
-        Bạn có muốn xoá thương hiệu máy tên: {DiscountData?.name}
-      </Typography.Text>
+      {DiscountData?.status === "Active" ? (
+        <Typography.Text style={{ fontSize: "15px" }}>
+          Bạn có muốn đóng chương trình giảm giá: {DiscountData?.name}
+        </Typography.Text>
+      ) : (
+        <Typography.Text style={{ fontSize: "15px" }}>
+          Bạn có muốn mở lại chương trình giảm giá này: {DiscountData?.name}
+        </Typography.Text>
+      )}
     </Modal>
   );
 };

@@ -245,7 +245,7 @@ const ProductDetail = () => {
 
                     <TextField
                       name="timeWarranty"
-                      label="Thời gian bảo trì"
+                      label="Thời gian bảo hành"
                       placeholder="0"
                       value={machine?.timeWarranty || 0}
                       InputLabelProps={{ shrink: true }}
@@ -259,7 +259,7 @@ const ProductDetail = () => {
                     />
                     <TextField
                       name="timeMonthWarranty"
-                      label="Số tháng bảo trì định kì"
+                      label="Số tháng bảo hành định kì"
                       placeholder="0"
                       value={machine?.monthWarrantyNumber || 0}
                       InputLabelProps={{ shrink: true }}
