@@ -197,7 +197,7 @@ const TableTask: React.FC = () => {
           Ngày tạo
           <DatePicker
             onChange={handleDateChange}
-            style={{  width: "50%", cursor: "pointer" }}
+            style={{ width: "50%", cursor: "pointer" }}
             format={dateFormatList}
             placeholder="Chọn ngày"
           />
@@ -224,7 +224,7 @@ const TableTask: React.FC = () => {
           Ngày thực thi
           <DatePicker
             onChange={handleExcutionDateChange}
-            style={{  width: "50%", cursor: "pointer", textAlign: "center" }}
+            style={{ width: "50%", cursor: "pointer", textAlign: "center" }}
             format={dateFormatList}
             placeholder="Chọn ngày"
           />

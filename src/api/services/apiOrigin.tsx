@@ -23,6 +23,8 @@ export const ApiOrigin = () => {
       setLoading(false);
     }
   };
-
-  return { apiGetOrigin, loading };
+  return { 
+    apiGetOrigin, 
+    loading 
+  };
 };

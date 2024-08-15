@@ -19,9 +19,7 @@ export const ApiTask = () => {
     setLoading(true);
     try {
       const response = await axiosPublic.get(TASK, { params });
-
       return response;
-
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       if (axios.isAxiosError(error) && error.response) {
@@ -38,9 +36,7 @@ export const ApiTask = () => {
     setLoading(true);
     try {
       const response = await axiosPublic.post(TASK, params);
-
       return response;
-
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       if (axios.isAxiosError(error) && error.response) {
@@ -65,9 +61,7 @@ export const ApiTask = () => {
         TASK_ID.replace(":id", id),
         params
       );
-
       return response;
-
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       if (axios.isAxiosError(error) && error.response) {
@@ -109,9 +103,7 @@ export const ApiTask = () => {
     setLoading(true);
     try {
       const response = await axiosPublic.get(TASK_STAFF, { params });
-
       return response;
-
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       if (axios.isAxiosError(error) && error.response) {

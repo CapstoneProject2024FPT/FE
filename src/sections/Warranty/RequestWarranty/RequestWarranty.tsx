@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import type { MenuProps } from "antd";
 import type { TableProps } from "antd";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
-  import { Table, Space, Dropdown, DatePicker } from "antd";
+import { Table, Space, Dropdown, DatePicker } from "antd";
 import { toast } from "react-toastify";
 import { ApiWarranty } from "../../../api/services/apiWarranty";
 import { WarrantyProps, warrantyStatusMapping } from "../../../models/warranty";

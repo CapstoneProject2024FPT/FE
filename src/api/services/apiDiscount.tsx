@@ -17,9 +17,7 @@ export const ApiDiscount = () => {
     setLoading(true);
     try {
       const response = await axiosPublic.get(DICCOUNT);
-
       return response;
-
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       if (axios.isAxiosError(error) && error.response) {
@@ -36,9 +34,7 @@ export const ApiDiscount = () => {
     setLoading(true);
     try {
       const response = await axiosPublic.post(DICCOUNT, params);
-
       return response;
-
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       if (axios.isAxiosError(error) && error.response) {
@@ -55,9 +51,7 @@ export const ApiDiscount = () => {
     setLoading(true);
     try {
       const response = await axiosPublic.delete(DICCOUNT_ID.replace(":id", id));
-
       return response;
-
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       if (axios.isAxiosError(error) && error.response) {

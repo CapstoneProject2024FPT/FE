@@ -18,7 +18,6 @@ export const ApiAddress = () => {
     setLoading(true);
     try {
       const response = await axiosPublic.get(GET_CITY);
-
       return response;
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {

@@ -240,7 +240,7 @@ const TableProduct: React.FC = () => {
           Ngày tạo
           <DatePicker
             onChange={handleDateChange}
-            style={{  width: "50%", cursor: "pointer" }}
+            style={{ width: "50%", cursor: "pointer" }}
             format={dateFormatList}
             placeholder="Chọn ngày"
           />

@@ -123,7 +123,7 @@ const TablePeriodicWarranty: React.FC = () => {
     ?.filter((item) =>
       selectedCompletedDate
         ? moment(item.completionDate).format("DD/MM/YYYY") ===
-          selectedCompletedDate
+        selectedCompletedDate
         : true
     );
   const items: MenuProps["items"] = [
@@ -175,7 +175,7 @@ const TablePeriodicWarranty: React.FC = () => {
           Ngày bắt đầu
           <DatePicker
             onChange={handleCreateDateChange}
-            style={{  width: "60%", cursor: "pointer" }}
+            style={{ width: "60%", cursor: "pointer" }}
             format={dateFormatList}
             placeholder="Chọn ngày"
           />
@@ -202,7 +202,7 @@ const TablePeriodicWarranty: React.FC = () => {
           Ngày hoàn thành
           <DatePicker
             onChange={handleCompletedDateChange}
-            style={{  width: "60%", cursor: "pointer" }}
+            style={{ width: "60%", cursor: "pointer" }}
             format={dateFormatList}
             placeholder="Chọn ngày"
           />
@@ -232,7 +232,7 @@ const TablePeriodicWarranty: React.FC = () => {
       dataIndex: "staff",
       render: (staff) => {
         const notCome = "Chưa giao nhân viên";
-        if(staff?.fullName) {
+        if (staff?.fullName) {
           return staff.fullName;
         } else {
           return (

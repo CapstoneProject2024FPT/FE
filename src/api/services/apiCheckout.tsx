@@ -13,9 +13,7 @@ export const ApiCheckout = () => {
     setLoading(true);
     try {
       const response = await axiosPrivate.post(CHECKOUT, params);
-
       return response;
-
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       if (axios.isAxiosError(error) && error.response) {
@@ -32,9 +30,7 @@ export const ApiCheckout = () => {
     setLoading(true);
     try {
       const response = await axiosPrivate.post(PAYMENTS, params);
-
       return response;
-
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       if (axios.isAxiosError(error) && error.response) {
@@ -57,9 +53,7 @@ export const ApiCheckout = () => {
         PAYMENTS_ID.replace(":id", id),
         params
       );
-
       return response;
-
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       if (axios.isAxiosError(error) && error.response) {
