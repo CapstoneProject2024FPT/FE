@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from "react";
 import type { MenuProps } from "antd";
 import type { TableProps } from "antd";
-import { DownOutlined } from "@ant-design/icons";
 import { Table, Input, Space, Dropdown, Button, DatePicker } from "antd";
 import { toast } from "react-toastify";
-
+import MoreVertIcon from "@mui/icons-material/MoreVert";
 import { PlusOutlined } from "@ant-design/icons";
 import { ApiNewsCategories } from "../../api/services/apiNewsCategories";
 import ModalNewsCategoryPopupAdd from "./PopupNewsCategories/popupAddNewsCategory";
@@ -160,12 +159,13 @@ const TableNewsCategory: React.FC = () => {
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
+            gap: "5px"
           }}
         >
           Ngày tạo
           <DatePicker
             onChange={handleDateChange}
-            style={{ marginLeft: 8, width: "50%" }}
+            style={{  width: "35%", cursor: "pointer" }}
             format={dateFormatList}
             placeholder="Chọn ngày"
           />
@@ -190,13 +190,7 @@ const TableNewsCategory: React.FC = () => {
       align: "center",
     },
     {
-      title: (
-        <div
-          style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}
-        >
-          Hành Động
-        </div>
-      ),
+      title: "",
       key: "operation",
       render: (record) => (
         <Space size="middle">
@@ -218,7 +212,7 @@ const TableNewsCategory: React.FC = () => {
             }}
           >
             <a>
-              <DownOutlined />
+              <MoreVertIcon />
             </a>
           </Dropdown>
         </Space>

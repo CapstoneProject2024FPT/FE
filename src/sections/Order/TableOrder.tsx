@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react";
 import type { MenuProps } from "antd";
 import type { TableProps, TablePaginationConfig } from "antd";
-import { DownOutlined } from "@ant-design/icons";
+import MoreVertIcon from "@mui/icons-material/MoreVert";
 import {
   OrderCount,
   OrderProps,
@@ -29,7 +29,6 @@ import {
 import { ApiAdminDashboard } from "../../api/services/apiAdminDashboard";
 import SquareIcon from "@mui/icons-material/Square";
 import moment from "moment";
-import "./TableOrder.scss";
 type ColumnsType<T> = TableProps<T>["columns"];
 
 const defaultPageSize = 10;
@@ -253,19 +252,19 @@ const TableOrder: React.FC = () => {
         <div
           style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}
         >
-          Mã đơn hàng
+          Mã đơn
         </div>
       ),
       dataIndex: "invoiceCode",
       align: "center",
-      width: "10%"
+      width: "5%"
     },
     {
       title: (
         <div
           style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}
         >
-          Loại đơn hàng
+          Loại đơn
         </div>
       ),
       dataIndex: "type",
@@ -281,23 +280,26 @@ const TableOrder: React.FC = () => {
             fontSize: "16px",
             fontWeight: "bold",
             display: "flex",
+            flexDirection: "row",
+            flexWrap: "wrap",
             alignItems: "center",
             justifyContent: "center",
+            gap: "5px"
           }}
         >
           Ngày tạo
           <DatePicker
             onChange={handleCreateDateChange}
-            style={{ width: "40px", marginLeft: "4px" }}
+            style={{ width: "100%", cursor: "pointer" }}
             format={dateFormatList}
-            placeholder="Ngày tạo"
+            placeholder="Chọn ngày"
           />
         </div>
       ),
       dataIndex: "createDate",
       render: (createDate) => formatDateFunc.formatDate(createDate),
       align: "center",
-      width: "10%"
+      width: "15%"
     },
     {
       title: (
@@ -307,15 +309,19 @@ const TableOrder: React.FC = () => {
             fontSize: "16px",
             fontWeight: "bold",
             display: "flex",
+            flexDirection: "row",
+            flexWrap: "wrap",
             alignItems: "center",
             justifyContent: "center",
+            gap: "5px"
           }}
         >
-          Ngày hoàn thành
+          Hoàn thành
           <DatePicker
             onChange={handleCompletedDateChange}
-            style={{ width: "40px" , marginLeft: "4px" }}
+            style={{ width: "100%", cursor: "pointer" }}
             format={dateFormatList}
+            placeholder="Chọn ngày"
           />
         </div>
       ),
@@ -323,26 +329,14 @@ const TableOrder: React.FC = () => {
       render: (completedDate) =>
         completedDate ? formatDateFunc.formatDate(completedDate) : "--------",
       align: "center",
-      width: "10%"
+      width: "15%"
     },
     {
       title: (
         <div
           style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}
         >
-          Tổng tiền
-        </div>
-      ),
-      dataIndex: "finalAmount",
-      render: (finalAmount) => (finalAmount ? formatMoney(finalAmount) : ""),
-      width: "10%"
-    },
-    {
-      title: (
-        <div
-          style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}
-        >
-          Tên khách hàng
+          Khách hàng
         </div>
       ),
       dataIndex: "userInfo",
@@ -354,12 +348,24 @@ const TableOrder: React.FC = () => {
         <div
           style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}
         >
-          Người nhận hàng
+          Người nhận
         </div>
       ),
       dataIndex: "address",
       render: (address) => address.namePersonal,
-      width: "10%"
+      width: "15%"
+    },
+    {
+      title: (
+        <div
+          style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}
+        >
+          Tổng tiền
+        </div>
+      ),
+      dataIndex: "finalAmount",
+      render: (finalAmount) => (finalAmount ? formatMoney(finalAmount) : ""),
+      width: "5%"
     },
     {
       title: (
@@ -383,7 +389,7 @@ const TableOrder: React.FC = () => {
       ),
       dataIndex: "address",
       render: (address) => (address ? formatAddress(address) : ""),
-      width: "15%"
+      width: "30%"
     },
     {
       title: (
@@ -419,14 +425,7 @@ const TableOrder: React.FC = () => {
       width: "5%"
     },
     {
-      title: (
-        <div
-          style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}
-        >
-          Hành Động
-        </div>
-      ),
-      width: "5%",
+      title: "",
       key: "operation",
       render: (record: OrderProps) => (
         <Space size="middle">
@@ -467,7 +466,7 @@ const TableOrder: React.FC = () => {
             }}
           >
             <a>
-              <DownOutlined />
+              <MoreVertIcon />
             </a>
           </Dropdown>
         </Space>

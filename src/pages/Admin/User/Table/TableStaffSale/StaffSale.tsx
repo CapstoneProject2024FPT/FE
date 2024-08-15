@@ -209,13 +209,7 @@ const StaffSale: React.FC = () => {
       align: "center",
     },
     {
-      title: (
-        <div
-          style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}
-        >
-          Action
-        </div>
-      ),
+      title: "",
       width: "20%",
       key: "operation",
       render: (record) => (

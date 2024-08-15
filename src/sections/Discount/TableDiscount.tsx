@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import type { MenuProps } from "antd";
 import type { TableProps } from "antd";
-import { DownOutlined } from "@ant-design/icons";
 import { Table, Input, Space, Dropdown, Button, DatePicker } from "antd";
 import { toast } from "react-toastify";
 import { formatDateFunc } from "../../utils/fn";
@@ -11,6 +10,8 @@ import { DiscountProps, typeMapping } from "../../models/discount";
 import { ApiDiscount } from "../../api/services/apiDiscount";
 import ModalCloseDiscount from "./Modal/ModalCloseDiscount";
 type ColumnsType<T> = TableProps<T>["columns"];
+import MoreVertIcon from "@mui/icons-material/MoreVert";
+
 const { Search } = Input;
 
 const pageSize = 10;
@@ -152,12 +153,13 @@ const TableDiscount: React.FC = () => {
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
+            gap: "5px"
           }}
         >
           Ngày tạo
           <DatePicker
             onChange={handleDateChange}
-            style={{ marginLeft: 8, width: "50%" }}
+            style={{  width: "35%", cursor: "pointer" }}
             format={dateFormatList}
             placeholder="Chọn ngày"
           />
@@ -168,18 +170,18 @@ const TableDiscount: React.FC = () => {
       align: "center",
     },
     {
-      title: "Trạng thái",
-      dataIndex: "status",
-      render: (status) => (status === "Active" ? "Hữu hiệu" : "Vô hiệu"),
-    },
-    {
       title: (
         <div
           style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}
         >
-          Hành Động
+          Trạng thái
         </div>
       ),
+      dataIndex: "status",
+      render: (status) => (status === "Active" ? "Hữu hiệu" : "Vô hiệu"),
+    },
+    {
+      title: "",
       key: "operation",
       render: (record) => (
         <Space size="middle">
@@ -201,7 +203,7 @@ const TableDiscount: React.FC = () => {
             }}
           >
             <a>
-              <DownOutlined />
+              <MoreVertIcon />
             </a>
           </Dropdown>
         </Space>

@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react";
 import type { MenuProps } from "antd";
 import type { TableProps } from "antd";
-import { DownOutlined } from "@ant-design/icons";
+import MoreVertIcon from "@mui/icons-material/MoreVert";
 import { Table, Space, Dropdown, DatePicker } from "antd";
 import { toast } from "react-toastify";
 import { ApiWarranty } from "../../../api/services/apiWarranty";
@@ -11,7 +11,6 @@ import { formatDateFunc } from "../../../utils/fn";
 import config from "../../../configs";
 import { useNavigate } from "react-router-dom";
 import moment from "moment";
-import "./PeriodicWarranty.scss"
 
 type ColumnsType<T> = TableProps<T>["columns"];
 
@@ -69,7 +68,6 @@ const TablePeriodicWarranty: React.FC = () => {
       });
 
       setPeriodicWarranty(keyData);
-      console.log(keyData)
     } catch (error) {
       toast.error("lỗi");
     }
@@ -171,14 +169,15 @@ const TablePeriodicWarranty: React.FC = () => {
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
+            gap: "5px"
           }}
         >
           Ngày bắt đầu
           <DatePicker
             onChange={handleCreateDateChange}
-            style={{ marginLeft: 4, width: "38px" }}
+            style={{  width: "60%", cursor: "pointer" }}
             format={dateFormatList}
-            placeholder="Ngày tạo"
+            placeholder="Chọn ngày"
           />
         </div>
       ),
@@ -197,14 +196,15 @@ const TablePeriodicWarranty: React.FC = () => {
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
+            gap: "5px"
           }}
         >
           Ngày hoàn thành
           <DatePicker
             onChange={handleCompletedDateChange}
-            style={{ marginLeft: 4, width: "38px" }}
+            style={{  width: "60%", cursor: "pointer" }}
             format={dateFormatList}
-            placeholder="Ngày hoàn thành"
+            placeholder="Chọn ngày"
           />
         </div>
       ),
@@ -322,13 +322,7 @@ const TablePeriodicWarranty: React.FC = () => {
       width: "20%"
     },
     {
-      title: (
-        <div
-          style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}
-        >
-          Hành Động
-        </div>
-      ),
+      title: "",
       key: "operation",
       render: (record) => (
         <Space size="middle">
@@ -349,7 +343,7 @@ const TablePeriodicWarranty: React.FC = () => {
             }}
           >
             <a>
-              <DownOutlined />
+              <MoreVertIcon />
             </a>
           </Dropdown>
         </Space>

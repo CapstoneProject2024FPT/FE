@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react";
 import type { MenuProps } from "antd";
 import type { TableProps } from "antd";
-import { DownOutlined } from "@ant-design/icons";
+import MoreVertIcon from "@mui/icons-material/MoreVert";
 import { Table, Space, Dropdown, DatePicker } from "antd";
 import { toast } from "react-toastify";
 import { GetTaskProps, statusTaskMapping } from "../../models/task";
@@ -31,6 +31,9 @@ const TableTask: React.FC = () => {
   //api
   const { loading, apiGetTask } = ApiTask();
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
+  const [selectedExcutionDate, setExcutionCompletedDate] = useState<
+    string | null
+  >(null);
   const [selectStatus, setSelectStatus] = useState<string>("");
   const [selectStatusUi, setSelectStatusUi] = useState<string>("");
 
@@ -122,13 +125,29 @@ const TableTask: React.FC = () => {
   const handleDateChange = (_date: any, dateString: string | string[]) => {
     setSelectedDate(Array.isArray(dateString) ? dateString[0] : dateString);
   };
+
+  const handleExcutionDateChange = (
+    _date: any,
+    dateString: string | string[]
+  ) => {
+    setExcutionCompletedDate(
+      Array.isArray(dateString) ? dateString[0] : dateString
+    );
+  };
+
   const dateFormatList = ["DD/MM/YYYY", "DD/MM/YY", "DD-MM-YYYY", "DD-MM-YY"];
 
-  const filteredRows = tasks?.filter((item) =>
-    selectedDate
+  const filteredRows = tasks
+    ?.filter((item) => selectedDate
       ? moment(item.createDate).format("DD/MM/YYYY") === selectedDate
       : true
-  );
+    )
+    ?.filter((item) =>
+      selectedExcutionDate
+        ? moment(item.excutionDate).format("DD/MM/YYYY") ===
+        selectedExcutionDate
+        : true
+    );
 
   const handleSelect = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -172,12 +191,13 @@ const TableTask: React.FC = () => {
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
+            gap: "5px"
           }}
         >
           Ngày tạo
           <DatePicker
             onChange={handleDateChange}
-            style={{ marginLeft: 8, width: "50%" }}
+            style={{  width: "50%", cursor: "pointer" }}
             format={dateFormatList}
             placeholder="Chọn ngày"
           />
@@ -186,6 +206,7 @@ const TableTask: React.FC = () => {
       dataIndex: "createDate",
       render: (createDate) => formatDateFunc.formatDate(createDate),
       align: "center",
+      width: "20%"
     },
     {
       title: (
@@ -197,14 +218,22 @@ const TableTask: React.FC = () => {
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
+            gap: "5px"
           }}
         >
           Ngày thực thi
+          <DatePicker
+            onChange={handleExcutionDateChange}
+            style={{  width: "50%", cursor: "pointer", textAlign: "center" }}
+            format={dateFormatList}
+            placeholder="Chọn ngày"
+          />
         </div>
       ),
       dataIndex: "excutionDate",
       render: (excutionDate) => formatDateFunc.formatDate(excutionDate),
       align: "center",
+      width: "20%"
     },
     {
       title: (
@@ -251,13 +280,7 @@ const TableTask: React.FC = () => {
       align: "center",
     },
     {
-      title: (
-        <div
-          style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}
-        >
-          Hành Động
-        </div>
-      ),
+      title: "",
       key: "operation",
       render: (record) => (
         <Space size="middle">
@@ -288,7 +311,7 @@ const TableTask: React.FC = () => {
             }}
           >
             <a>
-              <DownOutlined />
+              <MoreVertIcon />
             </a>
           </Dropdown>
         </Space>
