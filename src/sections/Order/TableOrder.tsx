@@ -29,6 +29,7 @@ import {
 import { ApiAdminDashboard } from "../../api/services/apiAdminDashboard";
 import SquareIcon from "@mui/icons-material/Square";
 import moment from "moment";
+import "./TableOrder.scss";
 type ColumnsType<T> = TableProps<T>["columns"];
 
 const defaultPageSize = 10;
@@ -257,11 +258,20 @@ const TableOrder: React.FC = () => {
       ),
       dataIndex: "invoiceCode",
       align: "center",
+      width: "10%"
     },
     {
-      title: "Loại đơn hàng",
+      title: (
+        <div
+          style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}
+        >
+          Loại đơn hàng
+        </div>
+      ),
       dataIndex: "type",
       render: (type) => (type === "Order" ? "Mua hàng" : "Bảo hành"),
+      align: "center",
+      width: "10%"
     },
     {
       title: (
@@ -278,7 +288,7 @@ const TableOrder: React.FC = () => {
           Ngày tạo
           <DatePicker
             onChange={handleCreateDateChange}
-            style={{ marginLeft: 8, width: "50%" }}
+            style={{ width: "40px", marginLeft: "4px" }}
             format={dateFormatList}
             placeholder="Ngày tạo"
           />
@@ -287,6 +297,7 @@ const TableOrder: React.FC = () => {
       dataIndex: "createDate",
       render: (createDate) => formatDateFunc.formatDate(createDate),
       align: "center",
+      width: "10%"
     },
     {
       title: (
@@ -303,9 +314,8 @@ const TableOrder: React.FC = () => {
           Ngày hoàn thành
           <DatePicker
             onChange={handleCompletedDateChange}
-            style={{ marginLeft: 8, width: "50%" }}
+            style={{ width: "40px" , marginLeft: "4px" }}
             format={dateFormatList}
-            placeholder="Ngày hoàn thành"
           />
         </div>
       ),
@@ -313,31 +323,67 @@ const TableOrder: React.FC = () => {
       render: (completedDate) =>
         completedDate ? formatDateFunc.formatDate(completedDate) : "--------",
       align: "center",
+      width: "10%"
     },
     {
-      title: "Tổng tiền",
+      title: (
+        <div
+          style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}
+        >
+          Tổng tiền
+        </div>
+      ),
       dataIndex: "finalAmount",
       render: (finalAmount) => (finalAmount ? formatMoney(finalAmount) : ""),
+      width: "10%"
     },
     {
-      title: "Tên khách hàng",
+      title: (
+        <div
+          style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}
+        >
+          Tên khách hàng
+        </div>
+      ),
       dataIndex: "userInfo",
       render: (userInfo) => userInfo.fullName,
+      width: "10%"
     },
     {
-      title: "Người nhận hàng",
+      title: (
+        <div
+          style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}
+        >
+          Người nhận hàng
+        </div>
+      ),
       dataIndex: "address",
       render: (address) => address.namePersonal,
+      width: "10%"
     },
     {
-      title: "Số điện thoại",
+      title: (
+        <div
+          style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}
+        >
+          Số điện thoại
+        </div>
+      ),
       dataIndex: "address",
       render: (address) => address.phoneNumber,
+      width: "5%"
     },
     {
-      title: "Địa chỉ",
+      title: (
+        <div
+          style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}
+        >
+          Địa chỉ
+        </div>
+      ),
       dataIndex: "address",
       render: (address) => (address ? formatAddress(address) : ""),
+      width: "15%"
     },
     {
       title: (
@@ -370,6 +416,7 @@ const TableOrder: React.FC = () => {
         );
       },
       align: "center",
+      width: "5%"
     },
     {
       title: (
@@ -379,6 +426,7 @@ const TableOrder: React.FC = () => {
           Hành Động
         </div>
       ),
+      width: "5%",
       key: "operation",
       render: (record: OrderProps) => (
         <Space size="middle">
@@ -461,7 +509,8 @@ const TableOrder: React.FC = () => {
           sx={{
             display: "flex",
             alignItems: "center",
-            justifyItems: "center",
+            justifyContent: "space-around",
+            width: "100%",
             minHeight: "50px",
           }}
         >
@@ -503,7 +552,7 @@ const TableOrder: React.FC = () => {
           select
           label="Trạng thái đơn"
           value={selectStatusUi}
-          sx={{ width: "200px", minHeight: "50px" }}
+          sx={{ width: "20%", minHeight: "50px" }}
           onChange={(e) => handleSelect(e)}
         >
           {statusMapping.map((option) => (
