@@ -147,7 +147,7 @@ const TableNewsCategory: React.FC = () => {
       ),
       dataIndex: "name",
       sorter: (a, b) => a.name.length - b.name.length,
-      width: "20%",
+      width: "30%",
       align: "center",
     },
     {
@@ -172,7 +172,7 @@ const TableNewsCategory: React.FC = () => {
         </div>
       ),
       dataIndex: "createDate",
-      width: "20%",
+      width: "30%", 
       render: (createDate) => formatDateFunc.formatDate(createDate),
       align: "center",
     },
@@ -224,6 +224,7 @@ const TableNewsCategory: React.FC = () => {
         </Space>
       ),
       align: "center",
+      width: "20%",
     },
   ];
 
