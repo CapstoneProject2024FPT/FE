@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import type { MenuProps } from "antd";
 import type { TableProps } from "antd";
-import { DownOutlined } from "@ant-design/icons";
 import { Table, Input, Space, Dropdown, Button, DatePicker } from "antd";
 import { brandTable } from "../../models/brand";
 import { BrandApi } from "../../api/services/apiBrand";
@@ -117,6 +116,7 @@ const TableBrand: React.FC = () => {
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     setQuery(e.target.value);
   };
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleDateChange = (_date: any, dateString: string | string[]) => {
     setSelectedDate(Array.isArray(dateString) ? dateString[0] : dateString);
   };
@@ -177,7 +177,7 @@ const TableBrand: React.FC = () => {
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            gap: "5px"
+            gap: "5px",
           }}
         >
           Ngày tạo

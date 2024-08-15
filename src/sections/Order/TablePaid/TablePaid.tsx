@@ -30,7 +30,7 @@ const TablePaid: React.FC = () => {
   const [selectedCreateDate, setSelectedCreateDate] = useState<string | null>(
     null
   );
-  const [selectedOrderType, setSelectedOrderType] = useState<string | null>(
+  const [selectedOrderType, setSelectedOrderType] = useState<string>(
     options[0].value
   );
   const [selectedCompletedDate, setSelectedCompletedDate] = useState<
