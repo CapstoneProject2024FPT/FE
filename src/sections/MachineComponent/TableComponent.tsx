@@ -134,7 +134,7 @@ const TableComponent: React.FC = () => {
       ),
       dataIndex: "name",
       sorter: (a, b) => a.name.length - b.name.length,
-      width: "20%",
+      width: "30%",
     },
     {
       title: (
@@ -149,6 +149,7 @@ const TableComponent: React.FC = () => {
         return brand.name;
       },
       align: "center",
+      width: "20%"
     },
     {
       title: (
@@ -174,6 +175,7 @@ const TableComponent: React.FC = () => {
       dataIndex: "createDate",
       render: (createDate) => formatDateFunc.formatDate(createDate),
       align: "center",
+      width: "30%"
     },
     {
       title: (
@@ -210,6 +212,7 @@ const TableComponent: React.FC = () => {
         </Space>
       ),
       align: "center",
+      width: "20%"
     },
   ];
 
