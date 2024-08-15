@@ -11,6 +11,8 @@ import { formatDateFunc } from "../../../utils/fn";
 import config from "../../../configs";
 import { useNavigate } from "react-router-dom";
 import moment from "moment";
+import "./PeriodicWarranty.scss"
+
 type ColumnsType<T> = TableProps<T>["columns"];
 
 const pageSize = 20;
@@ -67,6 +69,7 @@ const TablePeriodicWarranty: React.FC = () => {
       });
 
       setPeriodicWarranty(keyData);
+      console.log(keyData)
     } catch (error) {
       toast.error("lỗi");
     }
@@ -143,6 +146,7 @@ const TablePeriodicWarranty: React.FC = () => {
       ),
       dataIndex: "key",
       align: "center",
+      width: "10%"
     },
     {
       title: (
@@ -155,6 +159,7 @@ const TablePeriodicWarranty: React.FC = () => {
       dataIndex: "type",
       render: (type) => (type === "Periodic" ? "Định kì" : "Yêu cầu"),
       align: "center",
+      width: "15%"
     },
     {
       title: (
@@ -171,7 +176,7 @@ const TablePeriodicWarranty: React.FC = () => {
           Ngày bắt đầu
           <DatePicker
             onChange={handleCreateDateChange}
-            style={{ marginLeft: 8, width: "50%" }}
+            style={{ marginLeft: 4, width: "38px" }}
             format={dateFormatList}
             placeholder="Ngày tạo"
           />
@@ -180,6 +185,7 @@ const TablePeriodicWarranty: React.FC = () => {
       dataIndex: "startDate",
       render: (startDate) => formatDateFunc.formatDate(startDate),
       align: "center",
+      width: "20%"
     },
     {
       title: (
@@ -196,7 +202,7 @@ const TablePeriodicWarranty: React.FC = () => {
           Ngày hoàn thành
           <DatePicker
             onChange={handleCompletedDateChange}
-            style={{ marginLeft: 8, width: "50%" }}
+            style={{ marginLeft: 4, width: "38px" }}
             format={dateFormatList}
             placeholder="Ngày hoàn thành"
           />
@@ -206,6 +212,46 @@ const TablePeriodicWarranty: React.FC = () => {
       render: (completionDate) =>
         completionDate ? formatDateFunc.formatDate(completionDate) : "-------",
       align: "center",
+      width: "20%"
+    },
+    {
+      title: (
+        <div
+          style={{
+            textAlign: "center",
+            fontSize: "16px",
+            fontWeight: "bold",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          Nhân viên thực hiện
+        </div>
+      ),
+      dataIndex: "staff",
+      render: (staff) => {
+        const notCome = "Chưa giao nhân viên";
+        if(staff?.fullName) {
+          return staff.fullName;
+        } else {
+          return (
+            <div
+              style={{
+                background: "grey",
+                padding: "8px 16px",
+                borderRadius: "8px",
+                display: "inline-block",
+                color: "white",
+              }}
+            >
+              {notCome}
+            </div>
+          );
+        }
+      },
+      align: "center",
+      width: "20%"
     },
     {
       title: (
@@ -273,6 +319,7 @@ const TablePeriodicWarranty: React.FC = () => {
         }
       },
       align: "center",
+      width: "20%"
     },
     {
       title: (
@@ -308,6 +355,7 @@ const TablePeriodicWarranty: React.FC = () => {
         </Space>
       ),
       align: "center",
+      width: "10%"
     },
   ];
 
