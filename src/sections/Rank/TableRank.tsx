@@ -161,6 +161,18 @@ const TableRank: React.FC = () => {
         <div
           style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}
         >
+          Mức ưu đãi
+        </div>
+      ),
+      dataIndex: "value",
+      render: (value) => (value ? `${value}%` : ""),
+      align: "center",
+    },
+    {
+      title: (
+        <div
+          style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}
+        >
           Hành Động
         </div>
       ),

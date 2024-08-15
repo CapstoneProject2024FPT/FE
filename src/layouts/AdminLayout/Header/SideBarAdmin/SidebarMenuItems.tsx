@@ -123,7 +123,7 @@ const MenuSideBars: CustomMenuItem[] = [
     ],
   },
   {
-    label: "Bảo trì",
+    label: "Bảo hành",
     key: "warranty",
     icon: <EngineeringIcon />,
     roles: AccessType.ADMIN_MANAGER_ACCESS,

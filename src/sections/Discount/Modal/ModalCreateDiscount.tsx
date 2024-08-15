@@ -20,7 +20,7 @@ import { ApiDiscount } from "../../../api/services/apiDiscount";
 interface ModalBrand {
   open: boolean;
   handleClose: () => void;
-  onAddSuccess?: () => void;
+  onAddSuccess?: (response: string) => void;
 }
 
 const ModalCreateDiscount: React.FC<ModalBrand> = ({
@@ -58,14 +58,16 @@ const ModalCreateDiscount: React.FC<ModalBrand> = ({
 
   const onSubmit = async (data: DiscountAdd) => {
     try {
-      await apiAddDiscount(data);
+      const response = await apiAddDiscount(data);
+      console.log(response);
+
       if (onAddSuccess) {
-        onAddSuccess();
+        onAddSuccess(config.AdminMessageNotice.CreateDiscount);
       }
       reset();
     } catch (error) {
       handleClose();
-      toast.error(config.AdminMessageNotice.AddBrandFailed);
+      toast.error(config.AdminMessageNotice.ErrorDiscount);
       console.error(error);
     }
   };

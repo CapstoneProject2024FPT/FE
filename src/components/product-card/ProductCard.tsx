@@ -17,7 +17,7 @@ type Props = {
 };
 
 export default function ProductCard({ product }: Props) {
-  const { name, sellingPrice, image, origin, id } = product;
+  const { name, sellingPrice, image, origin, id, discount } = product;
 
   return (
     <Link
@@ -60,17 +60,22 @@ export default function ProductCard({ product }: Props) {
             justifyContent="space-between"
           >
             <Stack direction="row" spacing={0.5}>
-              {/* {salePrice && (
-              <Typography
-                component="span"
-                sx={{ color: "text.disabled", textDecoration: "line-through" }}
-              >
-                {formatMoney(salePrice)}
-              </Typography>
-            )} */}
+              {discount > 0 && (
+                <Typography
+                  component="span"
+                  sx={{
+                    color: "text.disabled",
+                    textDecoration: "line-through",
+                  }}
+                >
+                  {formatMoney(sellingPrice)}
+                </Typography>
+              )}
 
               <Typography variant="subtitle1">
-                {formatMoney(sellingPrice)}
+                {product
+                  ? formatMoney((sellingPrice * (100 - discount)) / 100)
+                  : 0}
               </Typography>
             </Stack>
           </Stack>

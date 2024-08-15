@@ -103,7 +103,11 @@ const UserEditForm: React.FC<userModal> = ({
           role: userData?.role,
           status: userData?.status,
         };
+        console.log(params);
+
         const response = await updateProfile(userData.id, params);
+
+        console.log(response);
 
         if (response.StatusCode === 400) {
           toast.error(response.Error);

@@ -233,7 +233,7 @@ const TableSerial: React.FC<TableSerial> = ({ handleSetName }) => {
             ]}
           />
           <Button onClick={handleOpen} icon={<PlusOutlined />}>
-            Thêm máy vào kho
+            Thêm số lượng máy
           </Button>
         </div>
       </div>

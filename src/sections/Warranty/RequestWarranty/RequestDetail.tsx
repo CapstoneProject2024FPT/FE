@@ -148,6 +148,20 @@ const RequestDetail = () => {
                       }}
                     />
 
+                    <TextField
+                      name="name"
+                      label="Ngày đi bảo hành"
+                      value={
+                        requestWarranty?.warrantyDetail
+                          ? formatDateFunc.formatDate(
+                              requestWarranty?.warrantyDetail[0].startDate
+                            )
+                          : ""
+                      }
+                      InputProps={{
+                        readOnly: true,
+                      }}
+                    />
                     <div>
                       <LabelStyle>Mô tả</LabelStyle>
                       <TextField

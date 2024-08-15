@@ -19,11 +19,17 @@ import Iconify from "../../../components/Iconify";
 
 type Props = {
   total: number;
+  discount: number;
   enableEdit?: boolean;
   onEdit?: VoidFunction;
 };
 
-export default function CartSummary({ total, enableEdit, onEdit }: Props) {
+export default function CartSummary({
+  total,
+  enableEdit,
+  onEdit,
+  discount,
+}: Props) {
   return (
     <Card sx={{ mb: 3 }}>
       <CardHeader
@@ -52,16 +58,9 @@ export default function CartSummary({ total, enableEdit, onEdit }: Props) {
 
           <Stack direction="row" justifyContent="space-between">
             <Typography variant="body2" sx={{ color: "text.secondary" }}>
-              Giảm giá
+              Giảm giá theo hạng
             </Typography>
-            <Typography variant="subtitle2">0</Typography>
-          </Stack>
-
-          <Stack direction="row" justifyContent="space-between">
-            <Typography variant="body2" sx={{ color: "text.secondary" }}>
-              Phí Ship
-            </Typography>
-            <Typography variant="subtitle2">0</Typography>
+            <Typography variant="subtitle2">{formatMoney(discount)}</Typography>
           </Stack>
 
           <Divider />
@@ -70,7 +69,7 @@ export default function CartSummary({ total, enableEdit, onEdit }: Props) {
             <Typography variant="subtitle1">Tổng Thành Tiền</Typography>
             <Box sx={{ textAlign: "right" }}>
               <Typography variant="subtitle1" sx={{ color: "error.main" }}>
-                {formatMoney(total)}
+                {formatMoney(total - discount)}
               </Typography>
               <Typography variant="caption" sx={{ fontStyle: "italic" }}>
                 (Đã bao gồm thuế VAT)

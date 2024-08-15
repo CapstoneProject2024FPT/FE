@@ -10,6 +10,9 @@ import moment from "moment";
 import { DiscountProps, typeMapping } from "../../models/discount";
 import { ApiDiscount } from "../../api/services/apiDiscount";
 import ModalCloseDiscount from "./Modal/ModalCloseDiscount";
+import config from "../../configs";
+import ModalCreateDiscount from "./Modal/ModalCreateDiscount";
+import ModalDiscountDetail from "./Modal/ModalDiscountDetail";
 type ColumnsType<T> = TableProps<T>["columns"];
 const { Search } = Input;
 
@@ -29,7 +32,7 @@ const TableDiscount: React.FC = () => {
   const [open, setOpen] = useState<boolean>(false);
   const [openAddPopup, setOpenAddPopup] = useState<boolean>(false);
   const [openDeletePopup, setOpenDeletePopup] = useState<boolean>(false);
-  const [selectedData, setSelectedData] = useState<DiscountProps | null>(null);
+  const [selectedData, setSelectedData] = useState<DiscountProps>();
 
   //api
   const { loading, apiGetDiscount } = ApiDiscount();
@@ -38,6 +41,10 @@ const TableDiscount: React.FC = () => {
   const handleActionDetail = (record: DiscountProps) => {
     setOpen(!open);
     setSelectedData(record);
+  };
+
+  const handleCloseAction = () => {
+    setOpen(!open);
   };
   const handleActionDelete = (record: DiscountProps) => {
     setOpenDeletePopup(!openDeletePopup);
@@ -52,13 +59,29 @@ const TableDiscount: React.FC = () => {
     fetchDiscount();
     toast.success(response);
   };
+
+  const handleCloseAdd = () => {
+    setOpenAddPopup(!openAddPopup);
+  };
+  const handleAddSuccess = (response: string) => {
+    handleCloseAdd();
+    fetchDiscount();
+    toast.success(response);
+  };
+
+  const handleUpdateSuccess = (response: string) => {
+    handleCloseAction();
+    fetchDiscount();
+    toast.success(response);
+  };
+
   //----------------------------------------------------------------------------
   const fetchDiscount = async () => {
     try {
       const response = await apiGetDiscount();
       setDiscounts(response.data);
     } catch (error) {
-      toast.error("lỗi");
+      toast.error(config.AdminMessageNotice.ErrorDiscount);
     }
   };
 
@@ -168,10 +191,16 @@ const TableDiscount: React.FC = () => {
       align: "center",
     },
     {
+      title: "Phần trăm giảm",
+      dataIndex: "value",
+      render: (value) => (value ? `${value}%` : 0),
+    },
+    {
       title: "Trạng thái",
       dataIndex: "status",
       render: (status) => (status === "Active" ? "Hữu hiệu" : "Vô hiệu"),
     },
+
     {
       title: (
         <div
@@ -246,6 +275,23 @@ const TableDiscount: React.FC = () => {
           DiscountData={selectedData}
           handleCLoseDelete={handleCLoseDelete}
           onDeleteSuccess={handleUpdateDiscountSuccess}
+        />
+      )}
+
+      {openAddPopup && (
+        <ModalCreateDiscount
+          handleClose={handleCloseAdd}
+          open={openAddPopup}
+          onAddSuccess={handleAddSuccess}
+        />
+      )}
+
+      {open && (
+        <ModalDiscountDetail
+          handleClose={handleCloseAction}
+          open={open}
+          onAddSuccess={handleUpdateSuccess}
+          DiscountData={selectedData}
         />
       )}
     </>

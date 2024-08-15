@@ -15,6 +15,7 @@ export const ApiOrder = () => {
     CompletedDate?: string | null;
     Status?: string;
     InvoiceCode?: string;
+    type?: string;
   }
 
   const apiGetOrder = async (params: GetOrderProps) => {

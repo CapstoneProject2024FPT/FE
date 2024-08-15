@@ -22,6 +22,7 @@ interface ModalRank {
 type RankProps = {
   name: string;
   range: number;
+  value: number;
 };
 
 const ModalRankDetail: React.FC<ModalRank> = ({
@@ -34,11 +35,16 @@ const ModalRankDetail: React.FC<ModalRank> = ({
   const RankSchema = Yup.object().shape({
     name: Yup.string().required("Bắt buộc").trim(),
     range: Yup.number().required("Bắt buộc").moreThan(500, "Lớn hơn 500"),
+    value: Yup.number()
+      .required("Bắt buộc")
+      .min(1, "Lớn hơn 1")
+      .max(20, "Nhỏ hơn 20"),
   });
 
   const defaultValues: RankProps = {
     name: RankData?.name || "",
     range: RankData?.range || 0,
+    value: RankData?.value || 0,
   };
 
   const methods = useForm<RankProps>({
@@ -80,6 +86,7 @@ const ModalRankDetail: React.FC<ModalRank> = ({
           <Stack spacing={3}>
             <RHFTextField name="name" label="Tên hạng" autoFocus />
             <RHFTextField name="range" label="Mức tiền" multiline />
+            <RHFTextField name="value" label="Mức ưu đãi" autoFocus />
           </Stack>
           <div style={{ display: "flex", justifyContent: "flex-end" }}>
             <LoadingButton
