@@ -92,7 +92,7 @@ const TableComponent: React.FC = () => {
         toast.error(response.Error);
       }
     } catch (error) {
-      toast.error("lỗi");
+      toast.error(config.AdminMessageNotice.ErrorGet);
     }
   };
 
@@ -195,7 +195,7 @@ const TableComponent: React.FC = () => {
         return brand.name;
       },
       align: "center",
-      width: "20%"
+      width: "20%",
     },
     {
       title: (
@@ -227,7 +227,7 @@ const TableComponent: React.FC = () => {
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            gap: "5px"
+            gap: "5px",
           }}
         >
           Ngày tạo
@@ -242,7 +242,7 @@ const TableComponent: React.FC = () => {
       dataIndex: "createDate",
       render: (createDate) => formatDateFunc.formatDate(createDate),
       align: "center",
-      width: "30%"
+      width: "30%",
     },
     {
       title: "",
@@ -273,7 +273,7 @@ const TableComponent: React.FC = () => {
         </Space>
       ),
       align: "center",
-      width: "20%"
+      width: "20%",
     },
   ];
 
@@ -291,7 +291,7 @@ const TableComponent: React.FC = () => {
             navigate(config.adminRoutes.createMachineComponent);
           }}
         >
-          Thêm máy chi tiết máy
+          Thêm chi tiết máy
         </Button>
       </div>
 

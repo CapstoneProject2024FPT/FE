@@ -2,8 +2,6 @@ import React, { useEffect, useState } from "react";
 import { useFormContext, Controller } from "react-hook-form";
 import { TextField, TextFieldProps } from "@mui/material";
 
-// ----------------------------------------------------------------------
-
 type IProps = {
   name: string;
 };
@@ -11,10 +9,12 @@ type IProps = {
 type Props = IProps & TextFieldProps;
 
 const formatNumberWithSpaces = (value: string) => {
-  // Remove non-numeric characters
   const numericValue = value.replace(/[^\d]/g, "");
-  // Format the number with spaces every three digits
-  return numericValue.replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+  return numericValue.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+};
+
+const parseFormattedNumber = (value: string) => {
+  return parseFloat(value.replace(/,/g, ""));
 };
 
 export default function RHFTextFieldNumber({ name, ...other }: Props) {
@@ -23,7 +23,6 @@ export default function RHFTextFieldNumber({ name, ...other }: Props) {
 
   useEffect(() => {
     const initialValue = getValues(name);
-
     if (initialValue && other.type === "number") {
       setDisplayValue(formatNumberWithSpaces(String(initialValue)));
     } else {
@@ -38,7 +37,7 @@ export default function RHFTextFieldNumber({ name, ...other }: Props) {
     if (other.type === "number") {
       const formattedValue = formatNumberWithSpaces(value);
       setDisplayValue(formattedValue);
-      setValue(name, value.replace(/ /g, "")); // Store numeric value without spaces
+      setValue(name, parseFormattedNumber(formattedValue));
     } else {
       setDisplayValue(value);
       setValue(name, value);
@@ -61,9 +60,15 @@ export default function RHFTextFieldNumber({ name, ...other }: Props) {
             handleChange(e);
             field.onChange(e);
           }}
+          onBlur={() => {
+            field.onBlur();
+            if (other.type === "number") {
+              setValue(name, parseFormattedNumber(displayValue));
+            }
+          }}
           InputProps={{
             ...other.InputProps,
-            type: "text", // Force type to text to allow formatting
+            type: "text",
             inputProps: { ...other.InputProps?.inputProps, min: 0 },
           }}
           InputLabelProps={{

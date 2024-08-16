@@ -13,7 +13,7 @@ import { useForm } from "react-hook-form";
 import * as Yup from "yup";
 
 import { LoadingButton } from "@mui/lab";
-import { Card, Grid, InputAdornment, Stack } from "@mui/material";
+import { Card, Grid, InputAdornment, Stack, TextField } from "@mui/material";
 import { ProductDetailProps, UpdateProduct } from "../../../models/products";
 import { MachineryApi } from "../../../api/services/apiMachinery";
 import { toast } from "react-toastify";
@@ -22,6 +22,8 @@ import { brandTable } from "../../../models/brand";
 import { BrandApi } from "../../../api/services/apiBrand";
 import { OriginProps } from "../../../models/origin";
 import { ApiOrigin } from "../../../api/services/apiOrigin";
+import config from "../../../configs";
+import { formatNumberWithCommas } from "../../../utils/fn";
 
 interface UpdateProductForm {
   name: string;
@@ -143,28 +145,29 @@ const ModalProductDetailPopup: React.FC<ModalProduct> = ({
   const onSubmit = async (data: UpdateProductForm) => {
     try {
       if (productData) {
+        if (data.sellingPrice < productData.stockPrice) {
+          toast.error(config.AdminMessageNotice.SellingPriceMoreThanStockPrice);
+          return;
+        }
         const params: UpdateProduct = {
-          //use spread operator to make the copy object
           ...data,
           categoryId: productData?.category?.id,
           status: productData?.status,
         };
-        console.log(params);
 
         if (id) {
           const response = await apiUpdateMachineryDetail(id, params);
 
           if (response && response.status === 200) {
+            reset();
             onUpdateSuccess(response.data);
           } else {
             toast.error(response.Error);
           }
         }
       }
-
-      reset();
     } catch (error) {
-      console.error(error);
+      toast.error(config.AdminMessageNotice.ErrorUpdate);
     }
   };
 
@@ -221,6 +224,19 @@ const ModalProductDetailPopup: React.FC<ModalProduct> = ({
               </Grid>
               <Grid item xs={6}>
                 <Stack direction="column" display="flex" spacing={2}>
+                  <TextField
+                    value={formatNumberWithCommas(productData?.stockPrice || 0)}
+                    label="Giá nhập"
+                    type="text"
+                    autoFocus
+                    InputProps={{
+                      startAdornment: (
+                        <InputAdornment position="start">VNĐ</InputAdornment>
+                      ),
+                      inputProps: { min: 0 },
+                    }}
+                    disabled
+                  />
                   <RHFTextFieldNumber
                     name="sellingPrice"
                     label="Giá bán"
@@ -250,7 +266,7 @@ const ModalProductDetailPopup: React.FC<ModalProduct> = ({
                   />
                   <RHFTextField
                     name="monthWarrantyNumber"
-                    label="Số tháng bảo hành định kì"
+                    label="Số tháng bảo hành định kỳ"
                     autoFocus
                     InputProps={{
                       endAdornment: (

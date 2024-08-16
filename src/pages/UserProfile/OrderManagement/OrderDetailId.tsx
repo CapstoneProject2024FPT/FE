@@ -308,7 +308,7 @@ const OrderDetailBill: React.FC = () => {
                                 (warrantyItem, idx) => (
                                   <TableRow key={warrantyItem.id}>
                                     <TableCell>
-                                      Bảo Hành định kì lần {idx + 1} :{" "}
+                                      Bảo Hành định kỳ lần {idx + 1} :{" "}
                                       {formatDateFunc.formatDate(
                                         warrantyItem.startDate
                                       )}

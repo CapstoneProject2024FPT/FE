@@ -41,7 +41,7 @@ const ModalCompleteOrder: React.FC<ModalOrder> = ({
       }
     } catch (error) {
       handleCLoseComplete();
-      toast.error("Lỗi xoá");
+      toast.error(config.AdminMessageNotice.ErrorDelete);
       console.error(error);
     }
   };

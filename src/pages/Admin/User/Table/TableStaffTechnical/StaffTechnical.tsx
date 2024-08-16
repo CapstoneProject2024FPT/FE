@@ -116,7 +116,7 @@ const StaffTechnical: React.FC = () => {
 
   const onSuccess = () => {
     handleCLose();
-    toast.success(config.AdminMessageNotice.AddEmployeeSuccess);
+    toast.success(config.AdminMessageNotice.BanOrUnbanSuccess);
     fetchAccountUser();
   };
 

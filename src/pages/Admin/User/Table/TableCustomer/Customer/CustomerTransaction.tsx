@@ -91,9 +91,17 @@ const CustomerTransaction: React.FC = () => {
         };
         const response = await apiUserTransaction(params);
 
-        const data = response.data.map((item: any, idx: any) => {
-          return { ...item, key: idx + 1 };
-        });
+        const data = response.data.map(
+          (item: TransactionProps, idx: number) => {
+            const [paymentMethod, orderType] = item.payType.split("_");
+            return {
+              ...item,
+              paymentMethod,
+              orderType,
+              key: idx + 1,
+            };
+          }
+        );
 
         setUserTransaction(data);
       }
@@ -203,6 +211,29 @@ const CustomerTransaction: React.FC = () => {
       render: (createdAt) => {
         return formatDateFunc.formatDateTime(createdAt);
       },
+      align: "center",
+    },
+    {
+      title: (
+        <div
+          style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}
+        >
+          loại đơn hàng
+        </div>
+      ),
+      dataIndex: "orderType",
+      render: (orderType) => (orderType === "Order" ? "Mua hàng" : "Bảo hành"),
+      align: "center",
+    },
+    {
+      title: (
+        <div
+          style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}
+        >
+          Phương thức thanh toán
+        </div>
+      ),
+      dataIndex: "paymentMethod",
       align: "center",
     },
     {

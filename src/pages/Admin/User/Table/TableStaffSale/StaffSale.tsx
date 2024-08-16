@@ -53,7 +53,7 @@ const StaffSale: React.FC = () => {
   };
 
   const onSuccessAdd = () => {
-    toast.success(config.AdminMessageNotice.AddEmployeeSuccess);
+    toast.success(config.AdminMessageNotice.BanOrUnbanSuccess);
     handleCloseOpenAdd();
     fetchAccountUser();
   };

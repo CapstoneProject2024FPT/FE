@@ -67,7 +67,7 @@ const TableBrand: React.FC = () => {
       const data = await getBrand(param);
       setBrands(data);
     } catch (error) {
-      toast.error("lỗi");
+      toast.error(config.AdminMessageNotice.ErrorGet);
     }
   };
 

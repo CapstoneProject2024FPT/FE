@@ -81,7 +81,7 @@ const PopupUpdateUserProfile: React.FC<userData> = ({
     image:
       user?.image ||
       "https://firebasestorage.googleapis.com/v0/b/selling-maintainance-machinery.appspot.com/o/images%20(1).jfif?alt=media&token=5d70b7f3-d5c5-4de7-ba5a-767a328f9b82",
-    gender: user?.gender || "",
+    gender: user?.gender || "Male",
   };
 
   const methods = useForm<userPropUpdate>({

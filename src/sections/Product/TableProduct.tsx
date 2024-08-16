@@ -77,7 +77,7 @@ const TableProduct: React.FC = () => {
         toast.error(response.Error);
       }
     } catch (error) {
-      toast.error("lỗi");
+      toast.error(config.AdminMessageNotice.ErrorGet);
     }
   };
 
@@ -234,7 +234,7 @@ const TableProduct: React.FC = () => {
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            gap: "5px"
+            gap: "5px",
           }}
         >
           Ngày tạo

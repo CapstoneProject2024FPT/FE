@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useEffect, useState } from "react";
 import type { MenuProps } from "antd";
 import type { TableProps } from "antd";
@@ -64,7 +65,7 @@ const TableBlogNew: React.FC = () => {
 
       setBlogNews(response.data);
     } catch (error) {
-      toast.error("lỗi");
+      toast.error(config.AdminMessageNotice.ErrorGet);
     }
   };
 
@@ -170,13 +171,13 @@ const TableBlogNew: React.FC = () => {
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            gap: "5px"
+            gap: "5px",
           }}
         >
           Ngày tạo
           <DatePicker
             onChange={handleDateChange}
-            style={{  width: "50%", cursor: "pointer" }}
+            style={{ width: "50%", cursor: "pointer" }}
             format={dateFormatList}
             placeholder="Chọn ngày"
           />

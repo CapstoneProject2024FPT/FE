@@ -6,6 +6,7 @@ import { Button, Modal, Typography } from "antd";
 import { toast } from "react-toastify";
 //api
 import { CategoryApi } from "../../../../api/services/apiCategories";
+import config from "../../../../configs";
 
 interface ModalCategory {
   CategoryData: GetCategoryProps | null;
@@ -35,7 +36,7 @@ const ModalCategoryPopupDeleteComponent: React.FC<ModalCategory> = ({
         }
       }
     } catch (error) {
-      toast.error("Lỗi xoá");
+      toast.error(config.AdminMessageNotice.ErrorDelete);
       console.error(error);
     }
   };

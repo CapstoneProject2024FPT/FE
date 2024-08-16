@@ -82,8 +82,7 @@ const Transaction: React.FC = () => {
     return statusName;
   };
   //open
-  const handleOpen = (transaction: TransactionProps) => {
-    setSelectData(transaction);
+  const handleOpen = () => {
     setOpen(!open);
     handleCloseMenu();
   };
@@ -92,8 +91,12 @@ const Transaction: React.FC = () => {
     setOpen(!open);
   };
 
-  const handleOpenMenu = (event: React.MouseEvent<HTMLElement>) => {
+  const handleOpenMenu = (
+    event: React.MouseEvent<HTMLElement>,
+    transaction: TransactionProps
+  ) => {
     setAnchorEl(event.currentTarget);
+    setSelectData(transaction);
   };
 
   const handleCloseMenu = () => {
@@ -213,7 +216,9 @@ const Transaction: React.FC = () => {
                         <IconButton
                           aria-label="more actions"
                           size="small"
-                          onClick={handleOpenMenu}
+                          onClick={(event) =>
+                            handleOpenMenu(event, transaction)
+                          }
                         >
                           <MoreVertIcon />
                         </IconButton>
@@ -222,7 +227,7 @@ const Transaction: React.FC = () => {
                           open={openMenu}
                           onClose={handleCloseMenu}
                         >
-                          <MenuItem onClick={() => handleOpen(transaction)}>
+                          <MenuItem onClick={handleOpen}>
                             Chi tiết giao dịch
                           </MenuItem>
                         </Menu>
