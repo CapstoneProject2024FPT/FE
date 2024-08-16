@@ -16,7 +16,6 @@ export const BrandApi = () => {
     try {
       setLoading(true);
       const response = await axiosPublic.get(BRAND, { params });
-
       setLoading(false);
       return response.data;
     } catch (error: any) {
@@ -34,7 +33,6 @@ export const BrandApi = () => {
     try {
       setLoading(true);
       const response = await axiosPublic.delete(BRAND_ID.replace(":id", id));
-
       setLoading(false);
       return response.data;
     } catch (error: any) {
@@ -71,8 +69,6 @@ export const BrandApi = () => {
 
   const addBrand = async (params: brandProps) => {
     try {
-      console.log(params);
-
       setLoading(true);
       const response = await axiosPublic.post(BRAND, params);
       setLoading(false);

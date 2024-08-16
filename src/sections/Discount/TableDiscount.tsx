@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import type { MenuProps } from "antd";
 import type { TableProps } from "antd";
-import { DownOutlined } from "@ant-design/icons";
 import { Table, Input, Space, Dropdown, Button, DatePicker } from "antd";
 import { toast } from "react-toastify";
 import { formatDateFunc } from "../../utils/fn";
@@ -10,7 +9,12 @@ import moment from "moment";
 import { DiscountProps, typeMapping } from "../../models/discount";
 import { ApiDiscount } from "../../api/services/apiDiscount";
 import ModalCloseDiscount from "./Modal/ModalCloseDiscount";
+import config from "../../configs";
+import ModalCreateDiscount from "./Modal/ModalCreateDiscount";
+import ModalDiscountDetail from "./Modal/ModalDiscountDetail";
 type ColumnsType<T> = TableProps<T>["columns"];
+import MoreVertIcon from "@mui/icons-material/MoreVert";
+
 const { Search } = Input;
 
 const pageSize = 10;
@@ -29,7 +33,7 @@ const TableDiscount: React.FC = () => {
   const [open, setOpen] = useState<boolean>(false);
   const [openAddPopup, setOpenAddPopup] = useState<boolean>(false);
   const [openDeletePopup, setOpenDeletePopup] = useState<boolean>(false);
-  const [selectedData, setSelectedData] = useState<DiscountProps | null>(null);
+  const [selectedData, setSelectedData] = useState<DiscountProps>();
 
   //api
   const { loading, apiGetDiscount } = ApiDiscount();
@@ -38,6 +42,10 @@ const TableDiscount: React.FC = () => {
   const handleActionDetail = (record: DiscountProps) => {
     setOpen(!open);
     setSelectedData(record);
+  };
+
+  const handleCloseAction = () => {
+    setOpen(!open);
   };
   const handleActionDelete = (record: DiscountProps) => {
     setOpenDeletePopup(!openDeletePopup);
@@ -52,13 +60,29 @@ const TableDiscount: React.FC = () => {
     fetchDiscount();
     toast.success(response);
   };
+
+  const handleCloseAdd = () => {
+    setOpenAddPopup(!openAddPopup);
+  };
+  const handleAddSuccess = (response: string) => {
+    handleCloseAdd();
+    fetchDiscount();
+    toast.success(response);
+  };
+
+  const handleUpdateSuccess = (response: string) => {
+    handleCloseAction();
+    fetchDiscount();
+    toast.success(response);
+  };
+
   //----------------------------------------------------------------------------
   const fetchDiscount = async () => {
     try {
       const response = await apiGetDiscount();
       setDiscounts(response.data);
     } catch (error) {
-      toast.error("lỗi");
+      toast.error(config.AdminMessageNotice.ErrorDiscount);
     }
   };
 
@@ -152,12 +176,13 @@ const TableDiscount: React.FC = () => {
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
+            gap: "5px"
           }}
         >
           Ngày tạo
           <DatePicker
             onChange={handleDateChange}
-            style={{ marginLeft: 8, width: "50%" }}
+            style={{  width: "35%", cursor: "pointer" }}
             format={dateFormatList}
             placeholder="Chọn ngày"
           />
@@ -168,18 +193,29 @@ const TableDiscount: React.FC = () => {
       align: "center",
     },
     {
+      title: "Phần trăm giảm",
+      dataIndex: "value",
+      render: (value) => (value ? `${value}%` : 0),
+    },
+    {
       title: "Trạng thái",
       dataIndex: "status",
       render: (status) => (status === "Active" ? "Hữu hiệu" : "Vô hiệu"),
     },
+
     {
       title: (
         <div
           style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}
         >
-          Hành Động
+          Trạng thái
         </div>
       ),
+      dataIndex: "status",
+      render: (status) => (status === "Active" ? "Hữu hiệu" : "Vô hiệu"),
+    },
+    {
+      title: "",
       key: "operation",
       render: (record) => (
         <Space size="middle">
@@ -201,7 +237,7 @@ const TableDiscount: React.FC = () => {
             }}
           >
             <a>
-              <DownOutlined />
+              <MoreVertIcon />
             </a>
           </Dropdown>
         </Space>
@@ -246,6 +282,23 @@ const TableDiscount: React.FC = () => {
           DiscountData={selectedData}
           handleCLoseDelete={handleCLoseDelete}
           onDeleteSuccess={handleUpdateDiscountSuccess}
+        />
+      )}
+
+      {openAddPopup && (
+        <ModalCreateDiscount
+          handleClose={handleCloseAdd}
+          open={openAddPopup}
+          onAddSuccess={handleAddSuccess}
+        />
+      )}
+
+      {open && (
+        <ModalDiscountDetail
+          handleClose={handleCloseAction}
+          open={open}
+          onAddSuccess={handleUpdateSuccess}
+          DiscountData={selectedData}
         />
       )}
     </>

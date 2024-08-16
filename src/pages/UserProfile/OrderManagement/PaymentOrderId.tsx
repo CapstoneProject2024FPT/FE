@@ -177,12 +177,14 @@ const PaymentOrderId: React.FC = () => {
     try {
       //api vnpay
       if (orderData && authUser) {
+        const typeOrder =
+          orderData.type === "Order" ? "VNPAY_Order" : "VNPAY_Warranty";
         if (data.payment === PaymentTypeProps.VNPAY) {
           const paramPayment: paymentProps = {
             orderId: orderData.orderId,
             amount: orderData.finalAmount,
             callbackUrl: window.location.href,
-            paymentType: data.payment,
+            paymentType: typeOrder,
             accountId: authUser,
           };
 

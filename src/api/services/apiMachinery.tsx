@@ -76,7 +76,6 @@ export const MachineryApi = () => {
 
   const apiDeleteMachine = async (id: string) => {
     setLoading(true);
-
     try {
       const response = await axiosPublic.delete(
         MACHINERY_ID.replace(":id", id)

@@ -411,22 +411,24 @@ const Detail: React.FC = () => {
                 variant="h4"
               >
                 {/* TODO: Selling price when have promotion */}
-                {/* {(product?.sellingPrice * (100 - product.discountPercentage)) / 100} */}
-                {formatMoney(product?.sellingPrice)}
+                {product
+                  ? formatMoney(
+                      (product?.sellingPrice * (100 - product?.discount)) / 100
+                    )
+                  : 0}
               </Typography>
 
-              {product?.discountPercentage ? (
+              {product?.discount ? (
                 <>
                   {/* Original Price */}
                   <Typography
                     sx={{
                       color: "gray",
                       textDecoration: "line-through",
-                      "&:after": { content: "' VNĐ'" },
                     }}
                     variant="h5"
                   >
-                    {product?.originalPrice}
+                    {formatMoney(product?.sellingPrice)}
                   </Typography>
                   <Typography
                     sx={{
@@ -437,8 +439,7 @@ const Detail: React.FC = () => {
                     variant="h5"
                   >
                     {/* TODO: sau có promotion thì update lại */}
-                    50
-                    {product?.discountPercentage}
+                    {product?.discount}
                   </Typography>
                 </>
               ) : null}

@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import type { MenuProps } from "antd";
 import type { TableProps } from "antd";
-import { DownOutlined } from "@ant-design/icons";
+import MoreVertIcon from "@mui/icons-material/MoreVert";
+
 import {
   Table,
   Input,
@@ -239,7 +240,7 @@ const TableSerialComponent: React.FC<TableSerial> = ({ handleSetName }) => {
       width: "20%",
     },
     {
-      title: "Hành Động",
+      title: "",
       key: "operation",
       render: (record) => (
         <Space size="middle">
@@ -258,7 +259,7 @@ const TableSerialComponent: React.FC<TableSerial> = ({ handleSetName }) => {
             }}
           >
             <a>
-              <DownOutlined />
+              <MoreVertIcon />
             </a>
           </Dropdown>
         </Space>

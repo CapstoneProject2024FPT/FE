@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useState } from "react";
 import * as Yup from "yup";
 // form
@@ -60,7 +61,7 @@ const CheckoutPayment: React.FC<checkoutPaymentProps> = ({
   handleBack,
   handleGoToStep,
 }) => {
-  const { total } = useCheckout();
+  const { total, discountRank } = useCheckout();
   const { address } = useAddress();
   const { authUser } = useAuthContext();
 
@@ -129,6 +130,7 @@ const CheckoutPayment: React.FC<checkoutPaymentProps> = ({
       }
       sessionStorage.removeItem("paymmentID");
       sessionStorage.removeItem("checkoutTotal");
+      sessionStorage.removeItem("checkoutTotalDiscountRank");
       localStorage.removeItem("cart");
       sessionStorage.removeItem("address");
     };
@@ -165,19 +167,18 @@ const CheckoutPayment: React.FC<checkoutPaymentProps> = ({
       setValue("payment", PAYMENT_OPTIONS[0].value);
     } else if (!total) {
       navigate(config.routes.cart.concat("/?step=0"));
-      toast.error("Bạn chưa có hàng trong giỏ");
+      toast.error(config.MessageNotice.ForgotAddToCart);
     } else if (!address) {
       setTimeout(() => {
         navigate(config.routes.cart.concat("/?step=1"));
-        console.log(config.routes.cart.concat("/?step=1"));
-
-        toast.error("Bạn chưa chọn địa chỉ giao hàng");
+        toast.error(config.MessageNotice.ForgotAddress);
       }, 200);
     }
   }, [total, address, setValue]);
 
   const onSubmit = async (data: FormValuesProps) => {
     try {
+      const finalAmount = total - discountRank;
       if (address && authUser) {
         const params = {
           description: note,
@@ -194,9 +195,9 @@ const CheckoutPayment: React.FC<checkoutPaymentProps> = ({
           if (data.payment === PaymentTypeProps.VNPAY) {
             const paramPayment: paymentProps = {
               orderId: response.data,
-              amount: total,
+              amount: finalAmount,
               callbackUrl: window.location.href,
-              paymentType: "VNPAY",
+              paymentType: "VNPAY_Order",
               accountId: authUser,
             };
 
@@ -222,6 +223,12 @@ const CheckoutPayment: React.FC<checkoutPaymentProps> = ({
       }
     } catch (error) {
       toast.error(config.MessageNotice.CreateOrderFailed);
+      navigate(config.routes.paymentFailure);
+      sessionStorage.removeItem("paymmentID");
+      sessionStorage.removeItem("checkoutTotal");
+      sessionStorage.removeItem("checkoutTotalDiscountRank");
+      localStorage.removeItem("cart");
+      sessionStorage.removeItem("address");
       console.error(error);
     }
   };
@@ -260,6 +267,7 @@ const CheckoutPayment: React.FC<checkoutPaymentProps> = ({
             <CheckoutBillingInfo onBackStep={handleBack} />
 
             <CartSummary
+              discount={discountRank}
               total={total}
               enableEdit
               onEdit={() => handleGoToStep(0)}

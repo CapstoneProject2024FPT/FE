@@ -37,7 +37,7 @@ export interface userProps {
   address: string;
   role: string;
   status: string;
-  rank: { name: string; range: number };
+  rank: { name: string; range: number; value: number };
   gender: string;
 }
 export interface staffProps extends Omit<userProps, "rank"> {

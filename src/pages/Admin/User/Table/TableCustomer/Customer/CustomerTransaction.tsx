@@ -144,34 +144,75 @@ const CustomerTransaction: React.FC = () => {
   ];
   const columns: ColumnsType<TransactionProps> = [
     {
-      title: "",
+      title: (
+        <div
+          style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}
+        >
+          Stt
+        </div>
+      ),
       dataIndex: "key",
+      align: "center",
     },
     {
-      title: "Mã giao dịch",
+      title: (
+        <div
+          style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}
+        >
+          Mã giao dịch
+        </div>
+      ),
       dataIndex: "invoiceId",
+      align: "center",
     },
     {
-      title: "Mã đơn hàng",
+      title: (
+        <div
+          style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}
+        >
+          Mã đơn hàng
+        </div>
+      ),
       dataIndex: "orderId",
       render: (orderId) => invoiceCodes[orderId],
+      align: "center",
     },
     {
-      title: "Số tiền",
+      title: (
+        <div
+          style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}
+        >
+          Số tiền
+        </div>
+      ),
       dataIndex: "totalAmount",
       render: (totalAmount) => {
         return formatMoney(totalAmount);
       },
+      align: "center",
     },
     {
-      title: "Ngày tạo đơn",
+      title: (
+        <div
+          style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}
+        >
+          Ngày tạo đơn
+        </div>
+      ),
       dataIndex: "createdAt",
       render: (createdAt) => {
         return formatDateFunc.formatDateTime(createdAt);
       },
+      align: "center",
     },
     {
-      title: "Trạng thái",
+      title: (
+        <div
+          style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}
+        >
+          Trạng thái
+        </div>
+      ),
       dataIndex: "status",
       render: (status: string) => {
         const styles = getStatusStyles(status);
@@ -188,9 +229,10 @@ const CustomerTransaction: React.FC = () => {
           </div>
         );
       },
+      align: "center",
     },
     {
-      title: "Action",
+      title: "",
       key: "operation",
       render: (record) => (
         <Space size="middle">
@@ -214,6 +256,7 @@ const CustomerTransaction: React.FC = () => {
           </Dropdown>
         </Space>
       ),
+      align: "center",
     },
   ];
   return (

@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import type { MenuProps } from "antd";
 import type { TableProps } from "antd";
-import { DownOutlined } from "@ant-design/icons";
 import { Table, Input, Space, Dropdown, Button, DatePicker } from "antd";
 import { brandTable } from "../../models/brand";
 import { BrandApi } from "../../api/services/apiBrand";
@@ -13,6 +12,8 @@ import ModalBrandPopupDelete from "./BrandPopup/popupDeleteBrand";
 import { PlusOutlined } from "@ant-design/icons";
 import moment from "moment";
 import config from "../../configs";
+import MoreVertIcon from "@mui/icons-material/MoreVert";
+
 type ColumnsType<T> = TableProps<T>["columns"];
 const { Search } = Input;
 
@@ -115,6 +116,7 @@ const TableBrand: React.FC = () => {
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     setQuery(e.target.value);
   };
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleDateChange = (_date: any, dateString: string | string[]) => {
     setSelectedDate(Array.isArray(dateString) ? dateString[0] : dateString);
   };
@@ -175,12 +177,13 @@ const TableBrand: React.FC = () => {
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
+            gap: "5px",
           }}
         >
           Ngày tạo
           <DatePicker
             onChange={handleDateChange}
-            style={{ marginLeft: 8, width: "50%" }}
+            style={{ width: "35%", cursor: "pointer" }}
             format={dateFormatList}
             placeholder="Chọn ngày"
           />
@@ -191,18 +194,19 @@ const TableBrand: React.FC = () => {
       align: "center",
     },
     {
-      title: "Trạng thái",
-      dataIndex: "status",
-      render: (status) => (status === "Active" ? "Hữu hiệu" : "Vô hiệu"),
-    },
-    {
       title: (
         <div
           style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}
         >
-          Hành Động
+          Trạng thái
         </div>
       ),
+      dataIndex: "status",
+      render: (status) => (status === "Active" ? "Hữu hiệu" : "Vô hiệu"),
+      align: "center",
+    },
+    {
+      title: "",
       key: "operation",
       render: (record) => (
         <Space size="middle">
@@ -224,7 +228,7 @@ const TableBrand: React.FC = () => {
             }}
           >
             <a>
-              <DownOutlined />
+              <MoreVertIcon />
             </a>
           </Dropdown>
         </Space>

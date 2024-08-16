@@ -12,12 +12,9 @@ export const ApiTransaction = () => {
   }
   const apiUserTransaction = async (params: transactionProps) => {
     setLoading(true);
-
     try {
       const response = await axiosPublic.get(USER_TRANSACTION, { params });
-
       return response;
-
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       if (axios.isAxiosError(error) && error.response) {

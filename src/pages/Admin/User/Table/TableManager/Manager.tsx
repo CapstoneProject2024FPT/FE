@@ -206,13 +206,7 @@ const ManagerData: React.FC = () => {
       },
     },
     {
-      title: (
-        <div
-          style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}
-        >
-          Action
-        </div>
-      ),
+      title: "",
       key: "operation",
       render: (record) => (
         <Space size="middle">

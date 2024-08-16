@@ -48,9 +48,7 @@ export const CategoryApi = () => {
     try {
       setLoading(true);
       const response = await axiosPublic.get(GET_CATEGORY_PARENT);
-
       setLoading(false);
-
       return response.data;
     } catch (error: any) {
       if (axios.isAxiosError(error) && error.response) {
@@ -67,9 +65,7 @@ export const CategoryApi = () => {
     try {
       setLoading(true);
       const response = await axiosPublic.get(GET_CATEGORY_CHILD);
-
       setLoading(false);
-
       return response.data;
     } catch (error: any) {
       if (axios.isAxiosError(error) && error.response) {
@@ -85,7 +81,6 @@ export const CategoryApi = () => {
     try {
       setLoading(true);
       const response = await axiosPublic.delete(CATEGORY_ID.replace(":id", id));
-
       setLoading(false);
       return response.data;
     } catch (error: any) {

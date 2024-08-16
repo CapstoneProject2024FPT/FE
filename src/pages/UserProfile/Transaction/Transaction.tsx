@@ -169,6 +169,7 @@ const Transaction: React.FC = () => {
                 <TableCell>Số tiền giao dịch</TableCell>
                 <TableCell>Trạng thái</TableCell>
                 <TableCell>Phương thức giao dịch</TableCell>
+                <TableCell>Loại đơn thanh toán</TableCell>
                 <TableCell>Hành động</TableCell>
               </TableRow>
             </TableHead>
@@ -199,7 +200,15 @@ const Transaction: React.FC = () => {
                           {handleStatusName(transaction.status)}
                         </Box>
                       </TableCell>
-                      <TableCell>{transaction.payType}</TableCell>
+                      {transaction.payType?.split("_").map((part, index) => (
+                        <TableCell key={index}>
+                          {part === "Order"
+                            ? "Mua hàng"
+                            : part === "Warranty"
+                            ? "Bảo hành"
+                            : part.toUpperCase()}
+                        </TableCell>
+                      ))}
                       <TableCell>
                         <IconButton
                           aria-label="more actions"

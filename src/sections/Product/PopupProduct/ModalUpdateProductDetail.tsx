@@ -103,19 +103,19 @@ const ModalProductDetailPopup: React.FC<ModalProduct> = ({
       .moreThan(0, "Giá tiền lớn hơn 0")
       .required("Không để trống"),
     timeWarranty: Yup.number()
-      .min(minTimeWarranty, `Thời gian bảo trì lớn hơn ${minTimeWarranty}`)
-      .max(maxTimeWarranty, `Thời gian bảo trì nhỏ hơn ${maxTimeWarranty}`)
-      .required("Thời gian bảo trì là bắt buộc"),
+      .min(minTimeWarranty, `Thời gian bảo hành lớn hơn ${minTimeWarranty}`)
+      .max(maxTimeWarranty, `Thời gian bảo hành nhỏ hơn ${maxTimeWarranty}`)
+      .required("Thời gian bảo hành là bắt buộc"),
     monthWarrantyNumber: Yup.number()
       .min(
         minTimeMonthWarranty,
-        `Thời gian bảo trì lớn hơn ${minTimeMonthWarranty}`
+        `Thời gian bảo hành lớn hơn ${minTimeMonthWarranty}`
       )
       .max(
         maxTimeMonthWarranty,
-        `Thời gian bảo trì nhỏ hơn ${maxTimeMonthWarranty}`
+        `Thời gian bảo hành nhỏ hơn ${maxTimeMonthWarranty}`
       )
-      .required("Thời gian bảo trì là bắt buộc"),
+      .required("Thời gian bảo hành là bắt buộc"),
   });
 
   const defaultValues: UpdateProductForm = {
@@ -250,7 +250,7 @@ const ModalProductDetailPopup: React.FC<ModalProduct> = ({
                   />
                   <RHFTextField
                     name="monthWarrantyNumber"
-                    label="Số tháng bảo trì định kì"
+                    label="Số tháng bảo hành định kì"
                     autoFocus
                     InputProps={{
                       endAdornment: (

@@ -15,9 +15,7 @@ export const ApiFavourite = () => {
     setLoading(true);
     try {
       const response = await axiosPrivate.post(FAVOURITE, params);
-
       return response;
-
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       if (axios.isAxiosError(error) && error.response) {
@@ -34,9 +32,7 @@ export const ApiFavourite = () => {
     setLoading(true);
     try {
       const response = await axiosPrivate.get(FAVOURITE);
-
       return response;
-
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       if (axios.isAxiosError(error) && error.response) {
@@ -50,16 +46,12 @@ export const ApiFavourite = () => {
   };
 
   const apiDeleteFavourite = async (id: string) => {
-    console.log(id);
-
     setLoading(true);
     try {
       const response = await axiosPrivate.delete(
         FAVOURITE_ID.replace(":id", id)
       );
-
       return response;
-
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       if (axios.isAxiosError(error) && error.response) {

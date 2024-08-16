@@ -68,7 +68,8 @@ interface Inventory {
   type: string;
 }
 
-export interface WarrantyPropsById extends WarrantyProps {
+export interface WarrantyPropsById
+  extends Omit<WarrantyProps, "warrantyDetai"> {
   warrantyDetail: WarrantyDetailProps[];
 }
 
