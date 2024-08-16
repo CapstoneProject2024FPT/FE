@@ -3,7 +3,7 @@ import Grid from "@mui/material/Unstable_Grid2";
 import { styled } from "@mui/material/styles";
 import { Box, TextField, Typography } from "@mui/material";
 import { CustomerApi } from "../../../../../api/services/apiUser";
-import { staffProps } from "../../../../../models/UserData";
+import { RoleType, staffProps } from "../../../../../models/UserData";
 import styles from "./userProfile.module.scss";
 import classNames from "classnames/bind";
 import { useParams } from "react-router-dom";
@@ -13,6 +13,7 @@ import { toast } from "react-toastify";
 import { RoleData } from "../../RoleData";
 import ModalAddress from "../Popup/popupAddress";
 import config from "../../../../../configs";
+import { useAuthContext } from "../../../../../context/AuthContext";
 
 const cx = classNames.bind(styles);
 
@@ -32,6 +33,7 @@ const AccountInfo: React.FC = () => {
   const [openModalRole, setOpenModalRole] = useState<boolean>(false);
   const [userProfile, setUserProfile] = useState<staffProps>();
   const [open, setOpen] = useState<boolean>(false);
+  const { role } = useAuthContext();
 
   const { apiUserProfile } = CustomerApi();
 
@@ -79,7 +81,9 @@ const AccountInfo: React.FC = () => {
   };
   return (
     <>
-      <Button onClick={handleOpenChangeRole}>Cập nhật chức vụ</Button>
+      {role === RoleType.ADMIN && (
+        <Button onClick={handleOpenChangeRole}>Cập nhật chức vụ</Button>
+      )}
       <FormGrid xs={12}>
         <Box
           sx={{
@@ -114,7 +118,6 @@ const AccountInfo: React.FC = () => {
           value={userProfile?.fullName || ""}
         />
       </FormGrid>
-
       <FormGrid xs={12}>
         <LabelStyle>Số Điện Thoại</LabelStyle>
         <TextField
@@ -157,7 +160,6 @@ const AccountInfo: React.FC = () => {
           }
         />
       </FormGrid>
-
       <FormGrid xs={12}>
         <LabelStyle>Số năm kinh nghiệm</LabelStyle>
         <TextField
@@ -168,7 +170,6 @@ const AccountInfo: React.FC = () => {
           value={userProfile?.yearsOfExperience || 0}
         />
       </FormGrid>
-
       {openModalRole && (
         <ModalChangeRole
           UserData={userProfile}

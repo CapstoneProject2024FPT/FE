@@ -59,7 +59,7 @@ const ModalNewsCategoryPopupDelete: React.FC<ModalCategory> = ({
         }
       }
     } catch (error) {
-      toast.error("Lỗi xoá");
+      toast.error(config.AdminMessageNotice.ErrorDelete);
       console.error(error);
     }
   };

@@ -13,6 +13,7 @@ import { RHFTextField, FormProvider } from "../../../components/hook-form";
 import { Card, TextField } from "@mui/material";
 import { LoadingButton } from "@mui/lab";
 import { GetMachineComponents } from "../../../models/machineComponent";
+import config from "../../../configs";
 
 interface ModalSerialNumber {
   productData: GetMachineComponents | undefined;
@@ -73,7 +74,7 @@ const ModalAddSerialComponent: React.FC<ModalSerialNumber> = ({
         }
       }
     } catch (error) {
-      toast.error("Lỗi xoá");
+      toast.error(config.AdminMessageNotice.ErrorDelete);
       console.error(error);
     }
   };

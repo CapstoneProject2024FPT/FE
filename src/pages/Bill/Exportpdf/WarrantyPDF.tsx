@@ -278,7 +278,7 @@ const WarrantyPDFDocument = ({
               marginBottom: "15px",
             }}
           >
-            Bảo hành định kì
+            Bảo hành định kỳ
           </Text>
           <View
             style={{

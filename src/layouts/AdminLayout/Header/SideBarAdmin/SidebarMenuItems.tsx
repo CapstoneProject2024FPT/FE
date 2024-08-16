@@ -130,7 +130,7 @@ const MenuSideBars: CustomMenuItem[] = [
     children: [
       {
         label: (
-          <Link to={config.adminRoutes.maintenance}>Bảo hành định kì</Link>
+          <Link to={config.adminRoutes.maintenance}>Bảo hành định kỳ</Link>
         ),
         key: config.adminRoutes.maintenance,
         roles: AccessType.ADMIN_MANAGER_ACCESS,

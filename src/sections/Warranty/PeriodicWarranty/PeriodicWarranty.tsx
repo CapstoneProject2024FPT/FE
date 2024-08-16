@@ -69,7 +69,7 @@ const TablePeriodicWarranty: React.FC = () => {
 
       setPeriodicWarranty(keyData);
     } catch (error) {
-      toast.error("lỗi");
+      toast.error(config.AdminMessageNotice.ErrorGet);
     }
   };
 
@@ -123,7 +123,7 @@ const TablePeriodicWarranty: React.FC = () => {
     ?.filter((item) =>
       selectedCompletedDate
         ? moment(item.completionDate).format("DD/MM/YYYY") ===
-        selectedCompletedDate
+          selectedCompletedDate
         : true
     );
   const items: MenuProps["items"] = [
@@ -144,7 +144,7 @@ const TablePeriodicWarranty: React.FC = () => {
       ),
       dataIndex: "key",
       align: "center",
-      width: "10%"
+      width: "10%",
     },
     {
       title: (
@@ -155,9 +155,9 @@ const TablePeriodicWarranty: React.FC = () => {
         </div>
       ),
       dataIndex: "type",
-      render: (type) => (type === "Periodic" ? "Định kì" : "Yêu cầu"),
+      render: (type) => (type === "Periodic" ? "Định kỳ" : "Yêu cầu"),
       align: "center",
-      width: "15%"
+      width: "15%",
     },
     {
       title: (
@@ -169,10 +169,10 @@ const TablePeriodicWarranty: React.FC = () => {
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            gap: "5px"
+            gap: "5px",
           }}
         >
-          Ngày bắt đầu
+          Ngày bảo hành
           <DatePicker
             onChange={handleCreateDateChange}
             style={{ width: "60%", cursor: "pointer" }}
@@ -184,7 +184,7 @@ const TablePeriodicWarranty: React.FC = () => {
       dataIndex: "startDate",
       render: (startDate) => formatDateFunc.formatDate(startDate),
       align: "center",
-      width: "20%"
+      width: "20%",
     },
     {
       title: (
@@ -196,7 +196,7 @@ const TablePeriodicWarranty: React.FC = () => {
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            gap: "5px"
+            gap: "5px",
           }}
         >
           Ngày hoàn thành
@@ -212,7 +212,7 @@ const TablePeriodicWarranty: React.FC = () => {
       render: (completionDate) =>
         completionDate ? formatDateFunc.formatDate(completionDate) : "-------",
       align: "center",
-      width: "20%"
+      width: "20%",
     },
     {
       title: (
@@ -251,7 +251,7 @@ const TablePeriodicWarranty: React.FC = () => {
         }
       },
       align: "center",
-      width: "20%"
+      width: "20%",
     },
     {
       title: (
@@ -319,7 +319,7 @@ const TablePeriodicWarranty: React.FC = () => {
         }
       },
       align: "center",
-      width: "20%"
+      width: "20%",
     },
     {
       title: "",
@@ -349,7 +349,7 @@ const TablePeriodicWarranty: React.FC = () => {
         </Space>
       ),
       align: "center",
-      width: "10%"
+      width: "10%",
     },
   ];
 

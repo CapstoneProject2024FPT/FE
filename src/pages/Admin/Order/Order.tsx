@@ -75,10 +75,10 @@ const Order: React.FC = () => {
   return (
     <Container sx={{ width: "100% !important", maxWidth: "none !important" }}>
       <HeaderBreadcrumbs
-        heading="Tài Khoản"
+        heading="Tất cả đơn hàng"
         links={[
           { name: "Thống kê", href: config.adminRoutes.dashboard },
-          { name: "Tài khoản" },
+          { name: "Tất cả đơn hàng" },
         ]}
       />
       <Card

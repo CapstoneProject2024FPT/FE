@@ -7,6 +7,7 @@ import { toast } from "react-toastify";
 //api
 import { ProductAdmin } from "../../../models/products";
 import { MachineryApi } from "../../../api/services/apiMachinery";
+import config from "../../../configs";
 
 interface ModalCategory {
   ProductData: ProductAdmin | null;
@@ -52,7 +53,7 @@ const ModalProductPopupDelete: React.FC<ModalCategory> = ({
         }
       }
     } catch (error) {
-      toast.error("Lỗi xoá");
+      toast.error(config.AdminMessageNotice.ErrorDelete);
       console.error(error);
     }
   };

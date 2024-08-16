@@ -307,7 +307,7 @@ const ModalDeliveryTaskWarranty: React.FC<ModalOrder> = ({
                     <Typography>
                       {OrderData?.type === "CustomerRequest"
                         ? "Yêu cầu bảo hành"
-                        : "Định kì"}
+                        : "Định kỳ"}
                     </Typography>
                   </Grid>
                   <Grid item xs={12} md={4}>

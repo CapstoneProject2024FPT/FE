@@ -65,7 +65,7 @@ const TableRank: React.FC = () => {
         toast.error(response.Error);
       }
     } catch (error) {
-      toast.error("lỗi");
+      toast.error(config.AdminMessageNotice.ErrorGet);
     }
   };
 

@@ -47,7 +47,7 @@ const TableCategoryComponent: React.FC = () => {
       const data = await getCategoryComponent();
       setCategories(data);
     } catch (error) {
-      toast.error("lỗi");
+      toast.error(config.AdminMessageNotice.ErrorGet);
     }
   };
 

@@ -10,8 +10,9 @@ export interface TransactionProps {
   orderId: string;
   paymentId: string;
   accountId: string;
+  paymentMethod?: string;
+  orderType?: string;
 }
-
 
 export enum StatusTypeTransaction {
   PENDING = "PENDING",
@@ -32,5 +33,4 @@ export const statusMappingTransaction = [
     id: StatusTypeTransaction.SUCCESS,
     name: "Thành Công",
   },
-
 ];

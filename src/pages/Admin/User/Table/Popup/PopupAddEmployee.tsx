@@ -16,6 +16,7 @@ import { toast } from "react-toastify";
 import { ApiAccount } from "../../../../../api/services/apiAccount";
 import { RoleData } from "../../RoleData";
 import config from "../../../../../configs";
+import { patternValidate } from "../../../../../utils/pattern";
 
 interface ModalUser {
   open: boolean;
@@ -47,8 +48,14 @@ const ModalAddEmployee: React.FC<ModalUser> = ({
     role: Yup.string().required("bắt buộc"),
     password: Yup.string().required("bắt buộc").trim(),
     username: Yup.string().required("bắt buộc").trim(),
-    phoneNumber: Yup.string().required("bắt buộc").trim(),
-    email: Yup.string().required("bắt buộc").trim(),
+    phoneNumber: Yup.string()
+      .required("bắt buộc")
+      .trim()
+      .matches(patternValidate.phone, "Số điện thoại không đúng định dạng"),
+    email: Yup.string()
+      .required("bắt buộc")
+      .trim()
+      .matches(patternValidate.email, "email không đúng định dạng"),
   });
 
   const defaultValues = {
