@@ -134,7 +134,7 @@ const TableDiscount: React.FC = () => {
     },
     {
       key: "2",
-      label: "Xoá",
+      label: "Trạng thái giảm giá",
     },
   ];
   const columns: ColumnsType<DiscountProps> = [
@@ -176,13 +176,13 @@ const TableDiscount: React.FC = () => {
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            gap: "5px"
+            gap: "5px",
           }}
         >
           Ngày tạo
           <DatePicker
             onChange={handleDateChange}
-            style={{  width: "35%", cursor: "pointer" }}
+            style={{ width: "35%", cursor: "pointer" }}
             format={dateFormatList}
             placeholder="Chọn ngày"
           />

@@ -12,6 +12,7 @@ import ModalDetailTask from "./Popup/ModalTaskDetail";
 import ModalChangeStaffTask from "./Popup/ModalChangeStaffTask";
 import moment from "moment";
 import { MenuItem, TextField } from "@mui/material";
+import config from "../../configs";
 type ColumnsType<T> = TableProps<T>["columns"];
 
 const pageSize = 20;
@@ -77,7 +78,7 @@ const TableTask: React.FC = () => {
         toast.error(response.Error);
       }
     } catch (error) {
-      toast.error("lỗi");
+      toast.error(config.AdminMessageNotice.ErrorGet);
     }
   };
 
@@ -138,14 +139,15 @@ const TableTask: React.FC = () => {
   const dateFormatList = ["DD/MM/YYYY", "DD/MM/YY", "DD-MM-YYYY", "DD-MM-YY"];
 
   const filteredRows = tasks
-    ?.filter((item) => selectedDate
-      ? moment(item.createDate).format("DD/MM/YYYY") === selectedDate
-      : true
+    ?.filter((item) =>
+      selectedDate
+        ? moment(item.createDate).format("DD/MM/YYYY") === selectedDate
+        : true
     )
     ?.filter((item) =>
       selectedExcutionDate
         ? moment(item.excutionDate).format("DD/MM/YYYY") ===
-        selectedExcutionDate
+          selectedExcutionDate
         : true
     );
 
@@ -191,7 +193,7 @@ const TableTask: React.FC = () => {
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            gap: "5px"
+            gap: "5px",
           }}
         >
           Ngày tạo
@@ -206,7 +208,7 @@ const TableTask: React.FC = () => {
       dataIndex: "createDate",
       render: (createDate) => formatDateFunc.formatDate(createDate),
       align: "center",
-      width: "20%"
+      width: "20%",
     },
     {
       title: (
@@ -218,7 +220,7 @@ const TableTask: React.FC = () => {
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            gap: "5px"
+            gap: "5px",
           }}
         >
           Ngày thực thi
@@ -233,7 +235,7 @@ const TableTask: React.FC = () => {
       dataIndex: "excutionDate",
       render: (excutionDate) => formatDateFunc.formatDate(excutionDate),
       align: "center",
-      width: "20%"
+      width: "20%",
     },
     {
       title: (

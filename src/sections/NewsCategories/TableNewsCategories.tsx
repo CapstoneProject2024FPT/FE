@@ -64,7 +64,7 @@ const TableNewsCategory: React.FC = () => {
       const data = await getNewsCategories();
       setCategories(data);
     } catch (error) {
-      toast.error("lỗi");
+      toast.error(config.AdminMessageNotice.ErrorGet);
     }
   };
 
@@ -159,20 +159,20 @@ const TableNewsCategory: React.FC = () => {
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            gap: "5px"
+            gap: "5px",
           }}
         >
           Ngày tạo
           <DatePicker
             onChange={handleDateChange}
-            style={{  width: "35%", cursor: "pointer" }}
+            style={{ width: "35%", cursor: "pointer" }}
             format={dateFormatList}
             placeholder="Chọn ngày"
           />
         </div>
       ),
       dataIndex: "createDate",
-      width: "30%", 
+      width: "30%",
       render: (createDate) => formatDateFunc.formatDate(createDate),
       align: "center",
     },

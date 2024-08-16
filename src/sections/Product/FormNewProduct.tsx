@@ -279,6 +279,7 @@ export default function ProductNewEditForm() {
       }
     } catch (error) {
       console.error(error);
+      toast.success(config.AdminMessageNotice.AddMachineryFailed);
     }
   };
 

@@ -69,7 +69,6 @@ const TableSerial: React.FC<TableSerial> = ({ handleSetName }) => {
 
   const dateFormatList = ["DD/MM/YYYY", "DD/MM/YY", "DD-MM-YYYY", "DD-MM-YY"];
 
-
   const handleOpen = () => {
     setOpenAdd(!openAdd);
   };
@@ -105,7 +104,7 @@ const TableSerial: React.FC<TableSerial> = ({ handleSetName }) => {
         setSelectedData(null);
       }
     } catch (error) {
-      toast.error("lỗi");
+      toast.error(config.AdminMessageNotice.ErrorGet);
     }
   };
 
@@ -191,8 +190,8 @@ const TableSerial: React.FC<TableSerial> = ({ handleSetName }) => {
         return status === "Available"
           ? "Còn"
           : status === "Sold"
-            ? "Đã bán"
-            : "Có người mua";
+          ? "Đã bán"
+          : "Có người mua";
       },
       align: "center",
     },
@@ -206,7 +205,7 @@ const TableSerial: React.FC<TableSerial> = ({ handleSetName }) => {
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            gap: "5px"
+            gap: "5px",
           }}
         >
           Ngày tạo
@@ -264,7 +263,13 @@ const TableSerial: React.FC<TableSerial> = ({ handleSetName }) => {
   return (
     <>
       <Typography.Text>Tên máy: {machinery?.name}</Typography.Text>
-      <div style={{ display: "flex", justifyContent: "space-between", marginTop: "10px" }}>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          marginTop: "10px",
+        }}
+      >
         <Search
           placeholder="Nhập từ khoá"
           onChange={handleSearch}

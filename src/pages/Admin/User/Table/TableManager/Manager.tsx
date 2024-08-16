@@ -154,7 +154,7 @@ const ManagerData: React.FC = () => {
       width: "20%",
       render: (role) => {
         if (role === RoleType.MANAGER) {
-          return "Quản lí";
+          return "Quản lý";
         }
       },
     },
@@ -251,7 +251,7 @@ const ManagerData: React.FC = () => {
           style={{ width: 200, marginBottom: 16 }}
         />
         <Button icon={<PlusOutlined />} onClick={handleOpenAdd}>
-          Thêm mới Quản lí
+          Thêm mới Quản lý
         </Button>
       </Stack>
       <Table

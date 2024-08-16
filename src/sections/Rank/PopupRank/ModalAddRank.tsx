@@ -81,7 +81,7 @@ const ModalRankAdd: React.FC<ModalRank> = ({
             <RHFTextField name="name" label="Tên hạng" autoFocus />
             <RHFTextFieldNumber
               name="range"
-              label="Mức tiền"
+              label="Hạng mức"
               multiline
               type="number"
             />

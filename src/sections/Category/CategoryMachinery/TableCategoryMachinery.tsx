@@ -47,7 +47,7 @@ const TableCategoryMachinery: React.FC = () => {
       const data = await getCategory();
       setCategories(data);
     } catch (error) {
-      toast.error("lỗi");
+      toast.error(config.AdminMessageNotice.ErrorGet);
     }
   };
 

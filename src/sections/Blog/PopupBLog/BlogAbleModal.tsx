@@ -45,9 +45,9 @@ const BlogAbleModal: React.FC<ModalNews> = ({
           const response = await apiAbleAndTypeNews(NewsData?.id, params);
           if (response.status === 200) {
             if (onUpdateSuccess) {
-              onUpdateSuccess("Ẩn tin tức thành công");
+              onUpdateSuccess(config.AdminMessageNotice.AbleNews);
             } else {
-              toast.error("Gặp lỗi trong quá trình ẩn tin tức");
+              toast.error(config.AdminMessageNotice.AbleNewsError);
               handleCLose();
             }
           }

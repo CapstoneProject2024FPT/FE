@@ -8,11 +8,11 @@ const WarrantyPeriodicDetail: React.FC = () => {
   return (
     <Container>
       <HeaderBreadcrumbs
-        heading="Chi tiết bảo hành định kì"
+        heading="Chi tiết bảo hành định kỳ"
         links={[
           { name: "Thống kê", href: config.adminRoutes.dashboard },
           {
-            name: "Bảo hành định kì",
+            name: "Bảo hành định kỳ",
             href: config.adminRoutes.maintenance,
           },
           { name: "Chi tiết " },

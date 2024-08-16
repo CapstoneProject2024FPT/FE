@@ -60,7 +60,15 @@ export default function ProductNewComponent() {
       .required("Không để trống"),
     sellingPrice: Yup.number()
       .moreThan(0, "Giá tiền lớn hơn 0")
-      .required("Không để trống"),
+      .required("Không để trống")
+      .test(
+        "sellingPriceGreaterThanStockPrice",
+        "Giá bán phải lớn hơn giá nhập",
+        (value, context) => {
+          const { stockPrice } = context.parent;
+          return value > stockPrice;
+        }
+      ),
     categoryId: Yup.string().required("Phải có loại máy"),
     timeWarranty: Yup.number()
       .min(minTimeWarranty, `Thời gian bảo hành lớn hơn ${minTimeWarranty}`)
@@ -122,6 +130,8 @@ export default function ProductNewComponent() {
       const response = await apiAddMachineryComponent(values);
       if (response.status === 200) {
         toast.success(config.AdminMessageNotice.AddMachineComponent);
+      } else {
+        toast.error(response.Error);
       }
       reset();
     } catch (error) {

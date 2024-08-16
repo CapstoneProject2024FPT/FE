@@ -182,7 +182,7 @@ const ModalDeliveryTaskPeriodic: React.FC<ModalOrder> = ({
 
   return (
     <Modal
-      title="Giao nhiệm vụ bảo hành định kì"
+      title="Giao nhiệm vụ bảo hành định kỳ"
       open={openTaskPopup}
       onOk={handleCLose}
       onCancel={handleCLose}
@@ -202,7 +202,7 @@ const ModalDeliveryTaskPeriodic: React.FC<ModalOrder> = ({
                     <Typography>
                       {OrderData?.type === "CustomerRequest"
                         ? "Yêu cầu bảo hành"
-                        : "Định kì"}
+                        : "Định kỳ"}
                     </Typography>
                   </Grid>
                   <Grid item xs={12} md={4}>

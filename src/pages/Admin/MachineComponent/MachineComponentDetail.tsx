@@ -17,7 +17,10 @@ export default function MachineComponentDetail() {
         heading="Chi tiết bộ phận"
         links={[
           { name: "Thống kê", href: config.adminRoutes.dashboard },
-          { name: "Sản phẩm", href: config.adminRoutes.viewMachineComponent },
+          {
+            name: "Chi tiết máy",
+            href: config.adminRoutes.viewMachineComponent,
+          },
           { name: "Chi tiêt sản phẩm" },
         ]}
       />

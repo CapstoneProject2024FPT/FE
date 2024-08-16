@@ -11,6 +11,7 @@ import { CategoryApi } from "../../../../api/services/apiCategories";
 import { GetCategoryProps } from "../../../../models/category";
 import { toast } from "react-toastify";
 import Autocomplete from "@mui/material/Autocomplete";
+import config from "../../../../configs";
 
 interface ModalCategory {
   open: boolean;
@@ -60,7 +61,7 @@ const ModalCategoryPopupAdd: React.FC<ModalCategory> = ({
       const data = await getCategoryParent();
       setCategories(data);
     } catch (error) {
-      toast.error("lỗi");
+      toast.error(config.AdminMessageNotice.ErrorGet);
     }
   };
 

@@ -7,6 +7,7 @@ import { toast } from "react-toastify";
 //api
 import { GetMachineComponents } from "../../../models/machineComponent";
 import { MachineryComponentApi } from "../../../api/services/apiMachineComponent";
+import config from "../../../configs";
 
 interface ModalCategory {
   ProductData: GetMachineComponents | null;
@@ -37,7 +38,7 @@ const ModalDeleteComponent: React.FC<ModalCategory> = ({
         }
       }
     } catch (error) {
-      toast.error("Lỗi xoá");
+      toast.error(config.AdminMessageNotice.ErrorDelete);
       console.error(error);
     }
   };

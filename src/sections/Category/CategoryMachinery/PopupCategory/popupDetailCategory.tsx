@@ -15,6 +15,7 @@ import { LoadingButton } from "@mui/lab";
 import { Card, Stack } from "@mui/material";
 import { CategoryApi } from "../../../../api/services/apiCategories";
 import { toast } from "react-toastify";
+import config from "../../../../configs";
 
 interface ModalUser {
   CategoryData: GetCategoryProps | null;
@@ -70,7 +71,7 @@ const ModalCategoryPopup: React.FC<ModalUser> = ({
 
       setCategories(data);
     } catch (error) {
-      toast.error("lỗi");
+      toast.error(config.AdminMessageNotice.ErrorGet);
     }
   };
 
@@ -94,6 +95,8 @@ const ModalCategoryPopup: React.FC<ModalUser> = ({
       }
       reset();
     } catch (error) {
+      handleClose();
+      toast.error(config.AdminMessageNotice.ErrorUpdate);
       console.error(error);
     }
   };

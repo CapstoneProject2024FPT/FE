@@ -24,6 +24,7 @@ import ModalAddSerialComponent from "./PopupSerialComponent/ModalAddSerialNumber
 import ModalSerialNumberComponentDelete from "./PopupSerialComponent/ModalDeleteSerialNumberComponent";
 import { GetMachineComponents } from "../../models/machineComponent";
 import { MachineryComponentApi } from "../../api/services/apiMachineComponent";
+import config from "../../configs";
 
 type ColumnsType<T> = TableProps<T>["columns"];
 const { Search } = Input;
@@ -123,7 +124,7 @@ const TableSerialComponent: React.FC<TableSerial> = ({ handleSetName }) => {
         setSelectedData(null);
       }
     } catch (error) {
-      toast.error("lỗi");
+      toast.error(config.AdminMessageNotice.ErrorGet);
     }
   };
 

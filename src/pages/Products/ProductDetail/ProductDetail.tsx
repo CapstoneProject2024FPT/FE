@@ -79,7 +79,7 @@ const Detail: React.FC = () => {
         throw new Error("Loi");
       }
     } catch (error) {
-      toast.error("lỗi");
+      toast.error(config.AdminMessageNotice.ErrorGet);
     }
   };
 

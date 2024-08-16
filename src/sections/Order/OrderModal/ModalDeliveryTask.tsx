@@ -121,7 +121,7 @@ const ModalDeliveryTask: React.FC<ModalOrder> = ({
     try {
       if (OrderData) {
         if (!dateExecution) {
-          toast.error("Chọn ngày thực hiện");
+          toast.error(config.AdminMessageNotice.ForgotExecutionDate);
           return;
         }
         const params: DeliveryPropsPost = {

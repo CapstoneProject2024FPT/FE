@@ -8,6 +8,9 @@ export function formatMoney(number: number | undefined) {
   });
 }
 
+export const formatNumberWithCommas = (number: number) => {
+  return new Intl.NumberFormat("en-US").format(number);
+};
 export const formatDateFunc = {
   formatDateTime: (date: Date | undefined): string => {
     return moment(date, moment.ISO_8601).format("DD/MM/YYYY HH:mm a");

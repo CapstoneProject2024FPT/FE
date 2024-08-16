@@ -91,7 +91,7 @@ const ModalChangeRole: React.FC<ModalUser> = ({
       <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
         <Card sx={{ p: 3 }}>
           <Stack spacing={3}>
-            <RHFTextField name="fullName" label="Tên" autoFocus />
+            <RHFTextField name="fullName" label="Tên" autoFocus disabled />
             <RHFSelect name="role" label="Chức vụ">
               {RoleData?.map((role) => (
                 <option key={role.id} value={role.id}>

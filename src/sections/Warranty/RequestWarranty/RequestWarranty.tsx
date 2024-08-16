@@ -46,9 +46,8 @@ const TableRequestWarranty: React.FC = () => {
         return { ...item, key: idx + 1 };
       });
       setRequestWarranty(warrantyShow);
-      console.log("warrantyShow: ", warrantyShow)
     } catch (error) {
-      toast.error("lỗi");
+      toast.error(config.AdminMessageNotice.ErrorGet);
     }
   };
 
@@ -85,17 +84,17 @@ const TableRequestWarranty: React.FC = () => {
     );
   };
 
-
   const dateFormatList = ["DD/MM/YYYY", "DD/MM/YY", "DD-MM-YYYY", "DD-MM-YY"];
   const filteredRows = requestWarranty
-    ?.filter((item) => selectedDate
-      ? moment(item.createDate).format("DD/MM/YYYY") === selectedDate
-      : true
+    ?.filter((item) =>
+      selectedDate
+        ? moment(item.createDate).format("DD/MM/YYYY") === selectedDate
+        : true
     )
     ?.filter((item) =>
       selectedCompletedDate
         ? moment(item.completionDate).format("DD/MM/YYYY") ===
-        selectedCompletedDate
+          selectedCompletedDate
         : true
     );
 
@@ -133,7 +132,7 @@ const TableRequestWarranty: React.FC = () => {
       ),
       dataIndex: "key",
       align: "center",
-      width: "10%"
+      width: "10%",
     },
     {
       title: (
@@ -151,9 +150,10 @@ const TableRequestWarranty: React.FC = () => {
         </div>
       ),
       dataIndex: "customer",
-      render: (customer) => customer?.fullName ? customer?.fullName : customer?.role,
+      render: (customer) =>
+        customer?.fullName ? customer?.fullName : customer?.role,
       align: "center",
-      width: "20%"
+      width: "20%",
     },
     {
       title: (
@@ -164,9 +164,9 @@ const TableRequestWarranty: React.FC = () => {
         </div>
       ),
       dataIndex: "type",
-      render: (type) => (type === "Periodic" ? "Định kì" : "Yêu cầu"),
+      render: (type) => (type === "Periodic" ? "Định kỳ" : "Yêu cầu"),
       align: "center",
-      width: "15%"
+      width: "15%",
     },
     {
       title: (
@@ -192,7 +192,7 @@ const TableRequestWarranty: React.FC = () => {
             flexWrap: "wrap",
             alignItems: "center",
             justifyContent: "center",
-            gap: "5px"
+            gap: "5px",
           }}
         >
           Ngày tạo
@@ -207,7 +207,7 @@ const TableRequestWarranty: React.FC = () => {
       dataIndex: "createDate",
       render: (createDate) => formatDateFunc.formatDateTime(createDate),
       align: "center",
-      width: "20%"
+      width: "20%",
     },
     {
       title: (
@@ -221,7 +221,7 @@ const TableRequestWarranty: React.FC = () => {
             flexWrap: "wrap",
             alignItems: "center",
             justifyContent: "center",
-            gap: "5px"
+            gap: "5px",
           }}
         >
           Hoàn thành
@@ -239,7 +239,7 @@ const TableRequestWarranty: React.FC = () => {
           ? formatDateFunc.formatDateTime(completionDate)
           : "-------",
       align: "center",
-      width: "20%"
+      width: "20%",
     },
     {
       title: (
@@ -283,7 +283,7 @@ const TableRequestWarranty: React.FC = () => {
         );
       },
       align: "center",
-      width: "20%"
+      width: "20%",
     },
     {
       title: "",
