@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import type { MenuProps } from "antd";
 import type { TableProps } from "antd";
-import { DownOutlined } from "@ant-design/icons";
+import MoreVertIcon from "@mui/icons-material/MoreVert";
 import { Table, Input, Space, Dropdown, Button } from "antd";
 import { GetCategoryProps } from "../../../models/category";
 import ModalCategoryPopupComponent from "./PopupCategoryComponent/popupDetailCategoryComponent";
@@ -47,7 +47,7 @@ const TableCategoryComponent: React.FC = () => {
       const data = await getCategoryComponent();
       setCategories(data);
     } catch (error) {
-      toast.error("lỗi");
+      toast.error(config.AdminMessageNotice.ErrorGet);
     }
   };
 
@@ -143,13 +143,7 @@ const TableCategoryComponent: React.FC = () => {
       width: "40%",
     },
     {
-      title: (
-        <div
-          style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}
-        >
-          Hành Động
-        </div>
-      ),
+      title: "",
       key: "operation",
       render: (record) => (
         <Space size="middle">
@@ -168,7 +162,7 @@ const TableCategoryComponent: React.FC = () => {
             }}
           >
             <a>
-              <DownOutlined />
+              <MoreVertIcon />
             </a>
           </Dropdown>
         </Space>

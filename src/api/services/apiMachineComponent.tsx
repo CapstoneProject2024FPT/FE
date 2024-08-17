@@ -1,6 +1,7 @@
 import { axiosPublic } from "../axiosInstance";
 import {
   GET_MACHINERY_COMPONENT,
+  GET_MACHINERY_COMPONENT_PAGINATE,
   MACHINERY_COMPONENT,
   MACHINERY_COMPONENT_ID,
 } from "../pathApiName";
@@ -104,6 +105,62 @@ export const MachineryComponentApi = () => {
       setLoading(false);
     }
   };
+
+  interface GetListProps {
+    size: number;
+    page: number;
+    Name?: string;
+    CreateDate?: string | null;
+  }
+
+  const apiGetListComponentPaginate = async (params: GetListProps) => {
+    setLoading(true);
+    try {
+      const response = await axiosPublic.get(GET_MACHINERY_COMPONENT_PAGINATE, {
+        params,
+      });
+      return response;
+    } catch (error) {
+      console.error(error);
+      if (axios.isAxiosError(error) && error.response) {
+        return error.response.data;
+      } else {
+        return { statusCode: 500, Error: config.MessageNotice.Error500 };
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  interface UpdateComponentQuantity {
+    originId: string;
+    brandId: string;
+    status: string;
+    categoryId: string;
+    quantity: number;
+  }
+
+  const apiUpdateComponentQuantity = async (
+    id: string,
+    params: UpdateComponentQuantity
+  ) => {
+    setLoading(true);
+    try {
+      const response = await axiosPublic.put(
+        MACHINERY_COMPONENT_ID.replace(":id", id),
+        params
+      );
+      return response;
+    } catch (error) {
+      if (axios.isAxiosError(error) && error.response) {
+        return error.response.data;
+      } else {
+        return { statusCode: 500, Error: config.MessageNotice.Error500 };
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
   return {
     loading,
     apiGetListComponent,
@@ -111,5 +168,7 @@ export const MachineryComponentApi = () => {
     apiGetMachineryComponentDetail,
     apiDeleteMachineryComponent,
     apiUpdateMachineryComponent,
+    apiGetListComponentPaginate,
+    apiUpdateComponentQuantity,
   };
 };

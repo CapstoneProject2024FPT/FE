@@ -3,7 +3,6 @@ import { useLocation, Link } from "react-router-dom";
 import PersonIcon from "@mui/icons-material/Person";
 import CachedIcon from "@mui/icons-material/Cached";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
-import EngineeringIcon from "@mui/icons-material/Engineering";
 import {
   List,
   ListItemButton,
@@ -93,7 +92,11 @@ const SideBarUserProfile: React.FC = () => {
             sx={getActiveStyle(config.routes.maintenance)}
           >
             <ListItemIcon>
-              <EngineeringIcon />
+              <Iconify
+                icon={"carbon:license-maintenance"}
+                width={20}
+                height={20}
+              />
             </ListItemIcon>
             <ListItemText primary="Bảo hành" />
           </ListItemButton>

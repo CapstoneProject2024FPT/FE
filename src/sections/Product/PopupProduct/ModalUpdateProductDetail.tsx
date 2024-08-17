@@ -13,7 +13,7 @@ import { useForm } from "react-hook-form";
 import * as Yup from "yup";
 
 import { LoadingButton } from "@mui/lab";
-import { Card, Grid, InputAdornment, Stack } from "@mui/material";
+import { Card, Grid, InputAdornment, Stack, TextField } from "@mui/material";
 import { ProductDetailProps, UpdateProduct } from "../../../models/products";
 import { MachineryApi } from "../../../api/services/apiMachinery";
 import { toast } from "react-toastify";
@@ -22,6 +22,8 @@ import { brandTable } from "../../../models/brand";
 import { BrandApi } from "../../../api/services/apiBrand";
 import { OriginProps } from "../../../models/origin";
 import { ApiOrigin } from "../../../api/services/apiOrigin";
+import config from "../../../configs";
+import { formatNumberWithCommas } from "../../../utils/fn";
 
 interface UpdateProductForm {
   name: string;
@@ -103,19 +105,19 @@ const ModalProductDetailPopup: React.FC<ModalProduct> = ({
       .moreThan(0, "Giá tiền lớn hơn 0")
       .required("Không để trống"),
     timeWarranty: Yup.number()
-      .min(minTimeWarranty, `Thời gian bảo trì lớn hơn ${minTimeWarranty}`)
-      .max(maxTimeWarranty, `Thời gian bảo trì nhỏ hơn ${maxTimeWarranty}`)
-      .required("Thời gian bảo trì là bắt buộc"),
+      .min(minTimeWarranty, `Thời gian bảo hành lớn hơn ${minTimeWarranty}`)
+      .max(maxTimeWarranty, `Thời gian bảo hành nhỏ hơn ${maxTimeWarranty}`)
+      .required("Thời gian bảo hành là bắt buộc"),
     monthWarrantyNumber: Yup.number()
       .min(
         minTimeMonthWarranty,
-        `Thời gian bảo trì lớn hơn ${minTimeMonthWarranty}`
+        `Thời gian bảo hành lớn hơn ${minTimeMonthWarranty}`
       )
       .max(
         maxTimeMonthWarranty,
-        `Thời gian bảo trì nhỏ hơn ${maxTimeMonthWarranty}`
+        `Thời gian bảo hành nhỏ hơn ${maxTimeMonthWarranty}`
       )
-      .required("Thời gian bảo trì là bắt buộc"),
+      .required("Thời gian bảo hành là bắt buộc"),
   });
 
   const defaultValues: UpdateProductForm = {
@@ -143,28 +145,29 @@ const ModalProductDetailPopup: React.FC<ModalProduct> = ({
   const onSubmit = async (data: UpdateProductForm) => {
     try {
       if (productData) {
+        if (data.sellingPrice < productData.stockPrice) {
+          toast.error(config.AdminMessageNotice.SellingPriceMoreThanStockPrice);
+          return;
+        }
         const params: UpdateProduct = {
-          //use spread operator to make the copy object
           ...data,
           categoryId: productData?.category?.id,
           status: productData?.status,
         };
-        console.log(params);
 
         if (id) {
           const response = await apiUpdateMachineryDetail(id, params);
 
           if (response && response.status === 200) {
+            reset();
             onUpdateSuccess(response.data);
           } else {
             toast.error(response.Error);
           }
         }
       }
-
-      reset();
     } catch (error) {
-      console.error(error);
+      toast.error(config.AdminMessageNotice.ErrorUpdate);
     }
   };
 
@@ -221,6 +224,19 @@ const ModalProductDetailPopup: React.FC<ModalProduct> = ({
               </Grid>
               <Grid item xs={6}>
                 <Stack direction="column" display="flex" spacing={2}>
+                  <TextField
+                    value={formatNumberWithCommas(productData?.stockPrice || 0)}
+                    label="Giá nhập"
+                    type="text"
+                    autoFocus
+                    InputProps={{
+                      startAdornment: (
+                        <InputAdornment position="start">VNĐ</InputAdornment>
+                      ),
+                      inputProps: { min: 0 },
+                    }}
+                    disabled
+                  />
                   <RHFTextFieldNumber
                     name="sellingPrice"
                     label="Giá bán"
@@ -250,7 +266,7 @@ const ModalProductDetailPopup: React.FC<ModalProduct> = ({
                   />
                   <RHFTextField
                     name="monthWarrantyNumber"
-                    label="Số tháng bảo trì định kì"
+                    label="Số tháng bảo hành định kỳ"
                     autoFocus
                     InputProps={{
                       endAdornment: (

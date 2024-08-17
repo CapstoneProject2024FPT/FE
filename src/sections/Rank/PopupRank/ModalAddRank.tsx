@@ -1,6 +1,10 @@
 import React from "react";
 import { Modal } from "antd";
-import { FormProvider, RHFTextField } from "../../../components/hook-form";
+import {
+  FormProvider,
+  RHFTextField,
+  RHFTextFieldNumber,
+} from "../../../components/hook-form";
 // form
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm } from "react-hook-form";
@@ -20,6 +24,7 @@ interface ModalRank {
 type RankProps = {
   name: string;
   range: number;
+  value: number;
 };
 
 const ModalRankAdd: React.FC<ModalRank> = ({
@@ -31,11 +36,16 @@ const ModalRankAdd: React.FC<ModalRank> = ({
   const RankSchema = Yup.object().shape({
     name: Yup.string().required("Bắt buộc").trim(),
     range: Yup.number().required("Bắt buộc").moreThan(500, "Lớn hơn 500"),
+    value: Yup.number()
+      .required("Bắt buộc")
+      .min(1, "Lớn hơn 1")
+      .max(20, "Nhỏ hơn 20"),
   });
 
   const defaultValues: RankProps = {
     name: "",
     range: 0,
+    value: 0,
   };
 
   const methods = useForm<RankProps>({
@@ -69,12 +79,13 @@ const ModalRankAdd: React.FC<ModalRank> = ({
         <Card sx={{ p: 3 }}>
           <Stack spacing={3}>
             <RHFTextField name="name" label="Tên hạng" autoFocus />
-            <RHFTextField
+            <RHFTextFieldNumber
               name="range"
-              label="Mức tiền"
+              label="Hạng mức"
               multiline
               type="number"
             />
+            <RHFTextField name="value" label="Mức ưu đãi" autoFocus />
           </Stack>
           <div style={{ display: "flex", justifyContent: "flex-end" }}>
             <LoadingButton

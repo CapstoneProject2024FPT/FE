@@ -151,6 +151,24 @@ const AccountSection = () => {
             Lịch sử mua hàng
           </Link>
         </MenuItem>
+        <MenuItem
+          sx={getActiveStyle(config.routes.maintenance)}
+          onClick={handleClose}
+        >
+          <ListItemIcon>
+            <Iconify
+              icon={"carbon:license-maintenance"}
+              width={20}
+              height={20}
+            />
+          </ListItemIcon>
+          <Link
+            to={config.routes.maintenance}
+            style={{ textDecoration: "none", color: "inherit" }}
+          >
+            Bảo hành
+          </Link>
+        </MenuItem>
         <Divider />
 
         <MenuItem onClick={handleLogout} sx={{ color: "red" }}>

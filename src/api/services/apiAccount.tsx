@@ -1,5 +1,5 @@
 import { axiosPublic } from "../axiosInstance";
-import { STAFF, USER_BY_ROLE, USER_ID } from "../pathApiName";
+import { RANK_UPGRADE, STAFF, USER_BY_ROLE, USER_ID } from "../pathApiName";
 import { useState } from "react";
 import axios from "axios";
 import config from "../../configs";
@@ -9,15 +9,15 @@ export const ApiAccount = () => {
 
   interface getByRole {
     Role?: string;
+    FullName?: string;
+    page?: number;
+    size?: number;
   }
   const apiGetUserByRole = async (params: getByRole) => {
     setLoading(true);
-
     try {
       const response = await axiosPublic.get(USER_BY_ROLE, { params });
-
       return response;
-
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       if (axios.isAxiosError(error) && error.response) {
@@ -32,12 +32,9 @@ export const ApiAccount = () => {
 
   const apiBanned = async (id: string) => {
     setLoading(true);
-
     try {
       const response = await axiosPublic.delete(USER_ID.replace(":id", id));
-
       return response;
-
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       if (axios.isAxiosError(error) && error.response) {
@@ -58,15 +55,12 @@ export const ApiAccount = () => {
 
   const apiUnbanned = async (id: string, params: unBannedProps) => {
     setLoading(true);
-
     try {
       const response = await axiosPublic.put(
         USER_ID.replace(":id", id),
         params
       );
-
       return response;
-
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       if (axios.isAxiosError(error) && error.response) {
@@ -87,15 +81,12 @@ export const ApiAccount = () => {
   }
   const apiUpdateRole = async (id: string, params: changeRoleProps) => {
     setLoading(true);
-
     try {
       const response = await axiosPublic.put(
         USER_ID.replace(":id", id),
         params
       );
-
       return response;
-
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       if (axios.isAxiosError(error) && error.response) {
@@ -130,6 +121,24 @@ export const ApiAccount = () => {
       }
     }
   };
+
+  type RankUpgrade = string[];
+  const apiRankUpgrade = async (id: string, params: RankUpgrade) => {
+    try {
+      const response = await axiosPublic.post(
+        RANK_UPGRADE.replace(":id", id),
+        params
+      );
+      return response;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+      if (axios.isAxiosError(error) && error.response) {
+        return error.response.data;
+      } else {
+        return { statusCode: 500, Error: config.MessageNotice.Error500 };
+      }
+    }
+  };
   return {
     loading,
     apiGetUserByRole,
@@ -137,5 +146,6 @@ export const ApiAccount = () => {
     apiUnbanned,
     apiUpdateRole,
     apiCreateEmployee,
+    apiRankUpgrade,
   };
 };

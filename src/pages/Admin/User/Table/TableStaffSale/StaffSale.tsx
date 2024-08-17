@@ -12,6 +12,7 @@ import ModaBanned from "../Popup/PopupBanned";
 import { Stack } from "@mui/material";
 import { PlusOutlined } from "@ant-design/icons";
 import ModalAddEmployee from "../Popup/PopupAddEmployee";
+import useDebounce from "../../../../../hooks/useDebounce";
 
 type ColumnsType<T> = TableProps<T>["columns"];
 const { Search } = Input;
@@ -27,11 +28,12 @@ const StaffSale: React.FC = () => {
   });
 
   const navigate = useNavigate();
-  // const [query, setQuery] = useState<string>("");
+  const [query, setQuery] = useState<string>("");
   const [selectedData, setSelectedData] = useState<staffProps | null>(null);
   const [open, setOpen] = useState<boolean>(false);
   const { loading, apiGetUserByRole } = ApiAccount();
   const [openAdd, setOpenAdd] = useState<boolean>(false);
+  const debounce = useDebounce({ delay: 500, value: query });
 
   // Function to handle action click
   const handleActionClick = (record: staffProps) => {
@@ -51,7 +53,7 @@ const StaffSale: React.FC = () => {
   };
 
   const onSuccessAdd = () => {
-    toast.success(config.AdminMessageNotice.AddEmployeeSuccess);
+    toast.success(config.AdminMessageNotice.BanOrUnbanSuccess);
     handleCloseOpenAdd();
     fetchAccountUser();
   };
@@ -60,12 +62,14 @@ const StaffSale: React.FC = () => {
   };
   const fetchAccountUser = async (
     page: number = 1,
-    pageSize: number = defaultPageSize
+    pageSize: number = defaultPageSize,
+    fullname: string = debounce
   ) => {
     const params = {
       Role: RoleType.SALE,
       size: pageSize,
       page: page,
+      FullName: fullname,
     };
     const response = await apiGetUserByRole(params);
     if (response.status === 200) {
@@ -82,9 +86,9 @@ const StaffSale: React.FC = () => {
   };
 
   useEffect(() => {
-    fetchAccountUser(pagination.current, pagination.pageSize);
+    fetchAccountUser(pagination.current, pagination.pageSize, debounce);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [debounce, pagination.current, pagination.pageSize]);
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleTableChange = (page: number, pageSize: number) => {
@@ -106,9 +110,9 @@ const StaffSale: React.FC = () => {
     onChange: handleTableChange,
   };
 
-  // const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
-  //   setQuery(e.target.value);
-  // };
+  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setQuery(e.target.value);
+  };
 
   const onSuccess = () => {
     handleCLose();
@@ -205,13 +209,7 @@ const StaffSale: React.FC = () => {
       align: "center",
     },
     {
-      title: (
-        <div
-          style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}
-        >
-          Action
-        </div>
-      ),
+      title: "",
       width: "20%",
       key: "operation",
       render: (record) => (
@@ -254,7 +252,7 @@ const StaffSale: React.FC = () => {
       >
         <Search
           placeholder="Nhập Từ khoá"
-          onChange={() => {}} // Update search value on change
+          onChange={(e) => handleSearch(e)} // Update search value on change
           style={{ width: 200, marginBottom: 16 }}
         />
         <Button icon={<PlusOutlined />} onClick={handleOpenAdd}>

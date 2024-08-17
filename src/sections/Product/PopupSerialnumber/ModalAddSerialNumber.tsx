@@ -12,6 +12,7 @@ import { useForm } from "react-hook-form";
 import { RHFTextField, FormProvider } from "../../../components/hook-form";
 import { Card, TextField } from "@mui/material";
 import { LoadingButton } from "@mui/lab";
+import config from "../../../configs";
 
 interface ModalSerialNumber {
   productData: ProductAdmin | undefined;
@@ -63,7 +64,7 @@ const ModalAddSerialPopup: React.FC<ModalSerialNumber> = ({
 
         if (response.status === 200) {
           if (onSuccess) {
-            onSuccess(response.data);
+            onSuccess(config.AdminMessageNotice.AddSerialSuccess);
             reset();
           }
         } else {
@@ -71,13 +72,13 @@ const ModalAddSerialPopup: React.FC<ModalSerialNumber> = ({
         }
       }
     } catch (error) {
-      toast.error("Lỗi xoá");
+      toast.error(config.AdminMessageNotice.ErrorSerialAdd);
       console.error(error);
     }
   };
   return (
     <Modal
-      title="Thêm máy vào kho"
+      title="Thêm số lượng máy"
       open={open}
       onOk={handleCLose}
       onCancel={handleCLose}
@@ -90,6 +91,8 @@ const ModalAddSerialPopup: React.FC<ModalSerialNumber> = ({
             sx={{ mb: 2 }}
             InputProps={{ readOnly: true }}
             label="Tên máy"
+            fullWidth
+            disabled
           />
           <RHFTextField
             name="quantity"

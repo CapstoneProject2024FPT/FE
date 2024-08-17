@@ -109,8 +109,8 @@ export default function AccountGeneral() {
                   profile?.gender === "Male"
                     ? "Nam"
                     : profile?.gender === "Female"
-                    ? "Nữ"
-                    : "Chưa cập nhật"
+                      ? "Nữ"
+                      : "Chưa cập nhật"
                 }
                 InputProps={{
                   readOnly: true,

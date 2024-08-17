@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useState } from "react";
 import { Input, Modal } from "antd";
 import { FormProvider, RHFRadioGroup } from "../../../components/hook-form";
@@ -12,6 +13,7 @@ import { LoadingButton } from "@mui/lab";
 import { ApiWarranty } from "../../../api/services/apiWarranty";
 import { WarrantyPropsById } from "../../../models/warranty";
 import CustomPagination from "../../../components/pagination/CustomPagination";
+import CalendarComponent from "../../../components/calender/Calender";
 
 interface ModalBrand {
   TaskData: GetTaskProps | null;
@@ -36,17 +38,19 @@ export default function ModalChangeStaffTask({
   handleClose,
   onChangeSuccess,
 }: ModalBrand) {
-  const { apiUpdateTask, apiTaskStaff } = ApiTask();
+  const { apiUpdateTask, apiTaskStaff, apiGetTask } = ApiTask();
   const { apiGetWarrantyById } = ApiWarranty();
   const rowPerPage = 5;
   const [currentPage, setCurrentPage] = useState<number>(1);
+  const [tasks, setTasks] = useState<GetTaskProps[]>([]);
   //search
   const [query, setQuery] = useState<string>("");
   const [data, setData] = useState<StaffTaskProps[]>([]);
   const [warranty, setWarranty] = useState<WarrantyPropsById>();
 
   const fetchAccountUser = async () => {
-    const response = await apiTaskStaff();
+    const params = {};
+    const response = await apiTaskStaff(params);
     if (response.status === 200) {
       setData(response.data);
     } else {
@@ -142,6 +146,22 @@ export default function ModalChangeStaffTask({
     value: item.staffId,
     taskStatusCount: item.taskStatusCount,
   }));
+
+  const fetchTaskStaff = async (id: string) => {
+    const params = {
+      Status: "Process",
+      AccountId: id,
+    };
+    const response = await apiGetTask(params);
+    setTasks(response.data);
+  };
+
+  useEffect(() => {
+    if (staffID) {
+      fetchTaskStaff(staffID);
+    }
+  }, [staffID]);
+
   return (
     <Modal
       title={`Đổi nhân viên cho nhiệm vụ có id: ${TaskData?.id ?? ""}`}
@@ -222,6 +242,8 @@ export default function ModalChangeStaffTask({
             </Card>
           </Grid>
         </Grid>
+
+        <CalendarComponent tasks={tasks} />
       </FormProvider>
     </Modal>
   );

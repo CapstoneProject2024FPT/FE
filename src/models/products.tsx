@@ -12,6 +12,7 @@ export interface Product {
   sellingPrice: number;
   model: string;
   origin: originProduct;
+  discount: number;
 }
 
 interface QuantityProps {
@@ -37,6 +38,7 @@ export interface ProductAdmin {
     type: string;
   };
   id: string;
+  discount: number;
   origin: originProduct;
   model: string;
   description: string;
@@ -138,6 +140,7 @@ export type ProductDetailProps = {
   category: CategoryMachineDetail;
   quantity?: QuantityProps;
   sellingPrice: number;
+  finalAmount: number;
   stockPrice: number;
   id: string;
   name: string;
@@ -153,7 +156,7 @@ export type ProductDetailProps = {
   status: string;
   monthWarrantyNumber: number;
   originalPrice: number;
-  discountPercentage: number;
+  discount: number;
   component: ComponentDetail[];
 };
 

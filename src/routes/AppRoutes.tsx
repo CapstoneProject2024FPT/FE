@@ -57,6 +57,10 @@ import WarrantyDetailPeriodic from "../pages/UserProfile/WarantyDetailPeriodic";
 import WarrantyDetailRequest from "../pages/UserProfile/WarrantyDetailRequest";
 import OrderDetailCustomer from "../pages/UserProfile/OrderDetail";
 import WarrantyMachine from "../pages/UserProfile/WarrantyMachine";
+import CheckRoute from "./CheckRoute";
+import RequireAuth from "./RequireAuth";
+import { Role } from "./Roles";
+import Discount from "../pages/Admin/Discount/Discount";
 
 const AppRoute: React.FC = () => {
   return (
@@ -65,49 +69,16 @@ const AppRoute: React.FC = () => {
       <Route key="login" path={config.routes.login} element={<Login />} />
       <Route key="login" path={config.routes.register} element={<Login />} />
 
-      {/* customer */}
+      {/* Public/customer routes */}
       <Route key="customer" path={config.routes.home} element={<Layout />}>
-        <Route key="home" path={config.routes.home} element={<Home />} />
+        <Route element={<CheckRoute />}>
+          <Route key="home" path={config.routes.home} element={<Home />} />
+        </Route>
+        <Route key="cart" path={config.routes.cart} element={<Checkout />} />
         <Route
           key="productDetail"
           path={config.routes.productDetail}
           element={<Detail />}
-        />
-        <Route
-          key="payment-successful"
-          path={config.routes.paymentSuccessful}
-          element={<PaymentSuccessfull />}
-        ></Route>
-        <Route
-          key="viewBill"
-          path={config.routes.viewBill}
-          element={<Bill />}
-        />
-        <Route
-          key="payment-failure"
-          path={config.routes.paymentFailure}
-          element={<PaymentFailure />}
-        ></Route>
-        <Route key="cart" path={config.routes.cart} element={<Checkout />} />
-        <Route
-          key="user"
-          path={config.routes.userProfile}
-          element={<UserProfile />}
-        />
-        <Route
-          key="changePassword"
-          path={config.routes.userChangePassword}
-          element={<ChangePassword />}
-        />
-        <Route
-          key="Address"
-          path={config.routes.userAddress}
-          element={<Address />}
-        />
-        <Route
-          key="Transaction"
-          path={config.routes.transaction}
-          element={<UserTransaction />}
         />
         <Route
           key="productList"
@@ -115,46 +86,6 @@ const AppRoute: React.FC = () => {
           element={<Products />}
         />
         <Route key="listNews" path={config.routes.news} element={<News />} />
-        <Route
-          key="favoriteProduct"
-          path={config.routes.favoriteProduct}
-          element={<FavoriteProduct />}
-        />
-        <Route
-          key="maintenance"
-          path={config.routes.maintenance}
-          element={<Maintenance />}
-        />
-        <Route
-          key="maintenancePeriodict"
-          path={config.routes.maintenancePeriodic}
-          element={<WarrantyDetailPeriodic />}
-        />
-        <Route
-          key="maintenanceRequest"
-          path={config.routes.maintenanceRequest}
-          element={<WarrantyDetailRequest />}
-        />
-        <Route
-          key="orderManagement"
-          path={config.routes.orderManagement}
-          element={<OrderCustomer />}
-        />
-        <Route
-          key="orderPayment"
-          path={config.routes.paymentOrderID}
-          element={<PaymentOrder />}
-        />
-        <Route
-          key="orderDetailId"
-          path={config.routes.orderManagementId}
-          element={<OrderDetailCustomer />}
-        />
-        <Route
-          key="orderDetailWarrantyMachineId"
-          path={config.routes.orderManagementIdWarranty}
-          element={<WarrantyMachine />}
-        />
         <Route
           key="newDetail"
           path={config.routes.newsDetail}
@@ -175,6 +106,85 @@ const AppRoute: React.FC = () => {
           path={config.routes.termsOfService}
           element={<TermsOfService />}
         />
+
+        {/* Secured routes */}
+        <Route element={<RequireAuth allowedRoles={[Role.User]} />}>
+          <Route
+            key="payment-successful"
+            path={config.routes.paymentSuccessful}
+            element={<PaymentSuccessfull />}
+          />
+          <Route
+            key="viewBill"
+            path={config.routes.viewBill}
+            element={<Bill />}
+          />
+          <Route
+            key="payment-failure"
+            path={config.routes.paymentFailure}
+            element={<PaymentFailure />}
+          />
+          <Route
+            key="user"
+            path={config.routes.userProfile}
+            element={<UserProfile />}
+          />
+          <Route
+            key="changePassword"
+            path={config.routes.userChangePassword}
+            element={<ChangePassword />}
+          />
+          <Route
+            key="Address"
+            path={config.routes.userAddress}
+            element={<Address />}
+          />
+          <Route
+            key="Transaction"
+            path={config.routes.transaction}
+            element={<UserTransaction />}
+          />
+          <Route
+            key="favoriteProduct"
+            path={config.routes.favoriteProduct}
+            element={<FavoriteProduct />}
+          />
+          <Route
+            key="maintenance"
+            path={config.routes.maintenance}
+            element={<Maintenance />}
+          />
+          <Route
+            key="maintenancePeriodict"
+            path={config.routes.maintenancePeriodic}
+            element={<WarrantyDetailPeriodic />}
+          />
+          <Route
+            key="maintenanceRequest"
+            path={config.routes.maintenanceRequest}
+            element={<WarrantyDetailRequest />}
+          />
+          <Route
+            key="orderManagement"
+            path={config.routes.orderManagement}
+            element={<OrderCustomer />}
+          />
+          <Route
+            key="orderPayment"
+            path={config.routes.paymentOrderID}
+            element={<PaymentOrder />}
+          />
+          <Route
+            key="orderDetailId"
+            path={config.routes.orderManagementId}
+            element={<OrderDetailCustomer />}
+          />
+          <Route
+            key="orderDetailWarrantyMachineId"
+            path={config.routes.orderManagementIdWarranty}
+            element={<WarrantyMachine />}
+          />
+        </Route>
       </Route>
 
       {/* admin */}
@@ -183,166 +193,192 @@ const AppRoute: React.FC = () => {
         path={config.adminRoutes.dashboard}
         element={<LayoutAdmin />}
       >
-        <Route
-          key="dashboard"
-          path={config.adminRoutes.dashboard}
-          element={<Dashboard />}
-        />
+        <Route element={<CheckRoute />}>
+          {/* empty because it like parent */}
+          <Route key="dashboard" path="" element={<Dashboard />} />
+        </Route>
         {/* account  */}
         <Route
-          key="user"
-          path={config.adminRoutes.user}
-          element={<Account />}
-        />
-        <Route
-          key="userDetail"
-          path={config.adminRoutes.userDetail}
-          element={<AccountDetailCustomer />}
-        />
-        <Route
-          key="accountDetail"
-          path={config.adminRoutes.accountDetail}
-          element={<AccountDetail />}
-        />
+          key="CheckRoute User"
+          element={
+            <RequireAuth allowedRoles={[Role.Admin, Role.Manager, Role.Sale]} />
+          }
+        >
+          <Route
+            key="user"
+            path={config.adminRoutes.user}
+            element={<Account />}
+          />
+          <Route
+            key="userDetail"
+            path={config.adminRoutes.userDetail}
+            element={<AccountDetailCustomer />}
+          />
+          <Route
+            key="accountDetail"
+            path={config.adminRoutes.accountDetail}
+            element={<AccountDetail />}
+          />
 
-        {/* news */}
-        <Route
-          key="new"
-          path={config.adminRoutes.blogs}
-          element={<BlogPosts />}
-        />
-        <Route
-          key="createNews"
-          path={config.adminRoutes.createNew}
-          element={<BlogNewPost />}
-        />
-        <Route
-          key="NewsDetail"
-          path={config.adminRoutes.blog}
-          element={<BlogPostDetail />}
-        />
-        {/* news Categories  */}
-        <Route
-          key="newCategories"
-          path={config.adminRoutes.newsCategory}
-          element={<NewsCategories />}
-        />
+          {/* news */}
+          <Route
+            key="new"
+            path={config.adminRoutes.blogs}
+            element={<BlogPosts />}
+          />
+          <Route
+            key="createNews"
+            path={config.adminRoutes.createNew}
+            element={<BlogNewPost />}
+          />
+          <Route
+            key="NewsDetail"
+            path={config.adminRoutes.blog}
+            element={<BlogPostDetail />}
+          />
+          {/* news Categories  */}
+          <Route
+            key="newCategories"
+            path={config.adminRoutes.newsCategory}
+            element={<NewsCategories />}
+          />
 
-        {/* product */}
-        <Route
-          key="product"
-          path={config.adminRoutes.product}
-          element={<Product />}
-        />
-        <Route
-          key="createProduct"
-          path={config.adminRoutes.createProduct}
-          element={<CreateProduct />}
-        />
-        <Route
-          key="ProductDetail"
-          path={config.adminRoutes.viewDetailProduct}
-          element={<ViewProductDetail />}
-        />
-        <Route
-          key="serialnumber"
-          path={config.adminRoutes.viewSerialProduct}
-          element={<SerialNumberPropductDetail />}
-        />
-        <Route
-          key="componentMachine"
-          path={config.adminRoutes.viewDetailMachineOfComponent}
-          element={<ComponentOfMachine />}
-        />
-        <Route
-          key="addComponentMachine"
-          path={config.adminRoutes.AddComponentOfMachine}
-          element={<AddComponentOfMachine />}
-        />
-        {/* component  */}
-        <Route
-          key="ProductComponent"
-          path={config.adminRoutes.createMachineComponent}
-          element={<CreateMachineComponent />}
-        />
-        <Route
-          key="viewComponent"
-          path={config.adminRoutes.viewMachineComponent}
-          element={<MachineComponent />}
-        />
-        <Route
-          key="viewComponentDetail"
-          path={config.adminRoutes.viewDetailMachineComponent}
-          element={<MachineComponentDetail />}
-        />
-        <Route
-          key="viewComponentDetailSerial"
-          path={config.adminRoutes.viewDetailMachineComponentSerial}
-          element={<SerialNumberComponent />}
-        />
-        {/* category */}
-        <Route
-          key="category"
-          path={config.adminRoutes.category}
-          element={<Category />}
-        />
+          {/* product */}
+          <Route
+            key="product"
+            path={config.adminRoutes.product}
+            element={<Product />}
+          />
+          <Route
+            key="createProduct"
+            path={config.adminRoutes.createProduct}
+            element={<CreateProduct />}
+          />
+          <Route
+            key="ProductDetail"
+            path={config.adminRoutes.viewDetailProduct}
+            element={<ViewProductDetail />}
+          />
+          <Route
+            key="serialnumber"
+            path={config.adminRoutes.viewSerialProduct}
+            element={<SerialNumberPropductDetail />}
+          />
+          <Route
+            key="componentMachine"
+            path={config.adminRoutes.viewDetailMachineOfComponent}
+            element={<ComponentOfMachine />}
+          />
+          <Route
+            key="addComponentMachine"
+            path={config.adminRoutes.AddComponentOfMachine}
+            element={<AddComponentOfMachine />}
+          />
+          {/* component  */}
+          <Route
+            key="ProductComponent"
+            path={config.adminRoutes.createMachineComponent}
+            element={<CreateMachineComponent />}
+          />
+          <Route
+            key="viewComponent"
+            path={config.adminRoutes.viewMachineComponent}
+            element={<MachineComponent />}
+          />
+          <Route
+            key="viewComponentDetail"
+            path={config.adminRoutes.viewDetailMachineComponent}
+            element={<MachineComponentDetail />}
+          />
+          <Route
+            key="viewComponentDetailSerial"
+            path={config.adminRoutes.viewDetailMachineComponentSerial}
+            element={<SerialNumberComponent />}
+          />
+          {/* category */}
+          <Route
+            key="category"
+            path={config.adminRoutes.category}
+            element={<Category />}
+          />
 
-        {/* brand  */}
-        <Route
-          key="brand"
-          path={config.adminRoutes.brand}
-          element={<Brand />}
-        />
+          {/* brand  */}
+          <Route
+            key="brand"
+            path={config.adminRoutes.brand}
+            element={<Brand />}
+          />
+          {/* profile */}
+          <Route
+            key="profile"
+            path={config.adminRoutes.profile}
+            element={<ProfileAccount />}
+          />
 
-        {/* rank  */}
-        <Route key="rank" path={config.adminRoutes.rank} element={<Rank />} />
+          <Route
+            key="discount"
+            path={config.adminRoutes.discount}
+            element={<Discount />}
+          />
 
-        {/* task  */}
-        <Route key="task" path={config.adminRoutes.task} element={<KanBan />} />
+          {/* check Admin Manager  */}
+          <Route
+            key="RoleAdminManger"
+            element={<RequireAuth allowedRoles={[Role.Admin, Role.Manager]} />}
+          >
+            {/* rank  */}
+            <Route
+              key="rank"
+              path={config.adminRoutes.rank}
+              element={<Rank />}
+            />
 
-        {/* profile */}
-        <Route
-          key="profile"
-          path={config.adminRoutes.profile}
-          element={<ProfileAccount />}
-        />
+            {/* task  */}
+            <Route
+              key="task"
+              path={config.adminRoutes.task}
+              element={<KanBan />}
+            />
 
-        {/* order */}
-        <Route
-          key="orders"
-          path={config.adminRoutes.order}
-          element={<Order />}
-        />
+            {/* order */}
+            <Route
+              key="orders"
+              path={config.adminRoutes.order}
+              element={<Order />}
+            />
 
-        {/* maintenance */}
-        <Route
-          key="maintanance"
-          path={config.adminRoutes.maintenance}
-          element={<WarrantyManagent />}
-        />
-        <Route
-          key="maintananceDetail"
-          path={config.adminRoutes.maintenanceDetail}
-          element={<WarrantyPeriodicDetail />}
-        />
+            {/* maintenance */}
+            <Route
+              key="maintanance"
+              path={config.adminRoutes.maintenance}
+              element={<WarrantyManagent />}
+            />
+            <Route
+              key="maintananceDetail"
+              path={config.adminRoutes.maintenanceDetail}
+              element={<WarrantyPeriodicDetail />}
+            />
 
-        <Route
-          key="maintananceDetailRequest"
-          path={config.adminRoutes.maintenanceRequestDetail}
-          element={<WarrantyRequestDetail />}
-        />
+            <Route
+              key="maintananceDetailRequest"
+              path={config.adminRoutes.maintenanceRequestDetail}
+              element={<WarrantyRequestDetail />}
+            />
 
-        <Route
-          key="maintananceRequestManagement"
-          path={config.adminRoutes.maintenanceRequest}
-          element={<WarrantyRequestManagent />}
-        />
+            <Route
+              key="maintananceRequestManagement"
+              path={config.adminRoutes.maintenanceRequest}
+              element={<WarrantyRequestManagent />}
+            />
+          </Route>
+        </Route>
       </Route>
+
       <Route
         key="notfound"
         path={config.routes.notFound}
         element={<Page404 />}
-      ></Route>
+      />
     </Routes>
   );
 };

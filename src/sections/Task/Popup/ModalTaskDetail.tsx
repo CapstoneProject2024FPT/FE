@@ -89,30 +89,39 @@ const ModalDetailTask: React.FC<ModalBrand> = ({
       {TaskData ? (
         <Box margin={1}>
           <Typography variant="h6" gutterBottom component="div">
-            Chi tiết Nhiệm Vụ
+            Chi tiết nhiệm vụ
           </Typography>
           <Table size="small" aria-label="products">
             <TableHead>
               <TableRow>
-                <TableCell sx={{ width: "30%" }}>Loại Nhiệm vụ</TableCell>
+                <TableCell sx={{ width: "30%" }}>Loại nhiệm vụ</TableCell>
                 <TableCell>
-                  {TaskData?.type === "Delivery" ? "Giao Hàng" : "Bảo Trì"}
+                  {TaskData?.type === "Delivery" ? "Giao Hàng" : "Bảo Hành"}
                 </TableCell>
               </TableRow>
               <TableRow>
-                <TableCell sx={{ width: "30%" }}>Ngày Giao</TableCell>
+                <TableCell sx={{ width: "30%" }}>Ngày giao</TableCell>
                 <TableCell>
                   {formatDateFunc.formatDate(TaskData?.createDate)}
                 </TableCell>
               </TableRow>
               <TableRow>
-                <TableCell sx={{ width: "30%" }}>Ngày Hoàn Thành</TableCell>
+                <TableCell sx={{ width: "30%" }}>Ngày thực hiện</TableCell>
+                <TableCell>
+                  {TaskData?.excutionDate
+                    ? formatDateFunc.formatDate(TaskData?.excutionDate)
+                    : "------"}
+                </TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell sx={{ width: "30%" }}>Ngày hoàn thành</TableCell>
                 <TableCell>
                   {TaskData?.completedDate
                     ? formatDateFunc.formatDate(TaskData?.completedDate)
-                    : "Chưa Hoàn Thành"}
+                    : "------"}
                 </TableCell>
               </TableRow>
+
               <TableRow>
                 <TableCell sx={{ width: "30%" }}>Tình trạng</TableCell>
                 <TableCell>
@@ -160,7 +169,7 @@ const ModalDetailTask: React.FC<ModalBrand> = ({
           <Table size="small" aria-label="additional-info">
             <TableBody>
               <TableRow>
-                <TableCell sx={{ width: "30%" }}>Tên Khách Hàng</TableCell>
+                <TableCell sx={{ width: "30%" }}>Tên khách hàng</TableCell>
                 <TableCell>{customer?.fullName}</TableCell>
               </TableRow>
               <TableRow>
@@ -180,7 +189,7 @@ const ModalDetailTask: React.FC<ModalBrand> = ({
           <Table size="small" aria-label="additional-info">
             <TableBody>
               <TableRow>
-                <TableCell sx={{ width: "30%" }}>Tên Nhân Viên</TableCell>
+                <TableCell sx={{ width: "30%" }}>Tên nhân viên</TableCell>
                 <TableCell>{TaskData?.staff.fullName}</TableCell>
               </TableRow>
               <TableRow>

@@ -24,7 +24,7 @@ const MenuSideBars: CustomMenuItem[] = [
     label: <Link to={config.adminRoutes.dashboard}>Thống Kê</Link>,
     key: config.adminRoutes.dashboard,
     icon: <PieChartOutlined />,
-    roles: AccessType.ALL_ACCESS,
+    roles: AccessType.ADMIN_MANAGER_ACCESS,
   },
   {
     label: <Link to={config.adminRoutes.user}>Người dùng</Link>,
@@ -76,6 +76,11 @@ const MenuSideBars: CustomMenuItem[] = [
         key: config.adminRoutes.brand,
         roles: AccessType.ALL_ACCESS,
       },
+      {
+        label: <Link to={config.adminRoutes.discount}>Giảm giá</Link>,
+        key: config.adminRoutes.discount,
+        roles: AccessType.ALL_ACCESS,
+      },
     ],
   },
 
@@ -118,14 +123,14 @@ const MenuSideBars: CustomMenuItem[] = [
     ],
   },
   {
-    label: "Bảo trì",
+    label: "Bảo hành",
     key: "warranty",
     icon: <EngineeringIcon />,
     roles: AccessType.ADMIN_MANAGER_ACCESS,
     children: [
       {
         label: (
-          <Link to={config.adminRoutes.maintenance}>Bảo hành định kì</Link>
+          <Link to={config.adminRoutes.maintenance}>Bảo hành định kỳ</Link>
         ),
         key: config.adminRoutes.maintenance,
         roles: AccessType.ADMIN_MANAGER_ACCESS,

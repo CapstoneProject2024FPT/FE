@@ -8,6 +8,9 @@ export function formatMoney(number: number | undefined) {
   });
 }
 
+export const formatNumberWithCommas = (number: number) => {
+  return new Intl.NumberFormat("en-US").format(number);
+};
 export const formatDateFunc = {
   formatDateTime: (date: Date | undefined): string => {
     return moment(date, moment.ISO_8601).format("DD/MM/YYYY HH:mm a");
@@ -17,6 +20,14 @@ export const formatDateFunc = {
   },
   formatTime: (date: Date | undefined): string => {
     return moment(date, moment.ISO_8601).format("HH:mm A");
+  },
+  formatDateVietnamese: (date: Date | undefined): string => {
+    if (!date) return "";
+    const momentDate = moment(date, moment.ISO_8601);
+    const day = momentDate.format("DD");
+    const month = momentDate.format("MM");
+    const year = momentDate.format("YYYY");
+    return `Ký ngày ${day}, tháng ${month}, năm ${year}`;
   },
 };
 

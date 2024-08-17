@@ -43,7 +43,7 @@ const CheckoutBillingAddress: React.FC<checkoutBillingAndAddress> = ({
   handleNextStep,
   handleGoToStep,
 }) => {
-  const { total } = useCheckout();
+  const { total, discountRank } = useCheckout();
   const { apiGetAddress } = ApiAddress();
   const [addresses, setAddresses] = useState<addressProps[]>([]);
   const { setSelectedAddress } = useAddress();
@@ -168,6 +168,7 @@ const CheckoutBillingAddress: React.FC<checkoutBillingAndAddress> = ({
             <Grid item xs={12} md={6} sx={{ mt: 3 }}>
               <CartSummary
                 total={total}
+                discount={discountRank}
                 enableEdit
                 onEdit={() => handleGoToStep(0)}
               />

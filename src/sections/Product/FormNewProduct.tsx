@@ -115,7 +115,15 @@ export default function ProductNewEditForm() {
       .required("Không để trống"),
     sellingPrice: Yup.number()
       .moreThan(0, "Giá tiền lớn hơn 0")
-      .required("Không để trống"),
+      .required("Không để trống")
+      .test(
+        "sellingPriceGreaterThanStockPrice",
+        "Giá bán phải lớn hơn giá nhập",
+        (value, context) => {
+          const { stockPrice } = context.parent;
+          return value > stockPrice;
+        }
+      ),
     categoryId: Yup.string().required("Phải có loại máy"),
     specificationList: Yup.array()
       .of(
@@ -152,19 +160,19 @@ export default function ProductNewEditForm() {
       )
       .min(1, "Ít nhất một thông số kỹ thuật là bắt buộc"),
     timeWarranty: Yup.number()
-      .min(minTimeWarranty, `Thời gian bảo trì lớn hơn ${minTimeWarranty}`)
-      .max(maxTimeWarranty, `Thời gian bảo trì nhỏ hơn ${maxTimeWarranty}`)
-      .required("Thời gian bảo trì là bắt buộc"),
+      .min(minTimeWarranty, `Thời gian bảo hành lớn hơn ${minTimeWarranty}`)
+      .max(maxTimeWarranty, `Thời gian bảo hành nhỏ hơn ${maxTimeWarranty}`)
+      .required("Thời gian bảo hành là bắt buộc"),
     monthWarrantyNumber: Yup.number()
       .min(
         minTimeMonthWarranty,
-        `Thời gian bảo trì lớn hơn ${minTimeMonthWarranty}`
+        `Thời gian bảo hành lớn hơn ${minTimeMonthWarranty}`
       )
       .max(
         maxTimeMonthWarranty,
-        `Thời gian bảo trì nhỏ hơn ${maxTimeMonthWarranty}`
+        `Thời gian bảo hành nhỏ hơn ${maxTimeMonthWarranty}`
       )
-      .required("Thời gian bảo trì là bắt buộc"),
+      .required("Thời gian bảo hành là bắt buộc"),
   });
 
   const methods = useForm<CreateProductFormSchema>({
@@ -271,6 +279,7 @@ export default function ProductNewEditForm() {
       }
     } catch (error) {
       console.error(error);
+      toast.success(config.AdminMessageNotice.AddMachineryFailed);
     }
   };
 
@@ -307,7 +316,9 @@ export default function ProductNewEditForm() {
   };
 
   const handleRemoveSpecification = (index: number) => {
-    remove(index);
+    if (fields.length > 1) {
+      remove(index);
+    }
   };
 
   //patse
@@ -358,13 +369,18 @@ export default function ProductNewEditForm() {
               <RHFTextField required name="name" label="Tên sản phẩm" />
 
               <div>
-                <LabelStyle>Mô tả</LabelStyle>
-                <RHFTextField fullWidth multiline rows={4} name="description" />
+                <RHFTextField
+                  fullWidth
+                  multiline
+                  rows={4}
+                  name="description"
+                  label="Mô tả"
+                />
               </div>
 
               <div>
-                <LabelStyle>Hình ảnh</LabelStyle>
                 <RHFUploadMultiFile
+                  label="Hình ảnh"
                   showPreview
                   name="imageURL"
                   maxSize={3145728}
@@ -405,11 +421,13 @@ export default function ProductNewEditForm() {
                         label="Giá trị"
                       />
 
-                      <IconButton
-                        onClick={() => handleRemoveSpecification(index)}
-                      >
-                        <DeleteIcon />
-                      </IconButton>
+                      {fields.length > 1 && (
+                        <IconButton
+                          onClick={() => handleRemoveSpecification(index)}
+                        >
+                          <DeleteIcon />
+                        </IconButton>
+                      )}
                     </Stack>
                   ))}
                   <Button
@@ -452,7 +470,7 @@ export default function ProductNewEditForm() {
                 <RHFTextField
                   required
                   name="timeWarranty"
-                  label="Thời gian bảo trì"
+                  label="Thời gian bảo hành"
                   placeholder="0"
                   InputLabelProps={{ shrink: true }}
                   InputProps={{
@@ -466,7 +484,7 @@ export default function ProductNewEditForm() {
                 <RHFTextField
                   required
                   name="monthWarrantyNumber"
-                  label="Số tháng bảo trì "
+                  label="Số tháng bảo hành "
                   placeholder="0"
                   InputLabelProps={{ shrink: true }}
                   InputProps={{

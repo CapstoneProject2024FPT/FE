@@ -12,7 +12,6 @@ import {
   Cell,
   Pie,
   PieChart,
-  ResponsiveContainer,
 } from "recharts";
 import {
   Box,
@@ -59,7 +58,14 @@ const renderCustomizedLabel = ({
   );
 };
 
-const COLORS = ["#2980b9", "#27ae60", "#e74c3c", "#f1c40f", "#f0932b"];
+const COLORS = [
+  "#2980b9",
+  "#27ae60",
+  "#e74c3c",
+  "#f1c40f",
+  "#f0932b",
+  "#704c5e",
+];
 const years = [2025, 2024, 2023];
 const Dashboard: React.FC = () => {
   const { apiGetData } = ApiAdminDashboard();
@@ -69,7 +75,6 @@ const Dashboard: React.FC = () => {
   useEffect(() => {
     const fetchDashboardData = async () => {
       const response = await apiGetData(selectedYear.toString());
-      console.log(response.data);
       setDashboardData(response.data);
     };
 
@@ -88,9 +93,13 @@ const Dashboard: React.FC = () => {
   const dataPie = [
     { name: "Đã thanh toán", value: dashboardData?.ordersByStatus.Paid },
     { name: "Đã hoàn thành", value: dashboardData?.ordersByStatus.Completed },
-    { name: "Đã hủy thanh toán", value: dashboardData?.ordersByStatus.UnPaid },
+    { name: "Chưa thanh toán", value: dashboardData?.ordersByStatus.UnPaid },
     { name: "Đã hủy đơn hàng", value: dashboardData?.ordersByStatus.Canceled },
     { name: "Đã vận chuyển", value: dashboardData?.ordersByStatus.Deliver },
+    {
+      name: "Vận chuyển chuyển lại",
+      value: dashboardData?.ordersByStatus.ReDelivery,
+    },
   ].filter(({ value }) => !!value);
 
   const totalOrdersArray = dashboardData?.monthlyStatistics.map((item) => ({
@@ -366,39 +375,39 @@ const Dashboard: React.FC = () => {
             }}
           >
             <Box sx={{ width: "50%" }}>
-              <ResponsiveContainer width="100%" height={400}>
-                <BarChart
-                  data={totalOrdersArray}
-                  barSize="3%"
-                  barGap="6"
-                  barCategoryGap="3%"
-                >
-                  <CartesianGrid />
-                  <XAxis
-                    dataKey="month"
-                    tick={<CustomXAxisTickBarChart1 />}
-                    interval={0}
-                    padding={{ left: 25, right: 25 }}
-                  />
-                  <YAxis allowDecimals={false} />
-                  <Tooltip content={<CustomTooltipBarChart1 />} />
-                  <Legend
-                    payload={[
-                      {
-                        value: "Đơn hàng",
-                        type: "square",
-                        color: "#4caf50",
-                      },
-                    ]}
-                    wrapperStyle={{
-                      marginTop: "10px",
-                      position: "relative",
-                      fontSize: "14px",
-                    }}
-                  />
-                  <Bar dataKey="totalOrders" fill="#4caf50" />
-                </BarChart>
-              </ResponsiveContainer>
+              <BarChart
+                data={totalOrdersArray}
+                barSize="3%"
+                barGap="6"
+                barCategoryGap="3%"
+                width={600}
+                height={400}
+              >
+                <CartesianGrid />
+                <XAxis
+                  dataKey="month"
+                  tick={<CustomXAxisTickBarChart1 />}
+                  interval={0}
+                  padding={{ left: 25, right: 25 }}
+                />
+                <YAxis allowDecimals={false} />
+                <Tooltip content={<CustomTooltipBarChart1 />} />
+                <Legend
+                  payload={[
+                    {
+                      value: "Đơn hàng",
+                      type: "square",
+                      color: "#4caf50",
+                    },
+                  ]}
+                  wrapperStyle={{
+                    marginTop: "10px",
+                    position: "relative",
+                    fontSize: "14px",
+                  }}
+                />
+                <Bar dataKey="totalOrders" fill="#4caf50" />
+              </BarChart>
             </Box>
             <Divider
               orientation="vertical"
@@ -406,27 +415,25 @@ const Dashboard: React.FC = () => {
               sx={{ margin: "5px", border: "1px solid #d9d9d9" }}
             />
             <Box sx={{ width: "40%" }}>
-              <ResponsiveContainer width="100%" height={300}>
-                <PieChart>
-                  <Pie
-                    data={dataPie}
-                    outerRadius={120}
-                    labelLine={false}
-                    label={renderCustomizedLabel}
-                    fill="#8884d8"
-                    dataKey="value"
-                  >
-                    {dataPie.map((_entry, index) => (
-                      <Cell
-                        key={`cell-${index}`}
-                        fill={COLORS[index % COLORS.length]}
-                      />
-                    ))}
-                  </Pie>
-                  <Tooltip />
-                  <Legend />
-                </PieChart>
-              </ResponsiveContainer>
+              <PieChart width={400} height={300}>
+                <Pie
+                  data={dataPie}
+                  outerRadius={120}
+                  labelLine={false}
+                  label={renderCustomizedLabel}
+                  fill="#8884d8"
+                  dataKey="value"
+                >
+                  {dataPie.map((_entry, index) => (
+                    <Cell
+                      key={`cell-${index}`}
+                      fill={COLORS[index % COLORS.length]}
+                    />
+                  ))}
+                </Pie>
+                <Tooltip />
+                <Legend />
+              </PieChart>
             </Box>
           </Box>
 
@@ -444,44 +451,44 @@ const Dashboard: React.FC = () => {
               marginBottom: "20px",
             }}
           >
-            <ResponsiveContainer width={1000} height={400}>
-              <BarChart
-                data={totalProfitAndTotalRevenue}
-                barSize="3%"
-                barGap="6"
-                barCategoryGap="3%"
-              >
-                <CartesianGrid />
-                <XAxis
-                  dataKey="month"
-                  tick={<CustomXAxisTickBarChart2 />}
-                  interval={0}
-                  padding={{ left: 25, right: 25 }}
-                />
-                <YAxis tickFormatter={formatYAxisTick} />
-                <Tooltip content={<CustomTooltipBarChart2 />} />
-                <Legend
-                  payload={[
-                    {
-                      value: "Lợi nhuận",
-                      type: "square",
-                      color: "#ff9800",
-                    },
-                    {
-                      value: "Doanh thu",
-                      type: "square",
-                      color: "#f44336",
-                    },
-                  ]}
-                  wrapperStyle={{
-                    position: "relative",
-                    fontSize: "16px",
-                  }}
-                />
-                <Bar dataKey="totalProfit" fill="#ff9800" />
-                <Bar dataKey="totalRevenue" fill="#f44336" />
-              </BarChart>
-            </ResponsiveContainer>
+            <BarChart
+              data={totalProfitAndTotalRevenue}
+              barSize="3%"
+              barGap="6"
+              barCategoryGap="3%"
+              width={1000}
+              height={400}
+            >
+              <CartesianGrid />
+              <XAxis
+                dataKey="month"
+                tick={<CustomXAxisTickBarChart2 />}
+                interval={0}
+                padding={{ left: 25, right: 25 }}
+              />
+              <YAxis tickFormatter={formatYAxisTick} />
+              <Tooltip content={<CustomTooltipBarChart2 />} />
+              <Legend
+                payload={[
+                  {
+                    value: "Lợi nhuận",
+                    type: "square",
+                    color: "#ff9800",
+                  },
+                  {
+                    value: "Doanh thu",
+                    type: "square",
+                    color: "#f44336",
+                  },
+                ]}
+                wrapperStyle={{
+                  position: "relative",
+                  fontSize: "16px",
+                }}
+              />
+              <Bar dataKey="totalProfit" fill="#ff9800" />
+              <Bar dataKey="totalRevenue" fill="#f44336" />
+            </BarChart>
           </Box>
         </Box>
       )}

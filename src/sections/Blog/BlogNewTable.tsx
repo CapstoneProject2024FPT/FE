@@ -1,7 +1,7 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useEffect, useState } from "react";
 import type { MenuProps } from "antd";
 import type { TableProps } from "antd";
-import { DownOutlined } from "@ant-design/icons";
 import { Table, Input, Space, Dropdown, Button, DatePicker } from "antd";
 import { toast } from "react-toastify";
 import { PostGetProps } from "../../models/blog";
@@ -13,6 +13,7 @@ import config from "../../configs";
 import BlogAbleModal from "./PopupBLog/BlogAbleModal";
 import BlogHotModal from "./PopupBLog/BlogHotModal";
 import moment from "moment";
+import MoreVertIcon from "@mui/icons-material/MoreVert";
 
 type ColumnsType<T> = TableProps<T>["columns"];
 const { Search } = Input;
@@ -64,7 +65,7 @@ const TableBlogNew: React.FC = () => {
 
       setBlogNews(response.data);
     } catch (error) {
-      toast.error("lỗi");
+      toast.error(config.AdminMessageNotice.ErrorGet);
     }
   };
 
@@ -170,12 +171,13 @@ const TableBlogNew: React.FC = () => {
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
+            gap: "5px",
           }}
         >
           Ngày tạo
           <DatePicker
             onChange={handleDateChange}
-            style={{ marginLeft: 8, width: "50%" }}
+            style={{ width: "50%", cursor: "pointer" }}
             format={dateFormatList}
             placeholder="Chọn ngày"
           />
@@ -222,13 +224,7 @@ const TableBlogNew: React.FC = () => {
       align: "center",
     },
     {
-      title: (
-        <div
-          style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}
-        >
-          Hành Động
-        </div>
-      ),
+      title: "",
       key: "operation",
       render: (record) => (
         <Space size="middle">
@@ -253,7 +249,7 @@ const TableBlogNew: React.FC = () => {
             }}
           >
             <a>
-              <DownOutlined />
+              <MoreVertIcon />
             </a>
           </Dropdown>
         </Space>

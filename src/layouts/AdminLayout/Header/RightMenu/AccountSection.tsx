@@ -16,7 +16,7 @@ import { RoleType } from "../../../../models/UserData";
 const AccountSection = () => {
   const jsonString = localStorage.getItem("loginInfo");
   const user = JSON.parse(jsonString || "{}");
-  const { setAuthUser } = useAuthContext();
+  const { setAuthUser, setRole } = useAuthContext();
   const [name, setName] = React.useState(
     user?.data?.fullName ? user?.data?.fullName : "U"
   );
@@ -45,13 +45,14 @@ const AccountSection = () => {
   const handleLogout = () => {
     localStorage.removeItem("loginInfo");
     setAuthUser(null);
+    setRole(null);
     setTimeout(() => {
       navigate("/");
     }, 500);
   };
 
   const getRoleType = (role: RoleType) => {
-    switch(role) {
+    switch (role) {
       case RoleType.ADMIN:
         return "Quản trị viên";
       case RoleType.MANAGER:
@@ -59,7 +60,7 @@ const AccountSection = () => {
       case RoleType.SALE:
         return "Nhân viên Bán hàng";
       case RoleType.TECHNICAL:
-        return "Nhân viên kỹ thuật"
+        return "Nhân viên kỹ thuật";
     }
   };
 
@@ -77,7 +78,9 @@ const AccountSection = () => {
           <Typography>
             {user?.data?.fullName ? user?.data?.fullName : ""}
           </Typography>
-          <Typography sx={{ fontSize: "12px", color: "#95a5a6" }}>{getRoleType(user?.data?.role)}</Typography>
+          <Typography sx={{ fontSize: "12px", color: "#95a5a6" }}>
+            {getRoleType(user?.data?.role)}
+          </Typography>
         </Box>
         <IconButton
           onClick={handleClick}
@@ -98,7 +101,6 @@ const AccountSection = () => {
         sx={{
           padding: "10px",
           overflow: "visible",
-
           mt: 1.5,
           "& .MuiAvatar-root": {
             width: 32,

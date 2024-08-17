@@ -18,9 +18,14 @@ import {
   WarrantyPropsById,
 } from "../../../../models/warranty";
 import { ApiWarranty } from "../../../../api/services/apiWarranty";
-import { formatAddress, formatDateFunc } from "../../../../utils/fn";
+import {
+  formatAddress,
+  formatDateFunc,
+  formatMoney,
+} from "../../../../utils/fn";
 import { CustomerApi } from "../../../../api/services/apiUser";
 import { RoleType, staffProps } from "../../../../models/UserData";
+import Image from "../../../../components/Image";
 
 const LabelStyle = styled(Typography)(({ theme }) => ({
   ...theme.typography.subtitle2,
@@ -198,9 +203,11 @@ const DetailWarrantyRequest = () => {
             </Grid>
           </Grid>
 
-          {warrantyDetail?.status === "Completed" && (
+          {(warrantyDetail?.status === "Completed" ||
+            warrantyDetail?.status === "Repairing") && (
             <Grid container spacing={3} sx={{ mt: 1 }}>
-              <Grid item xs={12} md={8}>
+              {/* Repair Description */}
+              <Grid item xs={12}>
                 <Typography variant="h5">Nội dung sửa</Typography>
                 <Card sx={{ p: 3 }}>
                   <TextField
@@ -209,31 +216,86 @@ const DetailWarrantyRequest = () => {
                     multiline
                     rows={4}
                     fullWidth
-                    InputProps={{
-                      readOnly: true,
-                    }}
+                    InputProps={{ readOnly: true }}
                   />
                 </Card>
               </Grid>
-              <Grid item xs={12} md={4}>
+
+              {/* Replaced Components */}
+              <Grid item xs={12}>
                 <Typography variant="h5">Bộ phận thay</Typography>
                 <Card sx={{ p: 3 }}>
-                  {warrantyDetail.inventoryChanges.length > 0
-                    ? warrantyDetail?.inventoryChanges.map((item) => (
-                        <TextField
-                          sx={{ mt: 1 }}
-                          label="Tên bộ phận thay thế"
-                          value={item?.newInventory.componentName || ""}
-                          fullWidth
-                          InputProps={{
-                            readOnly: true,
-                          }}
-                        />
+                  {warrantyDetail.componentChange.length > 0
+                    ? warrantyDetail.componentChange.map((item, idx) => (
+                        <Grid container spacing={2} key={idx}>
+                          <Grid item md={6} xs={12}>
+                            <TextField
+                              sx={{ mt: 1 }}
+                              label="Tên bộ phận thay thế"
+                              value={item?.component.name || ""}
+                              fullWidth
+                              InputProps={{ readOnly: true }}
+                            />
+                          </Grid>
+                          <Grid item md={6} xs={12}>
+                            <TextField
+                              sx={{ mt: 1 }}
+                              label="Giá tiền"
+                              value={
+                                item?.component.sellingPrice
+                                  ? formatMoney(item?.component.sellingPrice)
+                                  : ""
+                              }
+                              fullWidth
+                              InputProps={{ readOnly: true }}
+                            />
+                          </Grid>
+                        </Grid>
                       ))
                     : "Không thay thế bộ phận nào cả"}
                 </Card>
               </Grid>
             </Grid>
+          )}
+          {warrantyDetail && warrantyDetail?.note?.length > 0 && (
+            <Stack>
+              <Typography variant="h5" sx={{ mt: 2 }}>
+                Ghi chú
+              </Typography>
+              <Card sx={{ p: 3 }}>
+                {warrantyDetail.note.length > 0
+                  ? warrantyDetail.note.map((item, idx) => (
+                      <Card key={idx} sx={{ mt: 2, p: 3, boxShadow: 2 }}>
+                        <Grid container>
+                          <Grid item md={4} xs={12}>
+                            <Typography>Ghi chú lần {idx + 1}: </Typography>
+                          </Grid>
+                          <Grid item md={8} xs={12}></Grid>
+                        </Grid>
+                        <Grid container>
+                          <Grid item md={4} xs={12}>
+                            <Typography>Nội dung: </Typography>
+                          </Grid>
+                          <Grid item md={8} xs={12}>
+                            <Typography>{item.description} </Typography>
+                          </Grid>
+                        </Grid>
+                        <Grid container>
+                          <Grid item md={4} xs={12}>
+                            <Typography>Ngày tạo</Typography>
+                          </Grid>
+                          <Grid item md={8} xs={12}>
+                            <Typography>
+                              {formatDateFunc.formatDate(item.createDate)}
+                            </Typography>
+                          </Grid>
+                        </Grid>
+                        <Image src={item.image} />
+                      </Card>
+                    ))
+                  : "Không thay thế bộ phận nào cả"}
+              </Card>
+            </Stack>
           )}
         </>
       )}

@@ -26,6 +26,7 @@ export const GET_CATEGORY_CHILD =
 //Machinery Component
 export const MACHINERY_COMPONENT = "machineryComponent";
 export const GET_MACHINERY_COMPONENT = "machineryComponent/noPaginate";
+export const GET_MACHINERY_COMPONENT_PAGINATE = "machineryComponent";
 export const MACHINERY_COMPONENT_ID = "machineryComponent/:id";
 
 //Category Component
@@ -42,6 +43,7 @@ export const BRAND = "brand";
 
 //Customer
 export const CUSTOMER_PROFILE = "/users/:id";
+export const RANK_UPGRADE = "/users/:id/addRank";
 
 //transaction
 export const USER_TRANSACTION = "/transaction";
@@ -115,3 +117,7 @@ export const COUNTORDERS = "admin/dashBoard/countOrders";
 //favourite
 export const FAVOURITE = "favorite";
 export const FAVOURITE_ID = "favorite/:id";
+
+//diccount
+export const DISCOUNT = "discount";
+export const DISCOUNT_ID = "discount/:id";

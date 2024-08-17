@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react";
 import type { MenuProps } from "antd";
 import type { TableProps } from "antd";
-import { DownOutlined } from "@ant-design/icons";
+import MoreVertIcon from "@mui/icons-material/MoreVert";
 import { Table, Space, Dropdown, DatePicker } from "antd";
 import { toast } from "react-toastify";
 import { ApiWarranty } from "../../../api/services/apiWarranty";
@@ -11,6 +11,7 @@ import { formatDateFunc } from "../../../utils/fn";
 import config from "../../../configs";
 import { useNavigate } from "react-router-dom";
 import moment from "moment";
+
 type ColumnsType<T> = TableProps<T>["columns"];
 
 const pageSize = 20;
@@ -34,6 +35,24 @@ const TablePeriodicWarranty: React.FC = () => {
     navigate(config.adminRoutes.maintenanceDetail.replace(":id", record.id));
   };
 
+  //status
+  const getStatusStyles = (status: string) => {
+    switch (status) {
+      case "Process":
+        return { backgroundColor: "#2196F3", color: "black" }; // xạnh
+      case "Completed":
+        return { backgroundColor: "#4CAF50", color: "white" }; // xanh lá
+      case "AwaitingAssignment":
+        return { backgroundColor: "#FFD700", color: "black" }; // vàng
+      case "Cancel":
+        return { backgroundColor: "#F44336", color: "white" }; // đỏ
+      case "Repairing":
+        return { backgroundColor: "#f39c12", color: "white" }; // cam
+      default:
+        return { backgroundColor: "transparent", color: "black" };
+    }
+  };
+
   const fetchWarrantyPeriodic = async () => {
     try {
       const params = {
@@ -50,7 +69,7 @@ const TablePeriodicWarranty: React.FC = () => {
 
       setPeriodicWarranty(keyData);
     } catch (error) {
-      toast.error("lỗi");
+      toast.error(config.AdminMessageNotice.ErrorGet);
     }
   };
 
@@ -125,6 +144,7 @@ const TablePeriodicWarranty: React.FC = () => {
       ),
       dataIndex: "key",
       align: "center",
+      width: "10%",
     },
     {
       title: (
@@ -135,8 +155,9 @@ const TablePeriodicWarranty: React.FC = () => {
         </div>
       ),
       dataIndex: "type",
-      render: (type) => (type === "Periodic" ? "Định kì" : "Yêu cầu"),
+      render: (type) => (type === "Periodic" ? "Định kỳ" : "Yêu cầu"),
       align: "center",
+      width: "15%",
     },
     {
       title: (
@@ -148,20 +169,22 @@ const TablePeriodicWarranty: React.FC = () => {
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
+            gap: "5px",
           }}
         >
-          Ngày bắt đầu
+          Ngày bảo hành
           <DatePicker
             onChange={handleCreateDateChange}
-            style={{ marginLeft: 8, width: "50%" }}
+            style={{ width: "60%", cursor: "pointer" }}
             format={dateFormatList}
-            placeholder="Ngày tạo"
+            placeholder="Chọn ngày"
           />
         </div>
       ),
       dataIndex: "startDate",
       render: (startDate) => formatDateFunc.formatDate(startDate),
       align: "center",
+      width: "20%",
     },
     {
       title: (
@@ -173,14 +196,15 @@ const TablePeriodicWarranty: React.FC = () => {
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
+            gap: "5px",
           }}
         >
           Ngày hoàn thành
           <DatePicker
             onChange={handleCompletedDateChange}
-            style={{ marginLeft: 8, width: "50%" }}
+            style={{ width: "60%", cursor: "pointer" }}
             format={dateFormatList}
-            placeholder="Ngày hoàn thành"
+            placeholder="Chọn ngày"
           />
         </div>
       ),
@@ -188,6 +212,46 @@ const TablePeriodicWarranty: React.FC = () => {
       render: (completionDate) =>
         completionDate ? formatDateFunc.formatDate(completionDate) : "-------",
       align: "center",
+      width: "20%",
+    },
+    {
+      title: (
+        <div
+          style={{
+            textAlign: "center",
+            fontSize: "16px",
+            fontWeight: "bold",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          Nhân viên thực hiện
+        </div>
+      ),
+      dataIndex: "staff",
+      render: (staff) => {
+        const notCome = "Chưa giao nhân viên";
+        if (staff?.fullName) {
+          return staff.fullName;
+        } else {
+          return (
+            <div
+              style={{
+                background: "grey",
+                padding: "8px 16px",
+                borderRadius: "8px",
+                display: "inline-block",
+                color: "white",
+              }}
+            >
+              {notCome}
+            </div>
+          );
+        }
+      },
+      align: "center",
+      width: "20%",
     },
     {
       title: (
@@ -212,28 +276,53 @@ const TablePeriodicWarranty: React.FC = () => {
           ? warrantyStatusMapping?.find((item) => item.id === status)?.name
           : defaultStatus;
 
-        if (daysDifference >= 0 && daysDifference <= 3) {
+        if (record.status !== "AwaitingAssignment") {
+          return (
+            <div
+              style={{
+                ...getStatusStyles(record.status),
+                padding: "8px 16px",
+                borderRadius: "8px",
+                display: "inline-block",
+              }}
+            >
+              {statusName}
+            </div>
+          );
+        }
+        if (
+          daysDifference >= 0 &&
+          daysDifference <= 3 &&
+          record.status === "AwaitingAssignment"
+        ) {
           return (
             <div>
               <div style={{ color: "orange" }}>{upComming}</div>
             </div>
           );
         } else if (daysDifference >= 4) {
-          return <div>{notCome}</div>;
+          return (
+            <div
+              style={{
+                background: "grey",
+                padding: "8px 16px",
+                borderRadius: "8px",
+                display: "inline-block",
+                color: "white",
+              }}
+            >
+              {notCome}
+            </div>
+          );
         } else {
           return <div>{statusName}</div>;
         }
       },
       align: "center",
+      width: "20%",
     },
     {
-      title: (
-        <div
-          style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}
-        >
-          Hành Động
-        </div>
-      ),
+      title: "",
       key: "operation",
       render: (record) => (
         <Space size="middle">
@@ -254,12 +343,13 @@ const TablePeriodicWarranty: React.FC = () => {
             }}
           >
             <a>
-              <DownOutlined />
+              <MoreVertIcon />
             </a>
           </Dropdown>
         </Space>
       ),
       align: "center",
+      width: "10%",
     },
   ];
 

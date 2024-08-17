@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import type { MenuProps } from "antd";
 import type { TableProps } from "antd";
-import { DownOutlined } from "@ant-design/icons";
+import MoreVertIcon from "@mui/icons-material/MoreVert";
 import { Table, Input, Space, Dropdown, Button } from "antd";
 import { getRank } from "../../models/rank";
 import { ApiRank } from "../../api/services/apiRank";
@@ -65,7 +65,7 @@ const TableRank: React.FC = () => {
         toast.error(response.Error);
       }
     } catch (error) {
-      toast.error("lỗi");
+      toast.error(config.AdminMessageNotice.ErrorGet);
     }
   };
 
@@ -161,6 +161,18 @@ const TableRank: React.FC = () => {
         <div
           style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}
         >
+          Mức ưu đãi
+        </div>
+      ),
+      dataIndex: "value",
+      render: (value) => (value ? `${value}%` : ""),
+      align: "center",
+    },
+    {
+      title: (
+        <div
+          style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}
+        >
           Hành Động
         </div>
       ),
@@ -185,7 +197,7 @@ const TableRank: React.FC = () => {
             }}
           >
             <a>
-              <DownOutlined />
+              <MoreVertIcon />
             </a>
           </Dropdown>
         </Space>
@@ -206,7 +218,7 @@ const TableRank: React.FC = () => {
           onClick={() => setOpenAddPopup(!openAddPopup)}
           icon={<PlusOutlined />}
         >
-          Thêm loại máy
+          Thêm loại hạng mức
         </Button>
       </div>
 

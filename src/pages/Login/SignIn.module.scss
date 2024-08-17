@@ -29,10 +29,6 @@ p {
   margin: 20px 0 30px;
 }
 
-// span {
-//   font-size: 12px;
-// }
-
 .link {
   color: #333;
   font-size: 14px;
@@ -42,8 +38,8 @@ p {
 
 .btn {
   border-radius: 20px;
-  border: 1px solid #ff4b2b;
-  background-color: #ff4b2b;
+  border: 1px solid #007BFF; /* Blue color */
+  background-color: #007BFF; /* Blue color */
   color: #ffffff;
   font-size: 12px;
   font-weight: bold;
@@ -158,9 +154,9 @@ p {
 }
 
 .overlay {
-  background: #ff416c;
-  background: -webkit-linear-gradient(to right, #ff4b2b, #ff416c);
-  background: linear-gradient(to right, #ff4b2b, #ff416c);
+  background: #007BFF;
+  background: -webkit-linear-gradient(to right, #007BFF, #0056b3); /* Blue gradient */
+  background: linear-gradient(to right, #007BFF, #0056b3); /* Blue gradient */
   background-repeat: no-repeat;
   background-size: cover;
   background-position: 0 0;

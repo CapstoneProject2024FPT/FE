@@ -10,7 +10,6 @@ import { Stack } from "@mui/material";
 import { UserData } from "../../models/UserData";
 import { AuthApi } from "../../api/services/apiAuth";
 import { toast } from "react-toastify";
-import { localStorageFunc } from "../../utils/localStoragefn";
 import { useNavigate } from "react-router-dom";
 import { useAuthContext } from "../../context/AuthContext";
 import config from "../../configs";
@@ -51,19 +50,26 @@ const SignInForm: React.FC = () => {
     try {
       const response = await apiLogin(data);
       if (response.status === 200) {
-        localStorageFunc.setLocalStorage("loginInfo", JSON.stringify(response));
+        localStorage.setItem("loginInfo", JSON.stringify(response));
         setAuthUser(response.data);
         const userInfo = await apiUserProfile(response.data.id);
         localStorage.setItem("getUserInfo", JSON.stringify(userInfo.data));
-        toast.success(config.MessageNotice.loginSuccess);
+
         if (response?.data.role === "User") {
           if (returnUrl) {
+            toast.success(config.MessageNotice.loginSuccess);
             navigate(returnUrl);
           } else {
+            toast.success(config.MessageNotice.loginSuccess);
             navigate(config.routes.home);
           }
         } else if (role.includes(response?.data?.role)) {
+          toast.success(config.MessageNotice.loginSuccess);
           navigate(config.adminRoutes.dashboard);
+        } else {
+          setAuthUser(null);
+          localStorage.removeItem("loginInfo");
+          toast.error(config.MessageNotice.InvalidRole);
         }
       }
       if (response.statusCode === 401) {
@@ -127,8 +133,8 @@ const SignInForm: React.FC = () => {
             sx={{
               mt: 2,
               borderRadius: "20px",
-              border: "1px solid #ff4b2b",
-              backgroundColor: " #ff4b2b",
+              border: "1px solid #0056b3",
+              backgroundColor: " #0056b3",
               color: "#ffffff",
               fontSize: "12px",
               fontWeight: " bold",
@@ -136,7 +142,7 @@ const SignInForm: React.FC = () => {
               letterSpacing: "1px",
               textTransform: "uppercase",
               ":hover": {
-                backgroundColor: "#ff4b2b",
+                backgroundColor: "#0056b3",
                 transform: "scale(1.2)",
                 transition: "transform 100ms ease-out",
               },

@@ -8,16 +8,28 @@ import { useForm } from "react-hook-form";
 import * as Yup from "yup";
 import { toast } from "react-toastify";
 //model
-import { Card, Grid, Stack, TextField } from "@mui/material";
+import { Card, Grid, Stack, TextField, Typography } from "@mui/material";
 import { LoadingButton } from "@mui/lab";
 import { ApiTask } from "../../../api/services/apiTask";
-import { DeliveryPropsPost, StaffTaskProps } from "../../../models/task";
-import { WarrantyPropsById } from "../../../models/warranty";
+import {
+  DeliveryPropsPost,
+  GetTaskProps,
+  StaffTaskProps,
+} from "../../../models/task";
+import {
+  WarrantyDetailGetProps,
+  WarrantyPropsById,
+} from "../../../models/warranty";
 import config from "../../../configs";
 import CustomPagination from "../../../components/pagination/CustomPagination";
 //api
+//calender
+import dayjs from "dayjs";
+import CalendarComponent from "../../../components/calender/Calender";
+import { formatDateFunc } from "../../../utils/fn";
 
 interface ModalOrder {
+  requestWarranty: WarrantyDetailGetProps | undefined;
   OrderData: WarrantyPropsById | undefined;
   idWarranty: string | undefined;
   openTaskPopup: boolean;
@@ -36,17 +48,25 @@ const ModalDeliveryTaskPeriodic: React.FC<ModalOrder> = ({
   handleCLose,
   onCreateSuccess,
   idWarranty,
+  requestWarranty,
 }) => {
-  const { apiCreateTask, apiTaskStaff } = ApiTask();
-
+  const { apiCreateTask, apiTaskStaff, apiGetTask } = ApiTask();
+  const [tasks, setTasks] = useState<GetTaskProps[]>([]);
   //search
   const [query, setQuery] = useState<string>("");
   const [data, setData] = useState<StaffTaskProps[]>([]);
   const rowPerPage = 5;
   const [currentPage, setCurrentPage] = useState<number>(1);
+  //ngày di giao
+  const executionDate = requestWarranty?.startDate;
+  const chooseDate = dayjs(executionDate).format("YYYY-MM-DD");
 
   const fetchAccountUser = async () => {
-    const response = await apiTaskStaff();
+    const params = {
+      targetDate: chooseDate,
+    };
+
+    const response = await apiTaskStaff(params);
     if (response.status === 200) {
       setData(response.data);
     } else {
@@ -55,6 +75,7 @@ const ModalDeliveryTaskPeriodic: React.FC<ModalOrder> = ({
   };
 
   useEffect(() => {
+    if (!chooseDate) return;
     fetchAccountUser();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -85,11 +106,15 @@ const ModalDeliveryTaskPeriodic: React.FC<ModalOrder> = ({
     try {
       if (OrderData && OrderData.warrantyDetail) {
         if (idWarranty) {
+          if (!chooseDate) {
+            toast.error("Chọn ngày thực hiện");
+            return;
+          }
           const params: DeliveryPropsPost = {
             accountId: data.accountId,
-            status: "Process",
             warrantyDetailId: idWarranty,
             type: "Warranty",
+            excutionDate: executionDate,
           };
 
           const response = await apiCreateTask(params);
@@ -122,18 +147,42 @@ const ModalDeliveryTaskPeriodic: React.FC<ModalOrder> = ({
     setCurrentPage(page);
   };
 
+  //get value and sort
+  const sortOptions = filteredRows.sort((a, b) => {
+    const processA = a.todayTaskStatusCount?.Process || 0;
+    const processB = b.todayTaskStatusCount?.Process || 0;
+    return processA - processB;
+  });
+
   const lastIndexValue = currentPage * rowPerPage;
   const indexFirstValue = lastIndexValue - rowPerPage;
-  const currentStaff = filteredRows?.slice(indexFirstValue, lastIndexValue);
+  const currentStaff = sortOptions?.slice(indexFirstValue, lastIndexValue);
 
   const radioOptions = currentStaff?.map((item) => ({
     label: item.staffName,
     value: item.staffId,
-    taskStatusCount: item.taskStatusCount,
+    taskStatusCount: item.todayTaskStatusCount,
   }));
+
+  const fetchTaskStaff = async (id: string) => {
+    const params = {
+      Status: "Process",
+      AccountId: id,
+      ExcutionDate: chooseDate,
+    };
+    const response = await apiGetTask(params);
+    setTasks(response.data);
+  };
+
+  useEffect(() => {
+    if (staffID) {
+      fetchTaskStaff(staffID);
+    }
+  }, [staffID]);
+
   return (
     <Modal
-      title="Chấp nhận đơn hàng"
+      title="Giao nhiệm vụ bảo hành định kỳ"
       open={openTaskPopup}
       onOk={handleCLose}
       onCancel={handleCLose}
@@ -145,25 +194,44 @@ const ModalDeliveryTaskPeriodic: React.FC<ModalOrder> = ({
           <Grid item xs={12} md={6}>
             <Card sx={{ p: 3 }}>
               <Stack spacing={3}>
-                <TextField
-                  value={
-                    OrderData?.type === "CustomerRequest"
-                      ? "Yêu cầu bảo hành"
-                      : "Định kì"
-                  }
-                  label="Loại bảo hành"
-                  InputProps={{ readOnly: true }}
-                />
-                <TextField
-                  value={OrderData?.inventory?.machinery?.name || ""}
-                  label="Mã máy"
-                  InputProps={{ readOnly: true }}
-                />
-                <TextField
-                  value={OrderData?.inventory?.serialNumber || ""}
-                  label="Tên máy"
-                  InputProps={{ readOnly: true }}
-                />
+                <Grid container>
+                  <Grid item xs={12} md={4}>
+                    <Typography>Loại bảo hành: </Typography>
+                  </Grid>
+                  <Grid item xs={12} md={8}>
+                    <Typography>
+                      {OrderData?.type === "CustomerRequest"
+                        ? "Yêu cầu bảo hành"
+                        : "Định kỳ"}
+                    </Typography>
+                  </Grid>
+                  <Grid item xs={12} md={4}>
+                    <Typography>Ngày thực hiện: </Typography>
+                  </Grid>
+                  <Grid item xs={12} md={8}>
+                    <Typography>
+                      {requestWarranty?.startDate
+                        ? formatDateFunc.formatDate(requestWarranty?.startDate)
+                        : ""}
+                    </Typography>
+                  </Grid>
+                  <Grid item xs={12} md={4}>
+                    <Typography>Mã máy: </Typography>
+                  </Grid>
+                  <Grid item xs={12} md={8}>
+                    <Typography>
+                      {OrderData?.inventory?.serialNumber || ""}
+                    </Typography>
+                  </Grid>
+                  <Grid item xs={12} md={4}>
+                    <Typography> Tên máy: </Typography>
+                  </Grid>
+                  <Grid item xs={12} md={8}>
+                    <Typography>
+                      {OrderData?.inventory?.machinery?.name || ""}
+                    </Typography>
+                  </Grid>
+                </Grid>
                 <TextField
                   label="Tên nhân viên"
                   value={
@@ -205,7 +273,11 @@ const ModalDeliveryTaskPeriodic: React.FC<ModalOrder> = ({
                 />
 
                 {/* {radio} */}
-                <RHFRadioGroup name="accountId" options={radioOptions || []} />
+                <RHFRadioGroup
+                  name="accountId"
+                  options={radioOptions || []}
+                  sx={{ height: "240px" }}
+                />
 
                 <CustomPagination
                   currentPage={currentPage}
@@ -217,6 +289,11 @@ const ModalDeliveryTaskPeriodic: React.FC<ModalOrder> = ({
             </Card>
           </Grid>
         </Grid>
+        <Typography variant="h5">
+          Tên nhân viên:{" "}
+          {staffID && data?.find((item) => item.staffId === staffID)?.staffName}
+        </Typography>
+        <CalendarComponent tasks={tasks} chooseDate={executionDate} />
       </FormProvider>
     </Modal>
   );

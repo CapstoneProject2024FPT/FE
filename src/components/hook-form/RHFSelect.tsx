@@ -29,6 +29,15 @@ export default function RHFSelect({ name, children, ...other }: Props) {
           error={!!error}
           helperText={error?.message}
           {...other}
+          InputLabelProps={{
+            shrink: true,
+            required: true,
+            sx: {
+              "& .MuiInputLabel-asterisk": {
+                color: "red",
+              },
+            },
+          }}
         >
           {children}
         </TextField>

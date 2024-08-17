@@ -11,14 +11,15 @@ export const ApiTask = () => {
   interface TaskProps {
     OrderId?: string;
     Type?: string;
+    Status?: string;
+    AccountId?: string;
+    ExcutionDate?: string;
   }
   const apiGetTask = async (params: TaskProps) => {
     setLoading(true);
     try {
       const response = await axiosPublic.get(TASK, { params });
-
       return response;
-
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       if (axios.isAxiosError(error) && error.response) {
@@ -35,9 +36,7 @@ export const ApiTask = () => {
     setLoading(true);
     try {
       const response = await axiosPublic.post(TASK, params);
-
       return response;
-
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       if (axios.isAxiosError(error) && error.response) {
@@ -53,6 +52,7 @@ export const ApiTask = () => {
   interface updateTaskProps {
     accountId: string;
     addressId: string;
+    excutionDate?: string;
   }
   const apiUpdateTask = async (id: string, params: updateTaskProps) => {
     setLoading(true);
@@ -61,9 +61,7 @@ export const ApiTask = () => {
         TASK_ID.replace(":id", id),
         params
       );
-
       return response;
-
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       if (axios.isAxiosError(error) && error.response) {
@@ -98,13 +96,14 @@ export const ApiTask = () => {
     }
   };
 
-  const apiTaskStaff = async () => {
+  interface StaffTaskProps {
+    targetDate?: string;
+  }
+  const apiTaskStaff = async (params: StaffTaskProps) => {
     setLoading(true);
     try {
-      const response = await axiosPublic.get(TASK_STAFF);
-
+      const response = await axiosPublic.get(TASK_STAFF, { params });
       return response;
-
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       if (axios.isAxiosError(error) && error.response) {

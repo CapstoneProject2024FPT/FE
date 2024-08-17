@@ -15,15 +15,10 @@ export interface GetMachineComponents {
   description: string;
   createDate: Date;
   status: string;
-  quantity: {
-    Available: number;
-    Sold: number;
-    Pending: number;
-    Discontinued: number;
-  };
   stockPrice: number;
   sellingPrice: number;
   timeWarranty: number;
+  quantity: number;
   origin: {
     id: string;
     name: string;

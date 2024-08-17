@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import type { MenuProps } from "antd";
 import type { TableProps } from "antd";
-import { DownOutlined } from "@ant-design/icons";
+import MoreVertIcon from "@mui/icons-material/MoreVert";
 import {
   Table,
   Input,
@@ -10,6 +10,7 @@ import {
   Button,
   Typography,
   Select,
+  DatePicker,
 } from "antd";
 
 import { serialProps } from "../../models/serialNumber";
@@ -23,6 +24,7 @@ import { PlusOutlined } from "@ant-design/icons";
 import { MachineryApi } from "../../api/services/apiMachinery";
 import { ProductAdmin } from "../../models/products";
 import config from "../../configs";
+import moment from "moment";
 
 type ColumnsType<T> = TableProps<T>["columns"];
 const { Search } = Input;
@@ -53,11 +55,19 @@ const TableSerial: React.FC<TableSerial> = ({ handleSetName }) => {
   //api
   const { apiGetSerialbyMachineId, loading } = ApiSerial();
   const { apiGetDetailMachine } = MachineryApi();
+  const [selectedDate, setSelectedDate] = useState<string | null>(null);
+
   //modal popup
   const handleActionDelete = (record: serialProps) => {
     setOpenDeletePopup(!openDeletePopup);
     setSelectedData(record);
   };
+
+  const handleDateChange = (_date: any, dateString: string | string[]) => {
+    setSelectedDate(Array.isArray(dateString) ? dateString[0] : dateString);
+  };
+
+  const dateFormatList = ["DD/MM/YYYY", "DD/MM/YY", "DD-MM-YYYY", "DD-MM-YY"];
 
   const handleOpen = () => {
     setOpenAdd(!openAdd);
@@ -94,7 +104,7 @@ const TableSerial: React.FC<TableSerial> = ({ handleSetName }) => {
         setSelectedData(null);
       }
     } catch (error) {
-      toast.error("lỗi");
+      toast.error(config.AdminMessageNotice.ErrorGet);
     }
   };
 
@@ -140,10 +150,13 @@ const TableSerial: React.FC<TableSerial> = ({ handleSetName }) => {
     setQuery(e.target.value);
   };
 
-  const filteredRows = serialNumbers?.filter((item) =>
-    item.serialNumber.toLowerCase().includes(query)
-  );
-
+  const filteredRows = serialNumbers
+    ?.filter((item) => item.serialNumber.toLowerCase().includes(query))
+    ?.filter((item) =>
+      selectedDate
+        ? moment(item.createDate).format("DD/MM/YYYY") === selectedDate
+        : true
+    );
   const items: MenuProps["items"] = [
     {
       key: "1",
@@ -152,13 +165,26 @@ const TableSerial: React.FC<TableSerial> = ({ handleSetName }) => {
   ];
   const columns: ColumnsType<serialProps> = [
     {
-      title: "Số seri",
+      title: (
+        <div
+          style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}
+        >
+          Số seri
+        </div>
+      ),
       dataIndex: "serialNumber",
       sorter: (a, b) => a.serialNumber.length - b.serialNumber.length,
       width: "20%",
+      align: "center",
     },
     {
-      title: "Trạng thái",
+      title: (
+        <div
+          style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}
+        >
+          Trạng thái
+        </div>
+      ),
       dataIndex: "status",
       render: (status) => {
         return status === "Available"
@@ -167,16 +193,38 @@ const TableSerial: React.FC<TableSerial> = ({ handleSetName }) => {
           ? "Đã bán"
           : "Có người mua";
       },
+      align: "center",
     },
     {
-      title: "Ngày tạo",
+      title: (
+        <div
+          style={{
+            textAlign: "center",
+            fontSize: "16px",
+            fontWeight: "bold",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            gap: "5px",
+          }}
+        >
+          Ngày tạo
+          <DatePicker
+            onChange={handleDateChange}
+            style={{ width: "30%", cursor: "pointer" }}
+            format={dateFormatList}
+            placeholder="Chọn ngày"
+          />
+        </div>
+      ),
       dataIndex: "createDate",
       render: (createDate) => {
         return formatDateFunc.formatDate(createDate);
       },
+      align: "center",
     },
     {
-      title: "Hành Động",
+      title: "",
       key: "operation",
       render: (record) => (
         <Space size="middle">
@@ -195,11 +243,12 @@ const TableSerial: React.FC<TableSerial> = ({ handleSetName }) => {
             }}
           >
             <a>
-              <DownOutlined />
+              <MoreVertIcon />
             </a>
           </Dropdown>
         </Space>
       ),
+      align: "center",
     },
   ];
 
@@ -214,7 +263,13 @@ const TableSerial: React.FC<TableSerial> = ({ handleSetName }) => {
   return (
     <>
       <Typography.Text>Tên máy: {machinery?.name}</Typography.Text>
-      <div style={{ display: "flex", justifyContent: "space-between" }}>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          marginTop: "10px",
+        }}
+      >
         <Search
           placeholder="Nhập từ khoá"
           onChange={handleSearch}
@@ -233,7 +288,7 @@ const TableSerial: React.FC<TableSerial> = ({ handleSetName }) => {
             ]}
           />
           <Button onClick={handleOpen} icon={<PlusOutlined />}>
-            Thêm máy vào kho
+            Thêm số lượng máy
           </Button>
         </div>
       </div>

@@ -9,6 +9,7 @@ import { useAuthContext } from "../../../../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import config from "../../../../configs";
 import { Box } from "@mui/material";
+import { useCheckout } from "../../../../zustand/useCheckout";
 
 interface LogoutProps {
   open: boolean;
@@ -16,13 +17,16 @@ interface LogoutProps {
 }
 
 export default function LogoutModal({ open, handleClose }: LogoutProps) {
-  const { setAuthUser } = useAuthContext();
+  const { setAuthUser, setRole } = useAuthContext();
+  const { setDiscountRank } = useCheckout();
   const navigate = useNavigate();
 
   const handleLogout = () => {
     localStorage.removeItem("loginInfo");
     localStorage.removeItem("historyPath");
+    setDiscountRank(0);
     setAuthUser(null);
+    setRole(null);
     setTimeout(() => {
       navigate(config.routes.home);
     }, 500);

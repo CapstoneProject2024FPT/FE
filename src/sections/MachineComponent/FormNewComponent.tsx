@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 //mui
-import { Card, Grid, Stack, Typography, InputAdornment } from "@mui/material";
-import { styled } from "@mui/material/styles";
+import { Card, Grid, Stack, InputAdornment } from "@mui/material";
 import { LoadingButton } from "@mui/lab";
 //models
 import { OriginProps } from "../../models/origin";
@@ -26,12 +25,6 @@ import { CategoryComponentApi } from "../../api/services/apiCategoriesComponent"
 //toast
 import { toast } from "react-toastify";
 import config from "../../configs";
-
-const LabelStyle = styled(Typography)(({ theme }) => ({
-  ...theme.typography.subtitle2,
-  color: theme.palette.text.secondary,
-  marginBottom: theme.spacing(1),
-}));
 
 export default function ProductNewComponent() {
   const { apiAddMachineryComponent } = MachineryComponentApi();
@@ -67,12 +60,20 @@ export default function ProductNewComponent() {
       .required("Không để trống"),
     sellingPrice: Yup.number()
       .moreThan(0, "Giá tiền lớn hơn 0")
-      .required("Không để trống"),
+      .required("Không để trống")
+      .test(
+        "sellingPriceGreaterThanStockPrice",
+        "Giá bán phải lớn hơn giá nhập",
+        (value, context) => {
+          const { stockPrice } = context.parent;
+          return value > stockPrice;
+        }
+      ),
     categoryId: Yup.string().required("Phải có loại máy"),
     timeWarranty: Yup.number()
-      .min(minTimeWarranty, `Thời gian bảo trì lớn hơn ${minTimeWarranty}`)
-      .max(maxTimeWarranty, `Thời gian bảo trì nhỏ hơn ${maxTimeWarranty}`)
-      .required("Thời gian bảo trì là bắt buộc"),
+      .min(minTimeWarranty, `Thời gian bảo hành lớn hơn ${minTimeWarranty}`)
+      .max(maxTimeWarranty, `Thời gian bảo hành nhỏ hơn ${maxTimeWarranty}`)
+      .required("Thời gian bảo hành là bắt buộc"),
   });
 
   const methods = useForm<machineComponentProps>({
@@ -127,9 +128,10 @@ export default function ProductNewComponent() {
   const onSubmit = async (values: machineComponentProps) => {
     try {
       const response = await apiAddMachineryComponent(values);
-
       if (response.status === 200) {
         toast.success(config.AdminMessageNotice.AddMachineComponent);
+      } else {
+        toast.error(response.Error);
       }
       reset();
     } catch (error) {
@@ -146,9 +148,9 @@ export default function ProductNewComponent() {
               <RHFTextField required name="name" label="Tên chi tiết máy" />
 
               <div>
-                <LabelStyle>Mô tả</LabelStyle>
                 <RHFTextField
                   required
+                  label="Mô tả"
                   fullWidth
                   multiline
                   rows={4}
@@ -218,7 +220,7 @@ export default function ProductNewComponent() {
                 <RHFTextField
                   required
                   name="timeWarranty"
-                  label="Thời gian bảo trì"
+                  label="Thời gian bảo hành"
                   placeholder="0"
                   InputLabelProps={{ shrink: true }}
                   InputProps={{

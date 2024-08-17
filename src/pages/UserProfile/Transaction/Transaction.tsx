@@ -82,8 +82,7 @@ const Transaction: React.FC = () => {
     return statusName;
   };
   //open
-  const handleOpen = (transaction: TransactionProps) => {
-    setSelectData(transaction);
+  const handleOpen = () => {
     setOpen(!open);
     handleCloseMenu();
   };
@@ -92,8 +91,12 @@ const Transaction: React.FC = () => {
     setOpen(!open);
   };
 
-  const handleOpenMenu = (event: React.MouseEvent<HTMLElement>) => {
+  const handleOpenMenu = (
+    event: React.MouseEvent<HTMLElement>,
+    transaction: TransactionProps
+  ) => {
     setAnchorEl(event.currentTarget);
+    setSelectData(transaction);
   };
 
   const handleCloseMenu = () => {
@@ -169,6 +172,7 @@ const Transaction: React.FC = () => {
                 <TableCell>Số tiền giao dịch</TableCell>
                 <TableCell>Trạng thái</TableCell>
                 <TableCell>Phương thức giao dịch</TableCell>
+                <TableCell>Loại đơn thanh toán</TableCell>
                 <TableCell>Hành động</TableCell>
               </TableRow>
             </TableHead>
@@ -199,12 +203,22 @@ const Transaction: React.FC = () => {
                           {handleStatusName(transaction.status)}
                         </Box>
                       </TableCell>
-                      <TableCell>{transaction.payType}</TableCell>
+                      {transaction.payType?.split("_").map((part, index) => (
+                        <TableCell key={index}>
+                          {part === "Order"
+                            ? "Mua hàng"
+                            : part === "Warranty"
+                            ? "Bảo hành"
+                            : part.toUpperCase()}
+                        </TableCell>
+                      ))}
                       <TableCell>
                         <IconButton
                           aria-label="more actions"
                           size="small"
-                          onClick={handleOpenMenu}
+                          onClick={(event) =>
+                            handleOpenMenu(event, transaction)
+                          }
                         >
                           <MoreVertIcon />
                         </IconButton>
@@ -213,8 +227,8 @@ const Transaction: React.FC = () => {
                           open={openMenu}
                           onClose={handleCloseMenu}
                         >
-                          <MenuItem onClick={() => handleOpen(transaction)}>
-                            Chi tiết đơn hàng
+                          <MenuItem onClick={handleOpen}>
+                            Chi tiết giao dịch
                           </MenuItem>
                         </Menu>
                       </TableCell>

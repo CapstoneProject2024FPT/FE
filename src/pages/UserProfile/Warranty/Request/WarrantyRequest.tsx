@@ -28,13 +28,15 @@ import config from "../../../../configs";
 const getStatusStyles = (status: string) => {
   switch (status) {
     case "Process":
-      return { backgroundColor: "#FFD700", color: "black" }; // vàng
+      return { backgroundColor: "#2196F3", color: "black" }; // vàng
     case "Completed":
       return { backgroundColor: "#4CAF50", color: "white" }; // xanh lá
     case "AwaitingAssignment":
       return { backgroundColor: "#FFD700", color: "black" }; // vàng
-    case "Cancele":
+    case "Cancel":
       return { backgroundColor: "#F44336", color: "white" }; // đỏ
+    case "Repairing":
+      return { backgroundColor: "#f39c12", color: "white" }; // cam
     default:
       return { backgroundColor: "transparent", color: "black" };
   }

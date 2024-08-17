@@ -15,9 +15,7 @@ export const ApiSerial = () => {
     setLoading(true);
     try {
       const response = await axiosPublic.get(SERIALNUMBER, { params });
-
       return response;
-
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       if (axios.isAxiosError(error) && error.response) {
@@ -45,9 +43,7 @@ export const ApiSerial = () => {
       const response = await axiosPublic.post(SERIALNUMBER, requestBody, {
         params: paramsQuantity,
       });
-
       return response;
-
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       if (axios.isAxiosError(error) && error.response) {
@@ -74,9 +70,7 @@ export const ApiSerial = () => {
         SERIALNUMBER_ID.replace(":id", id),
         params
       );
-
       return response;
-
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       if (axios.isAxiosError(error) && error.response) {
@@ -104,9 +98,7 @@ export const ApiSerial = () => {
       const response = await axiosPublic.post(SERIALNUMBER, requestBody, {
         params: paramsQuantity,
       });
-
       return response;
-
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       if (axios.isAxiosError(error) && error.response) {
@@ -129,9 +121,7 @@ export const ApiSerial = () => {
     setLoading(true);
     try {
       const response = await axiosPublic.get(SERIALNUMBER, { params });
-
       return response;
-
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       if (axios.isAxiosError(error) && error.response) {
@@ -150,9 +140,7 @@ export const ApiSerial = () => {
       const response = await axiosPublic.get(
         SERIALNUMBER_ID.replace(":id", id)
       );
-
       return response;
-
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       if (axios.isAxiosError(error) && error.response) {

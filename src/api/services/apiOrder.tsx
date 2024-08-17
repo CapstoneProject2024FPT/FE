@@ -14,6 +14,8 @@ export const ApiOrder = () => {
     CreateDate?: string | null;
     CompletedDate?: string | null;
     Status?: string;
+    InvoiceCode?: string;
+    type?: string;
   }
 
   const apiGetOrder = async (params: GetOrderProps) => {
@@ -21,7 +23,6 @@ export const ApiOrder = () => {
     try {
       const response = await axiosPublic.get(ORDER, { params });
       return response;
-
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       if (axios.isAxiosError(error) && error.response) {
@@ -36,12 +37,9 @@ export const ApiOrder = () => {
 
   const apiGetOrderById = async (params: GetOrderProps) => {
     setLoading(true);
-
     try {
       const response = await axiosPublic.get(ORDER, { params });
-
       return response;
-
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       if (axios.isAxiosError(error) && error.response) {

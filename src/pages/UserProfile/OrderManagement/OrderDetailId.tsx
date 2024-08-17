@@ -27,6 +27,7 @@ import { ApiWarranty } from "../../../api/services/apiWarranty";
 import { Warranty, WarrantyResponse } from "../../../models/warranty";
 import PopupDetailOrder from "./Modal/PopupDetailOrder";
 import ModalRequestOrderDetail from "./Modal/ModalRequestWarranty";
+import WarrantyPDF from "../../Bill/Exportpdf/WarrantyPDF";
 
 // ----------------------------------------------------------------------
 
@@ -50,8 +51,16 @@ const OrderDetailBill: React.FC = () => {
     if (id) {
       try {
         const response = await apiGetOrderId(id);
+
         setOrderData(response.data);
 
+        //type order = warranty
+        if (response.data.type === "Warranty") {
+          setLoading(false);
+          return;
+        }
+
+        //type order = order
         if (response.status === 200) {
           const response2 = await Promise.all(
             response.data.productList.map(async (item: any) => {
@@ -82,6 +91,7 @@ const OrderDetailBill: React.FC = () => {
               };
             })
           );
+
           setWarranty(response2);
         }
       } catch (error) {
@@ -213,7 +223,8 @@ const OrderDetailBill: React.FC = () => {
                   Chi tiết sản phẩm
                 </Typography>
                 {orderData?.status !== "Canceled" &&
-                orderData?.status !== "UnPaid" ? (
+                orderData?.status !== "UnPaid" &&
+                orderData?.type !== "Warranty" ? (
                   <>
                     {warranty?.map((product, idx) => (
                       <Table size="small" aria-label="products" key={idx}>
@@ -224,6 +235,7 @@ const OrderDetailBill: React.FC = () => {
                             <TableCell>Giá sản phẩm</TableCell>
                             <TableCell>Bảo hành</TableCell>
                             <TableCell>Tạo bảo hành</TableCell>
+                            <TableCell>Phiếu bảo hành</TableCell>
                           </TableRow>
                         </TableHead>
                         <TableBody>
@@ -280,6 +292,12 @@ const OrderDetailBill: React.FC = () => {
                                     Tạo yêu cầu bảo hành
                                   </Button>
                                 </TableCell>
+                                <TableCell>
+                                  <WarrantyPDF
+                                    order={orderData}
+                                    product={detail}
+                                  />
+                                </TableCell>
                               </>
                             </TableRow>
                           ))}
@@ -290,7 +308,7 @@ const OrderDetailBill: React.FC = () => {
                                 (warrantyItem, idx) => (
                                   <TableRow key={warrantyItem.id}>
                                     <TableCell>
-                                      Bảo trì định kì lần {idx + 1} :{" "}
+                                      Bảo Hành định kỳ lần {idx + 1} :{" "}
                                       {formatDateFunc.formatDate(
                                         warrantyItem.startDate
                                       )}
@@ -315,26 +333,48 @@ const OrderDetailBill: React.FC = () => {
                       </TableRow>
                     </TableHead>
                     <TableBody>
-                      {orderData?.productList?.map((machine, index) => (
-                        <TableRow key={index}>
-                          <TableCell>{index + 1}</TableCell>
-                          <TableCell>
-                            <Link
-                              to={config.routes.productDetail.replace(
-                                ":id",
-                                machine.productId
-                              )}
-                              style={{ textDecoration: "none", color: "black" }}
-                            >
-                              {machine.productName}
-                            </Link>
-                          </TableCell>
-                          <TableCell>{machine.quantity}</TableCell>
-                          <TableCell>
-                            {formatMoney(machine.totalAmount)}
-                          </TableCell>
-                        </TableRow>
-                      ))}
+                      {orderData?.type === "Order" ? (
+                        <>
+                          {orderData?.productList?.map((machine, index) => (
+                            <TableRow key={index}>
+                              <TableCell>{index + 1}</TableCell>
+                              <TableCell>
+                                <Link
+                                  to={config.routes.productDetail.replace(
+                                    ":id",
+                                    machine.productId
+                                  )}
+                                  style={{
+                                    textDecoration: "none",
+                                    color: "black",
+                                  }}
+                                >
+                                  {machine.productName}
+                                </Link>
+                              </TableCell>
+                              <TableCell>{machine.quantity}</TableCell>
+                              <TableCell>
+                                {formatMoney(machine.totalAmount)}
+                              </TableCell>
+                            </TableRow>
+                          ))}
+                        </>
+                      ) : (
+                        <>
+                          {orderData?.productList?.map((machine, index) => (
+                            <TableRow key={index}>
+                              <TableCell>{index + 1}</TableCell>
+                              <TableCell>
+                                {machine.machineComponentName}
+                              </TableCell>
+                              <TableCell>{machine.quantity}</TableCell>
+                              <TableCell>
+                                {formatMoney(machine.totalAmount)}
+                              </TableCell>
+                            </TableRow>
+                          ))}
+                        </>
+                      )}
                     </TableBody>
                   </Table>
                 )}
@@ -353,6 +393,7 @@ const OrderDetailBill: React.FC = () => {
                   open={openWarranty}
                   onClose={handleCloseWarranty}
                   warrantyData={selectData}
+                  orderData={orderData}
                 />
               )}
             </>

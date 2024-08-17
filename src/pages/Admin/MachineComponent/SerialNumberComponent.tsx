@@ -3,7 +3,6 @@ import { Container } from "@mui/material";
 // routes
 // hooks
 // components
-
 import HeaderBreadcrumbs from "../../../components/HeaderBreadcrumbs";
 // sections
 import TableSerialComponent from "../../../sections/MachineComponent/TableSerialComponent";
@@ -29,7 +28,7 @@ export default function SerialNumberComponent() {
   return (
     <Container>
       <HeaderBreadcrumbs
-        heading="Số seri sản phẩm"
+        heading="Số seri bộ phận máy"
         links={[
           { name: "Thống kê", href: config.adminRoutes.dashboard },
           { name: "Sản phẩm", href: config.adminRoutes.viewMachineComponent },
@@ -40,7 +39,7 @@ export default function SerialNumberComponent() {
               id
             ),
           },
-          { name: "Số lượng sản phẩm" },
+          { name: "Số lượng bộ phận máy" },
         ]}
       />
       <TableSerialComponent handleSetName={handleSetName} />

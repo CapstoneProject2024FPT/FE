@@ -12,7 +12,6 @@ export const AuthApi = () => {
     setLoading(true);
     try {
       const response = await axiosPublic.post(LOGIN, loginData);
-
       return response;
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {

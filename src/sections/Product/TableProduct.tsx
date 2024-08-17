@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react";
 import type { MenuProps, TablePaginationConfig } from "antd";
 import type { TableProps } from "antd";
-import { DownOutlined, PlusOutlined } from "@ant-design/icons";
+import { PlusOutlined } from "@ant-design/icons";
 import { Table, Input, Space, Dropdown, Button, DatePicker } from "antd";
 import ModalProductPopupDelete from "./PopupProduct/ModalProductPopupDelete";
 import { toast } from "react-toastify";
@@ -13,6 +13,7 @@ import config from "../../configs";
 import ModalProductPopupPriority from "./PopupProduct/ModalProductPopupPriority";
 import { formatDateFunc } from "../../utils/fn";
 import moment from "moment";
+import MoreVertIcon from "@mui/icons-material/MoreVert";
 
 type ColumnsType<T> = TableProps<T>["columns"];
 const { Search } = Input;
@@ -76,7 +77,7 @@ const TableProduct: React.FC = () => {
         toast.error(response.Error);
       }
     } catch (error) {
-      toast.error("lỗi");
+      toast.error(config.AdminMessageNotice.ErrorGet);
     }
   };
 
@@ -233,12 +234,13 @@ const TableProduct: React.FC = () => {
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
+            gap: "5px",
           }}
         >
           Ngày tạo
           <DatePicker
             onChange={handleDateChange}
-            style={{ marginLeft: 8, width: "50%" }}
+            style={{ width: "50%", cursor: "pointer" }}
             format={dateFormatList}
             placeholder="Chọn ngày"
           />
@@ -249,13 +251,7 @@ const TableProduct: React.FC = () => {
       align: "center",
     },
     {
-      title: (
-        <div
-          style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}
-        >
-          Hành Động
-        </div>
-      ),
+      title: "",
       key: "operation",
       render: (record) => (
         <Space size="middle">
@@ -292,7 +288,7 @@ const TableProduct: React.FC = () => {
             }}
           >
             <a>
-              <DownOutlined />
+              <MoreVertIcon />
             </a>
           </Dropdown>
         </Space>
@@ -303,7 +299,7 @@ const TableProduct: React.FC = () => {
 
   return (
     <>
-      <div style={{ display: "flex" }}>
+      <div style={{ display: "flex", gap: "10px" }}>
         <Search
           placeholder="Nhập từ khoá"
           onChange={handleSearch}

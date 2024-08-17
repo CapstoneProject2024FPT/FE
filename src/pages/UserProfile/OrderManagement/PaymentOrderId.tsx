@@ -58,6 +58,7 @@ const PaymentOrderId: React.FC = () => {
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
   const [orderData, setOrderData] = useState<OrderProps>();
+
   //api
   const { apiGetOrderId } = ApiOrder();
   const { apiPayment, apiPaymentUpdate } = ApiCheckout();
@@ -108,6 +109,8 @@ const PaymentOrderId: React.FC = () => {
         const params = { status: "SUCCESS" };
         try {
           const response = await apiPaymentUpdate(params, id);
+
+          console.log(response);
 
           // handle
           const getUserInfoString = localStorage.getItem("getUserInfo");
@@ -174,12 +177,14 @@ const PaymentOrderId: React.FC = () => {
     try {
       //api vnpay
       if (orderData && authUser) {
+        const typeOrder =
+          orderData.type === "Order" ? "VNPAY_Order" : "VNPAY_Warranty";
         if (data.payment === PaymentTypeProps.VNPAY) {
           const paramPayment: paymentProps = {
             orderId: orderData.orderId,
             amount: orderData.finalAmount,
             callbackUrl: window.location.href,
-            paymentType: data.payment,
+            paymentType: typeOrder,
             accountId: authUser,
           };
 
@@ -202,6 +207,7 @@ const PaymentOrderId: React.FC = () => {
   //api
   const fetchOrderId = useCallback(async () => {
     if (id) {
+      sessionStorage.setItem("OrderId", id);
       const response = await apiGetOrderId(id);
       setOrderData(response.data);
     }
@@ -228,20 +234,40 @@ const PaymentOrderId: React.FC = () => {
           <Card sx={{ p: 2 }}>
             <CardHeader title="Thông tin đơn hàng" />
             <Stack display="flex" direction="column" spacing={2}>
-              <Typography> Mã đơn hàng :{orderData?.invoiceCode}</Typography>
-              <Typography>
-                Tên chủ đơn :{orderData?.userInfo?.fullName}
-              </Typography>
-              <Typography>
-                Ngày tạo đơn :
-                {formatDateFunc.formatDateTime(orderData?.createDate)}
-              </Typography>
-              <Typography>
-                Tổng thành tiền :{formatMoney(orderData?.finalAmount)}
-              </Typography>
-              <Typography>
-                Địa chỉ :{formatAddress(orderData?.address)}
-              </Typography>
+              <Grid container spacing={1}>
+                <Grid item xs={3}>
+                  <Typography>Mã đơn hàng:</Typography>
+                </Grid>
+                <Grid item xs={10}>
+                  <Typography>{orderData?.invoiceCode}</Typography>
+                </Grid>
+                <Grid item xs={3}>
+                  <Typography>Tên chủ đơn:</Typography>
+                </Grid>
+                <Grid item xs={10}>
+                  <Typography>{orderData?.userInfo?.fullName}</Typography>
+                </Grid>
+                <Grid item xs={3}>
+                  <Typography>Ngày tạo đơn:</Typography>
+                </Grid>
+                <Grid item xs={10}>
+                  <Typography>
+                    {formatDateFunc.formatDateTime(orderData?.createDate)}
+                  </Typography>
+                </Grid>
+                <Grid item xs={3}>
+                  <Typography>Tổng thành tiền:</Typography>
+                </Grid>
+                <Grid item xs={10}>
+                  <Typography>{formatMoney(orderData?.finalAmount)}</Typography>
+                </Grid>
+                <Grid item xs={3}>
+                  <Typography>Địa chỉ:</Typography>
+                </Grid>
+                <Grid item xs={10}>
+                  <Typography>{formatAddress(orderData?.address)}</Typography>
+                </Grid>
+              </Grid>
               <Box>
                 <Box
                   sx={{
@@ -270,13 +296,31 @@ const PaymentOrderId: React.FC = () => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {orderData?.productList.map((product) => (
-                  <TableRow key={product.orderDetailId}>
-                    <TableCell>{product.productName}</TableCell>
-                    <TableCell>{product.quantity}</TableCell>
-                    <TableCell>{formatMoney(product.totalAmount)}</TableCell>
-                  </TableRow>
-                ))}
+                {orderData?.type === "Order" ? (
+                  <>
+                    {orderData?.productList.map((product) => (
+                      <TableRow key={product.orderDetailId}>
+                        <TableCell>{product.productName}</TableCell>
+                        <TableCell>{product.quantity}</TableCell>
+                        <TableCell>
+                          {formatMoney(product.totalAmount)}
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </>
+                ) : (
+                  <>
+                    {orderData?.productList.map((product) => (
+                      <TableRow key={product.orderDetailId}>
+                        <TableCell>{product.machineComponentName}</TableCell>
+                        <TableCell>{product.quantity}</TableCell>
+                        <TableCell>
+                          {formatMoney(product.totalAmount)}
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </>
+                )}
               </TableBody>
             </Table>
           </Card>
