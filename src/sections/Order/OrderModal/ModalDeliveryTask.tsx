@@ -306,7 +306,7 @@ const ModalDeliveryTask: React.FC<ModalOrder> = ({
                   }
                 >
                   <DatePicker
-                    label="Chọn ngày giao"
+                    label={<CustomLabel label="Chọn ngày giao" />}
                     onChange={(e) => handleChooseDate(e)}
                     value={daySelect}
                     format="DD/MM/YYYY"
@@ -320,7 +320,7 @@ const ModalDeliveryTask: React.FC<ModalOrder> = ({
                   />
                 </LocalizationProvider>
                 <TextField
-                  label="Tên nhân viên"
+                  label={<CustomLabel label="Tên nhân viên" />}
                   value={
                     staffID &&
                     data?.find((item) => item.staffId === staffID)?.staffName
@@ -377,7 +377,7 @@ const ModalDeliveryTask: React.FC<ModalOrder> = ({
           </Grid>
         </Grid>
         <Typography variant="h5">
-          Tên nhân viên:{" "}
+          Tên nhân viên:
           {staffID && data?.find((item) => item.staffId === staffID)?.staffName}
         </Typography>
         <CalendarComponent tasks={tasks} chooseDate={daySelect} />
@@ -392,5 +392,14 @@ const ModalDeliveryTask: React.FC<ModalOrder> = ({
     </Modal>
   );
 };
+
+interface CustomLabelProps {
+  label: string;
+}
+const CustomLabel = ({ label }: CustomLabelProps) => (
+  <Typography component="span">
+    {label} <span style={{ color: "red" }}>*</span>
+  </Typography>
+);
 
 export default ModalDeliveryTask;
