@@ -233,7 +233,7 @@ const ModalDeliveryTaskPeriodic: React.FC<ModalOrder> = ({
                   </Grid>
                 </Grid>
                 <TextField
-                  label="Tên nhân viên"
+                  label={<CustomLabel label="Tên nhân viên" />}
                   value={
                     staffID &&
                     data?.find((item) => item.staffId === staffID)?.staffName
@@ -298,5 +298,14 @@ const ModalDeliveryTaskPeriodic: React.FC<ModalOrder> = ({
     </Modal>
   );
 };
+
+interface CustomLabelProps {
+  label: string;
+}
+const CustomLabel = ({ label }: CustomLabelProps) => (
+  <Typography component="span">
+    {label} <span style={{ color: "red" }}>*</span>
+  </Typography>
+);
 
 export default ModalDeliveryTaskPeriodic;
