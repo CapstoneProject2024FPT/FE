@@ -14,6 +14,7 @@ import useDebounce from "../../../../../hooks/useDebounce";
 import { ApiRank } from "../../../../../api/services/apiRank";
 import { getRank } from "../../../../../models/rank";
 import RankUpgradePopup from "./Modal/UpgradeRank";
+import { useAuthContext } from "../../../../../context/AuthContext";
 
 type ColumnsType<T> = TableProps<T>["columns"];
 const { Search } = Input;
@@ -28,6 +29,7 @@ const CustomerData: React.FC = () => {
     total: 0,
   });
 
+  const { role } = useAuthContext();
   const navigate = useNavigate();
   const [query, setQuery] = useState<string>("");
   const [selectedData, setSelectedData] = useState<userModel | null>(null);
@@ -280,19 +282,20 @@ const CustomerData: React.FC = () => {
       align: "center",
     },
     {
-      title: (
-        <div
-          style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}
-        >
-          Action
-        </div>
-      ),
+      title: "",
       key: "operation",
       render: (record) => (
         <Space size="middle">
           <Dropdown
             menu={{
-              items,
+              items: items.filter((item) => {
+                if (item && item.key) {
+                  if (role !== RoleType.MANAGER && role !== RoleType.ADMIN) {
+                    return !["2"].includes(item.key as string);
+                  }
+                }
+                return true;
+              }),
               onClick: ({ key }) => {
                 switch (key) {
                   case "1":

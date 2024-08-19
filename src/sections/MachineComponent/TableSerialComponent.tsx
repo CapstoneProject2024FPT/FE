@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import type { MenuProps } from "antd";
 import type { TableProps } from "antd";
-import { DownOutlined } from "@ant-design/icons";
+import MoreVertIcon from "@mui/icons-material/MoreVert";
+
 import {
   Table,
   Input,
@@ -23,6 +24,7 @@ import ModalAddSerialComponent from "./PopupSerialComponent/ModalAddSerialNumber
 import ModalSerialNumberComponentDelete from "./PopupSerialComponent/ModalDeleteSerialNumberComponent";
 import { GetMachineComponents } from "../../models/machineComponent";
 import { MachineryComponentApi } from "../../api/services/apiMachineComponent";
+import config from "../../configs";
 
 type ColumnsType<T> = TableProps<T>["columns"];
 const { Search } = Input;
@@ -122,7 +124,7 @@ const TableSerialComponent: React.FC<TableSerial> = ({ handleSetName }) => {
         setSelectedData(null);
       }
     } catch (error) {
-      toast.error("lỗi");
+      toast.error(config.AdminMessageNotice.ErrorGet);
     }
   };
 
@@ -239,7 +241,7 @@ const TableSerialComponent: React.FC<TableSerial> = ({ handleSetName }) => {
       width: "20%",
     },
     {
-      title: "Hành Động",
+      title: "",
       key: "operation",
       render: (record) => (
         <Space size="middle">
@@ -258,7 +260,7 @@ const TableSerialComponent: React.FC<TableSerial> = ({ handleSetName }) => {
             }}
           >
             <a>
-              <DownOutlined />
+              <MoreVertIcon />
             </a>
           </Dropdown>
         </Space>

@@ -33,7 +33,7 @@ export const TabValue: TabValueProps[] = [
     roles: [RoleType.MANAGER, RoleType.ADMIN],
   },
   {
-    label: "Quản Lí",
+    label: "Quản lý",
     key: "4",
     children: <ManagerData />,
     roles: [RoleType.ADMIN],

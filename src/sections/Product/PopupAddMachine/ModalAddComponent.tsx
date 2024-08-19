@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useEffect, useState } from "react";
 import type { TableProps } from "antd";
-import { Table, Input, Button, Checkbox, Modal } from "antd";
+import { Table, Input, Button, Checkbox, Modal, DatePicker } from "antd";
 import { formatDateFunc } from "../../../utils/fn";
 import { PlusOutlined } from "@ant-design/icons";
 import { MachineryComponentApi } from "../../../api/services/apiMachineComponent";
@@ -11,6 +11,7 @@ import useDebounce from "../../../hooks/useDebounce";
 import { Box } from "@mui/material";
 import ModalSubmitComponent from "./ModalSubmitComponent";
 import ModalCreateComponent from "./ModalCreateComponent";
+import moment from "moment";
 
 type ColumnsType<T> = TableProps<T>["columns"];
 const { Search } = Input;
@@ -44,6 +45,7 @@ const ModalAddComponentOfMachineTable: React.FC<AddComponentOfMachine> = ({
   const [openAdd, setOpenAdd] = useState<boolean>(false);
   const [openCreate, setOpenCreate] = useState<boolean>(false);
   const [pendingIdCheck, setPendingIdCheck] = useState<string | null>(null);
+  const [selectedDate, setSelectedDate] = useState<string | null>(null);
 
   //api
   const { apiGetListComponent, loading } = MachineryComponentApi();
@@ -85,6 +87,14 @@ const ModalAddComponentOfMachineTable: React.FC<AddComponentOfMachine> = ({
       setPendingIdCheck(null);
     }
   }, [components, pendingIdCheck]);
+
+
+  const handleDateChange = (_date: any, dateString: string | string[]) => {
+    setSelectedDate(Array.isArray(dateString) ? dateString[0] : dateString);
+  };
+
+  const dateFormatList = ["DD/MM/YYYY", "DD/MM/YY", "DD-MM-YYYY", "DD-MM-YY"];
+
 
   const checkId = (id: string) => {
     const componentsCheck = components.find((component) => component.id === id);
@@ -134,9 +144,12 @@ const ModalAddComponentOfMachineTable: React.FC<AddComponentOfMachine> = ({
     setQuery(e.target.value);
   };
 
-  const filteredRows = components?.filter((item) =>
-    item.name.toLowerCase().includes(debounceQuery.toLowerCase())
-  );
+  const filteredRows = components
+    ?.filter((item) => item.name.toLowerCase().includes(debounceQuery.toLowerCase()))
+    ?.filter((item) => selectedDate
+      ? moment(item.createDate).format("DD/MM/YYYY") === selectedDate
+      : true
+    )
 
   const columns: ColumnsType<GetMachineComponents> = [
     {
@@ -151,17 +164,53 @@ const ModalAddComponentOfMachineTable: React.FC<AddComponentOfMachine> = ({
       ),
     },
     {
-      title: "Tên bộ phận",
+      title: (
+        <div
+          style={{
+            textAlign: "center",
+            fontSize: "16px",
+            fontWeight: "bold",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          Tên bộ phận
+        </div>
+      ),
       dataIndex: "name",
       sorter: (a, b) => a.name.length - b.name.length,
       width: "40%",
     },
     {
-      title: "Ngày tạo",
+      title: (
+        <div
+          style={{
+            textAlign: "center",
+            fontSize: "16px",
+            fontWeight: "bold",
+            display: "flex",
+            flexDirection: "row",
+            flexWrap: "wrap",
+            alignItems: "center",
+            justifyContent: "center",
+            gap: "5px"
+          }}
+        >
+          Ngày tạo
+          <DatePicker
+            onChange={handleDateChange}
+            style={{ marginLeft: 4, width: "35%", cursor: "pointer" }}
+            format={dateFormatList}
+            placeholder="Chọn ngày"
+          />
+        </div>
+      ),
       dataIndex: "createDate",
       render: (createDate) => {
         return formatDateFunc.formatDate(createDate);
       },
+      align: "center"
     },
   ];
 

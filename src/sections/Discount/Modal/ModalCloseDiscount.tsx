@@ -54,7 +54,9 @@ const ModalCloseDiscount: React.FC<ModalDiscount> = ({
   };
   return (
     <Modal
-      title="Bỏ giảm giá"
+      title={
+        DiscountData?.status === "Active" ? "Đóng giảm giá" : "Mở giảm giá"
+      }
       open={openDeletePopup}
       onOk={handleCLoseDelete}
       onCancel={handleCLoseDelete}

@@ -10,6 +10,7 @@ import { Autocomplete, Card, Stack, TextField } from "@mui/material";
 import { GetCategoryProps } from "../../../../models/category";
 import { toast } from "react-toastify";
 import { CategoryComponentApi } from "../../../../api/services/apiCategoriesComponent";
+import config from "../../../../configs";
 
 interface ModalCategory {
   open: boolean;
@@ -60,7 +61,7 @@ const ModalCategoryPopupAddComponent: React.FC<ModalCategory> = ({
       const data = await getCategoryComponent();
       setCategories(data);
     } catch (error) {
-      toast.error("lỗi");
+      toast.error(config.AdminMessageNotice.ErrorGet);
     }
   };
 
@@ -90,6 +91,7 @@ const ModalCategoryPopupAddComponent: React.FC<ModalCategory> = ({
     } catch (error) {
       handleClose();
       console.error(error);
+      toast.error(config.AdminMessageNotice.AddCategoryFailed);
     }
   };
   return (

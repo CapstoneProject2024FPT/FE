@@ -5,6 +5,7 @@ import { brandTable } from "../../../models/brand";
 import { Button, Modal, Typography } from "antd";
 import { toast } from "react-toastify";
 import { BrandApi } from "../../../api/services/apiBrand";
+import config from "../../../configs";
 //api
 
 interface ModalBrand {
@@ -41,7 +42,7 @@ const ModalBrandPopupDelete: React.FC<ModalBrand> = ({
         }
       }
     } catch (error) {
-      toast.error("Lỗi xoá");
+      toast.error(config.AdminMessageNotice.ErrorDelete);
       console.error(error);
     }
   };

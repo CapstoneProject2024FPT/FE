@@ -15,6 +15,6 @@ export const RoleData = [
   },
   {
     id: RoleType.MANAGER,
-    name: "Quản lí",
+    name: "Quản lý",
   },
 ];

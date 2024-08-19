@@ -116,7 +116,7 @@ const StaffTechnical: React.FC = () => {
 
   const onSuccess = () => {
     handleCLose();
-    toast.success(config.AdminMessageNotice.AddEmployeeSuccess);
+    toast.success(config.AdminMessageNotice.BanOrUnbanSuccess);
     fetchAccountUser();
   };
 
@@ -210,13 +210,7 @@ const StaffTechnical: React.FC = () => {
       align: "center",
     },
     {
-      title: (
-        <div
-          style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}
-        >
-          Action
-        </div>
-      ),
+      title: "",
       width: "20%",
       key: "operation",
       render: (record) => (

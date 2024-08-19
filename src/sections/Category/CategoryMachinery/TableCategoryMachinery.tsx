@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import type { MenuProps } from "antd";
 import type { TableProps } from "antd";
-import { DownOutlined, PlusOutlined } from "@ant-design/icons";
+import { PlusOutlined } from "@ant-design/icons";
 import { Table, Input, Space, Dropdown, Button } from "antd";
 import { GetCategoryProps } from "../../../models/category";
 import { CategoryApi } from "../../../api/services/apiCategories";
@@ -9,6 +9,7 @@ import ModalCategoryPopup from "./PopupCategory/popupDetailCategory";
 import ModalCategoryPopupAdd from "./PopupCategory/popupAddCategory";
 import { toast } from "react-toastify";
 import config from "../../../configs";
+import MoreVertIcon from "@mui/icons-material/MoreVert";
 
 type ColumnsType<T> = TableProps<T>["columns"];
 const { Search } = Input;
@@ -46,7 +47,7 @@ const TableCategoryMachinery: React.FC = () => {
       const data = await getCategory();
       setCategories(data);
     } catch (error) {
-      toast.error("lỗi");
+      toast.error(config.AdminMessageNotice.ErrorGet);
     }
   };
 
@@ -142,13 +143,7 @@ const TableCategoryMachinery: React.FC = () => {
       width: "40%",
     },
     {
-      title: (
-        <div
-          style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}
-        >
-          Hành Động
-        </div>
-      ),
+      title: "",
       key: "operation",
       render: (record) => (
         <Space size="middle">
@@ -167,7 +162,7 @@ const TableCategoryMachinery: React.FC = () => {
             }}
           >
             <a>
-              <DownOutlined />
+              <MoreVertIcon />
             </a>
           </Dropdown>
         </Space>

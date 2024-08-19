@@ -12,7 +12,6 @@ export const ApiNewsCategories = () => {
     try {
       setLoading(true);
       const response = await axiosPublic.get(NEWS_CATEGORIES);
-
       setLoading(false);
       return response.data;
     } catch (error: any) {

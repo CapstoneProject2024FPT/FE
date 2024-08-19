@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react";
 import type { MenuProps, TablePaginationConfig } from "antd";
 import type { TableProps } from "antd";
-import { DownOutlined } from "@ant-design/icons";
+import MoreVertIcon from "@mui/icons-material/MoreVert";
 import { Table, Input, Space, Dropdown, Button, DatePicker } from "antd";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
@@ -92,7 +92,7 @@ const TableComponent: React.FC = () => {
         toast.error(response.Error);
       }
     } catch (error) {
-      toast.error("lỗi");
+      toast.error(config.AdminMessageNotice.ErrorGet);
     }
   };
 
@@ -180,7 +180,7 @@ const TableComponent: React.FC = () => {
       ),
       dataIndex: "name",
       sorter: (a, b) => a.name.length - b.name.length,
-      width: "20%",
+      width: "30%",
     },
     {
       title: (
@@ -194,6 +194,27 @@ const TableComponent: React.FC = () => {
       render: (brand) => {
         return brand.name;
       },
+      align: "center",
+      width: "20%",
+    },
+    {
+      title: (
+        <div
+          style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}
+        >
+          Số lượng
+        </div>
+      ),
+      sorter: (a, b) => a.quantity - b.quantity,
+      dataIndex: "quantity",
+      render: (quantity, record) => (
+        <div
+          onClick={() => handleQuantityClick(record)}
+          style={{ cursor: "pointer" }}
+        >
+          {quantity ? quantity : 0}
+        </div>
+      ),
       align: "center",
     },
     {
@@ -226,6 +247,7 @@ const TableComponent: React.FC = () => {
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
+            gap: "5px",
           }}
         >
           Ngày tạo
@@ -240,15 +262,10 @@ const TableComponent: React.FC = () => {
       dataIndex: "createDate",
       render: (createDate) => formatDateFunc.formatDate(createDate),
       align: "center",
+      width: "30%",
     },
     {
-      title: (
-        <div
-          style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}
-        >
-          Hành Động
-        </div>
-      ),
+      title: "",
       key: "operation",
       render: (record) => (
         <Space size="middle">
@@ -270,12 +287,13 @@ const TableComponent: React.FC = () => {
             }}
           >
             <a>
-              <DownOutlined />
+              <MoreVertIcon />
             </a>
           </Dropdown>
         </Space>
       ),
       align: "center",
+      width: "20%",
     },
   ];
 
@@ -293,7 +311,7 @@ const TableComponent: React.FC = () => {
             navigate(config.adminRoutes.createMachineComponent);
           }}
         >
-          Thêm máy chi tiết máy
+          Thêm chi tiết máy
         </Button>
       </div>
 

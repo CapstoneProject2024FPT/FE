@@ -101,7 +101,6 @@ const AccountSection = () => {
         sx={{
           padding: "10px",
           overflow: "visible",
-
           mt: 1.5,
           "& .MuiAvatar-root": {
             width: 32,

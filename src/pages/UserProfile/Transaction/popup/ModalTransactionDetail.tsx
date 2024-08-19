@@ -105,13 +105,23 @@ export default function ModalTransactionDetail({
                     readOnly: true,
                   }}
                 />
-                <TextField
-                  value={transactionData?.payType}
-                  label="Loại thanh toán"
-                  InputProps={{
-                    readOnly: true,
-                  }}
-                />
+
+                {transactionData?.payType?.split("_").map((part, index) => (
+                  <TextField
+                    key={index}
+                    value={
+                      part === "Order"
+                        ? "Mua hàng"
+                        : part === "Warranty"
+                        ? "Bảo hành"
+                        : part.toUpperCase()
+                    }
+                    label="Loại thanh toán"
+                    InputProps={{
+                      readOnly: true,
+                    }}
+                  />
+                ))}
                 <Box>
                   <Box
                     sx={{

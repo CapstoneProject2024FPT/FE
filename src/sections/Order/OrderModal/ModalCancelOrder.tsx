@@ -72,7 +72,7 @@ const ModalCancelOrder: React.FC<ModalOrder> = ({
       }
     } catch (error) {
       handleCloseCancelPopup();
-      toast.error("Lỗi xoá");
+      toast.error(config.AdminMessageNotice.ErrorDelete);
       console.error(error);
     }
   };

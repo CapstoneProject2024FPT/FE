@@ -13,7 +13,7 @@ import { useForm } from "react-hook-form";
 import * as Yup from "yup";
 
 import { LoadingButton } from "@mui/lab";
-import { Card, Grid, InputAdornment, Stack } from "@mui/material";
+import { Card, Grid, InputAdornment, Stack, TextField } from "@mui/material";
 import { toast } from "react-toastify";
 import { useParams } from "react-router-dom";
 import { brandTable } from "../../../models/brand";
@@ -25,6 +25,8 @@ import {
   UpdateProductComponent,
 } from "../../../models/machineComponent";
 import { MachineryComponentApi } from "../../../api/services/apiMachineComponent";
+import { formatNumberWithCommas } from "../../../utils/fn";
+import config from "../../../configs";
 
 interface UpdateProductForm {
   name: string;
@@ -128,8 +130,11 @@ const ModalComponentDetail: React.FC<ModalProduct> = ({
   const onSubmit = async (data: UpdateProductForm) => {
     try {
       if (productData) {
+        if (data.sellingPrice < productData.stockPrice) {
+          toast.error(config.AdminMessageNotice.SellingPriceMoreThanStockPrice);
+          return;
+        }
         const params: UpdateProductComponent = {
-          //use spread operator to make the copy object
           ...data,
           categoryId: productData?.category?.id,
           status: productData?.status,
@@ -139,14 +144,13 @@ const ModalComponentDetail: React.FC<ModalProduct> = ({
           const response = await apiUpdateMachineryComponent(id, params);
 
           if (response && response.status === 200) {
+            reset();
             onUpdateSuccess(response.data);
           } else {
             toast.error(response.Error);
           }
         }
       }
-
-      reset();
     } catch (error) {
       console.error(error);
     }
@@ -204,6 +208,19 @@ const ModalComponentDetail: React.FC<ModalProduct> = ({
               </Grid>
               <Grid item xs={6}>
                 <Stack direction="column" display="flex" spacing={2}>
+                  <TextField
+                    value={formatNumberWithCommas(productData?.stockPrice || 0)}
+                    label="Giá nhập"
+                    type="text"
+                    autoFocus
+                    InputProps={{
+                      startAdornment: (
+                        <InputAdornment position="start">VNĐ</InputAdornment>
+                      ),
+                      inputProps: { min: 0 },
+                    }}
+                    disabled
+                  />
                   <RHFTextFieldNumber
                     name="sellingPrice"
                     type="number"

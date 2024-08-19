@@ -19,7 +19,6 @@ export const ApiDiscount = () => {
       const response = await axiosPublic.get(DISCOUNT);
 
       return response;
-
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       if (axios.isAxiosError(error) && error.response) {
@@ -38,7 +37,6 @@ export const ApiDiscount = () => {
       const response = await axiosPublic.post(DISCOUNT, params);
 
       return response;
-
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       if (axios.isAxiosError(error) && error.response) {
@@ -57,7 +55,6 @@ export const ApiDiscount = () => {
       const response = await axiosPublic.delete(DISCOUNT_ID.replace(":id", id));
 
       return response;
-
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       if (axios.isAxiosError(error) && error.response) {

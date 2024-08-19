@@ -12,9 +12,7 @@ export const ApiRank = () => {
     setLoading(true);
     try {
       const response = await axiosPublic.get(RANK);
-
       return response;
-
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       if (axios.isAxiosError(error) && error.response) {
@@ -34,9 +32,7 @@ export const ApiRank = () => {
         RANK_ID.replace(":id", id),
         params
       );
-
       return response;
-
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       if (axios.isAxiosError(error) && error.response) {
@@ -53,9 +49,7 @@ export const ApiRank = () => {
     setLoading(true);
     try {
       const response = await axiosPublic.post(RANK, params);
-
       return response;
-
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       if (axios.isAxiosError(error) && error.response) {
@@ -72,9 +66,7 @@ export const ApiRank = () => {
     setLoading(true);
     try {
       const response = await axiosPublic.post(RANK_ID.replace(":id", id));
-
       return response;
-
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       if (axios.isAxiosError(error) && error.response) {
@@ -86,6 +78,11 @@ export const ApiRank = () => {
       setLoading(false);
     }
   };
-
-  return { apiGetRank, loading, apiUpdateRank, apiAddRank, apiDeleteRank };
+  return { 
+    apiGetRank, 
+    loading, 
+    apiUpdateRank, 
+    apiAddRank, 
+    apiDeleteRank 
+  };
 };

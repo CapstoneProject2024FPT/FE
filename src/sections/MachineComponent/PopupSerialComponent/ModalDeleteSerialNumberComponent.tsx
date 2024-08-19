@@ -7,6 +7,7 @@ import { toast } from "react-toastify";
 //api
 import { ApiSerial } from "../../../api/services/apiSerialNumber";
 import { TypeProduct } from "../../../models/products";
+import config from "../../../configs";
 
 interface ModalSerial {
   ProductData: serialProps | null;
@@ -49,7 +50,7 @@ const ModalSerialNumberComponentDelete: React.FC<ModalSerial> = ({
         }
       }
     } catch (error) {
-      toast.error("Lỗi xoá");
+      toast.error(config.AdminMessageNotice.ErrorDelete);
       console.error(error);
     }
   };

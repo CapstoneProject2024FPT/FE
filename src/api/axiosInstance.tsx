@@ -34,9 +34,7 @@ axiosPrivate.interceptors.request.use(async (req) => {
   req.headers.Authorization = `Bearer ${accessToken}`;
 
   const user = jwtDecode(accessToken);
-
   const date = new Date();
-
   // Check if the token is expired
   if (user.exp) {
     const isExpired = user?.exp < date.getTime() / 1000;
@@ -46,16 +44,12 @@ axiosPrivate.interceptors.request.use(async (req) => {
       // TODO: Recheck
       expires: user?.exp,
     };
-
     if (!isExpired) {
       return req;
     } else {
       const response = await axiosPublic.post(`/auths/refresh`, params);
-
       localStorage.setItem("loginInfo", JSON.stringify(response.data));
-
       req.headers.Authorization = `Bearer ${response.data.accessToken}`;
-
       // Return the updated request
       return req;
     }

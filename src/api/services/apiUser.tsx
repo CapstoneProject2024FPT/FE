@@ -14,9 +14,7 @@ export const CustomerApi = () => {
       const response = await axiosPublic.get(
         CUSTOMER_PROFILE.replace(":id", id)
       );
-
       return response;
-
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       if (axios.isAxiosError(error) && error.response) {
@@ -31,15 +29,12 @@ export const CustomerApi = () => {
 
   const updateProfile = async (id: string, param: userPropUpdate) => {
     setLoading(true);
-
     try {
       const response = await axiosPublic.put(
         CUSTOMER_PROFILE.replace(":id", id),
         param
       );
-
       return response;
-
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       if (axios.isAxiosError(error) && error.response) {
@@ -54,15 +49,12 @@ export const CustomerApi = () => {
 
   const updateProfileAccount = async (id: string, param: staffUpdateProps) => {
     setLoading(true);
-
     try {
       const response = await axiosPublic.put(
         CUSTOMER_PROFILE.replace(":id", id),
         param
       );
-
       return response;
-
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       if (axios.isAxiosError(error) && error.response) {
@@ -81,15 +73,12 @@ export const CustomerApi = () => {
   }
   const ChangePassword = async (id: string, param: passwordChange) => {
     setLoading(true);
-
     try {
       const response = await axiosPublic.post(
         CHANGE_PASSWORD.replace(":id", id),
         param
       );
-
       return response;
-
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       if (axios.isAxiosError(error) && error.response) {

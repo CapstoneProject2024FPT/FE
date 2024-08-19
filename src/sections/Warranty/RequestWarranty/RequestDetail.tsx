@@ -152,7 +152,7 @@ const RequestDetail = () => {
                       name="name"
                       label="Ngày đi bảo hành"
                       value={
-                        requestWarranty?.warrantyDetail
+                        requestWarranty?.warrantyDetail[0]?.startDate
                           ? formatDateFunc.formatDate(
                               requestWarranty?.warrantyDetail[0].startDate
                             )
@@ -160,6 +160,9 @@ const RequestDetail = () => {
                       }
                       InputProps={{
                         readOnly: true,
+                      }}
+                      InputLabelProps={{
+                        shrink: true,
                       }}
                     />
                     <div>
@@ -237,6 +240,9 @@ const RequestDetail = () => {
                             ? "Nhân viên kỹ thuật"
                             : ""
                         }
+                        InputProps={{
+                          readOnly: true,
+                        }}
                         InputLabelProps={{ shrink: true }}
                       />
                     </Stack>

@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react";
 import type { MenuProps } from "antd";
 import type { TableProps } from "antd";
-import { DownOutlined } from "@ant-design/icons";
+import MoreVertIcon from "@mui/icons-material/MoreVert";
 import { Table, Space, Dropdown, DatePicker } from "antd";
 import { toast } from "react-toastify";
 import { ApiWarranty } from "../../../api/services/apiWarranty";
@@ -24,7 +24,9 @@ const TableRequestWarranty: React.FC = () => {
   const navigate = useNavigate();
   const { apiGetWarantyManager, loading } = ApiWarranty();
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
-
+  const [selectedCompletedDate, setSelectedCompletedDate] = useState<
+    string | null
+  >(null);
   //modal popup
   const handleActionDetail = (record: WarrantyProps) => {
     navigate(
@@ -45,7 +47,7 @@ const TableRequestWarranty: React.FC = () => {
       });
       setRequestWarranty(warrantyShow);
     } catch (error) {
-      toast.error("lỗi");
+      toast.error(config.AdminMessageNotice.ErrorGet);
     }
   };
 
@@ -72,12 +74,29 @@ const TableRequestWarranty: React.FC = () => {
   const handleDateChange = (_date: any, dateString: string | string[]) => {
     setSelectedDate(Array.isArray(dateString) ? dateString[0] : dateString);
   };
+
+  const handleCompletedDateChange = (
+    _date: any,
+    dateString: string | string[]
+  ) => {
+    setSelectedCompletedDate(
+      Array.isArray(dateString) ? dateString[0] : dateString
+    );
+  };
+
   const dateFormatList = ["DD/MM/YYYY", "DD/MM/YY", "DD-MM-YYYY", "DD-MM-YY"];
-  const filteredRows = requestWarranty?.filter((item) =>
-    selectedDate
-      ? moment(item.createDate).format("DD/MM/YYYY") === selectedDate
-      : true
-  );
+  const filteredRows = requestWarranty
+    ?.filter((item) =>
+      selectedDate
+        ? moment(item.createDate).format("DD/MM/YYYY") === selectedDate
+        : true
+    )
+    ?.filter((item) =>
+      selectedCompletedDate
+        ? moment(item.completionDate).format("DD/MM/YYYY") ===
+          selectedCompletedDate
+        : true
+    );
 
   const getStatusStyles = (status: string) => {
     switch (status) {
@@ -113,6 +132,28 @@ const TableRequestWarranty: React.FC = () => {
       ),
       dataIndex: "key",
       align: "center",
+      width: "10%",
+    },
+    {
+      title: (
+        <div
+          style={{
+            textAlign: "center",
+            fontSize: "16px",
+            fontWeight: "bold",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          Khách hàng
+        </div>
+      ),
+      dataIndex: "customer",
+      render: (customer) =>
+        customer?.fullName ? customer?.fullName : customer?.role,
+      align: "center",
+      width: "20%",
     },
     {
       title: (
@@ -123,8 +164,9 @@ const TableRequestWarranty: React.FC = () => {
         </div>
       ),
       dataIndex: "type",
-      render: (type) => (type === "Periodic" ? "Định kì" : "Yêu cầu"),
+      render: (type) => (type === "Periodic" ? "Định kỳ" : "Yêu cầu"),
       align: "center",
+      width: "15%",
     },
     {
       title: (
@@ -146,14 +188,17 @@ const TableRequestWarranty: React.FC = () => {
             fontSize: "16px",
             fontWeight: "bold",
             display: "flex",
+            flexDirection: "row",
+            flexWrap: "wrap",
             alignItems: "center",
             justifyContent: "center",
+            gap: "5px",
           }}
         >
           Ngày tạo
           <DatePicker
             onChange={handleDateChange}
-            style={{ marginLeft: 8, width: "50%" }}
+            style={{ marginLeft: 4, width: "100%", cursor: "pointer" }}
             format={dateFormatList}
             placeholder="Chọn ngày"
           />
@@ -162,17 +207,48 @@ const TableRequestWarranty: React.FC = () => {
       dataIndex: "createDate",
       render: (createDate) => formatDateFunc.formatDateTime(createDate),
       align: "center",
+      width: "20%",
     },
     {
-      title: "Ngày hoàn thành",
+      title: (
+        <div
+          style={{
+            textAlign: "center",
+            fontSize: "16px",
+            fontWeight: "bold",
+            display: "flex",
+            flexDirection: "row",
+            flexWrap: "wrap",
+            alignItems: "center",
+            justifyContent: "center",
+            gap: "5px",
+          }}
+        >
+          Hoàn thành
+          <DatePicker
+            onChange={handleCompletedDateChange}
+            style={{ marginLeft: 4, width: "100%", cursor: "pointer" }}
+            format={dateFormatList}
+            placeholder="Chọn ngày"
+          />
+        </div>
+      ),
       dataIndex: "completionDate",
       render: (completionDate) =>
         completionDate
           ? formatDateFunc.formatDateTime(completionDate)
           : "-------",
+      align: "center",
+      width: "20%",
     },
     {
-      title: "Trạng thái",
+      title: (
+        <div
+          style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}
+        >
+          Trạng thái
+        </div>
+      ),
       dataIndex: "warrantyDetai",
       render: (warrantyDetai) => {
         let status = "Unknown Status"; // Default status
@@ -206,15 +282,11 @@ const TableRequestWarranty: React.FC = () => {
           </div>
         );
       },
+      align: "center",
+      width: "20%",
     },
     {
-      title: (
-        <div
-          style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}
-        >
-          Hành Động
-        </div>
-      ),
+      title: "",
       key: "operation",
       render: (record) => (
         <Space size="middle">
@@ -235,7 +307,7 @@ const TableRequestWarranty: React.FC = () => {
             }}
           >
             <a>
-              <DownOutlined />
+              <MoreVertIcon />
             </a>
           </Dropdown>
         </Space>
