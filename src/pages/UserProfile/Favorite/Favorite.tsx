@@ -7,7 +7,6 @@ import { ApiFavourite } from "../../../api/services/apiFavourite";
 import Image from "../../../components/Image";
 import config from "../../../configs";
 import { Link } from "react-router-dom";
-import { formatMoney } from "../../../utils/fn";
 import { ThumbUpRounded } from "@mui/icons-material";
 import CustomPagination from "../../../components/pagination/CustomPagination";
 import RemoveFavorite from "./Modal/RemoveFavorite";
@@ -150,13 +149,6 @@ const Favorite: React.FC = () => {
                       <ThumbUpRounded style={buttonStyle} />
                     </IconButton>
                   </Box>
-                  <Stack direction="row" alignItems="center">
-                    <Typography variant="h6">
-                      <Box component="span" sx={{ color: "text.secondary" }}>
-                        {formatMoney(machine.sellingPrice)}
-                      </Box>
-                    </Typography>
-                  </Stack>
                 </Stack>
               </Stack>
             </Card>
