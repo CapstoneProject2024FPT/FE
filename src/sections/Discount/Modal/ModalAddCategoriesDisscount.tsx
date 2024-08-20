@@ -119,7 +119,7 @@ const ModalAddCategories: React.FC<AddCategories> = ({
         toast.success(config.AdminMessageNotice.DiscountCategoriesSuccess);
         handleCloseSubmit();
       } else {
-        toast.error(config.AdminMessageNotice.DiscountCategoriesFailed);
+        toast.error(response.Error);
       }
     } catch (error) {
       toast.error(config.AdminMessageNotice.DiscountCategoriesFailed);
