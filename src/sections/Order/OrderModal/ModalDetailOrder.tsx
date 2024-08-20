@@ -132,7 +132,7 @@ const ModalDetailOrder: React.FC<ModalBrand> = ({
                           <TableCell>{product.productName}</TableCell>
                           <TableCell>{product.quantity}</TableCell>
                           <TableCell>
-                            {formatMoney(product.totalAmount)}
+                            {formatMoney(product.sellingPrice)}
                           </TableCell>
                         </TableRow>
                       ))}

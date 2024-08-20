@@ -56,6 +56,8 @@ export interface ProductAdmin {
   status: string;
   component: ComponentMachine[];
   monthWarrantyNumber: number;
+  stockPrice: number;
+  finalAmount: number;
 }
 
 export interface ProductAdminCategory {

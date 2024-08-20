@@ -201,7 +201,7 @@ const Bill: React.FC = () => {
                               <TableCell>
                                 {formatMoney(
                                   detail.warrantyDetails.inventory.machinery
-                                    .sellingPrice
+                                    .finalAmount
                                 )}
                               </TableCell>
 
