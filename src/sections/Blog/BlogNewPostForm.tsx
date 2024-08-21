@@ -26,6 +26,7 @@ import { NewsCategoryProps } from "../../models/newCategories";
 import { ApiNewsCategories } from "../../api/services/apiNewsCategories";
 import { ApiNews } from "../../api/services/apiNews";
 import config from "../../configs";
+import { useNavigate } from "react-router-dom";
 //
 
 // ----------------------------------------------------------------------
@@ -38,6 +39,7 @@ export default function BlogNewPostForm() {
   const { getNewsCategoriesAvailable } = ApiNewsCategories();
   const [open, setOpen] = useState(false);
   const { apiPostNews } = ApiNews();
+  const navigate = useNavigate();
 
   const loginInfoString = localStorage.getItem("loginInfo");
   const auth = loginInfoString ? JSON.parse(loginInfoString) : null;
@@ -126,6 +128,7 @@ export default function BlogNewPostForm() {
       const response = await apiPostNews(transformedData);
       if (response.status === 200) {
         toast.success(config.AdminMessageNotice.AddBlogSucces);
+        navigate(config.adminRoutes.blogs);
         handleClosePreview();
         reset();
       } else {

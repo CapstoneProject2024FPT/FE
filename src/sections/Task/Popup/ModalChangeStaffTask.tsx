@@ -15,6 +15,7 @@ import { WarrantyPropsById } from "../../../models/warranty";
 import CustomPagination from "../../../components/pagination/CustomPagination";
 import CalendarComponent from "../../../components/calender/Calender";
 import dayjs from "dayjs";
+import config from "../../../configs";
 
 interface ModalBrand {
   TaskData: GetTaskProps | null;
@@ -72,7 +73,7 @@ export default function ModalChangeStaffTask({
         toast.error(response.Error);
       }
     } catch (error) {
-      toast.error("Error fetching warranty data");
+      toast.error(config.AdminMessageNotice.ErrorGet);
     }
   };
 

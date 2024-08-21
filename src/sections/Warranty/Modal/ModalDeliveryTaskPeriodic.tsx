@@ -28,7 +28,7 @@ import dayjs from "dayjs";
 import CalendarComponent from "../../../components/calender/Calender";
 import { formatDateFunc } from "../../../utils/fn";
 
-interface ModalOrder {
+interface ModalDeliveryTask {
   requestWarranty: WarrantyDetailGetProps | undefined;
   OrderData: WarrantyPropsById | undefined;
   idWarranty: string | undefined;
@@ -42,7 +42,7 @@ interface DeliveryProps {
 }
 
 const { Search } = Input;
-const ModalDeliveryTaskPeriodic: React.FC<ModalOrder> = ({
+const ModalDeliveryTaskPeriodic: React.FC<ModalDeliveryTask> = ({
   OrderData,
   openTaskPopup,
   handleCLose,

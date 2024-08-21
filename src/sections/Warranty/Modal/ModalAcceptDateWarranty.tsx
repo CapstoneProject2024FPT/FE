@@ -6,13 +6,13 @@ import { Modal, Typography } from "antd";
 
 import { Card, Stack } from "@mui/material";
 
-interface ModalOrder {
+interface Modal {
   openPopup: boolean;
   handleClosePopup: () => void;
   onConfirm: () => void;
 }
 
-const ModalAcceptDateWarranty: React.FC<ModalOrder> = ({
+const ModalAcceptDateWarranty: React.FC<Modal> = ({
   openPopup,
   handleClosePopup,
   onConfirm,

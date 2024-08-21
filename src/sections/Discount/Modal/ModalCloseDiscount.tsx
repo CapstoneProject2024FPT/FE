@@ -45,6 +45,8 @@ const ModalCloseDiscount: React.FC<ModalDiscount> = ({
           if (onDeleteSuccess) {
             onDeleteSuccess(config.AdminMessageNotice.CloseDiscount);
           }
+        } else {
+          toast.error(response.Error);
         }
       }
     } catch (error) {

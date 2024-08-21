@@ -68,14 +68,14 @@ const ModalDeliveryTask: React.FC<ModalOrder> = ({
   const [selectedDateExecution, setSelectedDateExecution] = useState<
     string | null
   >();
-  const [daySelect, setDaySelect] = useState<Dayjs | null>();
+  const [daySelect, setDaySelect] = useState<Dayjs | null>(null);
 
   //temporary date
   const [tempDate, setTempDate] = useState<string | null>(null);
   const [selectedDateExecutionTemp, setSelectedDateExecutionTemp] = useState<
     string | null
   >();
-  const [daySelectTemp, setDaySelectTemp] = useState<Dayjs | null>();
+  const [daySelectTemp, setDaySelectTemp] = useState<Dayjs | null>(null);
 
   const fetchAccountUser = async (executionDate = selectedDateExecution) => {
     if (!executionDate) return;
@@ -316,6 +316,16 @@ const ModalDeliveryTask: React.FC<ModalOrder> = ({
                       return (
                         isWeekend || date.isBefore(today.add(1, "day"), "day")
                       );
+                    }}
+                    slotProps={{
+                      textField: {
+                        inputProps: {
+                          readOnly: true,
+                        },
+                        InputProps: {
+                          style: { cursor: "pointer" },
+                        },
+                      },
                     }}
                   />
                 </LocalizationProvider>

@@ -14,9 +14,11 @@ import { RoleType } from "../../../../models/UserData";
 import { CustomMenuItem } from "../../../../models/MenuSidebar";
 
 const AccessType = {
+  MANAGER_SALE: [RoleType.MANAGER, RoleType.SALE],
   ALL_ACCESS: [RoleType.MANAGER, RoleType.ADMIN, RoleType.SALE],
   ADMIN_MANAGER_ACCESS: [RoleType.MANAGER, RoleType.ADMIN],
   ADMIN_ACCESS: [RoleType.ADMIN],
+  MANGER_ACCESS: [RoleType.MANAGER],
 };
 
 const MenuSideBars: CustomMenuItem[] = [
@@ -36,17 +38,17 @@ const MenuSideBars: CustomMenuItem[] = [
     label: "Sản Phẩm",
     key: "products",
     icon: <ShoppingOutlined />,
-    roles: AccessType.ALL_ACCESS,
+    roles: AccessType.MANAGER_SALE,
     children: [
       {
         label: <Link to={config.adminRoutes.product}>Tất cả máy</Link>,
         key: config.adminRoutes.product,
-        roles: AccessType.ALL_ACCESS,
+        roles: AccessType.MANGER_ACCESS,
       },
       {
         label: <Link to={config.adminRoutes.createProduct}>Thêm sản phẩm</Link>,
         key: config.adminRoutes.createProduct,
-        roles: AccessType.ALL_ACCESS,
+        roles: AccessType.MANGER_ACCESS,
       },
       {
         label: (
@@ -55,7 +57,7 @@ const MenuSideBars: CustomMenuItem[] = [
           </Link>
         ),
         key: config.adminRoutes.viewMachineComponent,
-        roles: AccessType.ALL_ACCESS,
+        roles: AccessType.MANGER_ACCESS,
       },
       {
         label: (
@@ -64,17 +66,17 @@ const MenuSideBars: CustomMenuItem[] = [
           </Link>
         ),
         key: config.adminRoutes.createMachineComponent,
-        roles: AccessType.ALL_ACCESS,
+        roles: AccessType.MANGER_ACCESS,
       },
       {
         label: <Link to={config.adminRoutes.category}>Loại máy</Link>,
         key: config.adminRoutes.category,
-        roles: AccessType.ALL_ACCESS,
+        roles: AccessType.MANGER_ACCESS,
       },
       {
         label: <Link to={config.adminRoutes.brand}>Thương hiệu</Link>,
         key: config.adminRoutes.brand,
-        roles: AccessType.ALL_ACCESS,
+        roles: AccessType.MANGER_ACCESS,
       },
       {
         label: <Link to={config.adminRoutes.discount}>Giảm giá</Link>,
@@ -88,7 +90,7 @@ const MenuSideBars: CustomMenuItem[] = [
     label: "Tin tức",
     key: "news",
     icon: <ContainerOutlined />,
-    roles: AccessType.ALL_ACCESS,
+    roles: AccessType.MANAGER_SALE,
     children: [
       {
         label: <Link to={config.adminRoutes.blogs}>Tất cả tin tức</Link>,
@@ -113,7 +115,7 @@ const MenuSideBars: CustomMenuItem[] = [
     label: "Đơn hàng",
     key: "orders",
     icon: <ReceiptLongIcon />,
-    roles: AccessType.ADMIN_MANAGER_ACCESS,
+    roles: AccessType.MANGER_ACCESS,
     children: [
       {
         label: <Link to={config.adminRoutes.order}>Tất cả đơn hàng</Link>,
@@ -126,7 +128,7 @@ const MenuSideBars: CustomMenuItem[] = [
     label: "Bảo hành",
     key: "warranty",
     icon: <EngineeringIcon />,
-    roles: AccessType.ADMIN_MANAGER_ACCESS,
+    roles: AccessType.MANGER_ACCESS,
     children: [
       {
         label: (
@@ -150,13 +152,13 @@ const MenuSideBars: CustomMenuItem[] = [
     label: <Link to={config.adminRoutes.rank}>Hạng mức</Link>,
     key: config.adminRoutes.rank,
     icon: <TransactionOutlined />,
-    roles: AccessType.ADMIN_MANAGER_ACCESS,
+    roles: AccessType.MANGER_ACCESS,
   },
   {
     label: <Link to={config.adminRoutes.task}>Nhiệm vụ</Link>,
     key: config.adminRoutes.task,
     icon: <Iconify icon={"mingcute:task-2-fill"} />,
-    roles: AccessType.ADMIN_MANAGER_ACCESS,
+    roles: AccessType.MANGER_ACCESS,
   },
 ];
 
