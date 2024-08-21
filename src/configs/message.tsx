@@ -78,4 +78,5 @@ export const AdminMessageNotice = {
   DiscountCategoriesSuccess: "Thêm loại máy cho giảm giá thành công",
   DiscountCategoriesFailed:
     "Xảy ra lỗi trong quá trình thêm loại máy cho giảm giá ",
+  GetUserError: "Lỗi lấy thông tin người dùng",
 };

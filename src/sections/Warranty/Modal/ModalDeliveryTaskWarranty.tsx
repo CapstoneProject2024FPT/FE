@@ -34,7 +34,7 @@ import CalendarComponent from "../../../components/calender/Calender";
 import { formatDateFunc } from "../../../utils/fn";
 import ModalAcceptDateWarranty from "./ModalAcceptDateWarranty";
 
-interface ModalOrder {
+interface Modal {
   OrderData: WarrantyPropsById | undefined;
   openTaskPopup: boolean;
   handleCLose: () => void;
@@ -46,7 +46,7 @@ interface DeliveryProps {
 }
 
 const { Search } = Input;
-const ModalDeliveryTaskWarranty: React.FC<ModalOrder> = ({
+const ModalDeliveryTaskWarranty: React.FC<Modal> = ({
   OrderData,
   openTaskPopup,
   handleCLose,
