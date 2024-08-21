@@ -340,6 +340,16 @@ const ModalDeliveryTaskWarranty: React.FC<ModalOrder> = ({
                         isWeekend || date.isBefore(today.add(1, "day"), "day")
                       );
                     }}
+                    slotProps={{
+                      textField: {
+                        inputProps: {
+                          readOnly: true,
+                        },
+                        InputProps: {
+                          style: { cursor: "pointer" },
+                        },
+                      },
+                    }}
                   />
                 </LocalizationProvider>
                 <TextField

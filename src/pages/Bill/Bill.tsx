@@ -200,8 +200,12 @@ const Bill: React.FC = () => {
                               </TableCell>
                               <TableCell>
                                 {formatMoney(
-                                  detail.warrantyDetails.inventory.machinery
-                                    .finalAmount
+                                  orderData?.productList.find(
+                                    (item) =>
+                                      item.productId ===
+                                      detail.warrantyDetails.inventory.machinery
+                                        .id
+                                  )?.totalAmount
                                 )}
                               </TableCell>
 
