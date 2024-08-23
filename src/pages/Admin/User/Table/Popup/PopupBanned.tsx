@@ -35,7 +35,7 @@ const ModaBanned: React.FC<ModalUser> = ({
             }
           } else {
             handleCLose();
-            toast.error(config.AdminMessageNotice.BanFailed);
+            toast.error(response.Error);
           }
         } else {
           const params = {

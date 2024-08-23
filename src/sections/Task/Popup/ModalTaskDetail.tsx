@@ -111,7 +111,9 @@ const ModalDetailTask: React.FC<Modal> = ({ TaskData, open, handleClose }) => {
                 </TableCell>
               </TableRow>
               <TableRow>
-                <TableCell sx={{ width: "30%" }}>Ngày hoàn thành</TableCell>
+                <TableCell sx={{ width: "30%" }}>
+                  Ngày hoàn thành dự kiến
+                </TableCell>
                 <TableCell>
                   {TaskData?.completedDate
                     ? formatDateFunc.formatDate(TaskData?.completedDate)
