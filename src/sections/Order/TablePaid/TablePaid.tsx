@@ -255,7 +255,7 @@ const TablePaid: React.FC = () => {
             justifyContent: "center",
           }}
         >
-          Ngày hoàn thành
+          Ngày hoàn thành dự kiến
           <DatePicker
             onChange={handleCompletedDateChange}
             style={{ marginLeft: 8, width: "50%" }}

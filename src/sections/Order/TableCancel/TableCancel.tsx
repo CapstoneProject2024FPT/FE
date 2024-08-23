@@ -26,9 +26,6 @@ const TableCancel: React.FC = () => {
   const [selectedCreateDate, setSelectedCreateDate] = useState<string | null>(
     null
   );
-  const [selectedCompletedDate, setSelectedCompletedDate] = useState<
-    string | null
-  >(null);
 
   const [open, setOpen] = useState<boolean>(false);
   const [openCancelPopup, setOpenCancelPopup] = useState<boolean>(false);
@@ -85,15 +82,13 @@ const TableCancel: React.FC = () => {
   const fetchOrder = async (
     page: number = 1,
     pageSize: number = defaultPageSize,
-    createDate = selectedCreateDate,
-    CompletedDate = selectedCompletedDate
+    createDate = selectedCreateDate
   ) => {
     try {
       const params = {
         size: pageSize,
         page: page,
         createDate: createDate,
-        CompletedDate: CompletedDate,
         Status: StatusType.CANCELED,
       };
       const response = await apiGetOrder(params);
@@ -155,30 +150,9 @@ const TableCancel: React.FC = () => {
       formattedDate = moment(formattedDate, "DD/MM/YYYY").format("YYYY/MM/DD");
     }
     setSelectedCreateDate(formattedDate);
-    fetchOrder(
-      pagination.current,
-      pagination.pageSize,
-      formattedDate,
-      selectedCompletedDate
-    );
+    fetchOrder(pagination.current, pagination.pageSize, formattedDate);
   };
 
-  const handleCompletedDateChange = (
-    _date: any,
-    dateString: string | string[]
-  ) => {
-    let formattedDate = Array.isArray(dateString) ? dateString[0] : dateString;
-    if (formattedDate) {
-      formattedDate = moment(formattedDate, "DD/MM/YYYY").format("YYYY/MM/DD");
-    }
-    setSelectedCompletedDate(formattedDate);
-    fetchOrder(
-      pagination.current,
-      pagination.pageSize,
-      selectedCreateDate,
-      formattedDate
-    );
-  };
   const dateFormatList = ["DD/MM/YYYY", "DD/MM/YY", "DD-MM-YYYY", "DD-MM-YY"];
 
   const items: MenuProps["items"] = [
@@ -232,32 +206,6 @@ const TableCancel: React.FC = () => {
       ),
       dataIndex: "createDate",
       render: (createDate) => formatDateFunc.formatDate(createDate),
-      align: "center",
-    },
-    {
-      title: (
-        <div
-          style={{
-            textAlign: "center",
-            fontSize: "16px",
-            fontWeight: "bold",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        >
-          Ngày hoàn thành
-          <DatePicker
-            onChange={handleCompletedDateChange}
-            style={{ marginLeft: 8, width: "50%" }}
-            format={dateFormatList}
-            placeholder="Ngày hoàn thành"
-          />
-        </div>
-      ),
-      dataIndex: "completedDate",
-      render: (completedDate) =>
-        completedDate ? formatDateFunc.formatDate(completedDate) : "--------",
       align: "center",
     },
     {

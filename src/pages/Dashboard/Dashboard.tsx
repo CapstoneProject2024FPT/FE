@@ -58,14 +58,6 @@ const renderCustomizedLabel = ({
   );
 };
 
-const COLORS = [
-  "#2980b9",
-  "#27ae60",
-  "#e74c3c",
-  "#f1c40f",
-  "#f0932b",
-  "#704c5e",
-];
 const years = [2025, 2024, 2023];
 const Dashboard: React.FC = () => {
   const { apiGetData } = ApiAdminDashboard();
@@ -90,18 +82,61 @@ const Dashboard: React.FC = () => {
     return data && data.totalOrders && data.totalOrders > 0;
   };
 
+  //data Pie
   const dataPie = [
-    { name: "Đã thanh toán", value: dashboardData?.ordersByStatus.Paid },
-    { name: "Đã hoàn thành", value: dashboardData?.ordersByStatus.Completed },
-    { name: "Chưa thanh toán", value: dashboardData?.ordersByStatus.UnPaid },
-    { name: "Đã hủy đơn hàng", value: dashboardData?.ordersByStatus.Canceled },
-    { name: "Đã vận chuyển", value: dashboardData?.ordersByStatus.Deliver },
+    {
+      name: "Đã thanh toán",
+      value: dashboardData?.ordersByStatus.Paid,
+      status: "Paid",
+    },
+    {
+      name: "Đã hoàn thành",
+      value: dashboardData?.ordersByStatus.Completed,
+      status: "Completed",
+    },
+    {
+      name: "Chưa thanh toán",
+      value: dashboardData?.ordersByStatus.UnPaid,
+      status: "UnPaid",
+    },
+    {
+      name: "Đã hủy đơn hàng",
+      value: dashboardData?.ordersByStatus.Canceled,
+      status: "Canceled",
+    },
+    {
+      name: "Đã vận chuyển",
+      value: dashboardData?.ordersByStatus.Delivery,
+      status: "Delivery",
+    },
     {
       name: "Vận chuyển chuyển lại",
       value: dashboardData?.ordersByStatus.ReDelivery,
+      status: "ReDelivery",
     },
   ].filter(({ value }) => !!value);
 
+  //color
+  const getColorForStatus = (status: string) => {
+    switch (status) {
+      case "UnPaid":
+        return "grey";
+      case "Completed":
+        return "green";
+      case "Paid":
+        return "#2196F3";
+      case "Canceled":
+        return "red";
+      case "Delivery":
+        return "#f39c12";
+      case "ReDelivery":
+        return "#704c5e";
+      default:
+        return "transparent";
+    }
+  };
+
+  //-------------------------------------------------------------------------------
   const totalOrdersArray = dashboardData?.monthlyStatistics.map((item) => ({
     month: ` ${item.month}`,
     totalOrders: item.totalOrders,
@@ -424,10 +459,10 @@ const Dashboard: React.FC = () => {
                   fill="#8884d8"
                   dataKey="value"
                 >
-                  {dataPie.map((_entry, index) => (
+                  {dataPie.map((entry, index) => (
                     <Cell
                       key={`cell-${index}`}
-                      fill={COLORS[index % COLORS.length]}
+                      fill={getColorForStatus(entry.status)}
                     />
                   ))}
                 </Pie>
