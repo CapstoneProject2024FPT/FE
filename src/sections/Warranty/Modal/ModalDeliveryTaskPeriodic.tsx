@@ -28,7 +28,7 @@ import dayjs from "dayjs";
 import CalendarComponent from "../../../components/calender/Calender";
 import { formatDateFunc } from "../../../utils/fn";
 
-interface ModalOrder {
+interface ModalDeliveryTask {
   requestWarranty: WarrantyDetailGetProps | undefined;
   OrderData: WarrantyPropsById | undefined;
   idWarranty: string | undefined;
@@ -42,7 +42,7 @@ interface DeliveryProps {
 }
 
 const { Search } = Input;
-const ModalDeliveryTaskPeriodic: React.FC<ModalOrder> = ({
+const ModalDeliveryTaskPeriodic: React.FC<ModalDeliveryTask> = ({
   OrderData,
   openTaskPopup,
   handleCLose,
@@ -233,7 +233,7 @@ const ModalDeliveryTaskPeriodic: React.FC<ModalOrder> = ({
                   </Grid>
                 </Grid>
                 <TextField
-                  label="Tên nhân viên"
+                  label={<CustomLabel label="Tên nhân viên" />}
                   value={
                     staffID &&
                     data?.find((item) => item.staffId === staffID)?.staffName
@@ -298,5 +298,14 @@ const ModalDeliveryTaskPeriodic: React.FC<ModalOrder> = ({
     </Modal>
   );
 };
+
+interface CustomLabelProps {
+  label: string;
+}
+const CustomLabel = ({ label }: CustomLabelProps) => (
+  <Typography component="span">
+    {label} <span style={{ color: "red" }}>*</span>
+  </Typography>
+);
 
 export default ModalDeliveryTaskPeriodic;

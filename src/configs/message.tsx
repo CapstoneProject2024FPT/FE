@@ -74,4 +74,9 @@ export const AdminMessageNotice = {
   ErrorDelete: "Xảy ra lỗi trong quá trình xoá",
   SellingPriceMoreThanStockPrice: "Giá bán phải hơn giá nhập",
   ForgotExecutionDate: "Chọn ngày đi làm nhiệm vụ",
+  DiscountCategories: "Chọn ít nhất 1 loại máy",
+  DiscountCategoriesSuccess: "Thêm loại máy cho giảm giá thành công",
+  DiscountCategoriesFailed:
+    "Xảy ra lỗi trong quá trình thêm loại máy cho giảm giá ",
+  GetUserError: "Lỗi lấy thông tin người dùng",
 };

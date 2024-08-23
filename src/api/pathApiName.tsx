@@ -121,3 +121,4 @@ export const FAVOURITE_ID = "favorite/:id";
 //diccount
 export const DISCOUNT = "discount";
 export const DISCOUNT_ID = "discount/:id";
+export const DISCOUNT_CATEGORIES_ID = "discount/:id/categories";

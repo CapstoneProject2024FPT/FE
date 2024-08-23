@@ -19,18 +19,15 @@ import { toast } from "react-toastify";
 import { GetTaskProps, StatusTaskType } from "../../../models/task";
 import { ApiWarranty } from "../../../api/services/apiWarranty";
 import { WarrantyPropsById } from "../../../models/warranty";
+import config from "../../../configs";
 
-interface ModalBrand {
+interface Modal {
   TaskData: GetTaskProps | null;
   open: boolean;
   handleClose: () => void;
 }
 
-const ModalDetailTask: React.FC<ModalBrand> = ({
-  TaskData,
-  open,
-  handleClose,
-}) => {
+const ModalDetailTask: React.FC<Modal> = ({ TaskData, open, handleClose }) => {
   const [customer, setCustomer] = useState<userProps>();
   const [warranty, setWarranty] = useState<WarrantyPropsById>();
 
@@ -47,7 +44,7 @@ const ModalDetailTask: React.FC<ModalBrand> = ({
         }
       }
     } catch (error) {
-      toast.error("Lỗi lấy thông tin người dung");
+      toast.error(config.AdminMessageNotice.GetUserError);
     }
   };
 
@@ -114,7 +111,9 @@ const ModalDetailTask: React.FC<ModalBrand> = ({
                 </TableCell>
               </TableRow>
               <TableRow>
-                <TableCell sx={{ width: "30%" }}>Ngày hoàn thành</TableCell>
+                <TableCell sx={{ width: "30%" }}>
+                  Ngày hoàn thành dự kiến
+                </TableCell>
                 <TableCell>
                   {TaskData?.completedDate
                     ? formatDateFunc.formatDate(TaskData?.completedDate)

@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import type { MenuProps, TablePaginationConfig } from "antd";
 import type { TableProps } from "antd";
 import { DownOutlined } from "@ant-design/icons";
@@ -11,9 +11,6 @@ import { useNavigate } from "react-router-dom";
 import config from "../../../../../configs";
 import ModaBanned from "../Popup/PopupBanned";
 import useDebounce from "../../../../../hooks/useDebounce";
-import { ApiRank } from "../../../../../api/services/apiRank";
-import { getRank } from "../../../../../models/rank";
-import RankUpgradePopup from "./Modal/UpgradeRank";
 import { useAuthContext } from "../../../../../context/AuthContext";
 
 type ColumnsType<T> = TableProps<T>["columns"];
@@ -36,11 +33,6 @@ const CustomerData: React.FC = () => {
   const [open, setOpen] = useState<boolean>(false);
   const { loading, apiGetUserByRole } = ApiAccount();
   const debounce = useDebounce({ delay: 500, value: query });
-  const [rank, setRank] = useState<getRank[]>();
-  const { apiGetRank } = ApiRank();
-  const [isRankPopupOpen, setIsRankPopupOpen] = useState(false);
-  const [selectedRank, setSelectedRank] = useState<getRank | undefined>();
-  const [selectedAccountId, setSelectedAccountId] = useState<userModel>();
 
   // Function to handle action click
   const handleActionClick = (record: userModel) => {
@@ -81,14 +73,8 @@ const CustomerData: React.FC = () => {
     }
   };
 
-  const fetchRank = useCallback(async () => {
-    const response = await apiGetRank();
-    setRank(response.data);
-  }, []);
-
   useEffect(() => {
     fetchAccountUser(pagination.current, pagination.pageSize, debounce);
-    fetchRank();
   }, [debounce, pagination.current, pagination.pageSize]);
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -121,16 +107,6 @@ const CustomerData: React.FC = () => {
     fetchAccountUser();
   };
 
-  const onSuccessUpdateRank = () => {
-    setIsRankPopupOpen(false);
-    toast.success(config.AdminMessageNotice.AddRankCustomerSuccess);
-    fetchAccountUser();
-  };
-  const handleRankClick = (record: userModel, nextRank?: getRank) => {
-    setSelectedAccountId(record);
-    setSelectedRank(nextRank);
-    setIsRankPopupOpen(true);
-  };
   const items: MenuProps["items"] = [
     {
       key: "1",
@@ -205,51 +181,11 @@ const CustomerData: React.FC = () => {
       },
       align: "center",
     },
-    {
-      title: (
-        <div
-          style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}
-        >
-          Thăng hạng
-        </div>
-      ),
-      dataIndex: "point",
-      width: "20%",
-      render: (point, record) => {
-        if (!rank) return "Loading...";
 
-        //rank hiên tịa của người dùng
-        const currentRank = record.rank;
-
-        //lấy mức hạng kế
-        const nextRank = rank.find(
-          (r) => point >= r.range && r.range > (currentRank?.range || 0)
-        );
-
-        //rank coa nhất
-        const highestRank = rank[rank.length - 1];
-
-        if (point < rank[0].range) {
-          return "Chưa đạt đủ điểm để nâng hạng";
-        }
-
-        if (point >= highestRank.range) {
-          return "Đạt tới mức hạng cao nhất";
-        }
-
-        return nextRank ? (
-          <a onClick={() => handleRankClick(record, nextRank)}>
-            {`Có thể nâng lên hạng ${nextRank.name}`}
-          </a>
-        ) : (
-          "Đạt tới mức hạng cao nhất có thể đạt"
-        );
-      },
-      align: "center",
-    },
     {
       title: "point",
       dataIndex: "point",
+      render: (point) => (point ? point : 0),
     },
     {
       title: (
@@ -290,7 +226,7 @@ const CustomerData: React.FC = () => {
             menu={{
               items: items.filter((item) => {
                 if (item && item.key) {
-                  if (role !== RoleType.MANAGER && role !== RoleType.ADMIN) {
+                  if (role !== RoleType.ADMIN) {
                     return !["2"].includes(item.key as string);
                   }
                 }
@@ -344,16 +280,6 @@ const CustomerData: React.FC = () => {
           handleCLose={handleCLose}
           open={open}
           onSuccess={onSuccess}
-        />
-      )}
-
-      {isRankPopupOpen && (
-        <RankUpgradePopup
-          open={isRankPopupOpen}
-          onClose={() => setIsRankPopupOpen(false)}
-          rank={selectedRank}
-          accountId={selectedAccountId}
-          onUpdateSuccess={onSuccessUpdateRank}
         />
       )}
     </>
