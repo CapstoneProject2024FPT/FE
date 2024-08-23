@@ -104,7 +104,9 @@ const ModalDetailTaskCalender: React.FC<ModalTask> = ({
                     </TableCell>
                   </TableRow>
                   <TableRow>
-                    <TableCell sx={{ width: "30%" }}>Ngày Hoàn Thành</TableCell>
+                    <TableCell sx={{ width: "30%" }}>
+                      Ngày Hoàn Thành dự kiến
+                    </TableCell>
                     <TableCell>
                       {task.completedDate
                         ? formatDateFunc.formatDate(task.completedDate)

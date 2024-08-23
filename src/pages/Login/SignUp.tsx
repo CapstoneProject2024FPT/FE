@@ -77,10 +77,8 @@ const SignUpForm: React.FC = () => {
         email: data.email,
         fullname: data.fullname,
       };
-      console.log(params);
-      const response = await apiRegister(params);
 
-      console.log(response);
+      const response = await apiRegister(params);
       if (response.StatusCode === 400) {
         toast.error(response.Error);
       } else if (response.StatusCode === 500) {

@@ -11,7 +11,7 @@ interface OrdersByStatus {
   UnPaid: number;
   Completed: number;
   Canceled: number;
-  Deliver: number;
+  Delivery: number;
   ReDelivery: number;
 }
 interface MonthlyStatistics {

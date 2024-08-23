@@ -203,6 +203,11 @@ const Row = (props: {
         <TableCell>{row.invoiceCode}</TableCell>
         <TableCell>{row.type === "Order" ? "Mua hàng" : " Bảo hành"}</TableCell>
         <TableCell>{formatDateFunc.formatDate(row.createDate)}</TableCell>
+        <TableCell>
+          {row.completedDate
+            ? formatDateFunc.formatDate(row.completedDate)
+            : "-------"}
+        </TableCell>
         <TableCell>{formatMoney(row.finalAmount)}</TableCell>
         <TableCell>
           <Box
@@ -523,6 +528,7 @@ const OrderType: React.FC = () => {
               <TableCell>Mã đơn hàng</TableCell>
               <TableCell>Loại đơn hàng</TableCell>
               <TableCell>Ngày tạo</TableCell>
+              <TableCell>Ngày hoàn thành dự kiến</TableCell>
               <TableCell>Tổng tiền</TableCell>
               <TableCell>Trạng thái</TableCell>
               <TableCell>Hành động</TableCell>
