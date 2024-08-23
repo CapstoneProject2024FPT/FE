@@ -88,8 +88,6 @@ const ModalDeliveryTaskWarranty: React.FC<Modal> = ({
     }
   };
 
-  console.log(dateExecution);
-
   useEffect(() => {
     if (!dateExecution) return;
     fetchAccountUser();
@@ -330,7 +328,7 @@ const ModalDeliveryTaskWarranty: React.FC<Modal> = ({
                   }
                 >
                   <DatePicker
-                    label={<CustomLabel label="Chọn ngày giao" />}
+                    label={<CustomLabel label="Chọn đi bảo hành" />}
                     onChange={(e) => handleChooseDate(e)}
                     format="DD/MM/YYYY"
                     shouldDisableDate={(date) => {
