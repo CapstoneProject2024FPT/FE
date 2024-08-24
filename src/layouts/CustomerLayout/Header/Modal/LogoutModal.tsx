@@ -10,6 +10,7 @@ import { useNavigate } from "react-router-dom";
 import config from "../../../../configs";
 import { Box } from "@mui/material";
 import { useCheckout } from "../../../../zustand/useCheckout";
+import { useAddress } from "../../../../zustand/useAddress";
 
 interface LogoutProps {
   open: boolean;
@@ -18,18 +19,25 @@ interface LogoutProps {
 
 export default function LogoutModal({ open, handleClose }: LogoutProps) {
   const { setAuthUser, setRole } = useAuthContext();
-  const { setDiscountRank } = useCheckout();
+  const { setDiscountRank, setTotal } = useCheckout();
+  const { setSelectedAddress } = useAddress();
   const navigate = useNavigate();
 
   const handleLogout = () => {
+    setAuthUser(null);
     localStorage.removeItem("loginInfo");
     localStorage.removeItem("historyPath");
+    localStorage.removeItem("getUserInfo");
+    localStorage.removeItem("cart");
     setDiscountRank(0);
-    setAuthUser(null);
+    setTotal(0);
+    setSelectedAddress(null);
     setRole(null);
+    sessionStorage.removeItem("checkoutTotal");
+    sessionStorage.removeItem("checkoutTotalDiscountRank");
     setTimeout(() => {
       navigate(config.routes.home);
-    }, 500);
+    }, 700);
   };
   return (
     <React.Fragment>

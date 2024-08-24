@@ -3,7 +3,7 @@ import { addressProps } from "../models/address";
 
 interface addressChoice {
   address: addressProps | null;
-  setSelectedAddress: (address: addressProps) => void;
+  setSelectedAddress: (address: addressProps | null) => void;
 }
 
 export const useAddress = create<addressChoice>((set) => {

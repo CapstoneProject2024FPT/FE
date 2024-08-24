@@ -1,8 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useEffect, useState } from "react";
 import type { TableProps } from "antd";
-import { Table, Input, Button, Typography, Checkbox, DatePicker } from "antd";
-import { formatDateFunc } from "../../utils/fn";
+import { Table, Input, Button, Typography, Checkbox } from "antd";
 import { useParams } from "react-router-dom";
 import { PlusOutlined } from "@ant-design/icons";
 import { MachineryApi } from "../../api/services/apiMachinery";
@@ -14,7 +13,6 @@ import ModalViewBeforeAddComponent from "./PopupAddComponentMachine/ModalAddComp
 import { toast } from "react-toastify";
 import useDebounce from "../../hooks/useDebounce";
 import config from "../../configs";
-import moment from "moment";
 
 type ColumnsType<T> = TableProps<T>["columns"];
 const { Search } = Input;
@@ -47,16 +45,11 @@ const AddComponentOfMachineTable: React.FC<AddComponentOfMachineTable> = ({
   //api
   const { apiGetListComponent, loading } = MachineryComponentApi();
   const { apiGetDetailMachine } = MachineryApi();
-  const [selectedDate, setSelectedDate] = useState<string | null>(null);
+  const [categoryFilters, setCategoryFilters] = useState<string[]>([]);
 
   const handleOpen = () => {
     setOpenAdd(!openAdd);
   };
-
-  const handleDateChange = (_date: any, dateString: string | string[]) => {
-    setSelectedDate(Array.isArray(dateString) ? dateString[0] : dateString);
-  };
-  const dateFormatList = ["DD/MM/YYYY", "DD/MM/YY", "DD-MM-YYYY", "DD-MM-YY"];
 
   const handleClose = () => {
     setOpenAdd(!openAdd);
@@ -74,7 +67,8 @@ const AddComponentOfMachineTable: React.FC<AddComponentOfMachineTable> = ({
   };
 
   const fetchComponent = async () => {
-    const response = await apiGetListComponent();
+    const params = {};
+    const response = await apiGetListComponent(params);
     if (response.status === 200 && response.data) {
       setComponents(response.data || []);
     }
@@ -125,13 +119,17 @@ const AddComponentOfMachineTable: React.FC<AddComponentOfMachineTable> = ({
     setQuery(e.target.value);
   };
 
-  const filteredRows = components
-    ?.filter((item) => item.name.toLowerCase().includes(debounceQuery.toLowerCase()))
-    ?.filter((item) =>
-      selectedDate
-        ? moment(item.createDate).format("DD/MM/YYYY") === selectedDate
-        : true
-    );
+  const filteredRows = components?.filter(
+    (item) =>
+      item.name.toLowerCase().includes(debounceQuery.toLowerCase()) &&
+      (categoryFilters.length === 0 ||
+        categoryFilters.includes(item.category?.name))
+  );
+
+  const handleCategoryFilter = (filters: Record<string, string[] | null>) => {
+    const categoryValues = filters.category || [];
+    setCategoryFilters(categoryValues);
+  };
 
   const columns: ColumnsType<GetMachineComponents> = [
     {
@@ -165,33 +163,39 @@ const AddComponentOfMachineTable: React.FC<AddComponentOfMachineTable> = ({
             fontSize: "16px",
             fontWeight: "bold",
             display: "flex",
+            flexDirection: "row",
+            flexWrap: "wrap",
             alignItems: "center",
             justifyContent: "center",
-            gap: "5px"
+            gap: "5px",
           }}
         >
-          Ngày tạo
-          <DatePicker
-            onChange={handleDateChange}
-            style={{ width: "35%", cursor: "pointer" }}
-            format={dateFormatList}
-            placeholder="Chọn ngày"
-          />
+          Loại bộ phận máy
         </div>
       ),
-      dataIndex: "createDate",
-      render: (createDate) => {
-        return formatDateFunc.formatDate(createDate);
+      dataIndex: "category",
+      render: (category) => {
+        return category ? category.name : "";
       },
       align: "center",
-      width: "30%"
+      filters: Array.from(new Set(components.map((c) => c.category?.name))).map(
+        (name) => ({ text: name, value: name })
+      ),
+      onFilter: (value, record) => record.category?.name === value,
+      filterSearch: true,
     },
   ];
 
   return (
     <>
       <Typography.Text>Tên máy: {machinery?.name}</Typography.Text>
-      <div style={{ display: "flex", justifyContent: "space-between", marginTop: "10px" }}>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          marginTop: "10px",
+        }}
+      >
         <Search
           placeholder="Nhập từ khoá"
           onChange={handleSearch}
@@ -208,7 +212,10 @@ const AddComponentOfMachineTable: React.FC<AddComponentOfMachineTable> = ({
         dataSource={filteredRows}
         pagination={customPagination}
         loading={loading}
-        onChange={handleTableChange}
+        onChange={(pagination, filters) => {
+          handleCategoryFilter(filters as Record<string, string[] | null>);
+          handleTableChange(pagination);
+        }}
         locale={{
           triggerDesc: "Sắp xếp giảm dần",
           triggerAsc: "Sắp xếp tăng dần",

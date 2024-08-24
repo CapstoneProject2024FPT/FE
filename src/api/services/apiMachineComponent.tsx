@@ -15,10 +15,15 @@ import config from "../../configs";
 
 export const MachineryComponentApi = () => {
   const [loading, setLoading] = useState(false);
-  const apiGetListComponent = async () => {
+  interface MachineComponentProps {
+    CategoryId?: string;
+  }
+  const apiGetListComponent = async (params: MachineComponentProps) => {
     setLoading(true);
     try {
-      const response = await axiosPublic.get(GET_MACHINERY_COMPONENT);
+      const response = await axiosPublic.get(GET_MACHINERY_COMPONENT, {
+        params,
+      });
       return response;
     } catch (error) {
       console.error(error);
