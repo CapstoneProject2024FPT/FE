@@ -1,8 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useEffect, useState } from "react";
 import type { TableProps } from "antd";
-import { Table, Input, Button, Checkbox, Modal, DatePicker } from "antd";
-import { formatDateFunc } from "../../../utils/fn";
+import { Table, Input, Button, Checkbox, Modal } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
 import { MachineryComponentApi } from "../../../api/services/apiMachineComponent";
 import { GetMachineComponents } from "../../../models/machineComponent";
@@ -11,7 +10,6 @@ import useDebounce from "../../../hooks/useDebounce";
 import { Box } from "@mui/material";
 import ModalSubmitComponent from "./ModalSubmitComponent";
 import ModalCreateComponent from "./ModalCreateComponent";
-import moment from "moment";
 
 type ColumnsType<T> = TableProps<T>["columns"];
 const { Search } = Input;
@@ -45,7 +43,7 @@ const ModalAddComponentOfMachineTable: React.FC<AddComponentOfMachine> = ({
   const [openAdd, setOpenAdd] = useState<boolean>(false);
   const [openCreate, setOpenCreate] = useState<boolean>(false);
   const [pendingIdCheck, setPendingIdCheck] = useState<string | null>(null);
-  const [selectedDate, setSelectedDate] = useState<string | null>(null);
+  const [categoryFilters, setCategoryFilters] = useState<string[]>([]);
 
   //api
   const { apiGetListComponent, loading } = MachineryComponentApi();
@@ -69,7 +67,8 @@ const ModalAddComponentOfMachineTable: React.FC<AddComponentOfMachine> = ({
   };
 
   const fetchComponent = async () => {
-    const response = await apiGetListComponent();
+    const params = {};
+    const response = await apiGetListComponent(params);
     if (response.status === 200 && response.data) {
       setComponents(response.data || []);
     }
@@ -87,14 +86,6 @@ const ModalAddComponentOfMachineTable: React.FC<AddComponentOfMachine> = ({
       setPendingIdCheck(null);
     }
   }, [components, pendingIdCheck]);
-
-
-  const handleDateChange = (_date: any, dateString: string | string[]) => {
-    setSelectedDate(Array.isArray(dateString) ? dateString[0] : dateString);
-  };
-
-  const dateFormatList = ["DD/MM/YYYY", "DD/MM/YY", "DD-MM-YYYY", "DD-MM-YY"];
-
 
   const checkId = (id: string) => {
     const componentsCheck = components.find((component) => component.id === id);
@@ -144,13 +135,17 @@ const ModalAddComponentOfMachineTable: React.FC<AddComponentOfMachine> = ({
     setQuery(e.target.value);
   };
 
-  const filteredRows = components
-    ?.filter((item) => item.name.toLowerCase().includes(debounceQuery.toLowerCase()))
-    ?.filter((item) => selectedDate
-      ? moment(item.createDate).format("DD/MM/YYYY") === selectedDate
-      : true
-    )
+  const filteredRows = components?.filter(
+    (item) =>
+      item.name.toLowerCase().includes(debounceQuery.toLowerCase()) &&
+      (categoryFilters.length === 0 ||
+        categoryFilters.includes(item.category?.name))
+  );
 
+  const handleCategoryFilter = (filters: Record<string, string[] | null>) => {
+    const categoryValues = filters.category || [];
+    setCategoryFilters(categoryValues);
+  };
   const columns: ColumnsType<GetMachineComponents> = [
     {
       title: "",
@@ -194,23 +189,22 @@ const ModalAddComponentOfMachineTable: React.FC<AddComponentOfMachine> = ({
             flexWrap: "wrap",
             alignItems: "center",
             justifyContent: "center",
-            gap: "5px"
+            gap: "5px",
           }}
         >
-          Ngày tạo
-          <DatePicker
-            onChange={handleDateChange}
-            style={{ marginLeft: 4, width: "35%", cursor: "pointer" }}
-            format={dateFormatList}
-            placeholder="Chọn ngày"
-          />
+          Loại bộ phận máy
         </div>
       ),
-      dataIndex: "createDate",
-      render: (createDate) => {
-        return formatDateFunc.formatDate(createDate);
+      dataIndex: "category",
+      render: (category) => {
+        return category ? category.name : "";
       },
-      align: "center"
+      align: "center",
+      filters: Array.from(new Set(components.map((c) => c.category?.name))).map(
+        (name) => ({ text: name, value: name })
+      ),
+      onFilter: (value, record) => record.category?.name === value,
+      filterSearch: true,
     },
   ];
 
@@ -248,11 +242,15 @@ const ModalAddComponentOfMachineTable: React.FC<AddComponentOfMachine> = ({
             dataSource={filteredRows}
             pagination={customPagination}
             loading={loading}
-            onChange={handleTableChange}
+            onChange={(pagination, filters) => {
+              handleCategoryFilter(filters as Record<string, string[] | null>);
+              handleTableChange(pagination);
+            }}
             locale={{
               triggerDesc: "Sắp xếp giảm dần",
               triggerAsc: "Sắp xếp tăng dần",
               cancelSort: "Huỷ sắp xếp",
+              filterReset: "Đặt lại bộ lọc",
             }}
             bordered
           />

@@ -97,7 +97,13 @@ const TableComponentMachine: React.FC<TableComponentMachine> = ({
   return (
     <>
       <Typography.Text>Tên máy: {machinery?.name}</Typography.Text>
-      <div style={{ display: "flex", justifyContent: "space-between", marginTop: "10px" }}>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          marginTop: "10px",
+        }}
+      >
         <Search
           placeholder="Nhập từ khoá"
           onChange={handleSearch}

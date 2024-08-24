@@ -58,7 +58,7 @@ const renderCustomizedLabel = ({
   );
 };
 
-const years = [2025, 2024, 2023];
+const years = [2025, 2024];
 const Dashboard: React.FC = () => {
   const { apiGetData } = ApiAdminDashboard();
   const [dashboardData, setDashboardData] = useState<DashboardProp>();
@@ -256,18 +256,17 @@ const Dashboard: React.FC = () => {
           heading="Thống kê"
           links={[{ name: "Thống kê" }, { name: "Thống kê doanh thu" }]}
         />
-
-        <FormControl sx={{ m: 1, minWidth: 120 }} size="small">
-          <InputLabel>Năm</InputLabel>
-          <Select label="Năm" value={selectedYear} onChange={handleYearChange}>
-            {years.map((year) => (
-              <MenuItem key={year} value={year}>
-                {year}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
       </Box>
+      <FormControl sx={{ mb: 2, minWidth: 120 }} size="small">
+        <InputLabel>Năm</InputLabel>
+        <Select label="Năm" value={selectedYear} onChange={handleYearChange}>
+          {years.map((year) => (
+            <MenuItem key={year} value={year}>
+              {year}
+            </MenuItem>
+          ))}
+        </Select>
+      </FormControl>
       {!hasData(dashboardData) ? (
         <EmptyData
           style={{
