@@ -66,6 +66,7 @@ const Detail: React.FC = () => {
         }
         const response = await apiGetMachineryID(id);
         if (response.status === 200) {
+          console.log("response.data: ", response.data)
           setProduct(response.data);
           setSelectProductQuantity(
             remainingQuantity(
@@ -419,8 +420,8 @@ const Detail: React.FC = () => {
                 {/* TODO: Selling price when have promotion */}
                 {product
                   ? formatMoney(
-                      (product?.sellingPrice * (100 - product?.discount)) / 100
-                    )
+                    (product?.sellingPrice * (100 - product?.discount)) / 100
+                  )
                   : 0}
               </Typography>
 
@@ -512,10 +513,9 @@ const Detail: React.FC = () => {
                         },
                       }}
                       onClick={() => increaseQuantity()}
-                      className={`${
-                        currentQuantities >= (selectProductQuantity ?? 0) &&
+                      className={`${currentQuantities >= (selectProductQuantity ?? 0) &&
                         "disabled"
-                      }`}
+                        }`}
                     >
                       +
                     </Button>
@@ -672,7 +672,6 @@ const Detail: React.FC = () => {
               display: "flex",
               border: "1px solid #dee2e6",
               alignItems: "center",
-
               "& p": { flex: "1 1 50%", padding: "5px" },
               "& ": {
                 backgroundColor: "#F2F2F2",
@@ -681,9 +680,9 @@ const Detail: React.FC = () => {
               },
             }}
           >
-            <Typography>{item.name}</Typography>
+            <Typography sx={{ marginLeft: "20px", flex: "1.5 !important" }}>{item.name}</Typography>
             <Divider orientation="vertical" flexItem />
-            <Typography>{item.value}</Typography>
+            <Typography sx={{ marginLeft: "20px", flex: "2 !important" }}>{item.value}</Typography>
           </Box>
         ))}
       </Box>
@@ -701,10 +700,10 @@ const Detail: React.FC = () => {
           <Box
             key={index}
             sx={{
+              width: "100%",
               display: "flex",
               border: "1px solid #dee2e6",
               alignItems: "center",
-
               "& p": { flex: "1 1 50%", padding: "5px" },
               "& ": {
                 backgroundColor: "#F2F2F2",
@@ -713,11 +712,46 @@ const Detail: React.FC = () => {
               },
             }}
           >
-            <Typography>{item.name}</Typography>
+            <Typography sx={{ marginLeft: "20px", flex: "1.5 !important" }}>{item.name}</Typography>
             <Divider orientation="vertical" flexItem />
-            <Typography>{item.description}</Typography>
+            <Typography sx={{ marginLeft: "10px", flex: "2 !important" }}>{item.description} {item.sellingPrice > 0 && (
+              <Box sx={{ display: "inline-flex" }}><span style={{
+                color: "red",
+                marginLeft: "10px",
+                fontWeight: "800",
+              }}> ( </span><span style={{
+                color: "red",
+                fontWeight: "800",
+                lineHeight: "30px"
+              }}> * </span>
+                <span style={{
+                  color: "red",
+                  fontWeight: "800",
+                }}> ) </span></Box>
+            )}</Typography>
           </Box>
         ))}
+      </Box>
+      <Box sx={{ marginTop: "30px" }}>
+        <Typography sx={{ fontSize: "18px", color: "red" }}>
+          Lưu ý:
+        </Typography>
+        <Typography sx={{ fontSize: "18px", marginLeft: "50px", color: "red" }}>
+          <Box sx={{ display: "inline-flex" }}><span style={{
+            color: "red",
+            marginLeft: "10px",
+            fontWeight: "800",
+          }}> ( </span><span style={{
+            color: "red",
+            fontWeight: "800",
+            lineHeight: "30px"
+          }}> * </span>
+            <span style={{
+              color: "red",
+              fontWeight: "800",
+            }}>) </span></Box>
+           :{" "}Các bộ phận này sẽ bị thu phí khi bảo hành.
+        </Typography>
       </Box>
     </Box>
   );
