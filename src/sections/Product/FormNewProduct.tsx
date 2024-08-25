@@ -418,7 +418,7 @@ export default function ProductNewEditForm() {
                       <RHFTextField
                         sx={{ width: 250 }}
                         name={`specificationList[${index}].unit`}
-                        label="Giá trị"
+                        label="Đơn vị"
                       />
 
                       {fields.length > 1 && (

@@ -58,7 +58,7 @@ const renderCustomizedLabel = ({
   );
 };
 
-const years = [2025, 2024, 2023];
+const years = [2025, 2024];
 const Dashboard: React.FC = () => {
   const { apiGetData } = ApiAdminDashboard();
   const [dashboardData, setDashboardData] = useState<DashboardProp>();
@@ -225,9 +225,9 @@ const Dashboard: React.FC = () => {
 
   // Custom YAxisTick formatter function
   const formatYAxisTick = (value: any) => {
-    if (value >= 1_000_000) {
+    if (value >= 1_000_000 || value <= -1_000_000) {
       return `${(value / 1_000_000).toFixed(1)}M`;
-    } else if (value >= 1_000) {
+    } else if (value >= 1_000 || value <= -1_000) {
       return `${(value / 1_000).toFixed(1)}K`;
     }
     return value;
@@ -256,18 +256,17 @@ const Dashboard: React.FC = () => {
           heading="Thống kê"
           links={[{ name: "Thống kê" }, { name: "Thống kê doanh thu" }]}
         />
-
-        <FormControl sx={{ m: 1, minWidth: 120 }} size="small">
-          <InputLabel>Năm</InputLabel>
-          <Select label="Năm" value={selectedYear} onChange={handleYearChange}>
-            {years.map((year) => (
-              <MenuItem key={year} value={year}>
-                {year}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
       </Box>
+      <FormControl sx={{ mb: 2, minWidth: 120 }} size="small">
+        <InputLabel>Năm</InputLabel>
+        <Select label="Năm" value={selectedYear} onChange={handleYearChange}>
+          {years.map((year) => (
+            <MenuItem key={year} value={year}>
+              {year}
+            </MenuItem>
+          ))}
+        </Select>
+      </FormControl>
       {!hasData(dashboardData) ? (
         <EmptyData
           style={{
@@ -407,9 +406,11 @@ const Dashboard: React.FC = () => {
               width: "100%",
               display: "flex",
               gap: "20px",
+              alignItems: "center",
+              justifyContent: "space-evenly"
             }}
           >
-            <Box sx={{ width: "50%" }}>
+            <Box>
               <BarChart
                 data={totalOrdersArray}
                 barSize="3%"
@@ -449,8 +450,8 @@ const Dashboard: React.FC = () => {
               flexItem
               sx={{ margin: "5px", border: "1px solid #d9d9d9" }}
             />
-            <Box sx={{ width: "40%" }}>
-              <PieChart width={400} height={300}>
+            <Box>
+              <PieChart width={400} height={400}>
                 <Pie
                   data={dataPie}
                   outerRadius={120}
@@ -501,7 +502,7 @@ const Dashboard: React.FC = () => {
                 interval={0}
                 padding={{ left: 25, right: 25 }}
               />
-              <YAxis tickFormatter={formatYAxisTick} />
+              <YAxis tickFormatter={formatYAxisTick} tickCount={9} />
               <Tooltip content={<CustomTooltipBarChart2 />} />
               <Legend
                 payload={[

@@ -98,8 +98,10 @@ const Cart: React.FC<CartProp> = ({ handleNext }) => {
       const totalPrice = calculateTotalPrice(CartItems);
       const discountPrice = calculateDiscount(totalPrice);
       setDiscountRank(discountPrice);
+    } else {
+      setDiscountRank(0); // Clear the discount if the userProfile is not available
     }
-  }, [userProfile, total, CartItems]);
+  }, [userProfile, total, CartItems, setDiscountRank]);
 
   const calculateTotalPrice = (CartItems: cartProps) => {
     let totalPrice = 0;
@@ -162,7 +164,11 @@ const Cart: React.FC<CartProp> = ({ handleNext }) => {
   };
 
   useEffect(() => {
-    fetchUser();
+    if (authUser) {
+      fetchUser();
+    } else {
+      setUserProfile(undefined); // Clear userProfile on logout
+    }
   }, [authUser]);
 
   return (
