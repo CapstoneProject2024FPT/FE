@@ -220,26 +220,6 @@ const TableComponent: React.FC = () => {
     {
       title: (
         <div
-          style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}
-        >
-          Số lượng
-        </div>
-      ),
-      sorter: (a, b) => a.quantity - b.quantity,
-      dataIndex: "quantity",
-      render: (quantity, record) => (
-        <div
-          onClick={() => handleQuantityClick(record)}
-          style={{ cursor: "pointer" }}
-        >
-          {quantity ? quantity : 0}
-        </div>
-      ),
-      align: "center",
-    },
-    {
-      title: (
-        <div
           style={{
             textAlign: "center",
             fontSize: "16px",

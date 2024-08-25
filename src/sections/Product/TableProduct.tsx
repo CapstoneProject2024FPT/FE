@@ -222,7 +222,12 @@ const TableProduct: React.FC = () => {
     {
       title: "Tình trạng",
       dataIndex: "status",
-      render: (status) => (status === "Available" ? "Đang bán" : "Ngưng bán"),
+      render: (status) =>
+        status === "Available"
+          ? "Đang bán"
+          : status === "OutOfStock"
+          ? "Hết hàng"
+          : "Ngưng bán",
     },
     {
       title: (
