@@ -21,6 +21,7 @@ import { CustomerApi } from "../../../api/services/apiUser";
 import { toast } from "react-toastify";
 import { ApiTask } from "../../../api/services/apiTask";
 import { GetTaskProps } from "../../../models/task";
+import WarrantyPDF from "../Exportpdf/WarrantyPDF";
 
 interface ModalBrand {
   OrderData: OrderProps | null;
@@ -134,6 +135,17 @@ const ModalDetailOrder: React.FC<ModalBrand> = ({
                           <TableCell>
                             {formatMoney(product.totalAmount)}
                           </TableCell>
+                          {OrderData?.status !== "Canceled" &&
+                          OrderData?.status !== "UnPaid" ? (
+                            <TableCell>
+                              <WarrantyPDF
+                                order={OrderData}
+                                product={product}
+                              />
+                            </TableCell>
+                          ) : (
+                            ""
+                          )}
                         </TableRow>
                       ))}
                     </>
