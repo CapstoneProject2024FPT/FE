@@ -76,7 +76,11 @@ const Profile: React.FC = () => {
     : defaultclassRank;
 
   return (
-    <>
+    <Box sx={{
+      display: "flex",
+      flexDirection: "column",
+      width: "100%"
+    }}>
       <FormGrid xs={12}>
         <Box
           sx={{
@@ -98,68 +102,72 @@ const Profile: React.FC = () => {
             />
           </div>
           <Box sx={{ mt: 2 }}>
-            <LabelStyle>
-              Hạng:
+            <LabelStyle sx={{fontSize: "16px"}}>
+              Hạng: {" "}
               {userProfile?.rank?.name
                 ? userProfile?.rank?.name
                 : "Chưa có hạng"}
             </LabelStyle>
           </Box>
         </Box>
-
-        <LabelStyle>Họ và Tên</LabelStyle>
-        <TextField
-          placeholder="Dũng"
-          InputProps={{
-            readOnly: true,
-          }}
-          value={userProfile?.fullName || ""}
-        />
       </FormGrid>
-
-      <FormGrid xs={12}>
-        <LabelStyle>Số Điện Thoại</LabelStyle>
-        <TextField
-          placeholder="0XX XXX XXXX"
-          InputProps={{
-            readOnly: true,
-          }}
-          value={userProfile?.phoneNumber || ""}
-        />
-      </FormGrid>
-      <FormGrid xs={12}>
-        <LabelStyle>Địa chỉ email</LabelStyle>
-        <TextField
-          placeholder="email@gmail.com"
-          InputProps={{
-            readOnly: true,
-          }}
-          value={userProfile?.email || ""}
-        />
-      </FormGrid>
-      <FormGrid xs={12}>
-        <LabelStyle>Giới tính</LabelStyle>
-        <TextField
-          placeholder="Name"
-          InputProps={{
-            readOnly: true,
-          }}
-          value={
-            userProfile?.gender === "Male"
-              ? "Nam"
-              : userProfile?.gender === "Female"
-              ? "Nữ"
-              : "Chưa cập nhật"
-          }
-        />
-      </FormGrid>
+        <FormGrid xs={12} >
+          <LabelStyle sx={{fontSize: "16px"}}>Họ và Tên</LabelStyle>
+          <TextField
+            placeholder="Dũng"
+            InputProps={{
+              readOnly: true,
+              style: { fontSize: "16px" }
+            }}
+            value={userProfile?.fullName || ""}
+          />
+        </FormGrid>
+        <FormGrid xs={12} >
+          <LabelStyle sx={{fontSize: "16px"}}>Số Điện Thoại</LabelStyle>
+          <TextField
+            placeholder="0XX XXX XXXX"
+            InputProps={{
+              readOnly: true,
+              style: { fontSize: "16px" }
+            }}
+            value={userProfile?.phoneNumber || ""}
+          />
+        </FormGrid>
+        <FormGrid xs={12} >
+          <LabelStyle sx={{fontSize: "16px"}}>Địa chỉ email</LabelStyle>
+          <TextField
+            placeholder="email@gmail.com"
+            InputProps={{
+              readOnly: true,
+              style: { fontSize: "16px" }
+            }}
+            value={userProfile?.email || ""}
+          />
+        </FormGrid>
+        <FormGrid xs={12} >
+          <LabelStyle sx={{fontSize: "16px"}}>Giới tính</LabelStyle>
+          <TextField
+            placeholder="Name"
+            InputProps={{
+              readOnly: true,
+              style: { fontSize: "16px" }
+            }}
+            value={
+              userProfile?.gender === "Male"
+                ? "Nam"
+                : userProfile?.gender === "Female"
+                  ? "Nữ"
+                  : "Chưa cập nhật"
+            }
+          />
+        </FormGrid>
       <Button
         style={{
           backgroundColor: "#3498DB",
           color: "white",
           fontSize: "20px",
           cursor: "pointer",
-          margin: "10px",
+          margin: "40px 10px 10px",
         }}
         onClick={handleOpen}
       >
@@ -174,7 +182,7 @@ const Profile: React.FC = () => {
           onUpdateSuccess={onUpdateSuccess}
         />
       )}
-    </>
+    </Box>
   );
 };
 

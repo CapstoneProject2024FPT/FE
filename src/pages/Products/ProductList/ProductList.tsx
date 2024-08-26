@@ -157,6 +157,7 @@ const ProductList: React.FC = () => {
   const getProductFilteredData = async (params: any) => {
     try {
       const data = await apiGetList(params);
+      console.log(data)
       setProducts(data.data);
     } catch (error) {
       console.error("lỗi");
