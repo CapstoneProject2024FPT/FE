@@ -9,7 +9,7 @@ import {
   InputBase,
   Typography,
 } from "@mui/material";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   ArrowBackIos,
   ArrowForwardIos,
@@ -47,6 +47,7 @@ const Detail: React.FC = () => {
   //favurite
   const [isFavourite, setIsFavourite] = useState(false);
   const location = useLocation();
+  const topRef = useRef<HTMLDivElement>(null);
 
   let initQuantity = 0;
 
@@ -66,7 +67,6 @@ const Detail: React.FC = () => {
         }
         const response = await apiGetMachineryID(id);
         if (response.status === 200) {
-          console.log("response.data: ", response.data)
           setProduct(response.data);
           setSelectProductQuantity(
             remainingQuantity(
@@ -152,9 +152,11 @@ const Detail: React.FC = () => {
 
   useEffect(() => {
     fetchProducts();
-    //scroll to top
-    window.scrollTo(0, 0);
   }, []);
+
+  useEffect(() => {
+    topRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [location]);
 
   //get favourite
   useEffect(() => {
@@ -244,516 +246,575 @@ const Detail: React.FC = () => {
   };
 
   return (
-    <Box
-      sx={{
-        width: "80%",
-        marginTop: "auto",
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: "space-between",
-      }}
-    >
+    <>
+      <div ref={topRef}></div>
       <Box
         sx={{
+          width: "80%",
+          marginTop: "auto",
           display: "flex",
-          justifyContent: "space-around",
+          flexDirection: "column",
+          justifyContent: "space-between",
         }}
       >
         <Box
           sx={{
-            width: "25%",
-            height: "100%",
-            boxShadow:
-              "rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px",
+            display: "flex",
+            justifyContent: "space-around",
           }}
         >
           <Box
             sx={{
-              position: "relative",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "space-around",
+              width: "25%",
+              height: "100%",
+              boxShadow:
+                "rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px",
             }}
           >
-            <ArrowBackIos
-              sx={{
-                position: "absolute",
-                borderRadius: "5px",
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                fontSize: "36px",
-                padding: "10px",
-                paddingLeft: "13px",
-                cursor: "pointer",
-                top: "43%",
-                left: "5px",
-
-                "&:hover": { backgroundColor: "lightgrey" },
-              }}
-              onClick={() =>
-                setSelectedImage(
-                  selectedImage === 0
-                    ? (product?.image || []).length - 1
-                    : selectedImage - 1
-                )
-              }
-            />
-            <Zoom
-              className="product-images"
-              src={
-                product?.image[selectedImage].imageURL ||
-                "https://via.placeholder.com/150"
-              }
-              width="unset"
-              height="300px"
-            />
-            <ArrowForwardIos
-              sx={{
-                position: "absolute",
-                borderRadius: "5px",
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                fontSize: "36px",
-                padding: "10px",
-                paddingLeft: "13px",
-                cursor: "pointer",
-                top: "43%",
-                right: "5px",
-
-                "&:hover": { backgroundColor: "lightgrey" },
-              }}
-              onClick={() =>
-                setSelectedImage(
-                  selectedImage === (product?.image || "").length - 1
-                    ? 0
-                    : selectedImage + 1
-                )
-              }
-            />
-          </Box>
-
-          <ImageList
-            sx={{
-              width: "100%",
-              height: "50%",
-              overflow: "hidden",
-              padding: "0 12px",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-            cols={Math.min((product?.image || []).length, 3)}
-            rowHeight={164}
-          >
-            {(product?.image || [])?.map(({ imageURL }, index) => (
-              <ImageListItem
-                key={index}
-                sx={{
-                  width: "170px",
-                  cursor: "pointer",
-                  boxShadow: "rgba(99, 99, 99, 0.2) 0px 2px 8px 0px",
-                }}
-              >
-                <img
-                  src={imageURL}
-                  alt={imageURL}
-                  loading="lazy"
-                  onClick={() => setSelectedImage(index)}
-                />
-              </ImageListItem>
-            ))}
-          </ImageList>
-        </Box>
-        <Divider
-          orientation="horizontal"
-          flexItem
-          sx={{ margin: "10px", border: "1px solid #d9d9d9" }}
-        />
-
-        <Box sx={{ width: "70%", display: "flex", flexDirection: "column" }}>
-          <Box sx={{ display: "flex", justifyContent: "space-between" }}>
-            <Box>
-              <Typography variant="h4">{product?.name}</Typography>
-            </Box>
-            <IconButton onClick={handleAddfavorite} aria-label="favourite">
-              <ThumbUpRounded style={buttonStyle} />
-            </IconButton>
-          </Box>
-
-          <Box sx={{ display: "flex", margin: "10px 0" }}>
-            <Typography sx={{ paddingRight: "30px" }}>
-              {`Thương hiệu: `}
-              <Typography
-                component={"span"}
-                sx={{ cursor: "pointer", color: "blue" }}
-              >
-                {/* TODO: sau có brand thì change từ model về brand */}
-                {product?.brand?.name}
-              </Typography>
-            </Typography>
-
-            <Typography sx={{ color: "lightgrey" }}>
-              Mẫu mã: {product?.model}
-            </Typography>
-          </Box>
-
-          <Divider sx={{ borderBottomWidth: "5px", margin: "20px 0" }} />
-
-          <Box sx={{ display: "flex", height: "100%" }}>
             <Box
               sx={{
-                width: "50%",
+                position: "relative",
                 display: "flex",
-                flexDirection: "column",
+                alignItems: "center",
                 justifyContent: "space-around",
               }}
             >
-              {/* Discounted price */}
-              <Typography
+              <ArrowBackIos
                 sx={{
-                  color: "orange",
-                }}
-                variant="h4"
-              >
-                {/* TODO: Selling price when have promotion */}
-                {product
-                  ? formatMoney(
-                    (product?.sellingPrice * (100 - product?.discount)) / 100
-                  )
-                  : 0}
-              </Typography>
+                  position: "absolute",
+                  borderRadius: "5px",
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  fontSize: "36px",
+                  padding: "10px",
+                  paddingLeft: "13px",
+                  cursor: "pointer",
+                  top: "43%",
+                  left: "5px",
 
-              {product?.discount ? (
-                <>
-                  {/* Original Price */}
-                  <Typography
-                    sx={{
-                      color: "gray",
-                      textDecoration: "line-through",
-                    }}
-                    variant="h5"
-                  >
-                    {formatMoney(product?.sellingPrice)}
-                  </Typography>
-                  <Typography
-                    sx={{
-                      color: "red",
-                      "&:after": { content: "'%'" },
-                      "&:before": { content: "'-'" },
-                    }}
-                    variant="h5"
-                  >
-                    {/* TODO: sau có promotion thì update lại */}
-                    {product?.discount}
-                  </Typography>
-                </>
-              ) : null}
-              <Box
-                sx={{ display: "flex", flexDirection: "column", gap: "20px" }}
-              >
-                <Box
+                  "&:hover": { backgroundColor: "lightgrey" },
+                }}
+                onClick={() =>
+                  setSelectedImage(
+                    selectedImage === 0
+                      ? (product?.image || []).length - 1
+                      : selectedImage - 1
+                  )
+                }
+              />
+              <Zoom
+                className="product-images"
+                src={
+                  product?.image[selectedImage].imageURL ||
+                  "https://via.placeholder.com/150"
+                }
+                width="unset"
+                height="300px"
+              />
+              <ArrowForwardIos
+                sx={{
+                  position: "absolute",
+                  borderRadius: "5px",
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  fontSize: "36px",
+                  padding: "10px",
+                  paddingLeft: "13px",
+                  cursor: "pointer",
+                  top: "43%",
+                  right: "5px",
+
+                  "&:hover": { backgroundColor: "lightgrey" },
+                }}
+                onClick={() =>
+                  setSelectedImage(
+                    selectedImage === (product?.image || "").length - 1
+                      ? 0
+                      : selectedImage + 1
+                  )
+                }
+              />
+            </Box>
+
+            <ImageList
+              sx={{
+                width: "100%",
+                height: "50%",
+                overflow: "hidden",
+                padding: "0 12px",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+              cols={Math.min((product?.image || []).length, 3)}
+              rowHeight={164}
+            >
+              {(product?.image || [])?.map(({ imageURL }, index) => (
+                <ImageListItem
+                  key={index}
                   sx={{
-                    display: "flex",
-                    alignItems: "center",
+                    width: "170px",
+                    cursor: "pointer",
+                    boxShadow: "rgba(99, 99, 99, 0.2) 0px 2px 8px 0px",
                   }}
                 >
-                  Số lượng:
+                  <img
+                    src={imageURL}
+                    alt={imageURL}
+                    loading="lazy"
+                    onClick={() => setSelectedImage(index)}
+                  />
+                </ImageListItem>
+              ))}
+            </ImageList>
+          </Box>
+          <Divider
+            orientation="horizontal"
+            flexItem
+            sx={{ margin: "10px", border: "1px solid #d9d9d9" }}
+          />
+
+          <Box sx={{ width: "70%", display: "flex", flexDirection: "column" }}>
+            <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+              <Box>
+                <Typography variant="h4">{product?.name}</Typography>
+              </Box>
+              <IconButton onClick={handleAddfavorite} aria-label="favourite">
+                <ThumbUpRounded style={buttonStyle} />
+              </IconButton>
+            </Box>
+
+            <Box sx={{ display: "flex", margin: "10px 0" }}>
+              <Typography sx={{ paddingRight: "30px" }}>
+                {`Thương hiệu: `}
+                <Typography
+                  component={"span"}
+                  sx={{ cursor: "pointer", color: "blue" }}
+                >
+                  {/* TODO: sau có brand thì change từ model về brand */}
+                  {product?.brand?.name}
+                </Typography>
+              </Typography>
+
+              <Typography sx={{ color: "lightgrey" }}>
+                Mẫu mã: {product?.model}
+              </Typography>
+            </Box>
+
+            <Divider sx={{ borderBottomWidth: "5px", margin: "20px 0" }} />
+
+            <Box sx={{ display: "flex", height: "100%" }}>
+              <Box
+                sx={{
+                  width: "50%",
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "space-around",
+                }}
+              >
+                {/* Discounted price */}
+                <Typography
+                  sx={{
+                    color: "orange",
+                  }}
+                  variant="h4"
+                >
+                  {/* TODO: Selling price when have promotion */}
+                  {product
+                    ? formatMoney(
+                        (product?.sellingPrice * (100 - product?.discount)) /
+                          100
+                      )
+                    : 0}
+                </Typography>
+
+                {product?.discount ? (
+                  <>
+                    {/* Original Price */}
+                    <Typography
+                      sx={{
+                        color: "gray",
+                        textDecoration: "line-through",
+                      }}
+                      variant="h5"
+                    >
+                      {formatMoney(product?.sellingPrice)}
+                    </Typography>
+                    <Typography
+                      sx={{
+                        color: "red",
+                        "&:after": { content: "'%'" },
+                        "&:before": { content: "'-'" },
+                      }}
+                      variant="h5"
+                    >
+                      {/* TODO: sau có promotion thì update lại */}
+                      {product?.discount}
+                    </Typography>
+                  </>
+                ) : null}
+                <Box
+                  sx={{ display: "flex", flexDirection: "column", gap: "20px" }}
+                >
                   <Box
                     sx={{
                       display: "flex",
                       alignItems: "center",
-                      marginLeft: "10px",
-                      border: "1px solid lightgray",
-                      borderRadius: "5px",
                     }}
                   >
-                    <Button
+                    Số lượng:
+                    <Box
                       sx={{
-                        width: "34px",
-                        height: "34px",
-                        minWidth: "34px",
-                        borderTopRightRadius: 0,
-                        borderBottomRightRadius: 0,
-
-                        "&:hover": { backgroundColor: "lightgrey" },
-                        "&.disabled:hover": {
-                          cursor: "not-allowed",
-                        },
+                        display: "flex",
+                        alignItems: "center",
+                        marginLeft: "10px",
+                        border: "1px solid lightgray",
+                        borderRadius: "5px",
                       }}
-                      onClick={() => decreaseQuantity()}
-                      className={`${currentQuantities <= 1 && "disabled"}`}
                     >
-                      -
-                    </Button>
-                    <Divider orientation="vertical" flexItem />
-                    <InputBase
-                      value={currentQuantities}
-                      sx={{
-                        width: "40px",
-                        height: "34px",
-                        textAlignLast: "center",
-                      }}
-                      type="text"
-                      onChange={onChangeQuantities}
-                    ></InputBase>
-                    <Divider orientation="vertical" flexItem />
-                    <Button
-                      sx={{
-                        width: "34px",
-                        height: "34px",
-                        minWidth: "34px",
-                        borderTopLeftRadius: 0,
-                        borderBottomLeftRadius: 0,
+                      <Button
+                        sx={{
+                          width: "34px",
+                          height: "34px",
+                          minWidth: "34px",
+                          borderTopRightRadius: 0,
+                          borderBottomRightRadius: 0,
 
-                        "&:hover": { backgroundColor: "lightgrey" },
-                        "&.disabled:hover": {
-                          cursor: "not-allowed",
-                        },
-                      }}
-                      onClick={() => increaseQuantity()}
-                      className={`${currentQuantities >= (selectProductQuantity ?? 0) &&
-                        "disabled"
+                          "&:hover": { backgroundColor: "lightgrey" },
+                          "&.disabled:hover": {
+                            cursor: "not-allowed",
+                          },
+                        }}
+                        onClick={() => decreaseQuantity()}
+                        className={`${currentQuantities <= 1 && "disabled"}`}
+                      >
+                        -
+                      </Button>
+                      <Divider orientation="vertical" flexItem />
+                      <InputBase
+                        value={currentQuantities}
+                        sx={{
+                          width: "40px",
+                          height: "34px",
+                          textAlignLast: "center",
+                        }}
+                        type="text"
+                        onChange={onChangeQuantities}
+                      ></InputBase>
+                      <Divider orientation="vertical" flexItem />
+                      <Button
+                        sx={{
+                          width: "34px",
+                          height: "34px",
+                          minWidth: "34px",
+                          borderTopLeftRadius: 0,
+                          borderBottomLeftRadius: 0,
+
+                          "&:hover": { backgroundColor: "lightgrey" },
+                          "&.disabled:hover": {
+                            cursor: "not-allowed",
+                          },
+                        }}
+                        onClick={() => increaseQuantity()}
+                        className={`${
+                          currentQuantities >= (selectProductQuantity ?? 0) &&
+                          "disabled"
                         }`}
-                    >
-                      +
-                    </Button>
+                      >
+                        +
+                      </Button>
+                    </Box>
+                  </Box>
+                  Hiện có: {selectProductQuantity}
+                </Box>
+                {selectProductQuantity === 0 ? (
+                  <Button
+                    variant="outlined"
+                    onClick={addToCart}
+                    disabled={selectProductQuantity === 0}
+                    sx={{
+                      marginTop: "20px",
+                      border: "1px solid red !important",
+                      borderRadius: "10px",
+                      width: "200px",
+                      height: "60px",
+                      transition: "0.3s ease-in-out",
+                    }}
+                    startIcon={
+                      <ProductionQuantityLimitsTwoTone sx={{ color: "red" }} />
+                    }
+                  >
+                    <Typography sx={{ color: "red" }}>Đã hết hàng</Typography>
+                  </Button>
+                ) : (
+                  <Button
+                    variant="outlined"
+                    onClick={addToCart}
+                    disabled={selectProductQuantity === 0}
+                    sx={{
+                      marginTop: "20px",
+                      borderRadius: "10px",
+                      width: "200px",
+                      height: "60px",
+                      transition: "0.3s ease-in-out",
+                      cursor: "pointer",
+                    }}
+                    startIcon={<AddShoppingCartTwoTone />}
+                  >
+                    <Typography>Thêm vào giỏ</Typography>
+                  </Button>
+                )}
+              </Box>
+              <Divider
+                orientation="vertical"
+                flexItem
+                sx={{ margin: "0 8px" }}
+              />
+              <Box
+                sx={{
+                  width: "40%",
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "space-around",
+                }}
+              >
+                <Box sx={{ margin: "auto" }}>
+                  <Typography sx={{ fontWeight: 600 }}>
+                    Đổi trả & bảo hành
+                  </Typography>
+                  <Box
+                    sx={{
+                      display: "flex",
+                      alignItems: "center",
+                      marginBottom: "8px",
+                    }}
+                  >
+                    <Refresh
+                      sx={{
+                        padding: "4px",
+                        fontSize: "28px",
+                        color: "rgba(0, 0, 0, 0.54)",
+                        alignSelf: "flex-start",
+                        transform: "scaleX(-1)",
+                        marginRight: "8px",
+                      }}
+                    />
+                    <Box>
+                      <Typography>7 ngày hoàn tiền miễn phí</Typography>
+                      <Typography
+                        sx={{
+                          fontSize: "13px",
+                          color: "grey",
+                          lineHeight: "13px",
+                        }}
+                      >
+                        Hoàn tiền sau 7-14 ngày
+                      </Typography>
+                    </Box>
+                  </Box>
+                  <Box
+                    sx={{
+                      display: "flex",
+                      alignItems: "center",
+                      marginBottom: "8px",
+                    }}
+                  >
+                    <Verified
+                      sx={{
+                        padding: "4px",
+                        fontSize: "28px",
+                        color: "rgba(0, 0, 0, 0.54)",
+                        alignSelf: "flex-start",
+                        marginRight: "8px",
+                      }}
+                    />
+                    <Typography>100% hàng chính hãng</Typography>
+                  </Box>
+                  <Box
+                    sx={{
+                      display: "flex",
+                      alignItems: "center",
+                      marginBottom: "8px",
+                    }}
+                  >
+                    <LocalPolice
+                      sx={{
+                        padding: "4px",
+                        fontSize: "28px",
+                        color: "rgba(0, 0, 0, 0.54)",
+                        alignSelf: "flex-start",
+                        marginRight: "8px",
+                      }}
+                    />
+                    <Typography>Bảo hành định kỳ</Typography>
                   </Box>
                 </Box>
-                Hiện có: {selectProductQuantity}
+                <Divider sx={{ borderBottomWidth: "1px", margin: "0 10px" }} />
+                <Box sx={{ margin: "auto" }}>
+                  <Typography sx={{ fontWeight: 600 }}>Được bán bởi</Typography>
+                  <Typography
+                    sx={{ fontWeight: 600, color: "orange", marginTop: "8px" }}
+                  >
+                    SMMMS Corporation
+                  </Typography>
+                </Box>
+                <Divider sx={{ borderBottomWidth: "1px", margin: "0 10px" }} />
               </Box>
-              {selectProductQuantity === 0 ? (
-                <Button
-                  variant="outlined"
-                  onClick={addToCart}
-                  disabled={selectProductQuantity === 0}
-                  sx={{
-                    marginTop: "20px",
-                    border: "1px solid red !important",
-                    borderRadius: "10px",
-                    width: "200px",
-                    height: "60px",
-                    transition: "0.3s ease-in-out",
-                  }}
-                  startIcon={
-                    <ProductionQuantityLimitsTwoTone sx={{ color: "red" }} />
-                  }
-                >
-                  <Typography sx={{ color: "red" }}>Đã hết hàng</Typography>
-                </Button>
-              ) : (
-                <Button
-                  variant="outlined"
-                  onClick={addToCart}
-                  disabled={selectProductQuantity === 0}
-                  sx={{
-                    marginTop: "20px",
-                    borderRadius: "10px",
-                    width: "200px",
-                    height: "60px",
-                    transition: "0.3s ease-in-out",
-                    cursor: "pointer",
-                  }}
-                  startIcon={<AddShoppingCartTwoTone />}
-                >
-                  <Typography>Thêm vào giỏ</Typography>
-                </Button>
-              )}
             </Box>
-            <Divider orientation="vertical" flexItem sx={{ margin: "0 8px" }} />
+          </Box>
+        </Box>
+        <Box sx={{ mt: 2 }}>
+          <Divider sx={{ borderBottomWidth: "5px", margin: "20px 0" }} />
+          <Box>
+            <Typography
+              variant="h5"
+              sx={{ margin: "10px 0", fontWeight: "bold" }}
+            >
+              Thông số: {product?.name}
+            </Typography>
+          </Box>
+          {product?.specifications.map((item, index) => (
             <Box
+              key={index}
               sx={{
-                width: "40%",
                 display: "flex",
-                flexDirection: "column",
-                justifyContent: "space-around",
+                border: "1px solid #dee2e6",
+                alignItems: "center",
+                "& p": { flex: "1 1 50%", padding: "5px" },
+                "& ": {
+                  backgroundColor: "#F2F2F2",
+                  borderRight: "1px solid #dee2e6",
+                  textTransform: "capitalize",
+                },
               }}
             >
-              <Box sx={{ margin: "auto" }}>
-                <Typography sx={{ fontWeight: 600 }}>
-                  Đổi trả & bảo hành
-                </Typography>
-                <Box
-                  sx={{
-                    display: "flex",
-                    alignItems: "center",
-                    marginBottom: "8px",
-                  }}
-                >
-                  <Refresh
-                    sx={{
-                      padding: "4px",
-                      fontSize: "28px",
-                      color: "rgba(0, 0, 0, 0.54)",
-                      alignSelf: "flex-start",
-                      transform: "scaleX(-1)",
-                      marginRight: "8px",
-                    }}
-                  />
-                  <Box>
-                    <Typography>7 ngày hoàn tiền miễn phí</Typography>
-                    <Typography
-                      sx={{
-                        fontSize: "13px",
-                        color: "grey",
-                        lineHeight: "13px",
+              <Typography sx={{ marginLeft: "20px", flex: "1.5 !important" }}>
+                {item.name}
+              </Typography>
+              <Divider orientation="vertical" flexItem />
+              <Typography sx={{ marginLeft: "20px", flex: "2 !important" }}>
+                {item.value}
+              </Typography>
+            </Box>
+          ))}
+        </Box>
+        <Box sx={{ mt: 2 }}>
+          <Divider sx={{ borderBottomWidth: "5px", margin: "20px 0" }} />
+          <Box>
+            <Typography
+              variant="h5"
+              sx={{ margin: "10px 0", fontWeight: "bold" }}
+            >
+              Bộ phận máy: {product?.name}
+            </Typography>
+          </Box>
+          {product?.component.map((item, index) => (
+            <Box
+              key={index}
+              sx={{
+                width: "100%",
+                display: "flex",
+                border: "1px solid #dee2e6",
+                alignItems: "center",
+                "& p": { flex: "1 1 50%", padding: "5px" },
+                "& ": {
+                  backgroundColor: "#F2F2F2",
+                  borderRight: "1px solid #dee2e6",
+                  textTransform: "capitalize",
+                },
+              }}
+            >
+              <Typography sx={{ marginLeft: "20px", flex: "1.5 !important" }}>
+                {item.name}
+              </Typography>
+              <Divider orientation="vertical" flexItem />
+              <Typography
+                sx={{ marginLeft: "10px", flex: "2 !important" }}
+                component="div"
+              >
+                {item.description}{" "}
+                {item.sellingPrice > 0 && (
+                  <Box sx={{ display: "inline-flex" }}>
+                    <span
+                      style={{
+                        color: "red",
+                        marginLeft: "10px",
+                        fontWeight: "800",
                       }}
                     >
-                      Hoàn tiền sau 7-14 ngày
-                    </Typography>
+                      {" "}
+                      ({" "}
+                    </span>
+                    <span
+                      style={{
+                        color: "red",
+                        fontWeight: "800",
+                        lineHeight: "30px",
+                      }}
+                    >
+                      {" "}
+                      *{" "}
+                    </span>
+                    <span
+                      style={{
+                        color: "red",
+                        fontWeight: "800",
+                      }}
+                    >
+                      {" "}
+                      ){" "}
+                    </span>
                   </Box>
-                </Box>
-                <Box
-                  sx={{
-                    display: "flex",
-                    alignItems: "center",
-                    marginBottom: "8px",
-                  }}
-                >
-                  <Verified
-                    sx={{
-                      padding: "4px",
-                      fontSize: "28px",
-                      color: "rgba(0, 0, 0, 0.54)",
-                      alignSelf: "flex-start",
-                      marginRight: "8px",
-                    }}
-                  />
-                  <Typography>100% hàng chính hãng</Typography>
-                </Box>
-                <Box
-                  sx={{
-                    display: "flex",
-                    alignItems: "center",
-                    marginBottom: "8px",
-                  }}
-                >
-                  <LocalPolice
-                    sx={{
-                      padding: "4px",
-                      fontSize: "28px",
-                      color: "rgba(0, 0, 0, 0.54)",
-                      alignSelf: "flex-start",
-                      marginRight: "8px",
-                    }}
-                  />
-                  <Typography>Bảo hành định kỳ</Typography>
-                </Box>
-              </Box>
-              <Divider sx={{ borderBottomWidth: "1px", margin: "0 10px" }} />
-              <Box sx={{ margin: "auto" }}>
-                <Typography sx={{ fontWeight: 600 }}>Được bán bởi</Typography>
-                <Typography
-                  sx={{ fontWeight: 600, color: "orange", marginTop: "8px" }}
-                >
-                  SMMMS Corporation
-                </Typography>
-              </Box>
-              <Divider sx={{ borderBottomWidth: "1px", margin: "0 10px" }} />
+                )}
+              </Typography>
             </Box>
-          </Box>
+          ))}
         </Box>
-      </Box>
-      <Box sx={{ mt: 2 }}>
-        <Divider sx={{ borderBottomWidth: "5px", margin: "20px 0" }} />
-        <Box>
-          <Typography
-            variant="h5"
-            sx={{ margin: "10px 0", fontWeight: "bold" }}
-          >
-            Thông số: {product?.name}
+        <Box sx={{ marginTop: "30px" }}>
+          <Typography sx={{ fontSize: "18px", color: "red" }}>
+            Lưu ý:
           </Typography>
-        </Box>
-        {product?.specifications.map((item, index) => (
-          <Box
-            key={index}
-            sx={{
-              display: "flex",
-              border: "1px solid #dee2e6",
-              alignItems: "center",
-              "& p": { flex: "1 1 50%", padding: "5px" },
-              "& ": {
-                backgroundColor: "#F2F2F2",
-                borderRight: "1px solid #dee2e6",
-                textTransform: "capitalize",
-              },
-            }}
-          >
-            <Typography sx={{ marginLeft: "20px", flex: "1.5 !important" }}>{item.name}</Typography>
-            <Divider orientation="vertical" flexItem />
-            <Typography sx={{ marginLeft: "20px", flex: "2 !important" }}>{item.value}</Typography>
-          </Box>
-        ))}
-      </Box>
-      <Box sx={{ mt: 2 }}>
-        <Divider sx={{ borderBottomWidth: "5px", margin: "20px 0" }} />
-        <Box>
           <Typography
-            variant="h5"
-            sx={{ margin: "10px 0", fontWeight: "bold" }}
+            sx={{ fontSize: "18px", marginLeft: "50px", color: "red" }}
+            component="div"
           >
-            Bộ phận máy: {product?.name}
-          </Typography>
-        </Box>
-        {product?.component.map((item, index) => (
-          <Box
-            key={index}
-            sx={{
-              width: "100%",
-              display: "flex",
-              border: "1px solid #dee2e6",
-              alignItems: "center",
-              "& p": { flex: "1 1 50%", padding: "5px" },
-              "& ": {
-                backgroundColor: "#F2F2F2",
-                borderRight: "1px solid #dee2e6",
-                textTransform: "capitalize",
-              },
-            }}
-          >
-            <Typography sx={{ marginLeft: "20px", flex: "1.5 !important" }}>{item.name}</Typography>
-            <Divider orientation="vertical" flexItem />
-            <Typography sx={{ marginLeft: "10px", flex: "2 !important" }}>{item.description} {item.sellingPrice > 0 && (
-              <Box sx={{ display: "inline-flex" }}><span style={{
-                color: "red",
-                marginLeft: "10px",
-                fontWeight: "800",
-              }}> ( </span><span style={{
-                color: "red",
-                fontWeight: "800",
-                lineHeight: "30px"
-              }}> * </span>
-                <span style={{
+            <Box sx={{ display: "inline-flex" }}>
+              <span
+                style={{
+                  color: "red",
+                  marginLeft: "10px",
+                  fontWeight: "800",
+                }}
+              >
+                {" "}
+                ({" "}
+              </span>
+              <span
+                style={{
                   color: "red",
                   fontWeight: "800",
-                }}> ) </span></Box>
-            )}</Typography>
-          </Box>
-        ))}
+                  lineHeight: "30px",
+                }}
+              >
+                {" "}
+                *{" "}
+              </span>
+              <span
+                style={{
+                  color: "red",
+                  fontWeight: "800",
+                }}
+              >
+                ){" "}
+              </span>
+            </Box>
+            : Các bộ phận này sẽ bị thu phí khi bảo hành.
+          </Typography>
+        </Box>
       </Box>
-      <Box sx={{ marginTop: "30px" }}>
-        <Typography sx={{ fontSize: "18px", color: "red" }}>
-          Lưu ý:
-        </Typography>
-        <Typography sx={{ fontSize: "18px", marginLeft: "50px", color: "red" }}>
-          <Box sx={{ display: "inline-flex" }}><span style={{
-            color: "red",
-            marginLeft: "10px",
-            fontWeight: "800",
-          }}> ( </span><span style={{
-            color: "red",
-            fontWeight: "800",
-            lineHeight: "30px"
-          }}> * </span>
-            <span style={{
-              color: "red",
-              fontWeight: "800",
-            }}>) </span></Box>
-           :{" "}Các bộ phận này sẽ bị thu phí khi bảo hành.
-        </Typography>
-      </Box>
-    </Box>
+    </>
   );
 };
 

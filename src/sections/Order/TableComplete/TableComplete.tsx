@@ -12,6 +12,8 @@ import ModalDetailOrder from "../OrderModal/ModalDetailOrder";
 import ModalCancelOrder from "../OrderModal/ModalCancelOrder";
 import ModalDeliveryTask from "../OrderModal/ModalDeliveryTask";
 import moment from "moment";
+import ExportPDF from "../Exportpdf/ExportPDF";
+
 type ColumnsType<T> = TableProps<T>["columns"];
 
 const defaultPageSize = 10;
@@ -181,17 +183,6 @@ const TableComplete: React.FC = () => {
   };
   const dateFormatList = ["DD/MM/YYYY", "DD/MM/YY", "DD-MM-YYYY", "DD-MM-YY"];
 
-  const items: MenuProps["items"] = [
-    {
-      key: "1",
-      label: "Chi tiết",
-    },
-    {
-      key: "2",
-      label: "Tạo giao hàng",
-    },
-  ];
-
   const columns: ColumnsType<OrderProps> = [
     {
       title: (
@@ -326,50 +317,67 @@ const TableComplete: React.FC = () => {
         </div>
       ),
       key: "operation",
-      render: (record: OrderProps) => (
-        <Space size="middle">
-          <Dropdown
-            menu={{
-              items: items.filter((item) => {
-                if (item && item.key) {
-                  if (
-                    record.status === StatusType.COMPLETED ||
-                    record.status === StatusType.CANCELED
-                  ) {
-                    return !["2", "3"].includes(item.key as string);
-                  } else if (record.status === StatusType.DELIVERY) {
-                    return item.key !== "2";
-                  } else if (String(record.noteStatus.FAILED) === "3") {
-                    return !["2"].includes(item.key as string);
-                  } else if (record.type !== "Order") {
-                    return !["2"].includes(item.key as string);
+      render: (record: OrderProps) => {
+        const items: MenuProps["items"] = [
+          {
+            key: "1",
+            label: "Chi tiết",
+          },
+          {
+            key: "2",
+            label: "Tạo giao hàng",
+          },
+          {
+            key: "4",
+            label: <ExportPDF row={record} />,
+          },
+        ].filter((item) => {
+          if (item && item.key) {
+            if (
+              record.status === StatusType.COMPLETED ||
+              record.status === StatusType.CANCELED
+            ) {
+              return !["2", "3"].includes(item.key as string);
+            } else if (record.status === StatusType.DELIVERY) {
+              return item.key !== "2";
+            } else if (String(record.noteStatus.FAILED) === "3") {
+              return !["2"].includes(item.key as string);
+            } else if (record.type !== "Order") {
+              return !["2"].includes(item.key as string);
+            }
+          }
+          return true;
+        });
+
+        return (
+          <Space size="middle">
+            <Dropdown
+              menu={{
+                items,
+                onClick: ({ key }) => {
+                  switch (key) {
+                    case "1":
+                      handleActionDetail(record);
+                      break;
+                    case "2":
+                      handleActionTask(record);
+                      break;
+                    case "3":
+                      handleActionCancel(record);
+                      break;
+                    default:
+                      break;
                   }
-                }
-                return true;
-              }),
-              onClick: ({ key }) => {
-                switch (key) {
-                  case "1":
-                    handleActionDetail(record);
-                    break;
-                  case "2":
-                    handleActionTask(record);
-                    break;
-                  case "3":
-                    handleActionCancel(record);
-                    break;
-                  default:
-                    break;
-                }
-              },
-            }}
-          >
-            <a>
-              <DownOutlined />
-            </a>
-          </Dropdown>
-        </Space>
-      ),
+                },
+              }}
+            >
+              <a>
+                <DownOutlined />
+              </a>
+            </Dropdown>
+          </Space>
+        );
+      },
       align: "center",
     },
   ];

@@ -13,6 +13,9 @@ import {
   Card,
   CardContent,
   TextField,
+  CircularProgress,
+  Typography,
+  Backdrop,
 } from "@mui/material";
 import { LoadingButton } from "@mui/lab";
 // @types
@@ -64,6 +67,7 @@ const CheckoutPayment: React.FC<checkoutPaymentProps> = ({
   const { total, discountRank } = useCheckout();
   const { address } = useAddress();
   const { authUser } = useAuthContext();
+  const [loading, setLoading] = useState<boolean>(false);
 
   const location = useLocation();
   const navigate = useNavigate();
@@ -91,6 +95,7 @@ const CheckoutPayment: React.FC<checkoutPaymentProps> = ({
     const transactionId = queryParams.get("vnp_TransactionStatus");
 
     const handleTransactionStatus = async () => {
+      setLoading(true);
       const id = sessionStorage.getItem("paymmentID");
 
       if (transactionId === "00" && id) {
@@ -117,6 +122,8 @@ const CheckoutPayment: React.FC<checkoutPaymentProps> = ({
           }
         } catch (error) {
           console.error("Error updating payment status:", error);
+        } finally {
+          setLoading(false);
         }
       } else if (id) {
         const params = { status: "FAILED" };
@@ -127,6 +134,8 @@ const CheckoutPayment: React.FC<checkoutPaymentProps> = ({
           }
         } catch (error) {
           console.error("Error updating payment status:", error);
+        } finally {
+          setLoading(false);
         }
       }
       sessionStorage.removeItem("paymmentID");
@@ -288,6 +297,16 @@ const CheckoutPayment: React.FC<checkoutPaymentProps> = ({
             </LoadingButton>
           </Grid>
         </Grid>
+        {/* back loading  */}
+        <Backdrop
+          sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
+          open={loading}
+        >
+          <CircularProgress color="inherit" />
+          <Typography variant="h6" sx={{ ml: 2 }}>
+            Đang thực hiện thanh toán...
+          </Typography>
+        </Backdrop>
       </Container>
     </FormProvider>
   );
