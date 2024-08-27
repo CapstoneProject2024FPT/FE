@@ -3,13 +3,7 @@ import { useLocation, Link } from "react-router-dom";
 import PersonIcon from "@mui/icons-material/Person";
 import CachedIcon from "@mui/icons-material/Cached";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
-import {
-  List,
-  ListItemButton,
-  ListItemIcon,
-  ListItemText,
-  Typography,
-} from "@mui/material";
+import { List, ListItemButton, ListItemIcon, Typography } from "@mui/material";
 import Iconify from "../../../components/Iconify";
 import config from "../../../configs";
 
@@ -42,7 +36,10 @@ const SideBarUserProfile: React.FC = () => {
             <ListItemIcon>
               <PersonIcon />
             </ListItemIcon>
-            <Typography sx={{ fontSize: "18px" }}> Thông tin tài khoản </Typography>
+            <Typography sx={{ fontSize: "18px" }}>
+              {" "}
+              Thông tin tài khoản{" "}
+            </Typography>
           </ListItemButton>
           <ListItemButton
             style={{ marginTop: "10px" }}
@@ -79,7 +76,10 @@ const SideBarUserProfile: React.FC = () => {
             <ListItemIcon>
               <CachedIcon />
             </ListItemIcon>
-            <Typography sx={{ fontSize: "18px" }}> Lịch sử mua hàng </Typography>
+            <Typography sx={{ fontSize: "18px" }}>
+              {" "}
+              Lịch sử mua hàng{" "}
+            </Typography>
           </ListItemButton>
           <ListItemButton
             style={{ marginTop: "10px" }}
@@ -90,7 +90,10 @@ const SideBarUserProfile: React.FC = () => {
             <ListItemIcon>
               <FavoriteBorderIcon />
             </ListItemIcon>
-            <Typography sx={{ fontSize: "18px" }}> Sản phẩm yêu thích</Typography>
+            <Typography sx={{ fontSize: "18px" }}>
+              {" "}
+              Sản phẩm yêu thích
+            </Typography>
           </ListItemButton>
           <ListItemButton
             style={{ marginTop: "10px" }}
