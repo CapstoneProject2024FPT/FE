@@ -9,8 +9,9 @@ import {
   TextField,
   CircularProgress,
   Box,
+  CardHeader,
+  CardContent,
 } from "@mui/material";
-import { styled } from "@mui/material/styles";
 import { useParams } from "react-router-dom";
 //components
 import { toast } from "react-toastify";
@@ -26,12 +27,6 @@ import { RoleType, staffProps } from "../../../models/UserData";
 import ModalDeliveryTaskPeriodic from "../Modal/ModalDeliveryTaskPeriodic";
 import { CustomerApi } from "../../../api/services/apiUser";
 import Image from "../../../components/Image";
-
-const LabelStyle = styled(Typography)(({ theme }) => ({
-  ...theme.typography.subtitle2,
-  color: theme.palette.text.secondary,
-  marginBottom: theme.spacing(1),
-}));
 
 const PeriodicWarrantyDetail = () => {
   const { id } = useParams<{ id: string }>();
@@ -144,43 +139,69 @@ const PeriodicWarrantyDetail = () => {
             <Grid container spacing={3}>
               <Grid item xs={12} md={8}>
                 <Card sx={{ p: 3 }}>
-                  <Stack spacing={3}>
-                    <TextField
-                      name="name"
-                      label="Ngày đi bảo hành"
-                      value={
-                        requestWarranty?.startDate
-                          ? formatDateFunc.formatDate(
-                            requestWarranty?.startDate
-                          )
-                          : ""
-                      }
-                      InputProps={{
-                        readOnly: true,
-                      }}
-                    />
+                  <CardHeader title="Thông tin phiếu bảo hành" />
+                  <CardContent>
+                    <Stack spacing={2}>
+                      <Stack direction="row" justifyContent="space-between">
+                        <Typography variant="body2">
+                          Ngày tạo phiếu :{" "}
+                        </Typography>
+                        <Typography variant="subtitle2">
+                          {warrantyPeriodic?.createDate
+                            ? formatDateFunc.formatDate(
+                                warrantyPeriodic?.createDate
+                              )
+                            : ""}
+                        </Typography>
+                      </Stack>
 
-                    <div>
-                      <LabelStyle>Mô tả</LabelStyle>
-                      <TextField
-                        fullWidth
-                        multiline
-                        rows={4}
-                        name="description"
-                        value={warrantyPeriodic?.description || ""}
-                        InputProps={{
-                          readOnly: true,
-                        }}
-                      />
-                    </div>
-                  </Stack>
+                      <Stack direction="row" justifyContent="space-between">
+                        <Typography variant="body2">Mô tả</Typography>
+                        <Typography variant="subtitle2">
+                          {warrantyPeriodic?.description || ""}
+                        </Typography>
+                      </Stack>
+
+                      <Stack direction="row" justifyContent="space-between">
+                        <Typography variant="body2">
+                          Ngày đi bảo hành :{" "}
+                        </Typography>
+                        <Typography variant="subtitle2">
+                          {requestWarranty?.startDate
+                            ? formatDateFunc.formatDate(
+                                requestWarranty?.startDate
+                              )
+                            : ""}
+                        </Typography>
+                      </Stack>
+                      <Stack direction="row" justifyContent="space-between">
+                        <Typography variant="body2">
+                          Ngày đi bảo hành kế tiếp :{" "}
+                        </Typography>
+                        <Typography variant="subtitle2">
+                          {requestWarranty?.nextMaintenanceDate
+                            ? formatDateFunc.formatDate(
+                                requestWarranty?.nextMaintenanceDate
+                              )
+                            : ""}
+                        </Typography>
+                      </Stack>
+                    </Stack>
+                  </CardContent>
                 </Card>
                 <Card sx={{ p: 3, mt: 2 }}>
+                  <CardHeader title="Thông tin khách hàng" />
                   <Stack spacing={3} mb={2}>
                     <TextField
                       label="Tên khách hàng"
                       placeholder="0"
                       value={warrantyPeriodic?.customer.fullName || ""}
+                      InputLabelProps={{ shrink: true }}
+                    />
+                    <TextField
+                      label="Số điện thoại của khách hàng"
+                      placeholder="0"
+                      value={warrantyPeriodic?.customer.phoneNumber || ""}
                       InputLabelProps={{ shrink: true }}
                     />
                     <TextField
@@ -197,6 +218,7 @@ const PeriodicWarrantyDetail = () => {
               <Grid item xs={12} md={4}>
                 <Stack spacing={3}>
                   <Card sx={{ p: 3 }}>
+                    <CardHeader title="Thông tin máy" />
                     <Stack spacing={3} mt={2}>
                       <TextField
                         label="tên máy"
@@ -218,6 +240,7 @@ const PeriodicWarrantyDetail = () => {
                 </Stack>
                 <Stack spacing={3} sx={{ mt: 2 }}>
                   <Card sx={{ p: 3 }}>
+                    <CardHeader title="Thông tin nhân viên" />
                     <Stack spacing={3} mt={2}>
                       <TextField
                         label="Tên nhân viên"
@@ -244,28 +267,28 @@ const PeriodicWarrantyDetail = () => {
             </Grid>
             {(requestWarranty?.status === "Completed" ||
               requestWarranty?.status === "Repairing") && (
-                <Grid container spacing={3} sx={{ mt: 1 }}>
-                  {/* Repair Description */}
-                  <Grid item xs={12}>
-                    <Typography variant="h5">Nội dung sửa</Typography>
-                    <Card sx={{ p: 3 }}>
-                      <TextField
-                        label="Lý do"
-                        value={requestWarranty?.description || ""}
-                        multiline
-                        rows={4}
-                        fullWidth
-                        InputProps={{ readOnly: true }}
-                      />
-                    </Card>
-                  </Grid>
+              <Grid container spacing={3} sx={{ mt: 1 }}>
+                {/* Repair Description */}
+                <Grid item xs={12}>
+                  <Typography variant="h5">Nội dung sửa</Typography>
+                  <Card sx={{ p: 3 }}>
+                    <TextField
+                      label="Lý do"
+                      value={requestWarranty?.description || ""}
+                      multiline
+                      rows={4}
+                      fullWidth
+                      InputProps={{ readOnly: true }}
+                    />
+                  </Card>
+                </Grid>
 
-                  {/* Replaced Components */}
-                  <Grid item xs={12}>
-                    <Typography variant="h5">Bộ phận thay</Typography>
-                    <Card sx={{ p: 3 }}>
-                      {requestWarranty.componentChange.length > 0
-                        ? requestWarranty.componentChange.map((item, idx) => (
+                {/* Replaced Components */}
+                <Grid item xs={12}>
+                  <Typography variant="h5">Bộ phận thay</Typography>
+                  <Card sx={{ p: 3 }}>
+                    {requestWarranty.componentChange.length > 0
+                      ? requestWarranty.componentChange.map((item, idx) => (
                           <Grid container spacing={2} key={idx}>
                             <Grid item md={6} xs={12}>
                               <TextField
@@ -291,11 +314,11 @@ const PeriodicWarrantyDetail = () => {
                             </Grid>
                           </Grid>
                         ))
-                        : "Không thay thế bộ phận nào cả"}
-                    </Card>
-                  </Grid>
+                      : "Không thay thế bộ phận nào cả"}
+                  </Card>
                 </Grid>
-              )}
+              </Grid>
+            )}
             {requestWarranty && requestWarranty?.note?.length > 0 && (
               <Stack>
                 <Typography variant="h5" sx={{ mt: 2 }}>
@@ -304,35 +327,35 @@ const PeriodicWarrantyDetail = () => {
                 <Card sx={{ p: 3 }}>
                   {requestWarranty.note.length > 0
                     ? requestWarranty.note.map((item, idx) => (
-                      <Card key={idx} sx={{ mt: 2, p: 3, boxShadow: 2 }}>
-                        <Grid container>
-                          <Grid item md={4} xs={12}>
-                            <Typography>Ghi chú lần {idx + 1}: </Typography>
+                        <Card key={idx} sx={{ mt: 2, p: 3, boxShadow: 2 }}>
+                          <Grid container>
+                            <Grid item md={4} xs={12}>
+                              <Typography>Ghi chú lần {idx + 1}: </Typography>
+                            </Grid>
+                            <Grid item md={8} xs={12}></Grid>
                           </Grid>
-                          <Grid item md={8} xs={12}></Grid>
-                        </Grid>
-                        <Grid container>
-                          <Grid item md={4} xs={12}>
-                            <Typography>Nội dung: </Typography>
+                          <Grid container>
+                            <Grid item md={4} xs={12}>
+                              <Typography>Nội dung: </Typography>
+                            </Grid>
+                            <Grid item md={8} xs={12}>
+                              <Typography>{item.description} </Typography>
+                            </Grid>
                           </Grid>
-                          <Grid item md={8} xs={12}>
-                            <Typography>{item.description} </Typography>
+                          <Grid container>
+                            <Grid item md={4} xs={12}>
+                              <Typography>Ngày tạo</Typography>
+                            </Grid>
+                            <Grid item md={8} xs={12}>
+                              <Typography>
+                                {formatDateFunc.formatDate(item.createDate)}
+                              </Typography>
+                            </Grid>
                           </Grid>
-                        </Grid>
-                        <Grid container>
-                          <Grid item md={4} xs={12}>
-                            <Typography>Ngày tạo</Typography>
-                          </Grid>
-                          <Grid item md={8} xs={12}>
-                            <Typography>
-                              {formatDateFunc.formatDate(item.createDate)}
-                            </Typography>
-                          </Grid>
-                        </Grid>
-                        <Image src={item.image} />
-                      </Card>
-                    ))
-                    : "Không thay thế bộ phận nào cả"}
+                          <Image src={item.image} />
+                        </Card>
+                      ))
+                    : "Không có ghi chú nào"}
                 </Card>
               </Stack>
             )}

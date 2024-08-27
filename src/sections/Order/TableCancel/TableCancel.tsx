@@ -211,7 +211,8 @@ const TableCancel: React.FC = () => {
     {
       title: "Tổng tiền",
       dataIndex: "finalAmount",
-      render: (finalAmount) => (finalAmount ? formatMoney(finalAmount) : ""),
+      render: (finalAmount) =>
+        finalAmount !== null ? formatMoney(finalAmount) : "",
     },
     {
       title: "Tên khách hàng",

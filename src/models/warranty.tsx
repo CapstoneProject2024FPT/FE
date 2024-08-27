@@ -50,6 +50,7 @@ export interface WarrantyProps {
     id: string;
     fullName: string;
     role: string;
+    phoneNumber: string;
   };
   inventory: Inventory;
   address: AddressDetail;

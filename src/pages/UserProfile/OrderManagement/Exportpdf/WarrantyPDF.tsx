@@ -9,7 +9,11 @@ import {
   Font,
 } from "@react-pdf/renderer";
 import { OrderProps, ProductProps } from "../../../../models/order";
-import { formatAddress, formatDateFunc, formatMoney } from "../../../../utils/fn";
+import {
+  formatAddress,
+  formatDateFunc,
+  formatMoney,
+} from "../../../../utils/fn";
 import { useEffect, useState } from "react";
 import loraRegular from "../../../../assets/fonts/static/Lora-Regular.ttf";
 import logo from "../../../../assets/images/logo-SMMMS.png";
@@ -26,7 +30,7 @@ const WarrantyPDFDocument = ({
   order,
   product,
   warranty,
-  component
+  component,
 }: {
   order: OrderProps;
   product: ProductProps;
@@ -204,12 +208,13 @@ const WarrantyPDFDocument = ({
               marginBottom: "15px",
             }}
           >
-            <Text style={{
-              fontSize: "18px",
-              marginLeft: "15px"
-            }}>
+            <Text
+              style={{
+                fontSize: "18px",
+                marginLeft: "15px",
+              }}
+            >
               1. Thông tin khách hàng
-
             </Text>
           </View>
           <View style={{ margin: "0 auto", lineHeight: 1.5 }}>
@@ -265,121 +270,128 @@ const WarrantyPDFDocument = ({
             </View>
           </View>
         </View>
-          <View style={{
+        <View
+          style={{
             width: "100%",
             display: "flex",
             marginTop: 30,
-          }}>
-            <View
+          }}
+        >
+          <View
+            style={{
+              alignSelf: "center",
+              fontSize: "20px",
+              border: "1px solid #ddd",
+              width: "100%",
+              marginBottom: "15px",
+              backgroundColor: "#ddd",
+            }}
+          >
+            <Text
               style={{
-                alignSelf: "center",
-                fontSize: "20px",
-                border: "1px solid #ddd",
-                width: "100%",
-                marginBottom: "15px",
-                backgroundColor: "#ddd",
-              }}
-            >
-              <Text style={{
                 fontSize: "18px",
-                marginLeft: "15px"
-              }}>
-                2. Bảo hành định kỳ
-              </Text>
-            </View>
+                marginLeft: "15px",
+              }}
+            >
+              2. Bảo hành định kỳ
+            </Text>
+          </View>
+          <View
+            style={{
+              width: "100%",
+              border: "1px solid #ddd",
+              marginBottom: 20,
+            }}
+          >
             <View
               style={{
                 width: "100%",
-                border: "1px solid #ddd",
-                marginBottom: 20,
+                display: "flex",
+                flexDirection: "row",
+                alignItems: "center",
               }}
             >
-              <View
+              <Text
                 style={{
-                  width: "100%",
-                  display: "flex",
-                  flexDirection: "row",
-                  alignItems: "center",
+                  border: "1px solid #ddd",
+                  padding: "4px",
+                  fontWeight: "bold",
+                  textAlign: "center",
+                  flex: "1",
+                  fontSize: "14px",
                 }}
               >
-                <Text
-                  style={{
-                    border: "1px solid #ddd",
-                    padding: "4px",
-                    fontWeight: "bold",
-                    textAlign: "center",
-                    flex: "1",
-                    fontSize: "14px",
-                  }}
-                >
-                  Lần bảo hành
-                </Text>
-                <Text
-                  style={{
-                    border: "1px solid #ddd",
-                    padding: "4px",
-                    fontWeight: "bold",
-                    textAlign: "center",
-                    flex: "1",
-                    fontSize: "14px",
-                  }}
-                >
-                  Ngày bảo hành
-                </Text>
-              </View>
-              {warranty.map((warrantyItem: any, index: number) =>
-                warrantyItem.warrantyDetails.warrantyDetail.map(
-                  (e: any, subIndex: number) => (
-                    <View
-                      style={{
-                        width: "100%",
-                        display: "flex",
-                        flexDirection: "row",
-                        fontSize: "14px",
-                      }}
-                      key={e.id}
-                    >
-                      <Text
-                        style={{
-                          border: "1px solid #ddd",
-                          padding: "4px",
-                          textAlign: "center",
-                          flex: "1",
-                        }}
-                      >
-                        {`Lần ${index *
-                          warrantyItem.warrantyDetails.warrantyDetail.length +
-                          subIndex +
-                          1
-                          }`}
-                      </Text>
-                      <Text
-                        style={{
-                          border: "1px solid #ddd",
-                          padding: "4px",
-                          textAlign: "center",
-                          flex: "1",
-                        }}
-                      >
-                        {formatDateFunc.formatDate(e.startDate)}
-                      </Text>
-                    </View>
-                  )
-                )
-              )}
+                Lần bảo hành
+              </Text>
+              <Text
+                style={{
+                  border: "1px solid #ddd",
+                  padding: "4px",
+                  fontWeight: "bold",
+                  textAlign: "center",
+                  flex: "1",
+                  fontSize: "14px",
+                }}
+              >
+                Ngày bảo hành
+              </Text>
             </View>
+            {warranty.map((warrantyItem: any, index: number) =>
+              warrantyItem.warrantyDetails.warrantyDetail.map(
+                (e: any, subIndex: number) => (
+                  <View
+                    style={{
+                      width: "100%",
+                      display: "flex",
+                      flexDirection: "row",
+                      fontSize: "14px",
+                    }}
+                    key={e.id}
+                  >
+                    <Text
+                      style={{
+                        border: "1px solid #ddd",
+                        padding: "4px",
+                        textAlign: "center",
+                        flex: "1",
+                      }}
+                    >
+                      {`Lần ${
+                        index *
+                          warrantyItem.warrantyDetails.warrantyDetail.length +
+                        subIndex +
+                        1
+                      }`}
+                    </Text>
+                    <Text
+                      style={{
+                        border: "1px solid #ddd",
+                        padding: "4px",
+                        textAlign: "center",
+                        flex: "1",
+                      }}
+                    >
+                      {formatDateFunc.formatDate(e.startDate)}
+                    </Text>
+                  </View>
+                )
+              )
+            )}
           </View>
         </View>
+      </View>
     </Page>
-    <Page style={{
-      width: "100%",
-      height: "100%",
-      padding: "20px",
-      fontFamily: "Lora",
-      display: "flex",
-      flexDirection: "column",
-      position: "relative",
-    }}>
+    <Page
+      style={{
+        width: "100%",
+        height: "100%",
+        padding: "20px",
+        fontFamily: "Lora",
+        display: "flex",
+        flexDirection: "column",
+        position: "relative",
+      }}
+    >
       <View
         style={{
           position: "absolute",
@@ -421,10 +433,12 @@ const WarrantyPDFDocument = ({
           backgroundColor: "#ddd",
         }}
       >
-        <Text style={{
-          fontSize: "18px",
-          marginLeft: "15px"
-        }}>
+        <Text
+          style={{
+            fontSize: "18px",
+            marginLeft: "15px",
+          }}
+        >
           3. Các bộ phận tính phí khi bảo hành
         </Text>
       </View>
@@ -481,7 +495,7 @@ const WarrantyPDFDocument = ({
             Giá bán
           </Text>
         </View>
-        {component.map(({ id, name, sellingPrice }, index) =>
+        {component.map(({ id, name, sellingPrice }, index) => (
           <View
             style={{
               width: "100%",
@@ -496,7 +510,7 @@ const WarrantyPDFDocument = ({
                 border: "1px solid #ddd",
                 padding: "4px",
                 flex: "0.5",
-                textAlign: "center"
+                textAlign: "center",
               }}
             >
               {index + 1}
@@ -508,7 +522,8 @@ const WarrantyPDFDocument = ({
                 flex: "2",
               }}
             >
-              {" "}{" "}{" "}{name}
+              {" "}
+              {name}
             </Text>
             <Text
               style={{
@@ -517,10 +532,11 @@ const WarrantyPDFDocument = ({
                 flex: "1",
               }}
             >
-              {" "}{" "}{" "} {formatMoney(sellingPrice)}
+              {" "}
+              {formatMoney(sellingPrice)}
             </Text>
           </View>
-        )}
+        ))}
       </View>
 
       {/* Sign */}
@@ -549,9 +565,7 @@ const WarrantyPDFDocument = ({
           >
             Đại diện khách hàng ký tên
           </Text>
-          <View style={{ display: "flex", alignItems: "center" }}>
-
-          </View>
+          <View style={{ display: "flex", alignItems: "center" }}></View>
         </View>
         <View
           style={{
@@ -573,7 +587,7 @@ const WarrantyPDFDocument = ({
                 fontSize: "18px",
                 fontWeight: "extrabold",
                 minHeight: "50px",
-                width: "100%"
+                width: "100%",
               }}
             >
               SMMMS
@@ -582,15 +596,17 @@ const WarrantyPDFDocument = ({
         </View>
       </View>
     </Page>
-    <Page style={{
-      width: "100%",
-      height: "100%",
-      padding: "20px",
-      fontFamily: "Lora",
-      display: "flex",
-      flexDirection: "column",
-      position: "relative",
-    }}>
+    <Page
+      style={{
+        width: "100%",
+        height: "100%",
+        padding: "20px",
+        fontFamily: "Lora",
+        display: "flex",
+        flexDirection: "column",
+        position: "relative",
+      }}
+    >
       <View
         style={{
           position: "absolute",
@@ -780,12 +796,12 @@ const WarrantyPDF = ({
             warrantyDetails: warrantyDetails.data,
           };
         });
-        console.log("product: ", product)
-        const machineryId = product?.productId as any
-        console.log("machineryId: ", machineryId)
+        console.log("product: ", product);
+        const machineryId = product?.productId as any;
+        console.log("machineryId: ", machineryId);
         const machineryData = await apiGetMachineryID(machineryId);
-        const machineryComponent = machineryData.data
-        console.log("machineryData: ", machineryComponent)
+        const machineryComponent = machineryData.data;
+        console.log("machineryData: ", machineryComponent);
 
         // const machineryComponent = machineryData.data
         const detailedWarrantyItems = await Promise.all(warrantyData);
@@ -811,7 +827,7 @@ const WarrantyPDF = ({
 
   const handleOpenPdf = () => {
     if (pdfUrl) {
-      console.log("Xem phiếu bảo hành")
+      console.log("Xem phiếu bảo hành");
       window.open(pdfUrl);
     }
   };

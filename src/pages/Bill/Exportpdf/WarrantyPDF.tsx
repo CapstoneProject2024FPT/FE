@@ -27,7 +27,7 @@ const WarrantyPDFDocument = ({
   order,
   product,
   warranty,
-  component
+  component,
 }: {
   order: OrderProps | undefined;
   product: Warranty | undefined;
@@ -208,12 +208,13 @@ const WarrantyPDFDocument = ({
               marginBottom: "15px",
             }}
           >
-            <Text style={{
-              fontSize: "18px",
-              marginLeft: "15px"
-            }}>
+            <Text
+              style={{
+                fontSize: "18px",
+                marginLeft: "15px",
+              }}
+            >
               1. Thông tin khách hàng
-
             </Text>
           </View>
           <View style={{ margin: "0 auto", lineHeight: 1.5 }}>
@@ -288,10 +289,12 @@ const WarrantyPDFDocument = ({
               backgroundColor: "#ddd",
             }}
           >
-            <Text style={{
-              fontSize: "18px",
-              marginLeft: "15px"
-            }}>
+            <Text
+              style={{
+                fontSize: "18px",
+                marginLeft: "15px",
+              }}
+            >
               2. Bảo hành định kỳ
             </Text>
           </View>
@@ -355,11 +358,12 @@ const WarrantyPDFDocument = ({
                         flex: "1",
                       }}
                     >
-                      {`Lần ${index *
-                        warrantyItem.warrantyDetails.warrantyDetail.length +
+                      {`Lần ${
+                        index *
+                          warrantyItem.warrantyDetails.warrantyDetail.length +
                         subIndex +
                         1
-                        }`}
+                      }`}
                     </Text>
                     <Text
                       style={{
@@ -378,17 +382,18 @@ const WarrantyPDFDocument = ({
           </View>
         </View>
       </View>
-
     </Page>
-    <Page style={{
-      width: "100%",
-      height: "100%",
-      padding: "20px",
-      fontFamily: "Lora",
-      display: "flex",
-      flexDirection: "column",
-      position: "relative",
-    }}>
+    <Page
+      style={{
+        width: "100%",
+        height: "100%",
+        padding: "20px",
+        fontFamily: "Lora",
+        display: "flex",
+        flexDirection: "column",
+        position: "relative",
+      }}
+    >
       <View
         style={{
           position: "absolute",
@@ -430,10 +435,12 @@ const WarrantyPDFDocument = ({
           backgroundColor: "#ddd",
         }}
       >
-        <Text style={{
-          fontSize: "18px",
-          marginLeft: "15px"
-        }}>
+        <Text
+          style={{
+            fontSize: "18px",
+            marginLeft: "15px",
+          }}
+        >
           3. Các bộ phận tính phí khi bảo hành
         </Text>
       </View>
@@ -490,7 +497,7 @@ const WarrantyPDFDocument = ({
             Giá bán
           </Text>
         </View>
-        {component.map(({ id, name, sellingPrice }, index) =>
+        {component.map(({ id, name, sellingPrice }, index) => (
           <View
             style={{
               width: "100%",
@@ -505,7 +512,7 @@ const WarrantyPDFDocument = ({
                 border: "1px solid #ddd",
                 padding: "4px",
                 flex: "0.5",
-                textAlign: "center"
+                textAlign: "center",
               }}
             >
               {index + 1}
@@ -517,7 +524,8 @@ const WarrantyPDFDocument = ({
                 flex: "2",
               }}
             >
-              {" "}{" "}{" "}{name}
+              {" "}
+              {name}
             </Text>
             <Text
               style={{
@@ -526,10 +534,11 @@ const WarrantyPDFDocument = ({
                 flex: "1",
               }}
             >
-              {" "}{" "}{" "} {formatMoney(sellingPrice)}
+              {" "}
+              {formatMoney(sellingPrice)}
             </Text>
           </View>
-        )}
+        ))}
       </View>
 
       {/* Sign */}
@@ -558,9 +567,7 @@ const WarrantyPDFDocument = ({
           >
             Đại diện khách hàng ký tên
           </Text>
-          <View style={{ display: "flex", alignItems: "center" }}>
-
-          </View>
+          <View style={{ display: "flex", alignItems: "center" }}></View>
         </View>
         <View
           style={{
@@ -582,7 +589,7 @@ const WarrantyPDFDocument = ({
                 fontSize: "18px",
                 fontWeight: "extrabold",
                 minHeight: "50px",
-                width: "100%"
+                width: "100%",
               }}
             >
               SMMMS
@@ -591,15 +598,17 @@ const WarrantyPDFDocument = ({
         </View>
       </View>
     </Page>
-    <Page style={{
-      width: "100%",
-      height: "100%",
-      padding: "20px",
-      fontFamily: "Lora",
-      display: "flex",
-      flexDirection: "column",
-      position: "relative",
-    }}>
+    <Page
+      style={{
+        width: "100%",
+        height: "100%",
+        padding: "20px",
+        fontFamily: "Lora",
+        display: "flex",
+        flexDirection: "column",
+        position: "relative",
+      }}
+    >
       <View
         style={{
           position: "absolute",
@@ -787,9 +796,10 @@ const WarrantyPDF = ({
             warrantyDetails: warrantyDetails.data,
           };
         });
-        const machineryId = product?.warrantyDetails.inventory.machinery.id as any
+        const machineryId = product?.warrantyDetails.inventory.machinery
+          .id as any;
         const machineryData = await apiGetMachineryID(machineryId);
-        const machineryComponent = machineryData.data
+        const machineryComponent = machineryData.data;
         const detailedWarrantyItems = await Promise.all(warrantyData);
         const blob = await pdf(
           <WarrantyPDFDocument

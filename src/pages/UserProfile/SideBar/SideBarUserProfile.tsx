@@ -3,12 +3,7 @@ import { useLocation, Link } from "react-router-dom";
 import PersonIcon from "@mui/icons-material/Person";
 import CachedIcon from "@mui/icons-material/Cached";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
-import {
-  List,
-  ListItemButton,
-  ListItemIcon,
-  ListItemText,
-} from "@mui/material";
+import { List, ListItemButton, ListItemIcon, Typography } from "@mui/material";
 import Iconify from "../../../components/Iconify";
 import config from "../../../configs";
 
@@ -33,6 +28,7 @@ const SideBarUserProfile: React.FC = () => {
       >
         <div style={{ width: "auto" }}>
           <ListItemButton
+            style={{ marginTop: "10px" }}
             component={Link}
             to={config.routes.userProfile}
             sx={getActiveStyle(config.routes.userProfile)}
@@ -40,9 +36,13 @@ const SideBarUserProfile: React.FC = () => {
             <ListItemIcon>
               <PersonIcon />
             </ListItemIcon>
-            <ListItemText primary="Thông tin tài khoản" />
+            <Typography sx={{ fontSize: "18px" }}>
+              {" "}
+              Thông tin tài khoản{" "}
+            </Typography>
           </ListItemButton>
           <ListItemButton
+            style={{ marginTop: "10px" }}
             component={Link}
             to={config.routes.userChangePassword}
             sx={getActiveStyle(config.routes.userChangePassword)}
@@ -50,9 +50,10 @@ const SideBarUserProfile: React.FC = () => {
             <ListItemIcon>
               <Iconify icon={"ic:round-vpn-key"} width={20} height={20} />
             </ListItemIcon>
-            <ListItemText primary="Đổi mật khẩu" />
+            <Typography sx={{ fontSize: "18px" }}> Đổi mật khẩu </Typography>
           </ListItemButton>
           <ListItemButton
+            style={{ marginTop: "10px" }}
             component={Link}
             to={config.routes.userAddress}
             sx={getActiveStyle(config.routes.userAddress)}
@@ -64,9 +65,10 @@ const SideBarUserProfile: React.FC = () => {
                 height={20}
               />
             </ListItemIcon>
-            <ListItemText primary="Địa chỉ" />
+            <Typography sx={{ fontSize: "18px" }}> Địa chỉ </Typography>
           </ListItemButton>
           <ListItemButton
+            style={{ marginTop: "10px" }}
             component={Link}
             to={config.routes.orderManagement}
             sx={getActiveStyle(config.routes.orderManagement)}
@@ -74,9 +76,13 @@ const SideBarUserProfile: React.FC = () => {
             <ListItemIcon>
               <CachedIcon />
             </ListItemIcon>
-            <ListItemText primary="Lịch sử mua hàng" />
+            <Typography sx={{ fontSize: "18px" }}>
+              {" "}
+              Lịch sử mua hàng{" "}
+            </Typography>
           </ListItemButton>
           <ListItemButton
+            style={{ marginTop: "10px" }}
             component={Link}
             to={config.routes.favoriteProduct}
             sx={getActiveStyle(config.routes.favoriteProduct)}
@@ -84,9 +90,13 @@ const SideBarUserProfile: React.FC = () => {
             <ListItemIcon>
               <FavoriteBorderIcon />
             </ListItemIcon>
-            <ListItemText primary="Sản phẩm yêu thích" />
+            <Typography sx={{ fontSize: "18px" }}>
+              {" "}
+              Sản phẩm yêu thích
+            </Typography>
           </ListItemButton>
           <ListItemButton
+            style={{ marginTop: "10px" }}
             component={Link}
             to={config.routes.maintenance}
             sx={getActiveStyle(config.routes.maintenance)}
@@ -98,9 +108,10 @@ const SideBarUserProfile: React.FC = () => {
                 height={20}
               />
             </ListItemIcon>
-            <ListItemText primary="Bảo hành" />
+            <Typography sx={{ fontSize: "18px" }}> Bảo hành </Typography>
           </ListItemButton>
           <ListItemButton
+            style={{ marginTop: "10px" }}
             component={Link}
             to={config.routes.transaction}
             sx={getActiveStyle(config.routes.transaction)}
@@ -112,7 +123,7 @@ const SideBarUserProfile: React.FC = () => {
                 height={20}
               />
             </ListItemIcon>
-            <ListItemText primary="Giao dịch" />
+            <Typography sx={{ fontSize: "18px" }}> Giao dịch </Typography>
           </ListItemButton>
         </div>
       </List>

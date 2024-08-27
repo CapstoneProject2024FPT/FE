@@ -13,10 +13,15 @@ import ModalCancelOrder from "../OrderModal/ModalCancelOrder";
 import ModalDeliveryTask from "../OrderModal/ModalDeliveryTask";
 import moment from "moment";
 import ExportPDF from "../Exportpdf/ExportPDF";
+import { MenuItem, Stack, TextField } from "@mui/material";
 
 type ColumnsType<T> = TableProps<T>["columns"];
 
 const defaultPageSize = 10;
+const options = [
+  { label: "Mua hàng", value: "Order" },
+  { label: "Bảo hành", value: "Warranty" },
+];
 
 const TableComplete: React.FC = () => {
   const [orders, setOrders] = useState<OrderProps[]>([]);
@@ -36,6 +41,9 @@ const TableComplete: React.FC = () => {
   const [openCancelPopup, setOpenCancelPopup] = useState<boolean>(false);
   const [openTaskPopup, setOpenTaskPopup] = useState<boolean>(false);
   const [selectedData, setSelectedData] = useState<OrderProps | null>(null);
+  const [selectedOrderType, setSelectedOrderType] = useState<string>(
+    options[0].value
+  );
 
   const { loading, apiGetOrder } = ApiOrder();
 
@@ -88,7 +96,8 @@ const TableComplete: React.FC = () => {
     page: number = 1,
     pageSize: number = defaultPageSize,
     createDate = selectedCreateDate,
-    CompletedDate = selectedCompletedDate
+    CompletedDate = selectedCompletedDate,
+    orderType = selectedOrderType
   ) => {
     try {
       const params = {
@@ -97,6 +106,7 @@ const TableComplete: React.FC = () => {
         createDate: createDate,
         CompletedDate: CompletedDate,
         Status: StatusType.COMPLETED,
+        type: orderType,
       };
       const response = await apiGetOrder(params);
 
@@ -254,7 +264,8 @@ const TableComplete: React.FC = () => {
     {
       title: "Tổng tiền",
       dataIndex: "finalAmount",
-      render: (finalAmount) => (finalAmount ? formatMoney(finalAmount) : ""),
+      render: (finalAmount) =>
+        finalAmount !== null ? formatMoney(finalAmount) : "",
     },
     {
       title: "Tên khách hàng",
@@ -382,8 +393,41 @@ const TableComplete: React.FC = () => {
     },
   ];
 
+  const handleSelect = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    let valueStatus = e.target.value;
+    setSelectedOrderType(valueStatus);
+
+    if (valueStatus === "all") {
+      valueStatus = "";
+    }
+    fetchOrder(
+      pagination.current,
+      pagination.pageSize,
+      selectedCreateDate,
+      selectedCompletedDate,
+      valueStatus
+    );
+  };
   return (
     <React.Fragment>
+      <Stack display="flex" justifyContent="flex-end" direction="row">
+        <TextField
+          id="status"
+          select
+          label="Loại đơn hàng"
+          value={selectedOrderType}
+          sx={{ width: "200px", minHeight: "50px", mb: 2 }}
+          onChange={(e) => handleSelect(e)}
+        >
+          {options.map((option) => (
+            <MenuItem key={option.value} value={option.value}>
+              {option.label}
+            </MenuItem>
+          ))}
+        </TextField>
+      </Stack>
       <Table
         columns={columns}
         rowKey={(record) => record.orderId}
