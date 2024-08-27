@@ -199,6 +199,12 @@ const PeriodicWarrantyDetail = () => {
                       InputLabelProps={{ shrink: true }}
                     />
                     <TextField
+                      label="Số điện thoại của khách hàng"
+                      placeholder="0"
+                      value={warrantyPeriodic?.customer.phoneNumber || ""}
+                      InputLabelProps={{ shrink: true }}
+                    />
+                    <TextField
                       label="Địa chỉ sửa"
                       placeholder="0"
                       value={formatAddress(warrantyPeriodic?.address) || ""}
