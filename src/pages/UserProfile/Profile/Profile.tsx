@@ -107,7 +107,13 @@ const Profile: React.FC = () => {
   }
 
   return (
-    <>
+    <Box
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        width: "100%",
+      }}
+    >
       <FormGrid xs={12}>
         <Box
           sx={{
@@ -174,6 +180,56 @@ const Profile: React.FC = () => {
           }
         />
       </FormGrid>
+      <FormGrid xs={12}>
+        <LabelStyle sx={{ fontSize: "16px" }}>Họ và Tên</LabelStyle>
+        <TextField
+          placeholder="Dũng"
+          InputProps={{
+            readOnly: true,
+            style: { fontSize: "16px" },
+          }}
+          value={userProfile?.fullName || ""}
+        />
+      </FormGrid>
+      <FormGrid xs={12}>
+        <LabelStyle sx={{ fontSize: "16px" }}>Số Điện Thoại</LabelStyle>
+        <TextField
+          placeholder="0XX XXX XXXX"
+          InputProps={{
+            readOnly: true,
+            style: { fontSize: "16px" },
+          }}
+          value={userProfile?.phoneNumber || ""}
+        />
+      </FormGrid>
+      <FormGrid xs={12}>
+        <LabelStyle sx={{ fontSize: "16px" }}>Địa chỉ email</LabelStyle>
+        <TextField
+          placeholder="email@gmail.com"
+          InputProps={{
+            readOnly: true,
+            style: { fontSize: "16px" },
+          }}
+          value={userProfile?.email || ""}
+        />
+      </FormGrid>
+      <FormGrid xs={12}>
+        <LabelStyle sx={{ fontSize: "16px" }}>Giới tính</LabelStyle>
+        <TextField
+          placeholder="Name"
+          InputProps={{
+            readOnly: true,
+            style: { fontSize: "16px" },
+          }}
+          value={
+            userProfile?.gender === "Male"
+              ? "Nam"
+              : userProfile?.gender === "Female"
+              ? "Nữ"
+              : "Chưa cập nhật"
+          }
+        />
+      </FormGrid>
       <Button
         sx={{
           backgroundColor: "#3498DB",
@@ -198,7 +254,7 @@ const Profile: React.FC = () => {
           onUpdateSuccess={onUpdateSuccess}
         />
       )}
-    </>
+    </Box>
   );
 };
 
