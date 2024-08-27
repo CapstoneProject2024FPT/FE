@@ -5,7 +5,7 @@ import { FormProvider, RHFRadioGroup } from "../../../components/hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm } from "react-hook-form";
 import * as Yup from "yup";
-import { Card, Grid, Stack, TextField } from "@mui/material";
+import { Card, Grid, Stack, TextField, Typography } from "@mui/material";
 import { toast } from "react-toastify";
 import { GetTaskProps, StaffTaskProps } from "../../../models/task";
 import { ApiTask } from "../../../api/services/apiTask";
@@ -14,6 +14,8 @@ import { ApiWarranty } from "../../../api/services/apiWarranty";
 import { WarrantyPropsById } from "../../../models/warranty";
 import CustomPagination from "../../../components/pagination/CustomPagination";
 import CalendarComponent from "../../../components/calender/Calender";
+import dayjs from "dayjs";
+import config from "../../../configs";
 
 interface ModalBrand {
   TaskData: GetTaskProps | null;
@@ -47,9 +49,13 @@ export default function ModalChangeStaffTask({
   const [query, setQuery] = useState<string>("");
   const [data, setData] = useState<StaffTaskProps[]>([]);
   const [warranty, setWarranty] = useState<WarrantyPropsById>();
+  const executionDate = TaskData?.excutionDate;
+  const chooseDate = dayjs(executionDate).format("YYYY-MM-DD");
 
   const fetchAccountUser = async () => {
-    const params = {};
+    const params = {
+      targetDate: chooseDate,
+    };
     const response = await apiTaskStaff(params);
     if (response.status === 200) {
       setData(response.data);
@@ -67,7 +73,7 @@ export default function ModalChangeStaffTask({
         toast.error(response.Error);
       }
     } catch (error) {
-      toast.error("Error fetching warranty data");
+      toast.error(config.AdminMessageNotice.ErrorGet);
     }
   };
 
@@ -137,14 +143,20 @@ export default function ModalChangeStaffTask({
     setCurrentPage(page);
   };
 
-  const lastIndex = rowPerPage * currentPage;
-  const indexFirstStaff = lastIndex - rowPerPage;
-  const currentStaff = filteredRows?.slice(indexFirstStaff, lastIndex);
+  const sortOptions = filteredRows.sort((a, b) => {
+    const processA = a.todayTaskStatusCount?.Process || 0;
+    const processB = b.todayTaskStatusCount?.Process || 0;
+    return processA - processB;
+  });
+
+  const lastIndexValue = currentPage * rowPerPage;
+  const indexFirstValue = lastIndexValue - rowPerPage;
+  const currentStaff = sortOptions?.slice(indexFirstValue, lastIndexValue);
 
   const radioOptions = currentStaff?.map((item) => ({
     label: item.staffName,
     value: item.staffId,
-    taskStatusCount: item.taskStatusCount,
+    taskStatusCount: item.todayTaskStatusCount,
   }));
 
   const fetchTaskStaff = async (id: string) => {
@@ -195,9 +207,22 @@ export default function ModalChangeStaffTask({
                 )}
                 <TextField
                   label="Nhân viên hiện tại"
+                  value={TaskData?.staff?.fullName}
+                  InputProps={{
+                    readOnly: true,
+                  }}
+                  InputLabelProps={{
+                    shrink: true,
+                  }}
+                />
+                <TextField
+                  label={<CustomLabel label="Nhân viên thay thế" />}
                   value={
-                    staffID &&
-                    data?.find((item) => item.staffId === staffID)?.staffName
+                    staffID === TaskData?.staff?.id
+                      ? ""
+                      : staffID &&
+                        data?.find((item) => item.staffId === staffID)
+                          ?.staffName
                   }
                   InputProps={{
                     readOnly: true,
@@ -243,8 +268,17 @@ export default function ModalChangeStaffTask({
           </Grid>
         </Grid>
 
-        <CalendarComponent tasks={tasks} />
+        <CalendarComponent tasks={tasks} chooseDate={executionDate} />
       </FormProvider>
     </Modal>
   );
 }
+
+interface CustomLabelProps {
+  label: string;
+}
+const CustomLabel = ({ label }: CustomLabelProps) => (
+  <Typography component="span">
+    {label} <span style={{ color: "red" }}>*</span>
+  </Typography>
+);

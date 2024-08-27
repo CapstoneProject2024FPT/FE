@@ -9,12 +9,13 @@ import {
   Font,
 } from "@react-pdf/renderer";
 import { OrderProps } from "../../../models/order";
-import { formatAddress, formatDateFunc } from "../../../utils/fn";
+import { formatAddress, formatDateFunc, formatMoney } from "../../../utils/fn";
 import { useEffect, useState } from "react";
 import loraRegular from "../../../assets/fonts/static/Lora-Regular.ttf";
 import logo from "../../../assets/images/logo-SMMMS.png"; // Adjust path as needed
 import { Button } from "@mui/material";
 import { ApiWarranty } from "../../../api/services/apiWarranty";
+import { MachineryApi } from "../../../api/services/apiMachinery";
 import { Warranty } from "../../../models/warranty";
 
 Font.register({
@@ -26,10 +27,12 @@ const WarrantyPDFDocument = ({
   order,
   product,
   warranty,
+  component,
 }: {
   order: OrderProps | undefined;
   product: Warranty | undefined;
   warranty: any;
+  component: any[];
 }) => (
   <Document>
     <Page
@@ -96,6 +99,7 @@ const WarrantyPDFDocument = ({
           flexDirection: "row",
           alignItems: "center",
           justifyContent: "space-between",
+          marginTop: 10,
         }}
       >
         <Image src={logo} style={{ width: "20%" }} />
@@ -168,22 +172,22 @@ const WarrantyPDFDocument = ({
       <View>
         <Text
           style={{
-            fontSize: "22px",
+            fontSize: "26px",
             fontWeight: "ultrabold",
             alignSelf: "center",
-            marginBottom: "20px",
+            marginTop: 30,
           }}
         >
           PHIẾU BẢO HÀNH
         </Text>
       </View>
+      {/* Content */}
       <View
         style={{
           width: "100%",
           display: "flex",
           flexDirection: "column",
-          alignItems: "center",
-          gap: "30px",
+          marginTop: 30,
         }}
       >
         <View
@@ -191,21 +195,28 @@ const WarrantyPDFDocument = ({
             width: "100%",
             display: "flex",
             flexDirection: "column",
+            marginTop: 30,
           }}
         >
-          <Text
+          <View
             style={{
               alignSelf: "center",
               fontSize: "18px",
               border: "1px solid #ddd",
               width: "100%",
-              textAlign: "center",
               backgroundColor: "#ddd",
               marginBottom: "15px",
             }}
           >
-            Thông tin khách hàng
-          </Text>
+            <Text
+              style={{
+                fontSize: "18px",
+                marginLeft: "15px",
+              }}
+            >
+              1. Thông tin khách hàng
+            </Text>
+          </View>
           <View style={{ margin: "0 auto", lineHeight: 1.5 }}>
             <View
               style={{
@@ -265,21 +276,28 @@ const WarrantyPDFDocument = ({
           style={{
             width: "100%",
             display: "flex",
+            marginTop: 30,
           }}
         >
-          <Text
+          <View
             style={{
               alignSelf: "center",
               fontSize: "20px",
               border: "1px solid #ddd",
               width: "100%",
-              textAlign: "center",
-              backgroundColor: "#ddd",
               marginBottom: "15px",
+              backgroundColor: "#ddd",
             }}
           >
-            Bảo hành định kỳ
-          </Text>
+            <Text
+              style={{
+                fontSize: "18px",
+                marginLeft: "15px",
+              }}
+            >
+              2. Bảo hành định kỳ
+            </Text>
+          </View>
           <View
             style={{
               width: "100%",
@@ -362,69 +380,265 @@ const WarrantyPDFDocument = ({
               )
             )}
           </View>
-          <View
+        </View>
+      </View>
+    </Page>
+    <Page
+      style={{
+        width: "100%",
+        height: "100%",
+        padding: "20px",
+        fontFamily: "Lora",
+        display: "flex",
+        flexDirection: "column",
+        position: "relative",
+      }}
+    >
+      <View
+        style={{
+          position: "absolute",
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          zIndex: -1,
+          display: "flex",
+          flexWrap: "wrap",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        {Array.from({ length: 100 }).map((_, index) => (
+          <Text
+            key={index}
             style={{
-              marginTop: 50,
-              display: "flex",
-              flexDirection: "row",
-              justifyContent: "space-between",
+              opacity: 0.1,
+              fontSize: "20px",
+              fontWeight: "bold",
+              textAlign: "center",
+              color: "black",
+              margin: "30px",
+              transform: "rotate(45)",
             }}
           >
-            <View
+            SMMMS
+          </Text>
+        ))}
+      </View>
+      <View
+        style={{
+          alignSelf: "center",
+          fontSize: "20px",
+          border: "1px solid #ddd",
+          width: "100%",
+          marginBottom: "15px",
+          backgroundColor: "#ddd",
+        }}
+      >
+        <Text
+          style={{
+            fontSize: "18px",
+            marginLeft: "15px",
+          }}
+        >
+          3. Các bộ phận tính phí khi bảo hành
+        </Text>
+      </View>
+      {/* Table */}
+      <View
+        style={{
+          width: "100%",
+          border: "1px solid #ddd",
+          marginBottom: 20,
+        }}
+      >
+        <View
+          style={{
+            width: "100%",
+            display: "flex",
+            flexDirection: "row",
+            alignItems: "center",
+          }}
+        >
+          <Text
+            style={{
+              border: "1px solid #ddd",
+              padding: "4px",
+              fontWeight: "bold",
+              textAlign: "center",
+              flex: "0.5",
+              fontSize: "14px",
+            }}
+          >
+            STT
+          </Text>
+          <Text
+            style={{
+              border: "1px solid #ddd",
+              padding: "4px",
+              fontWeight: "bold",
+              flex: "2",
+              fontSize: "14px",
+              textAlign: "center",
+            }}
+          >
+            Sản phẩm
+          </Text>
+          <Text
+            style={{
+              border: "1px solid #ddd",
+              padding: "4px",
+              fontWeight: "bold",
+              flex: "1",
+              fontSize: "14px",
+              textAlign: "center",
+            }}
+          >
+            Giá bán
+          </Text>
+        </View>
+        {component.map(({ id, name, sellingPrice }, index) => (
+          <View
+            style={{
+              width: "100%",
+              display: "flex",
+              flexDirection: "row",
+              fontSize: "14px",
+            }}
+            key={id}
+          >
+            <Text
               style={{
-                width: "45%",
+                border: "1px solid #ddd",
+                padding: "4px",
+                flex: "0.5",
                 textAlign: "center",
               }}
             >
-              <Text style={{ fontSize: "14px" }}>
-                {formatDateFunc.formatDateVietnamese(order?.createDate) || ""}
-              </Text>
-              <Text
-                style={{
-                  margin: "15px 0",
-                  fontSize: "14px",
-                }}
-              >
-                Đại diện khách hàng ký tên
-              </Text>
-              <Text
-                style={{
-                  textAlign: "center",
-                  fontSize: "18px",
-                  fontWeight: "extrabold",
-                  borderBottom: "1px solid #000",
-                  minHeight: "50px",
-                }}
-              >
-                {order?.userInfo.fullName || ""}
-              </Text>
-            </View>
-            <View
+              {index + 1}
+            </Text>
+            <Text
               style={{
-                width: "45%",
-                textAlign: "center",
+                border: "1px solid #ddd",
+                padding: "4px",
+                flex: "2",
               }}
             >
-              <Text style={{ fontSize: "14px" }}>
-                {formatDateFunc.formatDateVietnamese(order?.createDate) || ""}
-              </Text>
-              <Text style={{ margin: "15px 0", fontSize: "14px" }}>
-                Đại diện công ty kí tên
-              </Text>
-              <Text
-                style={{
-                  textAlign: "center",
-                  fontSize: "18px",
-                  fontWeight: "extrabold",
-                  borderBottom: "1px solid #000",
-                  minHeight: "50px",
-                }}
-              >
-                SMMMS
-              </Text>
-            </View>
+              {" "}
+              {name}
+            </Text>
+            <Text
+              style={{
+                border: "1px solid #ddd",
+                padding: "4px",
+                flex: "1",
+              }}
+            >
+              {" "}
+              {formatMoney(sellingPrice)}
+            </Text>
+          </View>
+        ))}
+      </View>
+
+      {/* Sign */}
+      <View
+        style={{
+          marginTop: 50,
+          display: "flex",
+          flexDirection: "row",
+          justifyContent: "space-between",
+        }}
+      >
+        <View
+          style={{
+            width: "45%",
+            textAlign: "center",
+          }}
+        >
+          <Text style={{ fontSize: "14px" }}>
+            {formatDateFunc.formatDateVietnamese(order?.createDate) || ""}
+          </Text>
+          <Text
+            style={{
+              margin: "15px 0",
+              fontSize: "14px",
+            }}
+          >
+            Đại diện khách hàng ký tên
+          </Text>
+          <View style={{ display: "flex", alignItems: "center" }}></View>
+        </View>
+        <View
+          style={{
+            width: "45%",
+            textAlign: "center",
+          }}
+        >
+          <Text style={{ fontSize: "14px" }}>
+            {formatDateFunc.formatDateVietnamese(order?.createDate) || ""}
+          </Text>
+          <Text style={{ margin: "15px 0", fontSize: "14px" }}>
+            Đại diện công ty kí tên
+          </Text>
+          <View style={{ display: "flex", alignItems: "center" }}>
+            <Image src={logo} style={{ width: "50%" }} />
+            <Text
+              style={{
+                textAlign: "center",
+                fontSize: "18px",
+                fontWeight: "extrabold",
+                minHeight: "50px",
+                width: "100%",
+              }}
+            >
+              SMMMS
+            </Text>
           </View>
         </View>
+      </View>
+    </Page>
+    <Page
+      style={{
+        width: "100%",
+        height: "100%",
+        padding: "20px",
+        fontFamily: "Lora",
+        display: "flex",
+        flexDirection: "column",
+        position: "relative",
+      }}
+    >
+      <View
+        style={{
+          position: "absolute",
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          zIndex: -1,
+          display: "flex",
+          flexWrap: "wrap",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        {Array.from({ length: 100 }).map((_, index) => (
+          <Text
+            key={index}
+            style={{
+              opacity: 0.1,
+              fontSize: "20px",
+              fontWeight: "bold",
+              textAlign: "center",
+              color: "black",
+              margin: "30px",
+              transform: "rotate(45)",
+            }}
+          >
+            SMMMS
+          </Text>
+        ))}
       </View>
       <View
         style={{
@@ -569,7 +783,7 @@ const WarrantyPDF = ({
 }) => {
   const [pdfUrl, setPdfUrl] = useState<string | null>(null);
   const { apiGetWarranty, apiGetWarrantyById } = ApiWarranty();
-
+  const { apiGetMachineryID } = MachineryApi();
   useEffect(() => {
     const fetchWarrantyData = async () => {
       try {
@@ -582,12 +796,17 @@ const WarrantyPDF = ({
             warrantyDetails: warrantyDetails.data,
           };
         });
+        const machineryId = product?.warrantyDetails.inventory.machinery
+          .id as any;
+        const machineryData = await apiGetMachineryID(machineryId);
+        const machineryComponent = machineryData.data;
         const detailedWarrantyItems = await Promise.all(warrantyData);
         const blob = await pdf(
           <WarrantyPDFDocument
             order={order}
             product={product}
             warranty={detailedWarrantyItems}
+            component={machineryComponent?.component || []}
           />
         ).toBlob();
         const url = URL.createObjectURL(blob);

@@ -8,50 +8,58 @@ const axiosPublic = axios.create({
   baseURL: BASE_URL,
 });
 
-let loginInfoString = localStorage.getItem("loginInfo");
-let loginInfo: LoginInfo = loginInfoString
-  ? JSON.parse(loginInfoString).data
-  : null;
+const getLoginInfo = (): LoginInfo | null => {
+  const loginInfoString = localStorage.getItem("loginInfo");
+  return loginInfoString ? JSON.parse(loginInfoString).data : null;
+};
 
-let accessToken = loginInfo?.tokenModel?.accessToken || "";
-let refreshToken = loginInfo?.tokenModel?.refreshToken || "";
+const createAxiosPrivate = () => {
+  // sure accessToken always new
+  let accessToken = "";
+  const loginInfo = getLoginInfo();
+  accessToken = loginInfo?.tokenModel?.accessToken || "";
 
-const axiosPrivate = axios.create({
-  baseURL: BASE_URL,
-  headers: {
-    Authorization: `Bearer ${accessToken}`,
-  },
-});
+  return axios.create({
+    baseURL: BASE_URL,
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+  });
+};
+
+const axiosPrivate = createAxiosPrivate();
 
 axiosPrivate.interceptors.request.use(async (req) => {
-  //check loginInfo existed
-  if (!loginInfo) {
-    loginInfoString = localStorage.getItem("loginInfo");
-    loginInfo = JSON.parse(loginInfoString || "null");
-    accessToken = loginInfo?.tokenModel?.accessToken || "";
-    refreshToken = loginInfo?.tokenModel?.refreshToken || "";
-  }
+  const loginInfo = getLoginInfo();
+  const accessToken = loginInfo?.tokenModel?.accessToken || "";
+  const refreshToken = loginInfo?.tokenModel?.refreshToken || "";
+
   req.headers.Authorization = `Bearer ${accessToken}`;
 
-  const user = jwtDecode(accessToken);
-  const date = new Date();
-  // Check if the token is expired
-  if (user.exp) {
-    const isExpired = user?.exp < date.getTime() / 1000;
-    const params = {
-      accessToken: accessToken,
-      refreshToken: refreshToken,
-      // TODO: Recheck
-      expires: user?.exp,
-    };
-    if (!isExpired) {
-      return req;
-    } else {
-      const response = await axiosPublic.post(`/auths/refresh`, params);
-      localStorage.setItem("loginInfo", JSON.stringify(response.data));
-      req.headers.Authorization = `Bearer ${response.data.accessToken}`;
-      // Return the updated request
-      return req;
+  if (accessToken) {
+    const user = jwtDecode(accessToken);
+    const date = new Date();
+    // Check if the token is expired
+    if (user.exp) {
+      const isExpired = user?.exp < date.getTime() / 1000;
+      if (!isExpired) {
+        return req;
+      } else {
+        try {
+          const params = {
+            accessToken: accessToken,
+            refreshToken: refreshToken,
+            expires: user?.exp,
+          };
+          const response = await axiosPublic.post(`/auths/refresh`, params);
+          localStorage.setItem("loginInfo", JSON.stringify(response.data));
+          req.headers.Authorization = `Bearer ${response.data.accessToken}`;
+        } catch (error) {
+          // If refresh fails, clear loginInfo
+          localStorage.removeItem("loginInfo");
+          // You might want to redirect to login page here
+        }
+      }
     }
   }
   return req;

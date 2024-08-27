@@ -58,15 +58,7 @@ const renderCustomizedLabel = ({
   );
 };
 
-const COLORS = [
-  "#2980b9",
-  "#27ae60",
-  "#e74c3c",
-  "#f1c40f",
-  "#f0932b",
-  "#704c5e",
-];
-const years = [2025, 2024, 2023];
+const years = [2025, 2024];
 const Dashboard: React.FC = () => {
   const { apiGetData } = ApiAdminDashboard();
   const [dashboardData, setDashboardData] = useState<DashboardProp>();
@@ -90,18 +82,61 @@ const Dashboard: React.FC = () => {
     return data && data.totalOrders && data.totalOrders > 0;
   };
 
+  //data Pie
   const dataPie = [
-    { name: "Đã thanh toán", value: dashboardData?.ordersByStatus.Paid },
-    { name: "Đã hoàn thành", value: dashboardData?.ordersByStatus.Completed },
-    { name: "Chưa thanh toán", value: dashboardData?.ordersByStatus.UnPaid },
-    { name: "Đã hủy đơn hàng", value: dashboardData?.ordersByStatus.Canceled },
-    { name: "Đã vận chuyển", value: dashboardData?.ordersByStatus.Deliver },
+    {
+      name: "Đã thanh toán",
+      value: dashboardData?.ordersByStatus.Paid,
+      status: "Paid",
+    },
+    {
+      name: "Đã hoàn thành",
+      value: dashboardData?.ordersByStatus.Completed,
+      status: "Completed",
+    },
+    {
+      name: "Chưa thanh toán",
+      value: dashboardData?.ordersByStatus.UnPaid,
+      status: "UnPaid",
+    },
+    {
+      name: "Đã hủy đơn hàng",
+      value: dashboardData?.ordersByStatus.Canceled,
+      status: "Canceled",
+    },
+    {
+      name: "Đã vận chuyển",
+      value: dashboardData?.ordersByStatus.Delivery,
+      status: "Delivery",
+    },
     {
       name: "Vận chuyển chuyển lại",
       value: dashboardData?.ordersByStatus.ReDelivery,
+      status: "ReDelivery",
     },
   ].filter(({ value }) => !!value);
 
+  //color
+  const getColorForStatus = (status: string) => {
+    switch (status) {
+      case "UnPaid":
+        return "grey";
+      case "Completed":
+        return "green";
+      case "Paid":
+        return "#2196F3";
+      case "Canceled":
+        return "red";
+      case "Delivery":
+        return "#f39c12";
+      case "ReDelivery":
+        return "#704c5e";
+      default:
+        return "transparent";
+    }
+  };
+
+  //-------------------------------------------------------------------------------
   const totalOrdersArray = dashboardData?.monthlyStatistics.map((item) => ({
     month: ` ${item.month}`,
     totalOrders: item.totalOrders,
@@ -190,9 +225,9 @@ const Dashboard: React.FC = () => {
 
   // Custom YAxisTick formatter function
   const formatYAxisTick = (value: any) => {
-    if (value >= 1_000_000) {
+    if (value >= 1_000_000 || value <= -1_000_000) {
       return `${(value / 1_000_000).toFixed(1)}M`;
-    } else if (value >= 1_000) {
+    } else if (value >= 1_000 || value <= -1_000) {
       return `${(value / 1_000).toFixed(1)}K`;
     }
     return value;
@@ -221,18 +256,17 @@ const Dashboard: React.FC = () => {
           heading="Thống kê"
           links={[{ name: "Thống kê" }, { name: "Thống kê doanh thu" }]}
         />
-
-        <FormControl sx={{ m: 1, minWidth: 120 }} size="small">
-          <InputLabel>Năm</InputLabel>
-          <Select label="Năm" value={selectedYear} onChange={handleYearChange}>
-            {years.map((year) => (
-              <MenuItem key={year} value={year}>
-                {year}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
       </Box>
+      <FormControl sx={{ mb: 2, minWidth: 120 }} size="small">
+        <InputLabel>Năm</InputLabel>
+        <Select label="Năm" value={selectedYear} onChange={handleYearChange}>
+          {years.map((year) => (
+            <MenuItem key={year} value={year}>
+              {year}
+            </MenuItem>
+          ))}
+        </Select>
+      </FormControl>
       {!hasData(dashboardData) ? (
         <EmptyData
           style={{
@@ -372,9 +406,11 @@ const Dashboard: React.FC = () => {
               width: "100%",
               display: "flex",
               gap: "20px",
+              alignItems: "center",
+              justifyContent: "space-evenly"
             }}
           >
-            <Box sx={{ width: "50%" }}>
+            <Box>
               <BarChart
                 data={totalOrdersArray}
                 barSize="3%"
@@ -414,8 +450,8 @@ const Dashboard: React.FC = () => {
               flexItem
               sx={{ margin: "5px", border: "1px solid #d9d9d9" }}
             />
-            <Box sx={{ width: "40%" }}>
-              <PieChart width={400} height={300}>
+            <Box>
+              <PieChart width={400} height={400}>
                 <Pie
                   data={dataPie}
                   outerRadius={120}
@@ -424,10 +460,10 @@ const Dashboard: React.FC = () => {
                   fill="#8884d8"
                   dataKey="value"
                 >
-                  {dataPie.map((_entry, index) => (
+                  {dataPie.map((entry, index) => (
                     <Cell
                       key={`cell-${index}`}
-                      fill={COLORS[index % COLORS.length]}
+                      fill={getColorForStatus(entry.status)}
                     />
                   ))}
                 </Pie>
@@ -466,7 +502,7 @@ const Dashboard: React.FC = () => {
                 interval={0}
                 padding={{ left: 25, right: 25 }}
               />
-              <YAxis tickFormatter={formatYAxisTick} />
+              <YAxis tickFormatter={formatYAxisTick} tickCount={9} />
               <Tooltip content={<CustomTooltipBarChart2 />} />
               <Legend
                 payload={[

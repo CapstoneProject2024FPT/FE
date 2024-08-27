@@ -503,17 +503,9 @@ const ExportPDFDocument = ({ row }: { row: OrderProps | undefined }) => {
             >
               Đại diện khách hàng ký tên
             </Text>
-            <Text
-              style={{
-                textAlign: "center",
-                fontSize: "18px",
-                fontWeight: "extrabold",
-                borderBottom: "1px solid #000",
-                minHeight: "50px",
-              }}
-            >
-              {row?.userInfo.fullName || ""}
-            </Text>
+            <View style={{ display: "flex", alignItems: "center" }}>
+
+</View>
           </View>
           <View
             style={{
@@ -527,17 +519,20 @@ const ExportPDFDocument = ({ row }: { row: OrderProps | undefined }) => {
             <Text style={{ margin: "15px 0", fontSize: "14px" }}>
               Đại diện công ty kí tên
             </Text>
-            <Text
-              style={{
-                textAlign: "center",
-                fontSize: "18px",
-                fontWeight: "extrabold",
-                borderBottom: "1px solid #000",
-                minHeight: "50px",
-              }}
-            >
-              SMMMS
-            </Text>
+            <View style={{ display: "flex", alignItems: "center" }}>
+                <Image src={logo} style={{ width: "50%" }} />
+                <Text
+                  style={{
+                    textAlign: "center",
+                    fontSize: "18px",
+                    fontWeight: "extrabold",
+                    minHeight: "50px",
+                    width: "100%"
+                  }}
+                >
+                  SMMMS
+                </Text>
+              </View>
           </View>
         </View>
       </Page>

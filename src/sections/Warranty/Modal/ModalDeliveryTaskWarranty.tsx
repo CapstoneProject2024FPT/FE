@@ -34,7 +34,7 @@ import CalendarComponent from "../../../components/calender/Calender";
 import { formatDateFunc } from "../../../utils/fn";
 import ModalAcceptDateWarranty from "./ModalAcceptDateWarranty";
 
-interface ModalOrder {
+interface Modal {
   OrderData: WarrantyPropsById | undefined;
   openTaskPopup: boolean;
   handleCLose: () => void;
@@ -46,7 +46,7 @@ interface DeliveryProps {
 }
 
 const { Search } = Input;
-const ModalDeliveryTaskWarranty: React.FC<ModalOrder> = ({
+const ModalDeliveryTaskWarranty: React.FC<Modal> = ({
   OrderData,
   openTaskPopup,
   handleCLose,
@@ -87,8 +87,6 @@ const ModalDeliveryTaskWarranty: React.FC<ModalOrder> = ({
       toast.error(response.Error);
     }
   };
-
-  console.log(dateExecution);
 
   useEffect(() => {
     if (!dateExecution) return;
@@ -198,21 +196,6 @@ const ModalDeliveryTaskWarranty: React.FC<ModalOrder> = ({
       fetchTaskStaff(staffID);
     }
   }, [staffID]);
-
-  // const handleChooseDate = (date: Dayjs | null) => {
-  //   if (date) {
-  //     const dateChoose = date.format();
-  //     const dateFilter = date.format("YYYY/MM/DD");
-  //     setValue("accountId", "");
-  //     setTasks([]);
-  //     //set
-  //     setDaySelect(date);
-  //     setSelectedDateExecution(dateFilter);
-  //     setDateExecution(dateChoose);
-  //     //api
-  //     fetchAccountUser(dateFilter);
-  //   }
-  // };
 
   const handleChooseDate = (date: Dayjs | null) => {
     if (date) {
@@ -345,7 +328,7 @@ const ModalDeliveryTaskWarranty: React.FC<ModalOrder> = ({
                   }
                 >
                   <DatePicker
-                    label="Chọn ngày đi bảo hành"
+                    label={<CustomLabel label="Chọn đi bảo hành" />}
                     onChange={(e) => handleChooseDate(e)}
                     format="DD/MM/YYYY"
                     shouldDisableDate={(date) => {
@@ -355,10 +338,20 @@ const ModalDeliveryTaskWarranty: React.FC<ModalOrder> = ({
                         isWeekend || date.isBefore(today.add(1, "day"), "day")
                       );
                     }}
+                    slotProps={{
+                      textField: {
+                        inputProps: {
+                          readOnly: true,
+                        },
+                        InputProps: {
+                          style: { cursor: "pointer" },
+                        },
+                      },
+                    }}
                   />
                 </LocalizationProvider>
                 <TextField
-                  label="Tên nhân viên"
+                  label={<CustomLabel label="Tên nhân viên" />}
                   value={
                     staffID &&
                     data?.find((item) => item.staffId === staffID)?.staffName
@@ -431,4 +424,12 @@ const ModalDeliveryTaskWarranty: React.FC<ModalOrder> = ({
   );
 };
 
+interface CustomLabelProps {
+  label: string;
+}
+const CustomLabel = ({ label }: CustomLabelProps) => (
+  <Typography component="span">
+    {label} <span style={{ color: "red" }}>*</span>
+  </Typography>
+);
 export default ModalDeliveryTaskWarranty;

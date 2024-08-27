@@ -22,7 +22,7 @@ import {
 } from "@mui/icons-material";
 import "./ProductDetail.scss";
 import { toast } from "react-toastify";
-import { useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { MachineryApi } from "../../../api/services/apiMachinery";
 import Zoom from "../../../components/zoomImageHover";
 import { ProductDetailProps } from "../../../models/products";
@@ -46,6 +46,7 @@ const Detail: React.FC = () => {
   const [favouriteList, setFavouriteList] = useState<FavoriteListProps>();
   //favurite
   const [isFavourite, setIsFavourite] = useState(false);
+  const location = useLocation();
 
   let initQuantity = 0;
 
@@ -65,6 +66,7 @@ const Detail: React.FC = () => {
         }
         const response = await apiGetMachineryID(id);
         if (response.status === 200) {
+          console.log("response.data: ", response.data)
           setProduct(response.data);
           setSelectProductQuantity(
             remainingQuantity(
@@ -168,34 +170,39 @@ const Detail: React.FC = () => {
   }, [favouriteList]);
 
   const addToCart = () => {
-    const existCart = localStorage.getItem("cart");
-    const productQuantity = { ...product, currentQuantities, id: id };
-    if (existCart) {
-      const parseProduct = JSON.parse(existCart);
-      const existProduct = parseProduct.findIndex(
-        (p: { id: string | undefined }) => p.id === productQuantity.id
-      );
-      if (existProduct !== -1) {
-        if (selectProductQuantity === 0) {
-          toast.error(config.MessageNotice.OutOfStock);
-          return;
+    if (authUser) {
+      const existCart = localStorage.getItem("cart");
+      const productQuantity = { ...product, currentQuantities, id: id };
+      if (existCart) {
+        const parseProduct = JSON.parse(existCart);
+        const existProduct = parseProduct.findIndex(
+          (p: { id: string | undefined }) => p.id === productQuantity.id
+        );
+        if (existProduct !== -1) {
+          if (selectProductQuantity === 0) {
+            toast.error(config.MessageNotice.OutOfStock);
+            return;
+          } else {
+            parseProduct[existProduct].currentQuantities += currentQuantities;
+          }
         } else {
-          parseProduct[existProduct].currentQuantities += currentQuantities;
+          parseProduct.push(productQuantity);
         }
+        toast.success(config.MessageNotice.AddProductToCartSuccess);
+        localStorage.setItem("cart", JSON.stringify(parseProduct));
       } else {
-        parseProduct.push(productQuantity);
+        localStorage.setItem("cart", JSON.stringify([productQuantity]));
+        toast.success(config.MessageNotice.AddProductToCartSuccess);
       }
-      toast.success(config.MessageNotice.AddProductToCartSuccess);
-      localStorage.setItem("cart", JSON.stringify(parseProduct));
-    } else {
-      localStorage.setItem("cart", JSON.stringify([productQuantity]));
-      toast.success(config.MessageNotice.AddProductToCartSuccess);
-    }
 
-    // Update the selectProductQuantity state
-    setSelectProductQuantity(
-      (prevQuantity) => prevQuantity - currentQuantities
-    );
+      // Update the selectProductQuantity state
+      setSelectProductQuantity(
+        (prevQuantity) => prevQuantity - currentQuantities
+      );
+    } else {
+      localStorage.setItem("historyPath", location.pathname);
+      navigate(config.routes.login);
+    }
   };
 
   const buttonStyle = {
@@ -413,8 +420,8 @@ const Detail: React.FC = () => {
                 {/* TODO: Selling price when have promotion */}
                 {product
                   ? formatMoney(
-                      (product?.sellingPrice * (100 - product?.discount)) / 100
-                    )
+                    (product?.sellingPrice * (100 - product?.discount)) / 100
+                  )
                   : 0}
               </Typography>
 
@@ -506,10 +513,9 @@ const Detail: React.FC = () => {
                         },
                       }}
                       onClick={() => increaseQuantity()}
-                      className={`${
-                        currentQuantities >= (selectProductQuantity ?? 0) &&
+                      className={`${currentQuantities >= (selectProductQuantity ?? 0) &&
                         "disabled"
-                      }`}
+                        }`}
                     >
                       +
                     </Button>
@@ -666,7 +672,6 @@ const Detail: React.FC = () => {
               display: "flex",
               border: "1px solid #dee2e6",
               alignItems: "center",
-
               "& p": { flex: "1 1 50%", padding: "5px" },
               "& ": {
                 backgroundColor: "#F2F2F2",
@@ -675,9 +680,9 @@ const Detail: React.FC = () => {
               },
             }}
           >
-            <Typography>{item.name}</Typography>
+            <Typography sx={{ marginLeft: "20px", flex: "1.5 !important" }}>{item.name}</Typography>
             <Divider orientation="vertical" flexItem />
-            <Typography>{item.value}</Typography>
+            <Typography sx={{ marginLeft: "20px", flex: "2 !important" }}>{item.value}</Typography>
           </Box>
         ))}
       </Box>
@@ -695,10 +700,10 @@ const Detail: React.FC = () => {
           <Box
             key={index}
             sx={{
+              width: "100%",
               display: "flex",
               border: "1px solid #dee2e6",
               alignItems: "center",
-
               "& p": { flex: "1 1 50%", padding: "5px" },
               "& ": {
                 backgroundColor: "#F2F2F2",
@@ -707,11 +712,46 @@ const Detail: React.FC = () => {
               },
             }}
           >
-            <Typography>{item.name}</Typography>
+            <Typography sx={{ marginLeft: "20px", flex: "1.5 !important" }}>{item.name}</Typography>
             <Divider orientation="vertical" flexItem />
-            <Typography>{item.description}</Typography>
+            <Typography sx={{ marginLeft: "10px", flex: "2 !important" }}>{item.description} {item.sellingPrice > 0 && (
+              <Box sx={{ display: "inline-flex" }}><span style={{
+                color: "red",
+                marginLeft: "10px",
+                fontWeight: "800",
+              }}> ( </span><span style={{
+                color: "red",
+                fontWeight: "800",
+                lineHeight: "30px"
+              }}> * </span>
+                <span style={{
+                  color: "red",
+                  fontWeight: "800",
+                }}> ) </span></Box>
+            )}</Typography>
           </Box>
         ))}
+      </Box>
+      <Box sx={{ marginTop: "30px" }}>
+        <Typography sx={{ fontSize: "18px", color: "red" }}>
+          Lưu ý:
+        </Typography>
+        <Typography sx={{ fontSize: "18px", marginLeft: "50px", color: "red" }}>
+          <Box sx={{ display: "inline-flex" }}><span style={{
+            color: "red",
+            marginLeft: "10px",
+            fontWeight: "800",
+          }}> ( </span><span style={{
+            color: "red",
+            fontWeight: "800",
+            lineHeight: "30px"
+          }}> * </span>
+            <span style={{
+              color: "red",
+              fontWeight: "800",
+            }}>) </span></Box>
+           :{" "}Các bộ phận này sẽ bị thu phí khi bảo hành.
+        </Typography>
       </Box>
     </Box>
   );

@@ -26,7 +26,6 @@ import {
 } from "../../../models/machineComponent";
 import { MachineryComponentApi } from "../../../api/services/apiMachineComponent";
 import { formatNumberWithCommas } from "../../../utils/fn";
-import config from "../../../configs";
 
 interface UpdateProductForm {
   name: string;
@@ -94,13 +93,11 @@ const ModalComponentDetail: React.FC<ModalProduct> = ({
     name: Yup.string().required("bắt buộc").min(5, "Tối thiểu 5 kí tự").trim(),
     description: Yup.string()
       .required("bắt buộc")
-      .min(20, "Tối thiểu 20 kí tự")
+      .min(10, "Tối thiểu 10 kí tự")
       .trim(),
     originId: Yup.string().required("Bắt buộc có xuất xứ"),
     brandId: Yup.string().required("Bắt buộc có hãng"),
-    sellingPrice: Yup.number()
-      .moreThan(0, "Giá tiền lớn hơn 0")
-      .required("Không để trống"),
+    sellingPrice: Yup.number().required("Không để trống, có thể để 0"),
     timeWarranty: Yup.number()
       .min(minTimeWarranty, `Thời gian bảo hành lớn hơn ${minTimeWarranty}`)
       .max(maxTimeWarranty, `Thời gian bảo hành nhỏ hơn ${maxTimeWarranty}`)

@@ -13,6 +13,7 @@ import { Stack } from "@mui/material";
 import { PlusOutlined } from "@ant-design/icons";
 import ModalAddEmployee from "../Popup/PopupAddEmployee";
 import useDebounce from "../../../../../hooks/useDebounce";
+import { useAuthContext } from "../../../../../context/AuthContext";
 
 type ColumnsType<T> = TableProps<T>["columns"];
 const { Search } = Input;
@@ -34,6 +35,7 @@ const StaffSale: React.FC = () => {
   const { loading, apiGetUserByRole } = ApiAccount();
   const [openAdd, setOpenAdd] = useState<boolean>(false);
   const debounce = useDebounce({ delay: 500, value: query });
+  const { role } = useAuthContext();
 
   // Function to handle action click
   const handleActionClick = (record: staffProps) => {
@@ -241,6 +243,8 @@ const StaffSale: React.FC = () => {
     },
   ];
 
+  console.log(role);
+
   return (
     <>
       <Stack
@@ -255,9 +259,11 @@ const StaffSale: React.FC = () => {
           onChange={(e) => handleSearch(e)} // Update search value on change
           style={{ width: 200, marginBottom: 16 }}
         />
-        <Button icon={<PlusOutlined />} onClick={handleOpenAdd}>
-          Thêm mới nhân viên bán hàng
-        </Button>
+        {role === RoleType.ADMIN && (
+          <Button icon={<PlusOutlined />} onClick={handleOpenAdd}>
+            Thêm mới nhân viên bán hàng
+          </Button>
+        )}
       </Stack>
       <Table
         bordered

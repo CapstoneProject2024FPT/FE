@@ -84,7 +84,7 @@ export default function ModalUpdateAddress({
   };
   return (
     <Dialog fullWidth maxWidth="md" open={open} onClose={onClose}>
-      <DialogTitle>Thêm mới địa chỉ</DialogTitle>
+      <DialogTitle>Cập nhật thông tin</DialogTitle>
 
       <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
         <DialogContent>

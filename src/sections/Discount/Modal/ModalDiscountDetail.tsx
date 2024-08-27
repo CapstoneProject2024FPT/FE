@@ -1,5 +1,5 @@
-import React from "react";
-import { Modal } from "antd";
+import React, { useEffect, useState } from "react";
+import { Button, Modal } from "antd";
 import {
   FormProvider,
   RHFSelect,
@@ -11,21 +11,25 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm } from "react-hook-form";
 import * as Yup from "yup";
 import { LoadingButton } from "@mui/lab";
-import { Card, Grid, Stack } from "@mui/material";
+import { Card, Grid, Stack, Typography } from "@mui/material";
 import { toast } from "react-toastify";
 import config from "../../../configs";
+import { PlusOutlined } from "@ant-design/icons";
 import {
+  categoriesProps,
   DiscountAdd,
-  DiscountProps,
+  DiscountDetailProps,
   typeMapping,
 } from "../../../models/discount";
 import { ApiDiscount } from "../../../api/services/apiDiscount";
+import ModalAddCategories from "./ModalAddCategoriesDisscount";
 
 interface ModalBrand {
   open: boolean;
   handleClose: () => void;
   onAddSuccess?: (response: string) => void;
-  DiscountData: DiscountProps | undefined;
+  DiscountData: DiscountDetailProps | undefined;
+  onFetchApi: VoidFunction;
 }
 
 const ModalDiscountDetail: React.FC<ModalBrand> = ({
@@ -33,8 +37,11 @@ const ModalDiscountDetail: React.FC<ModalBrand> = ({
   handleClose,
   onAddSuccess,
   DiscountData,
+  onFetchApi,
 }) => {
   const { apiUpdateDiscount } = ApiDiscount();
+  const [openAddCategories, setOpenAddCategories] = useState<boolean>(false);
+  const [categories, setCategories] = useState<categoriesProps[]>([]);
 
   const DiscountSchema = Yup.object().shape({
     name: Yup.string().required("bắt buộc").min(1, "Tối thiểu 1 kí tự").trim(),
@@ -83,6 +90,22 @@ const ModalDiscountDetail: React.FC<ModalBrand> = ({
     }
   };
 
+  const handleOpen = () => {
+    setOpenAddCategories(!openAddCategories);
+  };
+
+  const handleCloseAddCate = () => {
+    setOpenAddCategories(!openAddCategories);
+  };
+
+  const handleCloseSubmit = () => {
+    handleClose();
+    onFetchApi();
+  };
+  useEffect(() => {
+    if (!DiscountData) return;
+    setCategories(DiscountData?.categories);
+  }, [DiscountData]);
   return (
     <Modal
       title="Cập nhật chương trình giảm giá"
@@ -94,7 +117,7 @@ const ModalDiscountDetail: React.FC<ModalBrand> = ({
       style={{ top: 0 }}
     >
       <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
-        <Grid container>
+        <Grid container spacing={2}>
           <Grid item xs={12} md={6}>
             <Card sx={{ p: 3 }}>
               <Stack spacing={3}>
@@ -135,10 +158,33 @@ const ModalDiscountDetail: React.FC<ModalBrand> = ({
             </Card>
           </Grid>
           <Grid item xs={12} md={6}>
-            ddd
+            <Card sx={{ p: 3 }}>
+              <Stack display="flex" direction="row" justifyContent="flex-end">
+                <Button onClick={handleOpen} icon={<PlusOutlined />}>
+                  Thêm loại máy giảm giá
+                </Button>
+              </Stack>
+              <Typography variant="h5">Dòng máy được giảm giá: </Typography>
+              {DiscountData?.categories?.map((category, idx) => (
+                <Typography key={category.id}>
+                  {idx + 1} : {category.name}
+                </Typography>
+              ))}
+            </Card>
           </Grid>
         </Grid>
       </FormProvider>
+      {openAddCategories && (
+        <>
+          <ModalAddCategories
+            handleClose={handleCloseAddCate}
+            open={openAddCategories}
+            selectBefore={categories}
+            handleCloseSubmit={handleCloseSubmit}
+            idDiscount={DiscountData?.id}
+          />
+        </>
+      )}
     </Modal>
   );
 };

@@ -6,7 +6,7 @@ import { toast } from "react-toastify";
 import { formatDateFunc } from "../../utils/fn";
 import { PlusOutlined } from "@ant-design/icons";
 import moment from "moment";
-import { DiscountProps, typeMapping } from "../../models/discount";
+import { DiscountDetailProps, typeMapping } from "../../models/discount";
 import { ApiDiscount } from "../../api/services/apiDiscount";
 import ModalCloseDiscount from "./Modal/ModalCloseDiscount";
 import config from "../../configs";
@@ -20,7 +20,7 @@ const { Search } = Input;
 const pageSize = 10;
 
 const TableDiscount: React.FC = () => {
-  const [discounts, setDiscounts] = useState<DiscountProps[]>();
+  const [discounts, setDiscounts] = useState<DiscountDetailProps[]>();
   const [pagination, setPagination] = useState({
     current: 1,
     pageSize: pageSize,
@@ -33,13 +33,13 @@ const TableDiscount: React.FC = () => {
   const [open, setOpen] = useState<boolean>(false);
   const [openAddPopup, setOpenAddPopup] = useState<boolean>(false);
   const [openDeletePopup, setOpenDeletePopup] = useState<boolean>(false);
-  const [selectedData, setSelectedData] = useState<DiscountProps>();
+  const [selectedData, setSelectedData] = useState<DiscountDetailProps>();
 
   //api
   const { loading, apiGetDiscount } = ApiDiscount();
 
   //modal popup
-  const handleActionDetail = (record: DiscountProps) => {
+  const handleActionDetail = (record: DiscountDetailProps) => {
     setOpen(!open);
     setSelectedData(record);
   };
@@ -47,7 +47,7 @@ const TableDiscount: React.FC = () => {
   const handleCloseAction = () => {
     setOpen(!open);
   };
-  const handleActionDelete = (record: DiscountProps) => {
+  const handleActionDelete = (record: DiscountDetailProps) => {
     setOpenDeletePopup(!openDeletePopup);
     setSelectedData(record);
   };
@@ -111,6 +111,9 @@ const TableDiscount: React.FC = () => {
     showQuickJumper: false, // Show quick jumper
   };
 
+  const onFetchApi = () => {
+    fetchDiscount();
+  };
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     setQuery(e.target.value);
   };
@@ -137,7 +140,7 @@ const TableDiscount: React.FC = () => {
       label: "Trạng thái giảm giá",
     },
   ];
-  const columns: ColumnsType<DiscountProps> = [
+  const columns: ColumnsType<DiscountDetailProps> = [
     {
       title: (
         <div
@@ -197,12 +200,6 @@ const TableDiscount: React.FC = () => {
       dataIndex: "value",
       render: (value) => (value ? `${value}%` : 0),
     },
-    {
-      title: "Trạng thái",
-      dataIndex: "status",
-      render: (status) => (status === "Active" ? "Hữu hiệu" : "Vô hiệu"),
-    },
-
     {
       title: (
         <div
@@ -299,6 +296,7 @@ const TableDiscount: React.FC = () => {
           open={open}
           onAddSuccess={handleUpdateSuccess}
           DiscountData={selectedData}
+          onFetchApi={onFetchApi}
         />
       )}
     </>

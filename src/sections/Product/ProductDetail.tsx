@@ -172,11 +172,19 @@ const ProductDetail = () => {
                             <TableCell
                               sx={{
                                 borderRight: "1px solid rgba(224, 224, 224, 1)",
+                                fontSize: "20px",
                               }}
                             >
-                              Tên Thông số
+                              Tên thông số
                             </TableCell>
-                            <TableCell align="right">giá trị</TableCell>
+                            <TableCell
+                              align="right"
+                              sx={{
+                                fontSize: "20px",
+                              }}
+                            >
+                              Giá trị
+                            </TableCell>
                           </TableRow>
                         </TableHead>
                         <TableBody>
@@ -321,7 +329,7 @@ const ProductDetail = () => {
                             >
                               Thứ tự
                             </TableCell>
-                            <TableCell align="left">Tên Bộ phận</TableCell>
+                            <TableCell align="left">Tên bộ phận</TableCell>
                           </TableRow>
                         </TableHead>
                         <TableBody>
