@@ -12,6 +12,8 @@ import { PlusOutlined } from "@ant-design/icons";
 import ModalRankAdd from "./PopupRank/ModalAddRank";
 import ModalRankDelete from "./PopupRank/ModalDeleteRank";
 import config from "../../configs";
+import { formatMoney } from "../../utils/fn";
+import { Typography } from "@mui/material";
 
 type ColumnsType<T> = TableProps<T>["columns"];
 const { Search } = Input;
@@ -147,7 +149,7 @@ const TableRank: React.FC = () => {
         <div
           style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}
         >
-          Hạng mức
+          Hạng mức (điểm)
         </div>
       ),
       dataIndex: "range",
@@ -221,7 +223,6 @@ const TableRank: React.FC = () => {
           Thêm loại hạng mức
         </Button>
       </div>
-
       <Table
         columns={columns}
         rowKey={(record) => record.id}
@@ -235,6 +236,9 @@ const TableRank: React.FC = () => {
           cancelSort: "Huỷ sắp xếp",
         }}
       />
+      <Typography sx={{ color: "red" }}>
+        (*) Một điểm = {formatMoney(100000)}
+      </Typography>
       {open && (
         <ModalRankDetail
           RankData={selectedData}
@@ -243,7 +247,6 @@ const TableRank: React.FC = () => {
           onUpdateSuccess={handleUpdateRankSuccess}
         />
       )}
-
       {openDeletePopup && (
         <ModalRankDelete
           RankData={selectedData}
@@ -252,7 +255,6 @@ const TableRank: React.FC = () => {
           onDeleteSuccess={handleDeleteRankSuccess}
         />
       )}
-
       {openAddPopup && (
         <ModalRankAdd
           open={openAddPopup}

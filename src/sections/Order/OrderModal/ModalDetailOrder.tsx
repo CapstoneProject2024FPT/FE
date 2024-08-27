@@ -22,6 +22,7 @@ import { toast } from "react-toastify";
 import { ApiTask } from "../../../api/services/apiTask";
 import { GetTaskProps } from "../../../models/task";
 import WarrantyPDF from "../Exportpdf/WarrantyPDF";
+import Image from "../../../components/Image";
 
 interface ModalBrand {
   OrderData: OrderProps | null;
@@ -36,6 +37,17 @@ const ModalDetailOrder: React.FC<ModalBrand> = ({
 }) => {
   const [customer, setCustomer] = useState<userProps>();
   const [staff, setStaff] = useState<GetTaskProps[]>([]);
+  const [openImageModal, setOpenImageModal] = useState<boolean>(false);
+  const [selectedImage, setSelectedImage] = useState<string>();
+
+  const handleOpenImageModal = (image: string) => {
+    setSelectedImage(image);
+    setOpenImageModal(true);
+  };
+
+  const handleCloseImageModal = () => {
+    setOpenImageModal(false);
+  };
 
   const { apiUserProfile } = CustomerApi();
   const { apiGetTaskStaff } = ApiTask();
@@ -271,6 +283,15 @@ const ModalDetailOrder: React.FC<ModalBrand> = ({
                       <TableCell sx={{}}>{detail.description}</TableCell>
                     </TableRow>
                     <TableRow>
+                      <TableCell sx={{}}>Hình ảnh</TableCell>
+                      <TableCell sx={{}}>
+                        <Image
+                          src={detail.image}
+                          onClick={() => handleOpenImageModal(detail.image)}
+                        />
+                      </TableCell>
+                    </TableRow>
+                    <TableRow>
                       <TableCell sx={{}}>Ngày giao</TableCell>
                       <TableCell sx={{}}>
                         {detail?.createDate
@@ -283,6 +304,19 @@ const ModalDetailOrder: React.FC<ModalBrand> = ({
               ))}
             </Grid>
           </Grid>
+          <Modal
+            open={openImageModal}
+            onCancel={handleCloseImageModal}
+            style={{ width: "80%", maxWidth: "800px", margin: "0 auto" }}
+          >
+            <Box>
+              <Image
+                src={selectedImage}
+                style={{ maxWidth: "100%", maxHeight: "600px" }}
+                ratio="1/1"
+              />
+            </Box>
+          </Modal>
         </Box>
       ) : (
         <Card>

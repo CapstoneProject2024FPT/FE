@@ -64,7 +64,7 @@ const CheckoutPayment: React.FC<checkoutPaymentProps> = ({
   handleBack,
   handleGoToStep,
 }) => {
-  const { total, discountRank } = useCheckout();
+  const { total, discountRank, profile } = useCheckout();
   const { address } = useAddress();
   const { authUser } = useAuthContext();
   const [loading, setLoading] = useState<boolean>(false);
@@ -273,7 +273,7 @@ const CheckoutPayment: React.FC<checkoutPaymentProps> = ({
               startIcon={<Iconify icon={"eva:arrow-ios-back-fill"} />}
               onClick={handleBack}
             >
-              Về Bước Trước
+              Về bước trước
             </Button>
           </Grid>
 
@@ -285,6 +285,7 @@ const CheckoutPayment: React.FC<checkoutPaymentProps> = ({
               total={total}
               enableEdit
               onEdit={() => handleGoToStep(0)}
+              customer={profile}
             />
             <LoadingButton
               fullWidth
@@ -293,7 +294,7 @@ const CheckoutPayment: React.FC<checkoutPaymentProps> = ({
               variant="contained"
               loading={isSubmitting}
             >
-              Thanh Toán
+              Thanh toán
             </LoadingButton>
           </Grid>
         </Grid>

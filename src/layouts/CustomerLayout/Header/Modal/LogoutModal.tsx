@@ -19,7 +19,7 @@ interface LogoutProps {
 
 export default function LogoutModal({ open, handleClose }: LogoutProps) {
   const { setAuthUser, setRole } = useAuthContext();
-  const { setDiscountRank, setTotal } = useCheckout();
+  const { setDiscountRank, setTotal, setProfile } = useCheckout();
   const { setSelectedAddress } = useAddress();
   const navigate = useNavigate();
 
@@ -33,6 +33,7 @@ export default function LogoutModal({ open, handleClose }: LogoutProps) {
     setTotal(0);
     setSelectedAddress(null);
     setRole(null);
+    setProfile(null);
     sessionStorage.removeItem("checkoutTotal");
     sessionStorage.removeItem("checkoutTotalDiscountRank");
     setTimeout(() => {

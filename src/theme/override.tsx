@@ -13,6 +13,7 @@ const theme = createTheme(
       body1: {
         fontWeight: 600,
       },
+      button: { textTransform: "none" },
     },
   },
   viVN
