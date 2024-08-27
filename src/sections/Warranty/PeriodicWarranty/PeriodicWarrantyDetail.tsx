@@ -349,7 +349,7 @@ const PeriodicWarrantyDetail = () => {
                           <Image src={item.image} />
                         </Card>
                       ))
-                    : "Không thay thế bộ phận nào cả"}
+                    : "Không có ghi chú nào"}
                 </Card>
               </Stack>
             )}
