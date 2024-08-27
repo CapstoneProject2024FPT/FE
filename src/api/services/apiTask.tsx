@@ -97,7 +97,7 @@ export const ApiTask = () => {
   };
 
   interface StaffTaskProps {
-    targetDate?: string;
+    targetDate?: string | undefined;
   }
   const apiTaskStaff = async (params: StaffTaskProps) => {
     setLoading(true);

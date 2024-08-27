@@ -8,8 +8,9 @@ import {
   Typography,
   TextField,
   CircularProgress,
+  CardHeader,
+  CardContent,
 } from "@mui/material";
-import { styled } from "@mui/material/styles";
 import { useParams } from "react-router-dom";
 //components
 import { toast } from "react-toastify";
@@ -26,12 +27,6 @@ import {
 import { RoleType, staffProps } from "../../../../models/UserData";
 import { CustomerApi } from "../../../../api/services/apiUser";
 import Image from "../../../../components/Image";
-
-const LabelStyle = styled(Typography)(({ theme }) => ({
-  ...theme.typography.subtitle2,
-  color: theme.palette.text.secondary,
-  marginBottom: theme.spacing(1),
-}));
 
 const DetailWarrantyPeriodic = () => {
   const { id } = useParams<{ id: string }>();
@@ -118,38 +113,56 @@ const DetailWarrantyPeriodic = () => {
           <Grid container spacing={3}>
             <Grid item xs={12} md={8}>
               <Card sx={{ p: 3 }}>
-                <Stack spacing={3}>
-                  <TextField
-                    name="name"
-                    label="Ngày bảo hành"
-                    value={
-                      warrantyPeriodic?.createDate
-                        ? formatDateFunc.formatDate(
-                            warrantyPeriodic?.createDate
-                          )
-                        : ""
-                    }
-                    InputProps={{
-                      readOnly: true,
-                    }}
-                  />
+                <CardHeader title="Thông tin phiếu bảo hành" />
+                <CardContent>
+                  <Stack spacing={2}>
+                    <Stack direction="row" justifyContent="space-between">
+                      <Typography variant="body2">Ngày tạo phiếu : </Typography>
+                      <Typography variant="subtitle2">
+                        {warrantyPeriodic?.createDate
+                          ? formatDateFunc.formatDate(
+                              warrantyPeriodic?.createDate
+                            )
+                          : ""}
+                      </Typography>
+                    </Stack>
 
-                  <div>
-                    <LabelStyle>Mô tả</LabelStyle>
-                    <TextField
-                      fullWidth
-                      multiline
-                      rows={4}
-                      name="description"
-                      value={warrantyPeriodic?.description || ""}
-                      InputProps={{
-                        readOnly: true,
-                      }}
-                    />
-                  </div>
-                </Stack>
+                    <Stack direction="row" justifyContent="space-between">
+                      <Typography variant="body2">Mô tả</Typography>
+                      <Typography variant="subtitle2">
+                        {warrantyPeriodic?.description || ""}
+                      </Typography>
+                    </Stack>
+
+                    <Stack direction="row" justifyContent="space-between">
+                      <Typography variant="body2">
+                        Ngày đi bảo hành :{" "}
+                      </Typography>
+                      <Typography variant="subtitle2">
+                        {requestWarranty?.startDate
+                          ? formatDateFunc.formatDate(
+                              requestWarranty?.startDate
+                            )
+                          : ""}
+                      </Typography>
+                    </Stack>
+                    <Stack direction="row" justifyContent="space-between">
+                      <Typography variant="body2">
+                        Ngày đi bảo hành kế tiếp :{" "}
+                      </Typography>
+                      <Typography variant="subtitle2">
+                        {requestWarranty?.nextMaintenanceDate
+                          ? formatDateFunc.formatDate(
+                              requestWarranty?.nextMaintenanceDate
+                            )
+                          : ""}
+                      </Typography>
+                    </Stack>
+                  </Stack>
+                </CardContent>
               </Card>
               <Card sx={{ p: 3, mt: 2 }}>
+                <CardHeader title="Thông tin khách hàng" />
                 <Stack spacing={3} mb={2}>
                   <TextField
                     label="Tên khách hàng"
@@ -171,6 +184,7 @@ const DetailWarrantyPeriodic = () => {
             <Grid item xs={12} md={4}>
               <Stack spacing={3}>
                 <Card sx={{ p: 3 }}>
+                  <CardHeader title="Thông tin máy" />
                   <Stack spacing={3} mt={2}>
                     <TextField
                       label="tên máy"
@@ -190,6 +204,7 @@ const DetailWarrantyPeriodic = () => {
               </Stack>
               <Stack spacing={3} sx={{ mt: 2 }}>
                 <Card sx={{ p: 3 }}>
+                  <CardHeader title="Thông tin nhân viên" />
                   <Stack spacing={3} mt={2}>
                     <TextField
                       label="Tên nhân viên"

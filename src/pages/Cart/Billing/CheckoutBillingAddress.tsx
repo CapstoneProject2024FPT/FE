@@ -43,7 +43,7 @@ const CheckoutBillingAddress: React.FC<checkoutBillingAndAddress> = ({
   handleNextStep,
   handleGoToStep,
 }) => {
-  const { total, discountRank } = useCheckout();
+  const { total, discountRank, profile } = useCheckout();
   const { apiGetAddress } = ApiAddress();
   const [addresses, setAddresses] = useState<addressProps[]>([]);
   const { setSelectedAddress } = useAddress();
@@ -150,9 +150,10 @@ const CheckoutBillingAddress: React.FC<checkoutBillingAndAddress> = ({
                   size="small"
                   color="inherit"
                   onClick={handleBack}
+                  variant="outlined"
                   startIcon={<Iconify icon={"eva:arrow-ios-back-fill"} />}
                 >
-                  Về Giỏ Hàng
+                  Về giỏ hàng
                 </Button>
                 <Button
                   size="small"
@@ -160,7 +161,7 @@ const CheckoutBillingAddress: React.FC<checkoutBillingAndAddress> = ({
                   startIcon={<Iconify icon={"eva:plus-fill"} />}
                   variant="contained"
                 >
-                  Thêm Mới Địa Chỉ
+                  Thêm mới địa chỉ
                 </Button>
               </Box>
             </Grid>
@@ -170,6 +171,7 @@ const CheckoutBillingAddress: React.FC<checkoutBillingAndAddress> = ({
                 total={total}
                 discount={discountRank}
                 enableEdit
+                customer={profile}
                 onEdit={() => handleGoToStep(0)}
               />
               <LoadingButton

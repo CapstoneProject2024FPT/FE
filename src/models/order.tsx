@@ -72,6 +72,7 @@ interface noteDetail {
   status: string;
   description: string;
   createDate: Date;
+  image: string;
 }
 
 export interface ProductProps {

@@ -24,9 +24,15 @@ import config from "../../../configs";
 import CustomPagination from "../../../components/pagination/CustomPagination";
 //api
 //calender
-import dayjs from "dayjs";
+//calender
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import { viVN } from "@mui/x-date-pickers/locales";
+import dayjs, { Dayjs } from "dayjs";
 import CalendarComponent from "../../../components/calender/Calender";
 import { formatDateFunc } from "../../../utils/fn";
+import ModalAcceptDateWarranty from "./ModalAcceptDateWarranty";
 
 interface ModalDeliveryTask {
   requestWarranty: WarrantyDetailGetProps | undefined;
@@ -61,12 +67,37 @@ const ModalDeliveryTaskPeriodic: React.FC<ModalDeliveryTask> = ({
   const executionDate = requestWarranty?.startDate;
   const chooseDate = dayjs(executionDate).format("YYYY-MM-DD");
 
-  const fetchAccountUser = async () => {
+  const initialDaySelect = executionDate ? dayjs(executionDate) : null;
+
+  // const [dateExecution, setDateExecution] = useState<string | null>(chooseDate);
+  const [selectedDateExecution, setSelectedDateExecution] = useState<
+    string | null
+  >(chooseDate);
+
+  const [daySelect, setDaySelect] = useState<Dayjs | null>(
+    initialDaySelect || null
+  );
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [tempDate, setTempDate] = useState<string | null>(null);
+  const [selectedDateExecutionTemp, setSelectedDateExecutionTemp] = useState<
+    string | null
+  >(chooseDate);
+  const [daySelectTemp, setDaySelectTemp] = useState<Dayjs | null>();
+  const [lastConfirmedDate, setLastConfirmedDate] = useState<string | null>(
+    chooseDate
+  );
+
+  const fetchAccountUser = async (executionDate?: string) => {
+    const dateToUse = executionDate || selectedDateExecution;
+    if (!dateToUse) return;
+
     const params = {
-      targetDate: chooseDate,
+      targetDate: dateToUse,
     };
 
     const response = await apiTaskStaff(params);
+
     if (response.status === 200) {
       setData(response.data);
     } else {
@@ -97,6 +128,7 @@ const ModalDeliveryTaskPeriodic: React.FC<ModalDeliveryTask> = ({
     reset,
     handleSubmit,
     watch,
+    setValue,
     formState: { isSubmitting },
   } = methods;
 
@@ -110,11 +142,17 @@ const ModalDeliveryTaskPeriodic: React.FC<ModalDeliveryTask> = ({
             toast.error("Chọn ngày thực hiện");
             return;
           }
+
+          const dateToUse = executionDate || selectedDateExecution;
+          if (!dateToUse) return;
+
+          console.log(dateToUse);
+
           const params: DeliveryPropsPost = {
             accountId: data.accountId,
             warrantyDetailId: idWarranty,
             type: "Warranty",
-            excutionDate: executionDate,
+            excutionDate: dateToUse,
           };
 
           const response = await apiCreateTask(params);
@@ -180,6 +218,93 @@ const ModalDeliveryTaskPeriodic: React.FC<ModalDeliveryTask> = ({
     }
   }, [staffID]);
 
+  const handleChooseDate = (date: Dayjs | null) => {
+    if (date) {
+      const dateChoose = date.format();
+      const dateFilter = date.format("YYYY-MM-DD");
+      setValue("accountId", "");
+      setTasks([]);
+
+      setTempDate(dateChoose);
+      setSelectedDateExecutionTemp(dateFilter);
+      setDaySelectTemp(date);
+
+      if (executionDate) {
+        const diffInBusinessDays = calculateBusinessDays(
+          dayjs(executionDate),
+          dayjs(dateChoose)
+        );
+
+        if (diffInBusinessDays > 2) {
+          setIsModalOpen(true);
+        } else {
+          updateDates(date, dateFilter);
+        }
+      } else {
+        updateDates(date, dateFilter);
+      }
+    }
+  };
+
+  const updateDates = (date: Dayjs, dateFilter: string) => {
+    setDaySelect(date);
+    setSelectedDateExecution(dateFilter);
+    fetchAccountUser(dateFilter);
+  };
+
+  //count date
+  const calculateBusinessDays = (startDate: Dayjs, endDate: Dayjs): number => {
+    let count = 0;
+    let currentDate = startDate.startOf("day");
+
+    while (currentDate.isBefore(endDate, "day")) {
+      const dayOfWeek = currentDate.day();
+      if (dayOfWeek !== 0 && dayOfWeek !== 6) {
+        count++;
+      }
+      currentDate = currentDate.add(1, "day");
+    }
+
+    return count;
+  };
+
+  const handleCancel = () => {
+    setIsModalOpen(false);
+    // Reset the temporary states to null
+    setTempDate(null);
+    setSelectedDateExecutionTemp(null);
+    setDaySelectTemp(null);
+
+    // Revert to last confirmed date
+    if (lastConfirmedDate) {
+      const originalDate = dayjs(lastConfirmedDate);
+      setDaySelect(originalDate);
+      setSelectedDateExecution(originalDate.format("YYYY-MM-DD"));
+      // Fetch account users with the original date
+      fetchAccountUser(originalDate.format("YYYY-MM-DD"));
+    } else {
+      setDaySelect(null);
+      setSelectedDateExecution(null);
+    }
+
+    // Reset tasks to force calendar update
+    setTasks([]);
+  };
+
+  const handleConfirm = () => {
+    setValue("accountId", "");
+    setTasks([]);
+    setSelectedDateExecution(selectedDateExecutionTemp);
+    setDaySelect(daySelectTemp as Dayjs | null);
+    setLastConfirmedDate(tempDate); // Set the last confirmed date
+    setIsModalOpen(false);
+
+    // Fetch account users with the new confirmed date
+    if (selectedDateExecutionTemp) {
+      fetchAccountUser(selectedDateExecutionTemp);
+    }
+  };
+
   return (
     <Modal
       title="Giao nhiệm vụ bảo hành định kỳ"
@@ -232,6 +357,37 @@ const ModalDeliveryTaskPeriodic: React.FC<ModalDeliveryTask> = ({
                     </Typography>
                   </Grid>
                 </Grid>
+                <LocalizationProvider
+                  dateAdapter={AdapterDayjs}
+                  localeText={
+                    viVN.components.MuiLocalizationProvider.defaultProps
+                      .localeText
+                  }
+                >
+                  <DatePicker
+                    label={<CustomLabel label="Chọn đi bảo hành" />}
+                    onChange={(e) => handleChooseDate(e)}
+                    value={daySelect}
+                    format="DD/MM/YYYY"
+                    shouldDisableDate={(date) => {
+                      const today = dayjs();
+                      const isWeekend = date.day() === 0 || date.day() === 6;
+                      return (
+                        isWeekend || date.isBefore(today.add(1, "day"), "day")
+                      );
+                    }}
+                    slotProps={{
+                      textField: {
+                        inputProps: {
+                          readOnly: true,
+                        },
+                        InputProps: {
+                          style: { cursor: "pointer" },
+                        },
+                      },
+                    }}
+                  />
+                </LocalizationProvider>
                 <TextField
                   label={<CustomLabel label="Tên nhân viên" />}
                   value={
@@ -293,7 +449,14 @@ const ModalDeliveryTaskPeriodic: React.FC<ModalDeliveryTask> = ({
           Tên nhân viên:{" "}
           {staffID && data?.find((item) => item.staffId === staffID)?.staffName}
         </Typography>
-        <CalendarComponent tasks={tasks} chooseDate={executionDate} />
+        <CalendarComponent tasks={tasks} chooseDate={daySelect} />
+        {isModalOpen && (
+          <ModalAcceptDateWarranty
+            openPopup={isModalOpen}
+            handleClosePopup={handleCancel}
+            onConfirm={handleConfirm}
+          />
+        )}
       </FormProvider>
     </Modal>
   );

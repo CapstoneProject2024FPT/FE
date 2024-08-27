@@ -63,7 +63,14 @@ const Cart: React.FC<CartProp> = ({ handleNext }) => {
   const { apiUserProfile } = CustomerApi();
   const [userProfile, setUserProfile] = useState<userModel>();
 
-  const { setTotal, total, setDiscountRank, discountRank } = useCheckout();
+  const {
+    setTotal,
+    total,
+    setDiscountRank,
+    discountRank,
+    setProfile,
+    profile,
+  } = useCheckout();
 
   useEffect(() => {
     const fetchCorrectQuantities = async () => {
@@ -160,6 +167,7 @@ const Cart: React.FC<CartProp> = ({ handleNext }) => {
     const response = await apiUserProfile(authUser);
     if (response.status === 200) {
       setUserProfile(response.data);
+      setProfile(response.data);
     }
   };
 
@@ -186,7 +194,7 @@ const Cart: React.FC<CartProp> = ({ handleNext }) => {
             </Typography>
             <Grid container spacing={2}>
               <Grid item xs={12} md={8}>
-                <TableContainer sx={{ maxWidth: 820 }}>
+                <TableContainer sx={{ maxWidth: 920 }}>
                   <Table>
                     <TableHead>
                       <TableRow sx={{ background: "white" }}>
@@ -353,7 +361,11 @@ const Cart: React.FC<CartProp> = ({ handleNext }) => {
                 </Link>
               </Grid>
               <Grid item xs={12} md={4} sx={{ mt: 2 }}>
-                <CartSummary total={total} discount={discountRank} />
+                <CartSummary
+                  total={total}
+                  discount={discountRank}
+                  customer={profile}
+                />
                 <Button
                   variant="contained"
                   fullWidth
@@ -393,7 +405,11 @@ const Cart: React.FC<CartProp> = ({ handleNext }) => {
               </Link>
             </Grid>
             <Grid item xs={12} md={4}>
-              <CartSummary total={total} discount={discountRank} />
+              <CartSummary
+                total={total}
+                discount={discountRank}
+                customer={profile}
+              />
               <Button
                 variant="contained"
                 fullWidth
