@@ -187,6 +187,12 @@ const RequestDetail = () => {
                       InputLabelProps={{ shrink: true }}
                     />
                     <TextField
+                      label="Số điện thoại của khách hàng"
+                      placeholder="0"
+                      value={requestWarranty?.customer.phoneNumber || ""}
+                      InputLabelProps={{ shrink: true }}
+                    />
+                    <TextField
                       label="Địa chỉ sửa"
                       placeholder="0"
                       value={formatAddress(requestWarranty?.address) || ""}

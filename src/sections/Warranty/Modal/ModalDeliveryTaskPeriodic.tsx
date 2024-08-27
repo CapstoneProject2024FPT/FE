@@ -68,6 +68,7 @@ const ModalDeliveryTaskPeriodic: React.FC<ModalDeliveryTask> = ({
   const chooseDate = dayjs(executionDate).format("YYYY-MM-DD");
 
   const initialDaySelect = executionDate ? dayjs(executionDate) : null;
+  const [note, setNote] = useState<string>("");
 
   // const [dateExecution, setDateExecution] = useState<string | null>(chooseDate);
   const [selectedDateExecution, setSelectedDateExecution] = useState<
@@ -153,6 +154,7 @@ const ModalDeliveryTaskPeriodic: React.FC<ModalDeliveryTask> = ({
             warrantyDetailId: idWarranty,
             type: "Warranty",
             excutionDate: dateToUse,
+            note: note,
           };
 
           const response = await apiCreateTask(params);
@@ -400,6 +402,14 @@ const ModalDeliveryTaskPeriodic: React.FC<ModalDeliveryTask> = ({
                   InputLabelProps={{
                     shrink: true,
                   }}
+                />
+                <TextField
+                  fullWidth
+                  multiline
+                  rows={4}
+                  value={note}
+                  placeholder="Nội dung cần ghi chú"
+                  onChange={(e) => setNote(e.target.value)}
                 />
               </Stack>
               <div

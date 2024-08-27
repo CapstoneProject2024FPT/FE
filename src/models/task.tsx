@@ -6,6 +6,7 @@ export interface DeliveryPropsPost {
   orderId?: string;
   accountId: string;
   excutionDate?: string | Date;
+  note?: string;
 }
 
 export interface GetTaskProps {
