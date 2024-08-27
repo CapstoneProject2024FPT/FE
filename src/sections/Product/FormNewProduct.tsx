@@ -20,6 +20,7 @@ import { CreateProductFormSchema } from "../../models/products";
 import {
   FormProvider,
   RHFAutoComplete,
+  RHFSelect,
   RHFTextField,
   RHFTextFieldNumber,
   RHFUploadMultiFile,
@@ -63,8 +64,11 @@ export default function ProductNewEditForm() {
   const minTimeWarranty = 1;
   const maxTimeWarranty = 3;
 
-  const minTimeMonthWarranty = 3;
-  const maxTimeMonthWarranty = 6;
+  const monthWarrantyNumberData = [
+    { id: 1, value: 3 },
+    { id: 2, value: 4 },
+    { id: 3, value: 6 },
+  ];
 
   const initialSpecifications: specificationProps = {
     name: "",
@@ -163,16 +167,9 @@ export default function ProductNewEditForm() {
       .min(minTimeWarranty, `Thời gian bảo hành lớn hơn ${minTimeWarranty}`)
       .max(maxTimeWarranty, `Thời gian bảo hành nhỏ hơn ${maxTimeWarranty}`)
       .required("Thời gian bảo hành là bắt buộc"),
-    monthWarrantyNumber: Yup.number()
-      .min(
-        minTimeMonthWarranty,
-        `Thời gian bảo hành lớn hơn ${minTimeMonthWarranty}`
-      )
-      .max(
-        maxTimeMonthWarranty,
-        `Thời gian bảo hành nhỏ hơn ${maxTimeMonthWarranty}`
-      )
-      .required("Thời gian bảo hành là bắt buộc"),
+    monthWarrantyNumber: Yup.number().required(
+      "Thời gian số tháng bảo hành định kì là bắt buộc"
+    ),
   });
 
   const methods = useForm<CreateProductFormSchema>({
@@ -481,19 +478,13 @@ export default function ProductNewEditForm() {
                     inputProps: { min: 0, max: maxTimeWarranty },
                   }}
                 />
-                <RHFTextField
-                  required
-                  name="monthWarrantyNumber"
-                  label="Số tháng bảo hành "
-                  placeholder="0"
-                  InputLabelProps={{ shrink: true }}
-                  InputProps={{
-                    endAdornment: (
-                      <InputAdornment position="end">Tháng</InputAdornment>
-                    ),
-                    type: "number",
-                  }}
-                />
+                <RHFSelect name="monthWarrantyNumber" label="Số tháng bảo hành">
+                  {monthWarrantyNumberData?.map((warrantyMonth) => (
+                    <option key={warrantyMonth.id} value={warrantyMonth.value}>
+                      {warrantyMonth.value}
+                    </option>
+                  ))}
+                </RHFSelect>
               </Stack>
             </Card>
             {/* component  */}

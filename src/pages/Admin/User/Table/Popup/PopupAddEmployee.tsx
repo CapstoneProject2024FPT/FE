@@ -85,10 +85,9 @@ const ModalAddEmployee: React.FC<ModalUser> = ({
       if (response.status === 200) {
         if (onUpdateSuccess) {
           onUpdateSuccess();
+          reset();
         }
-      }
-
-      reset();
+      } else toast.error(response.Error);
     } catch (error) {
       toast.error(config.AdminMessageNotice.AddEmployeeFailed);
       handleClose();

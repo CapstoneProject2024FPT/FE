@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-
 import { Modal } from "antd";
 import {
   FormProvider,
@@ -127,10 +126,6 @@ const ModalComponentDetail: React.FC<ModalProduct> = ({
   const onSubmit = async (data: UpdateProductForm) => {
     try {
       if (productData) {
-        if (data.sellingPrice < productData.stockPrice) {
-          toast.error(config.AdminMessageNotice.SellingPriceMoreThanStockPrice);
-          return;
-        }
         const params: UpdateProductComponent = {
           ...data,
           categoryId: productData?.category?.id,

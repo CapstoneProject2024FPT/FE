@@ -9,10 +9,10 @@ import {
   Font,
 } from "@react-pdf/renderer";
 import moment from "moment";
-import { OrderProps } from "../../../../models/order";
-import { formatAddress, formatMoney } from "../../../../utils/fn";
-import loraRegular from "../../../../assets/fonts/static/Lora-Regular.ttf";
-import logo from "../../../../assets/images/logo-SMMMS.png"; // Adjust path as needed
+import { OrderProps } from "../../../models/order";
+import { formatAddress, formatMoney } from "../../../utils/fn";
+import loraRegular from "../../../assets/fonts/static/Lora-Regular.ttf";
+import logo from "../../../assets/images/logo-SMMMS.png"; // Adjust path as needed
 
 // Define styles
 Font.register({
