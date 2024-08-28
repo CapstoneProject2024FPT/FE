@@ -6,7 +6,7 @@ import NewsDetailAdmin from "../../../sections/Blog/BlogNewDetail";
 
 const BlogPostDetail: React.FC = () => {
   return (
-    <Container>
+    <Container style={{ width: "100%", maxWidth: "none" }}>
       <HeaderBreadcrumbs
         heading="Tất cả tin tức"
         links={[

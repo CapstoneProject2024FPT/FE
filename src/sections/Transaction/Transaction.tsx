@@ -228,7 +228,7 @@ const TransactionTable: React.FC = () => {
             gap: "5px",
           }}
         >
-          Ngày tạo
+          Ngày tạo giao dịch
           <DatePicker
             onChange={handleDateChange}
             style={{ width: "50%", cursor: "pointer" }}

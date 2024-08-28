@@ -9,8 +9,16 @@ import { formatDateFunc, formatMoney } from "../../../../../../utils/fn";
 import { ApiOrder } from "../../../../../../api/services/apiOrder";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import ModalCustomerTransaction from "./PopupCustomer/CustomerTransactionDetail";
-import { Dropdown, MenuProps, Space, Table, type TableProps } from "antd";
+import {
+  DatePicker,
+  Dropdown,
+  MenuProps,
+  Space,
+  Table,
+  type TableProps,
+} from "antd";
 import { useParams } from "react-router-dom";
+import moment from "moment";
 
 type ColumnsType<T> = TableProps<T>["columns"];
 const CustomerTransaction: React.FC = () => {
@@ -21,6 +29,7 @@ const CustomerTransaction: React.FC = () => {
   const [orderIds, setOrderIds] = useState<string[]>([]);
   const [invoiceCodes, setInvoiceCodes] = useState<Record<string, string>>({});
   const [selectData, setSelectData] = useState<TransactionProps>();
+  const [selectedDate, setSelectedDate] = useState<string | null>(null);
   const { id } = useParams<{ id: string }>();
   //paginate
   const pageSize = 20;
@@ -144,6 +153,18 @@ const CustomerTransaction: React.FC = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [orderIds]);
 
+  const handleDateChange = (_date: any, dateString: string | string[]) => {
+    setSelectedDate(Array.isArray(dateString) ? dateString[0] : dateString);
+  };
+
+  const dateFormatList = ["DD/MM/YYYY", "DD/MM/YY", "DD-MM-YYYY", "DD-MM-YY"];
+
+  const filteredRows = userTransaction?.filter((item) =>
+    selectedDate
+      ? moment(item.createdAt).format("DD/MM/YYYY") === selectedDate
+      : true
+  );
+
   const items: MenuProps["items"] = [
     {
       key: "1",
@@ -202,28 +223,53 @@ const CustomerTransaction: React.FC = () => {
     {
       title: (
         <div
-          style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}
+          style={{
+            textAlign: "center",
+            fontSize: "16px",
+            fontWeight: "bold",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            gap: "5px",
+          }}
         >
-          Ngày tạo đơn
+          Ngày tạo giao dịch
+          <DatePicker
+            onChange={handleDateChange}
+            style={{ width: "50%", cursor: "pointer" }}
+            format={dateFormatList}
+            placeholder="Chọn ngày"
+          />
         </div>
       ),
       dataIndex: "createdAt",
-      render: (createdAt) => {
-        return formatDateFunc.formatDateTime(createdAt);
-      },
+      render: (createdAt) => formatDateFunc.formatDateTime(createdAt),
       align: "center",
+      width: "20%",
     },
     {
       title: (
         <div
           style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}
         >
-          loại đơn hàng
+          Loại đơn hàng
         </div>
       ),
       dataIndex: "orderType",
       render: (orderType) => (orderType === "Order" ? "Mua hàng" : "Bảo hành"),
       align: "center",
+      filters: [
+        {
+          text: "Mua hàng",
+          value: "Order",
+        },
+        {
+          text: "Bảo hành",
+          value: "Warranty",
+        },
+      ],
+      onFilter: (value, record) =>
+        record?.orderType?.indexOf(value as string) === 0,
     },
     {
       title: (
@@ -296,7 +342,7 @@ const CustomerTransaction: React.FC = () => {
         bordered
         columns={columns}
         rowKey={(record) => record.id}
-        dataSource={userTransaction}
+        dataSource={filteredRows}
         pagination={customPagination}
         loading={loading}
         onChange={handleTableChange}

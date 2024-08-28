@@ -28,7 +28,7 @@ export default function AddComponentOfMachine() {
   }
 
   return (
-    <Container>
+    <Container style={{ width: "100%", maxWidth: "none" }}>
       <HeaderBreadcrumbs
         heading="Thêm bộ phận cho máy"
         links={[

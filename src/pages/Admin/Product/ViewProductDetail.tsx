@@ -14,7 +14,7 @@ import config from "../../../configs";
 
 export default function ViewProductDetail() {
   return (
-    <Container>
+    <Container style={{ width: "100%", maxWidth: "none" }}>
       <HeaderBreadcrumbs
         heading="Chi tiết sản phẩm"
         links={[

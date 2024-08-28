@@ -320,6 +320,26 @@ const TablePeriodicWarranty: React.FC = () => {
       },
       align: "center",
       width: "20%",
+      filters: [
+        {
+          text: "Đang chờ cử nhân viên",
+          value: "AwaitingAssignment",
+        },
+        {
+          text: "Đang thực thi",
+          value: "Process",
+        },
+        {
+          text: "Đang sửa chữa",
+          value: "Repairing",
+        },
+        {
+          text: "Hoàn thành",
+          value: "Completed",
+        },
+      ],
+      onFilter: (value, record) =>
+        record?.status?.indexOf(value as string) === 0,
     },
     {
       title: "",

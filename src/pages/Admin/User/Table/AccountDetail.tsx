@@ -6,7 +6,7 @@ import AccountInfo from "./Account/AccountInfo";
 
 const AccountDetail: React.FC = () => {
   return (
-    <Container>
+    <Container style={{ width: "100%", maxWidth: "none" }}>
       <HeaderBreadcrumbs
         heading="Tài Khoản"
         links={[

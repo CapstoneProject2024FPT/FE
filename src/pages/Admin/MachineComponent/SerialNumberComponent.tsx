@@ -26,7 +26,7 @@ export default function SerialNumberComponent() {
   }
 
   return (
-    <Container>
+    <Container style={{ width: "100%", maxWidth: "none" }}>
       <HeaderBreadcrumbs
         heading="Số seri bộ phận máy"
         links={[
