@@ -23,7 +23,7 @@ const AccessType = {
 
 const MenuSideBars: CustomMenuItem[] = [
   {
-    label: <Link to={config.adminRoutes.dashboard}>Thống Kê</Link>,
+    label: <Link to={config.adminRoutes.dashboard}>Thống kê</Link>,
     key: config.adminRoutes.dashboard,
     icon: <PieChartOutlined />,
     roles: AccessType.ADMIN_MANAGER_ACCESS,
@@ -35,7 +35,7 @@ const MenuSideBars: CustomMenuItem[] = [
     roles: AccessType.ALL_ACCESS,
   },
   {
-    label: "Sản Phẩm",
+    label: "Sản phẩm",
     key: "products",
     icon: <ShoppingOutlined />,
     roles: AccessType.MANAGER_SALE,
@@ -104,7 +104,7 @@ const MenuSideBars: CustomMenuItem[] = [
       },
       {
         label: (
-          <Link to={config.adminRoutes.newsCategory}>Thể Loại Tin tức</Link>
+          <Link to={config.adminRoutes.newsCategory}>Thể loại tin tức</Link>
         ),
         key: config.adminRoutes.newsCategory,
         roles: AccessType.ADMIN_MANAGER_ACCESS,
@@ -158,6 +158,12 @@ const MenuSideBars: CustomMenuItem[] = [
     label: <Link to={config.adminRoutes.task}>Nhiệm vụ</Link>,
     key: config.adminRoutes.task,
     icon: <Iconify icon={"mingcute:task-2-fill"} />,
+    roles: AccessType.MANGER_ACCESS,
+  },
+  {
+    label: <Link to={config.adminRoutes.transaction}>Giao dịch</Link>,
+    key: config.adminRoutes.transaction,
+    icon: <Iconify icon={"ant-design:transaction-outlined"} />,
     roles: AccessType.MANGER_ACCESS,
   },
 ];

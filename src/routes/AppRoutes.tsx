@@ -61,6 +61,7 @@ import CheckRoute from "./CheckRoute";
 import RequireAuth from "./RequireAuth";
 import { Role } from "./Roles";
 import Discount from "../pages/Admin/Discount/Discount";
+import TransactionAdmin from "../pages/Admin/Transaction/Transaction";
 
 const AppRoute: React.FC = () => {
   return (
@@ -332,7 +333,11 @@ const AppRoute: React.FC = () => {
               path={config.adminRoutes.rank}
               element={<Rank />}
             />
-
+            <Route
+              key="transactionAdmin"
+              path={config.adminRoutes.transaction}
+              element={<TransactionAdmin />}
+            />
             {/* task  */}
             <Route
               key="task"

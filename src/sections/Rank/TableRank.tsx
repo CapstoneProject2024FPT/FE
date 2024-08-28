@@ -237,7 +237,7 @@ const TableRank: React.FC = () => {
         }}
       />
       <Typography sx={{ color: "red" }}>
-        (*) Một điểm = {formatMoney(100000)}
+        (*) 1 điểm = {formatMoney(100000)}
       </Typography>
       {open && (
         <ModalRankDetail

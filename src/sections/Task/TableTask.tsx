@@ -281,6 +281,18 @@ const TableTask: React.FC = () => {
         );
       },
       align: "center",
+      filters: [
+        {
+          text: "Hoàn thành",
+          value: "Completed",
+        },
+        {
+          text: "Đang tiến hành",
+          value: "Process",
+        },
+      ],
+      onFilter: (value, record) =>
+        record?.status?.indexOf(value as string) === 0,
     },
     {
       title: "",

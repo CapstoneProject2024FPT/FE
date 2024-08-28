@@ -284,6 +284,37 @@ const TableRequestWarranty: React.FC = () => {
       },
       align: "center",
       width: "20%",
+      filters: [
+        {
+          text: "Đang chờ cử nhân viên",
+          value: "AwaitingAssignment",
+        },
+        {
+          text: "Đang thực thi",
+          value: "Process",
+        },
+        {
+          text: "Đang sửa chữa",
+          value: "Repairing",
+        },
+        {
+          text: "Hoàn thành",
+          value: "Completed",
+        },
+      ],
+      onFilter: (value, record) => {
+        const status = record.warrantyDetai;
+        if (value === "AwaitingAssignment") {
+          return status.AwaitingAssignment === 1;
+        } else if (value === "Process") {
+          return status.Process === 1;
+        } else if (value === "Repairing") {
+          return status.Repairing === 1;
+        } else if (value === "Completed") {
+          return status.Completed === 1;
+        }
+        return false;
+      },
     },
     {
       title: "",
