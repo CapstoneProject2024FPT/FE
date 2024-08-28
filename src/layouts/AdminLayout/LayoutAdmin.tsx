@@ -81,7 +81,7 @@ const LayoutAdmin: React.FC = () => {
           items={filteredMenuItems}
         />
       </Sider>
-      <Layout >
+      <Layout>
         <HeaderAdmin isCollapse={collapsed} handleCollapsed={handleCollapsed} />
         <Content className="content">
           <div
@@ -90,14 +90,13 @@ const LayoutAdmin: React.FC = () => {
               height: "100%",
               background: colorBgContainer,
               borderRadius: borderRadiusLG,
+              width: "auto",
             }}
           >
             <Outlet />
           </div>
         </Content>
-        <Footer className="footer">
-            Welcome To SMMMS Team
-        </Footer>
+        <Footer className="footer">Welcome To SMMMS Team</Footer>
       </Layout>
     </Layout>
   );

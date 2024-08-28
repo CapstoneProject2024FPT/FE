@@ -6,7 +6,7 @@ import RequestDetail from "../../../../sections/Warranty/RequestWarranty/Request
 
 const WarrantyRequestDetail: React.FC = () => {
   return (
-    <Container>
+    <Container style={{ width: "100%", maxWidth: "none" }}>
       <HeaderBreadcrumbs
         heading="Chi tiết yêu cầu bảo hành"
         links={[

@@ -28,7 +28,7 @@ export default function ComponentOfMachine() {
   }
 
   return (
-    <Container>
+    <Container style={{ width: "100%", maxWidth: "none" }}>
       <HeaderBreadcrumbs
         heading="Bộ phận máy"
         links={[

@@ -63,7 +63,7 @@ const NewsDetailAdmin: React.FC = () => {
         <Button onClick={handleUpdate}>Sửa tin tức</Button>
       </div>
       <div>
-        <Box maxWidth="lg" sx={{ mt: 2 }}>
+        <Box sx={{ mt: 2 }}>
           <Grid container spacing={2}>
             <Grid item xs={12} md={8}>
               <Card sx={{ p: 2 }}>

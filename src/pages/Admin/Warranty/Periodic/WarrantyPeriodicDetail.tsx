@@ -6,7 +6,7 @@ import PeriodicWarrantyDetail from "../../../../sections/Warranty/PeriodicWarran
 
 const WarrantyPeriodicDetail: React.FC = () => {
   return (
-    <Container>
+    <Container style={{ width: "100%", maxWidth: "none" }}>
       <HeaderBreadcrumbs
         heading="Chi tiết bảo hành định kỳ"
         links={[

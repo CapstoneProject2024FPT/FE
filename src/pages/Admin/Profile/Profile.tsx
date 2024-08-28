@@ -33,7 +33,7 @@ export default function ProfileAccount() {
   ];
 
   return (
-    <Container>
+    <Container style={{ width: "100%", maxWidth: "none" }}>
       <HeaderBreadcrumbs
         heading="Thông tin cá nhân"
         links={[

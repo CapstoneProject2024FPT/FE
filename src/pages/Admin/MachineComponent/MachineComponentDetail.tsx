@@ -12,7 +12,7 @@ import ProductComponentDetail from "../../../sections/MachineComponent/MachineCo
 
 export default function MachineComponentDetail() {
   return (
-    <Container>
+    <Container style={{ width: "100%", maxWidth: "none" }}>
       <HeaderBreadcrumbs
         heading="Chi tiết bộ phận"
         links={[
