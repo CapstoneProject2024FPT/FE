@@ -234,38 +234,38 @@ export default function BlogNewPostForm() {
                     </option>
                   ))}
                 </RHFSelect>
-                <Stack
-                  direction="row"
-                  justifyContent="flex-end"
-                  alignItems="baseline"
-                  spacing={1.5}
-                  sx={{ mt: 3 }}
-                >
-                  <Button
-                    color="inherit"
-                    variant="outlined"
-                    size="large"
-                    onClick={handleOpenPreview}
-                  >
-                    Xem Trước
-                  </Button>
-                  <LoadingButton
-                    type="submit"
-                    variant="contained"
-                    size="large"
-                    sx={{
-                      fontFamily: "Public Sans, sans-serif",
-                      background: "#00AB55",
-                    }}
-                    loading={isSubmitting}
-                  >
-                    Đăng
-                  </LoadingButton>
-                </Stack>
               </Box>
             </Card>
           </Grid>
         </Grid>
+        <Stack
+          direction="row"
+          justifyContent="flex-end"
+          alignItems="baseline"
+          spacing={1.5}
+          sx={{ mt: 3 }}
+        >
+          <Button
+            color="inherit"
+            variant="outlined"
+            size="large"
+            onClick={handleOpenPreview}
+          >
+            Xem Trước
+          </Button>
+          <LoadingButton
+            type="submit"
+            variant="contained"
+            size="large"
+            sx={{
+              fontFamily: "Public Sans, sans-serif",
+              background: "#00AB55",
+            }}
+            loading={isSubmitting}
+          >
+            Đăng
+          </LoadingButton>
+        </Stack>
       </FormProvider>
       <PreviewDialog
         open={open}
