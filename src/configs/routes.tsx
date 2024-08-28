@@ -62,4 +62,5 @@ export const adminRoutes = {
   maintenanceRequest: "/dashboard/maintenance/request",
   task: "/dashboard/kanban",
   discount: "/dashboard/discount",
+  transaction: "/dashboard/transaction",
 };

@@ -160,6 +160,12 @@ const MenuSideBars: CustomMenuItem[] = [
     icon: <Iconify icon={"mingcute:task-2-fill"} />,
     roles: AccessType.MANGER_ACCESS,
   },
+  {
+    label: <Link to={config.adminRoutes.transaction}>Giao dịch</Link>,
+    key: config.adminRoutes.transaction,
+    icon: <Iconify icon={"ant-design:transaction-outlined"} />,
+    roles: AccessType.MANGER_ACCESS,
+  },
 ];
 
 export default MenuSideBars;
