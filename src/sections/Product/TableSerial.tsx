@@ -169,7 +169,7 @@ const TableSerial: React.FC<TableSerial> = ({ handleSetName }) => {
         <div
           style={{ textAlign: "center", fontSize: "16px", fontWeight: "bold" }}
         >
-          Số seri
+          Số seri(Mã số máy)
         </div>
       ),
       dataIndex: "serialNumber",
