@@ -11,7 +11,7 @@ const BlogPostDetail: React.FC = () => {
         heading="Tất cả tin tức"
         links={[
           { name: "Thống kê", href: config.adminRoutes.dashboard },
-          { name: "tất cả tin tức", href: config.adminRoutes.blogs },
+          { name: "Tất cả tin tức", href: config.adminRoutes.blogs },
           { name: "Chi tiết tin tức" },
         ]}
       />

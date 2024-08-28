@@ -8,7 +8,7 @@ export const ApiTransaction = () => {
   const [loading, setLoading] = useState(false);
 
   interface transactionProps {
-    AccountId: string;
+    AccountId?: string;
   }
   const apiUserTransaction = async (params: transactionProps) => {
     setLoading(true);

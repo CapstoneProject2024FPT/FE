@@ -78,10 +78,10 @@ const ModalNewsCategoryPopupAdd: React.FC<ModalCategory> = ({
       <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
         <Card sx={{ p: 3 }}>
           <Stack spacing={3}>
-            <RHFTextField name="name" label="Tên Loại tin tức" autoFocus />
+            <RHFTextField name="name" label="Tên loại tin tức" autoFocus />
             <RHFTextField
               name="description"
-              label="Mô Tả Loại Tin tức"
+              label="Mô tả loại tin tức"
               multiline
               rows={5}
             />

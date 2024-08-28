@@ -316,7 +316,7 @@ const PromotionPolicy: React.FC = () => {
             thông tin cá nhân.
           </Typography>
           <Typography sx={{ color: "red" }}>
-            (*) Một điểm = {formatMoney(100000)}
+            (*) 1 điểm = {formatMoney(100000)}
           </Typography>
         </AccordionDetails>
       </Accordion>
