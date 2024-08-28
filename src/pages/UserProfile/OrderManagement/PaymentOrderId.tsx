@@ -17,6 +17,8 @@ import {
   TableBody,
   Stack,
   Box,
+  Backdrop,
+  CircularProgress,
 } from "@mui/material";
 import { LoadingButton } from "@mui/lab";
 // @types
@@ -64,6 +66,7 @@ const PaymentOrderId: React.FC = () => {
   const { apiPayment, apiPaymentUpdate } = ApiCheckout();
 
   const { authUser } = useAuthContext();
+  const [loading, setLoading] = useState<boolean>(false);
 
   let email: string;
   let username: string;
@@ -104,13 +107,12 @@ const PaymentOrderId: React.FC = () => {
     const transactionId = queryParams.get("vnp_TransactionStatus");
 
     const handleTransactionStatus = async (invoiceCode: string) => {
+      setLoading(true);
       const id = sessionStorage.getItem("paymmentID");
       if (transactionId === "00" && id) {
         const params = { status: "SUCCESS" };
         try {
           const response = await apiPaymentUpdate(params, id);
-
-          console.log(response);
 
           // handle
           const getUserInfoString = localStorage.getItem("getUserInfo");
@@ -129,6 +131,8 @@ const PaymentOrderId: React.FC = () => {
           }
         } catch (error) {
           console.error("Error updating payment status:", error);
+        } finally {
+          setLoading(false);
         }
       } else if (id) {
         const params = { status: "FAILED" };
@@ -139,6 +143,8 @@ const PaymentOrderId: React.FC = () => {
           }
         } catch (error) {
           console.error("Error updating payment status:", error);
+        } finally {
+          setLoading(false);
         }
       }
       sessionStorage.removeItem("paymmentID");
@@ -338,6 +344,15 @@ const PaymentOrderId: React.FC = () => {
           )}
         </Grid>
       </Grid>
+      <Backdrop
+        sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        open={loading}
+      >
+        <CircularProgress color="inherit" />
+        <Typography variant="h6" sx={{ ml: 2 }}>
+          Đang thực hiện thanh toán...
+        </Typography>
+      </Backdrop>
     </FormProvider>
   );
 };

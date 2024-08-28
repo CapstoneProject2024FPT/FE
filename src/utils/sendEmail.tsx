@@ -10,11 +10,12 @@ export function handleSendEmail(
   username?: string,
   invoiceCode?: string
 ) {
-  const message = isSuccess === true
-    ? `Chào, ${username} bạn đã thanh toán đơn hàng thành công!`
-    : isSuccess === false 
-    ? `Chào, ${username} bạn đã hủy đơn hàng thành công đơn hàng ${invoiceCode}!`
-    : `Chào, ${username} đơn hàng ${invoiceCode} của bạn đã bị hủy do quá hạn chờ thanh toán!`;
+  const message =
+    isSuccess === true
+      ? `Chào, ${username} bạn đã thanh toán đơn hàng thành công!`
+      : isSuccess === false
+      ? `Chào, ${username} bạn đã hủy đơn hàng thành công đơn hàng ${invoiceCode}!`
+      : `Chào, ${username} đơn hàng ${invoiceCode} của bạn đã bị hủy do quá hạn chờ thanh toán!`;
 
   const templateParams = {
     from_name: "Admin SMMMS", // You can customize this field
@@ -24,7 +25,6 @@ export function handleSendEmail(
     reply_to: "NoReply",
     user_name: username,
   };
-  console.log('Template Parameters:', templateParams);
   emailjs.send(
     SERVICE_ID_EMAILJS, // Replace with your EmailJS service ID
     TEMPLATE_ID_EMAILJS, // Replace with your EmailJS template ID

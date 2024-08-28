@@ -49,7 +49,7 @@ export default function PreviewDialog({
       >
         <DialogTitle id="alert-dialog-title">Xem Bài Viết</DialogTitle>
         <DialogContent>
-          {hasContent ? (
+          {hasContent && hasContent?.length > 0 ? (
             <>
               {hasHero && <PreviewHero title={title || ""} cover={cover} />}
               <Container>
