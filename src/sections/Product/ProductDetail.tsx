@@ -343,7 +343,7 @@ const ProductDetail = () => {
                                     "1px solid rgba(224, 224, 224, 1)",
                                 }}
                               >
-                                {index}
+                                {index + 1}
                               </TableCell>
                               <TableCell align="left">{row.name}</TableCell>
                             </TableRow>
