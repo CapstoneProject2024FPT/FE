@@ -308,9 +308,11 @@ const Row = (props: {
                             {formatMoney(product.totalAmount)}
                           </TableCell>
 
-                          <TableCell>
-                            <WarrantyPDF order={row} product={product} />
-                          </TableCell>
+                          {row.status !== "Canceled" && (
+                            <TableCell>
+                              <WarrantyPDF order={row} product={product} />
+                            </TableCell>
+                          )}
                         </TableRow>
                       ))}
                     </>
